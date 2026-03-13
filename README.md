@@ -26,6 +26,17 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 Env vars (backend/.env): SUPABASE_URL, SUPABASE_KEY, ANTHROPIC_API_KEY.
 Frontend API base overrides: set NEXT_PUBLIC_API_URL in frontend/.env.local if not localhost.
 
+## Supabase setup
+
+1. Create a new Supabase project.
+2. In Supabase SQL Editor, run [backend/supabase_schema.sql](backend/supabase_schema.sql).
+3. In backend, create [.env](backend/.env) from [backend/.env.example](backend/.env.example).
+4. Set:
+	- `SUPABASE_URL` = Project URL (Settings → API)
+	- `SUPABASE_KEY` = service role key (for backend server use)
+	- `CORS_ORIGINS=["http://localhost:3000"]`
+5. Restart the backend.
+
 ## Project layout (target)
 
 - AGENTS.md — working instructions
