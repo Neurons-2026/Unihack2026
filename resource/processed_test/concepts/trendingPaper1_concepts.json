@@ -1,0 +1,42 @@
+{
+  "source_file": "trendingPaper1.txt",
+  "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "streaming spatial intelligence ttt",
+      "description": "The model continuously updates its understanding of a 3D space by adapting a small set of its parameters (fast weights) as it processes a live stream of video.",
+      "why_innovative": "It addresses the critical challenge of maintaining and updating spatial knowledge from unbounded visual streams, essential for real-world embodied AI applications like robotics and augmented reality.",
+      "category": "application",
+      "relevance_score": 1.0
+    },
+    {
+      "label": "hybrid ttt architecture",
+      "description": "A neural network design that interleaves Test-Time Training (TTT) layers with traditional self-attention layers to balance efficient online adaptation with preserving pretrained model capabilities.",
+      "why_innovative": "This architecture provides a practical solution for integrating TTT into large multimodal language models, enabling continuous adaptation to long video contexts without significantly degrading their existing semantic reasoning abilities.",
+      "category": "architecture",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "spatial predictive mechanism",
+      "description": "A module that enhances Test-Time Training by applying lightweight 3D spatiotemporal convolutions to aggregate local neighborhood context for visual tokens, capturing geometric structure and temporal continuity.",
+      "why_innovative": "It injects crucial spatiotemporal inductive bias directly into the fast-weight update process, enabling the model to learn more coherent 3D spatial patterns and better manage dynamic scene changes.",
+      "category": "technique",
+      "relevance_score": 0.9
+    },
+    {
+      "label": "dense scene description dataset",
+      "description": "A newly constructed dataset providing comprehensive 3D scene descriptions, including global context, object counts, and precise spatial relationships, for training the model.",
+      "why_innovative": "This dataset offers rich, structured supervision necessary for teaching the model's fast weights how to effectively memorize and organize global 3D spatial signals from streaming video, addressing limitations of existing sparse datasets.",
+      "category": "dataset",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "large chunk updates sliding window attention",
+      "description": "An efficient processing strategy that updates the model's adaptive parameters using large segments of video frames while simultaneously employing sliding-window attention to maintain continuous spatiotemporal context within each segment.",
+      "why_innovative": "This technique significantly improves the parallelism and hardware efficiency of TTT for long spatial videos, while ensuring that critical intra-chunk spatiotemporal continuity is preserved.",
+      "category": "technique",
+      "relevance_score": 0.8
+    }
+  ]
+}

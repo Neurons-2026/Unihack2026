@@ -1,0 +1,289 @@
+[
+  {
+    "source_file": "trendingPaper1.txt",
+    "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training",
+    "source_type": "pdf",
+    "concepts": [
+      {
+        "label": "streaming spatial intelligence ttt",
+        "description": "The model continuously updates its understanding of a 3D space by adapting a small set of its parameters (fast weights) as it processes a live stream of video.",
+        "why_innovative": "It addresses the critical challenge of maintaining and updating spatial knowledge from unbounded visual streams, essential for real-world embodied AI applications like robotics and augmented reality.",
+        "category": "application",
+        "relevance_score": 1.0
+      },
+      {
+        "label": "hybrid ttt architecture",
+        "description": "A neural network design that interleaves Test-Time Training (TTT) layers with traditional self-attention layers to balance efficient online adaptation with preserving pretrained model capabilities.",
+        "why_innovative": "This architecture provides a practical solution for integrating TTT into large multimodal language models, enabling continuous adaptation to long video contexts without significantly degrading their existing semantic reasoning abilities.",
+        "category": "architecture",
+        "relevance_score": 0.95
+      },
+      {
+        "label": "spatial predictive mechanism",
+        "description": "A module that enhances Test-Time Training by applying lightweight 3D spatiotemporal convolutions to aggregate local neighborhood context for visual tokens, capturing geometric structure and temporal continuity.",
+        "why_innovative": "It injects crucial spatiotemporal inductive bias directly into the fast-weight update process, enabling the model to learn more coherent 3D spatial patterns and better manage dynamic scene changes.",
+        "category": "technique",
+        "relevance_score": 0.9
+      },
+      {
+        "label": "dense scene description dataset",
+        "description": "A newly constructed dataset providing comprehensive 3D scene descriptions, including global context, object counts, and precise spatial relationships, for training the model.",
+        "why_innovative": "This dataset offers rich, structured supervision necessary for teaching the model's fast weights how to effectively memorize and organize global 3D spatial signals from streaming video, addressing limitations of existing sparse datasets.",
+        "category": "dataset",
+        "relevance_score": 0.85
+      },
+      {
+        "label": "large chunk updates sliding window attention",
+        "description": "An efficient processing strategy that updates the model's adaptive parameters using large segments of video frames while simultaneously employing sliding-window attention to maintain continuous spatiotemporal context within each segment.",
+        "why_innovative": "This technique significantly improves the parallelism and hardware efficiency of TTT for long spatial videos, while ensuring that critical intra-chunk spatiotemporal continuity is preserved.",
+        "category": "technique",
+        "relevance_score": 0.8
+      }
+    ]
+  },
+  {
+    "source_file": "trendingPaper2.txt",
+    "source_title": "IndexCache: Accelerating Sparse Attention via Cross-Layer Index Reuse",
+    "source_type": "pdf",
+    "concepts": [
+      {
+        "label": "indexcache framework",
+        "description": "A novel framework that accelerates sparse attention by partitioning transformer layers into 'Full' layers (which compute indices) and 'Shared' layers (which reuse indices from a preceding 'Full' layer).",
+        "why_innovative": "It addresses the O(L^2) bottleneck of sparse attention indexers in long-context LLMs by eliminating redundant computations, leading to significant speedups.",
+        "category": "architecture",
+        "relevance_score": 1.0
+      },
+      {
+        "label": "cross-layer index reuse",
+        "description": "The core principle that top-k token selections are highly stable across consecutive transformer layers, enabling indexer computations to be skipped and reused.",
+        "why_innovative": "This insight extends the known cross-layer stability to sparse attention indexers, allowing for substantial computational savings without relying on a full attention mechanism.",
+        "category": "technique",
+        "relevance_score": 0.95
+      },
+      {
+        "label": "training-free indexcache",
+        "description": "An approach to configure IndexCache on existing sparse attention models without requiring any costly retraining or weight updates.",
+        "why_innovative": "It provides an immediate and practical way to enhance the efficiency of already deployed sparse attention models by adapting the indexer pattern post-training.",
+        "category": "technique",
+        "relevance_score": 0.85
+      },
+      {
+        "label": "greedy layer selection algorithm",
+        "description": "An algorithm used in training-free IndexCache that iteratively identifies and converts 'Full' layers to 'Shared' layers by minimizing language modeling loss on a calibration set.",
+        "why_innovative": "This data-driven approach intelligently prioritizes which indexers to retain, outperforming naive uniform reuse by adapting to the varying importance of different layers.",
+        "category": "technique",
+        "relevance_score": 0.75
+      },
+      {
+        "label": "training-aware indexcache",
+        "description": "An approach that integrates IndexCache optimization directly into the model training pipeline, either from scratch or via continued pre-training.",
+        "why_innovative": "By optimizing the indexers during training, it allows for more aggressive index reuse patterns while maintaining or even improving model quality compared to standard per-layer indexers.",
+        "category": "technique",
+        "relevance_score": 0.85
+      },
+      {
+        "label": "multi-layer distillation loss",
+        "description": "A novel loss function for training-aware IndexCache where each retained indexer is optimized to predict top-k tokens that are jointly useful for all the subsequent layers it serves.",
+        "why_innovative": "It enables indexers to learn a 'consensus' top-k selection, providing a robust and theoretically justified method to generalize indexer capabilities across multiple layers.",
+        "category": "technique",
+        "relevance_score": 0.75
+      }
+    ]
+  },
+  {
+    "source_file": "trendingPaper3.txt",
+    "source_title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections",
+    "source_type": "pdf",
+    "concepts": [
+      {
+        "label": "madqa benchmark",
+        "description": "A new, large-scale benchmark containing 2,250 human-authored questions over 800 diverse, fresh PDF documents, specifically designed to test multimodal AI agents' ability to perform complex, multi-stage information retrieval and reasoning.",
+        "why_innovative": "It addresses critical limitations of existing benchmarks by using fresh, diverse PDF documents and fully human-authored questions, explicitly requiring strategic, multi-hop, and visual reasoning capabilities from agents.",
+        "category": "benchmark",
+        "relevance_score": 1.0
+      },
+      {
+        "label": "agentic document qa task",
+        "description": "A formalized task where AI agents must answer questions by strategically navigating a collection of diverse documents, requiring iterative planning, retrieval, and synthesis of information, often across multiple pages or documents, using both text and visual cues.",
+        "why_innovative": "This definition moves beyond traditional single-step QA by emphasizing complex, autonomous agentic behavior, pushing the frontier of how AI interacts with and reasons over large document corpuses.",
+        "category": "theory",
+        "relevance_score": 0.95
+      },
+      {
+        "label": "accuracy effort trade-off evaluation",
+        "description": "A novel evaluation protocol that measures an agent's accuracy in solving document-based questions in relation to the 'effort' expended, quantified by the number of discrete steps or search iterations.",
+        "why_innovative": "It provides a more nuanced assessment than raw accuracy, allowing researchers to differentiate between agents that achieve results through efficient strategic planning versus those relying on computationally expensive, brute-force search, which is crucial for real-world agent deployment.",
+        "category": "technique",
+        "relevance_score": 0.9
+      },
+      {
+        "label": "construct validity for benchmarks",
+        "description": "A rigorous methodological framework applied to benchmark design to ensure it genuinely measures the intended AI capabilities (e.g., reasoning over lexical overlap, grounding over parametric knowledge) and is robust against confounding factors.",
+        "why_innovative": "This approach enhances the scientific rigor and trustworthiness of AI benchmarks, ensuring they provide meaningful insights into model capabilities rather than being solvable by trivial strategies or data contamination.",
+        "category": "technique",
+        "relevance_score": 0.8
+      },
+      {
+        "label": "sentinel pool for benchmarks",
+        "description": "A dedicated subset of exceptionally difficult questions within a benchmark, specifically designed to be unsolvable by current state-of-the-art models, ensuring the benchmark maintains long-term relevance and headroom for future AI advancements.",
+        "why_innovative": "It addresses the common problem of benchmarks quickly becoming saturated or 'solved' by rapid AI progress, providing a persistent challenge that continues to drive innovation.",
+        "category": "technique",
+        "relevance_score": 0.85
+      },
+      {
+        "label": "human agent reasoning gap",
+        "description": "An observed discrepancy between human and AI agent reasoning strategies in complex document tasks, where agents may achieve similar accuracy but rely on brute-force methods and fail on questions solvable by humans, highlighting a fundamental difference in strategic planning.",
+        "why_innovative": "This analysis provides critical empirical evidence of current AI agents' limitations in genuine strategic reasoning compared to humans, directly informing the future development directions for more intelligent and efficient AI agents.",
+        "category": "theory",
+        "relevance_score": 0.75
+      }
+    ]
+  },
+  {
+    "source_file": "trendingRepoLink1.txt",
+    "source_title": "BitNet",
+    "source_type": "github_repo",
+    "concepts": [
+      {
+        "label": "1-bit llm inference",
+        "description": "Running Large Language Models where weights are highly quantized to 1.58 bits, drastically reducing model size and computational requirements.",
+        "why_innovative": "This extreme quantization enables efficient deployment of powerful LLMs on resource-constrained devices like CPUs and edge hardware with significant speedups and energy reductions, making AI more accessible.",
+        "category": "application",
+        "relevance_score": 1.0
+      },
+      {
+        "label": "bitnet.cpp inference framework",
+        "description": "An optimized C++ inference framework specifically designed for fast and lossless execution of 1.58-bit LLMs on CPUs and GPUs.",
+        "why_innovative": "It provides the practical implementation for deploying highly quantized LLMs, offering substantial performance gains (1.37x-6.17x speedups) and energy efficiency (55.4%-82.2% reductions) on common hardware.",
+        "category": "tool",
+        "relevance_score": 0.95
+      },
+      {
+        "label": "cpu-only llm deployment",
+        "description": "The capability to run large language models efficiently on commodity CPUs, removing the need for specialized GPU hardware.",
+        "why_innovative": "This drastically lowers the hardware barrier for deploying and using powerful LLMs, enabling local, private, and offline AI applications on personal devices.",
+        "category": "application",
+        "relevance_score": 0.85
+      },
+      {
+        "label": "1.58-bit quantization scheme",
+        "description": "A specific weight quantization technique where model parameters are represented by ternary values (e.g., -1, 0, 1) instead of traditional floating-point numbers.",
+        "why_innovative": "It is the core technical enabler for BitNet, providing an effective balance between extreme compression and maintaining model performance, allowing for 'lossless inference' claims.",
+        "category": "technique",
+        "relevance_score": 0.8
+      },
+      {
+        "label": "optimized kernels for 1-bit models",
+        "description": "Custom-designed computational kernels tailored to efficiently perform matrix operations on extremely low-bit quantized weights, leveraging their simplified arithmetic.",
+        "why_innovative": "These kernels are critical for translating the theoretical benefits of 1-bit quantization into real-world performance gains and energy savings across diverse hardware platforms.",
+        "category": "technique",
+        "relevance_score": 0.75
+      },
+      {
+        "label": "energy-efficient llm deployment",
+        "description": "Reducing the power consumption required to run large language models, making them more sustainable and suitable for battery-powered or environmentally conscious applications.",
+        "why_innovative": "Addresses a major concern with large AI models by offering significant energy reductions, which is crucial for wider adoption, cost-efficiency, and environmental sustainability.",
+        "category": "application",
+        "relevance_score": 0.7
+      }
+    ]
+  },
+  {
+    "source_file": "trendingRepoLink2.txt",
+    "source_title": "OpenRAG",
+    "source_type": "github_repo",
+    "concepts": [
+      {
+        "label": "comprehensive rag platform",
+        "description": "An all-in-one software solution that integrates document ingestion, semantic search, and large language models to provide intelligent, AI-powered document search and conversation.",
+        "why_innovative": "It simplifies the deployment and management of complex Retrieval-Augmented Generation (RAG) systems by packaging multiple components into a single, ready-to-run solution.",
+        "category": "application",
+        "relevance_score": 1.0
+      },
+      {
+        "label": "agentic rag workflows",
+        "description": "Advanced retrieval-augmented generation processes that incorporate sophisticated orchestration, re-ranking of retrieved information, and coordination among multiple AI agents.",
+        "why_innovative": "This moves beyond basic RAG by implementing more intelligent and dynamic strategies for information retrieval and generation, leading to more accurate and nuanced AI responses.",
+        "category": "technique",
+        "relevance_score": 0.95
+      },
+      {
+        "label": "visual workflow builder (langflow)",
+        "description": "A drag-and-drop graphical interface for designing and customizing RAG workflows, powered by the Langflow engine.",
+        "why_innovative": "It lowers the barrier to entry for developing and iterating on complex RAG applications, allowing users to visually construct and modify AI pipelines without extensive coding.",
+        "category": "tool",
+        "relevance_score": 0.85
+      },
+      {
+        "label": "model context protocol (mcp)",
+        "description": "A protocol that enables external AI assistants, such as Cursor and Claude Desktop, to connect directly to the OpenRAG knowledge base for enhanced chat and semantic search.",
+        "why_innovative": "It facilitates seamless integration of third-party AI applications with a specialized knowledge base, significantly expanding the utility and reach of RAG beyond its native interface.",
+        "category": "tool",
+        "relevance_score": 0.8
+      },
+      {
+        "label": "intelligent document parsing",
+        "description": "The ability to process and extract meaningful information from diverse and often unstructured 'messy' real-world document formats during the ingestion phase.",
+        "why_innovative": "This feature is crucial for real-world RAG systems, as it ensures that disparate document types can be effectively transformed into a usable knowledge source for AI models.",
+        "category": "technique",
+        "relevance_score": 0.75
+      },
+      {
+        "label": "enterprise search with opensearch",
+        "description": "Utilizing OpenSearch as the robust backend for document indexing and retrieval, providing production-grade performance and scalability for large-scale knowledge bases.",
+        "why_innovative": "It ensures that the RAG platform can handle the vast amounts of documents and concurrent queries typical of enterprise environments, guaranteeing reliability and speed.",
+        "category": "architecture",
+        "relevance_score": 0.7
+      }
+    ]
+  },
+  {
+    "source_file": "trendingRepoLink3.txt",
+    "source_title": "Lightpanda Browser",
+    "source_type": "github_repo",
+    "concepts": [
+      {
+        "label": "headless browser for ai/automation",
+        "description": "A web browser without a graphical user interface, specifically engineered for programmatic control by AI agents, automation scripts, LLM training, scraping, and testing.",
+        "why_innovative": "It provides a purpose-built, highly efficient tool for AI systems to interact with the modern web's dynamic and JavaScript-heavy content, which is crucial for advanced web intelligence.",
+        "category": "application",
+        "relevance_score": 1.0
+      },
+      {
+        "label": "ultra-low memory & fast execution",
+        "description": "Designed from scratch to consume significantly less RAM (9x less than Chrome) and execute operations much faster (11x faster than Chrome) compared to general-purpose browsers.",
+        "why_innovative": "This addresses the major resource inefficiencies of using existing browsers for headless automation at scale, making large-scale web interaction economically viable for AI applications.",
+        "category": "technique",
+        "relevance_score": 0.95
+      },
+      {
+        "label": "from-scratch browser architecture",
+        "description": "A browser built entirely from the ground up, avoiding reliance on existing, complex browser engines like Chromium, Blink, or WebKit.",
+        "why_innovative": "This independent architecture allows for extreme optimization and a minimalist design tailored specifically for headless use cases, unburdened by the requirements of a full graphical browser.",
+        "category": "architecture",
+        "relevance_score": 0.9
+      },
+      {
+        "label": "zig programming language",
+        "description": "The browser is implemented in Zig, a low-level systems programming language known for its emphasis on performance, safety, and fine-grained control over hardware.",
+        "why_innovative": "Using Zig enables the 'from scratch' design and allows for deep optimizations that contribute directly to Lightpanda's superior performance and minimal resource footprint, distinguishing it from Chromium-based alternatives.",
+        "category": "technique",
+        "relevance_score": 0.85
+      },
+      {
+        "label": "cdp compatibility (playwright, puppeteer)",
+        "description": "Supports the Chrome DevTools Protocol (CDP), allowing it to be controlled by popular automation libraries like Playwright, Puppeteer, and chromedp.",
+        "why_innovative": "This ensures that users can leverage existing, well-established web automation ecosystems and scripts with Lightpanda, facilitating adoption without requiring new toolchains.",
+        "category": "tool",
+        "relevance_score": 0.8
+      },
+      {
+        "label": "v8 javascript support",
+        "description": "Integrates the V8 JavaScript engine to fully support modern web APIs and dynamic content execution.",
+        "why_innovative": "This crucially enables the headless browser to interact with the JavaScript-heavy modern web, which is impossible with simple HTTP clients, providing full fidelity for AI agents.",
+        "category": "technique",
+        "relevance_score": 0.75
+      }
+    ]
+  }
+]
