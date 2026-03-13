@@ -191,22 +191,6 @@ All responses use JSON. Errors return `{ "detail": "error message" }` with appro
 - Format with `black`. Lint with `ruff`.
 - Imports: stdlib first, then third-party, then local, separated by blank lines.
 
-```python
-# PREFERRED: thin router + service layer
-@router.post("/briefing/generate")
-async def generate_briefing(request: BriefingRequest):
-    result = await briefing_service.generate(request.session_id, request.card_ids)
-    return BriefingResponse(**result)
-
-# AVOID: business logic in route handler
-@router.post("/briefing/generate")
-async def generate_briefing(request: BriefingRequest):
-    cards = await db.get_cards(request.card_ids)
-    prompt = f"..."  # Don't do this here
-    response = await client.messages.create(...)  # Don't do this here
-    return {"content": response}
-```
-
 ### TypeScript (frontend)
 - Use functional React components with hooks. No class components.
 - Use TypeScript strict mode. Define interfaces for all props and API responses in `lib/types.ts`.
@@ -214,33 +198,6 @@ async def generate_briefing(request: BriefingRequest):
 - Use Zustand for shared state (basket contents, session ID). Use local `useState` for component-local state.
 - Fetch data with `fetch()` or a thin wrapper in `lib/api.ts`. No Redux, no React Query (overkill for hackathon).
 - Component files: PascalCase (`CardDeck.tsx`). Utility files: camelCase (`api.ts`).
-
-```tsx
-// PREFERRED: typed props, Tailwind, hooks
-interface CardItemProps {
-  card: Card;
-  onSwipe: (direction: "left" | "right") => void;
-}
-
-export function CardItem({ card, onSwipe }: CardItemProps) {
-  return (
-    <div className="rounded-xl bg-white p-6 shadow-lg">
-      <h3 className="text-lg font-semibold">{card.card_title}</h3>
-      <p className="text-sm text-gray-600">{card.card_summary}</p>
-      <div className="mt-2 flex gap-2">
-        {card.keywords.map((kw) => (
-          <span key={kw} className="rounded-full bg-blue-100 px-2 py-1 text-xs">{kw}</span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// AVOID: inline styles, untyped props, any
-export function CardItem(props: any) {
-  return <div style={{ borderRadius: 12 }}>...</div>;
-}
-```
 
 ### General
 - Keep files under 200 lines. Split if longer.
@@ -252,29 +209,6 @@ export function CardItem(props: any) {
 ## LLM integration (briefing generation)
 
 Use the Anthropic Python SDK with `claude-sonnet-4-20250514`. The briefing prompt lives in `backend/services/briefing.py`.
-
-```python
-import anthropic
-
-client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
-
-message = client.messages.create(
-    model="claude-sonnet-4-20250514",
-    max_tokens=4096,
-    messages=[{"role": "user", "content": prompt}],
-)
-```
-
-For streaming responses (preferred for demo UX):
-```python
-with client.messages.stream(
-    model="claude-sonnet-4-20250514",
-    max_tokens=4096,
-    messages=[{"role": "user", "content": prompt}],
-) as stream:
-    for text in stream.text_stream:
-        yield text
-```
 
 The briefing prompt must instruct the model to:
 - Write for a non-technical audience
@@ -328,28 +262,24 @@ If you write any test scripts, put them in `backend/scripts/` and make them runn
 ## Git workflow
 
 - Single `main` branch. Feature branches named `{owner}/{short-description}` (e.g., `sam/github-scraper`, `steve/card-ui`).
-- Commit messages: imperative mood, short first line. Examples:
-  - `Add GitHub trending scraper`
-  - `Fix basket counter not updating on undo`
-  - `Implement briefing generation endpoint`
-- Merge to `main` frequently. Do not let branches diverge for more than a few hours. This is a hackathon — avoid merge conflicts.
-- No squash merges required. Fast-forward or merge commits are both fine.
+- Commit messages: imperative mood, short first line.
+- Merge to `main` frequently. Do not let branches diverge for more than a few hours.
 - Tag stable demo-ready states: `git tag demo-v1`, `git tag demo-final`.
 
 ---
 
 ## Boundaries — do NOT do these things
 
-- **Do not add authentication or user accounts.** We use a simple `session_id` (generated client-side, stored in Zustand). No login, no signup, no OAuth.
-- **Do not install a CSS framework besides Tailwind.** No Bootstrap, no Material UI, no Chakra.
-- **Do not add Redux, React Query, SWR, or tRPC.** Zustand + fetch is sufficient.
-- **Do not use a graph database** (Neo4j, ArangoDB, etc.). Store graph data in Postgres tables.
+- **Do not add authentication or user accounts.** We use a simple `session_id` (generated client-side, stored in Zustand).
+- **Do not install a CSS framework besides Tailwind.**
+- **Do not add Redux, React Query, SWR, or tRPC.**
+- **Do not use a graph database** (store graph data in Postgres tables).
 - **Do not add Docker or Kubernetes.** Local dev + direct deploy to Vercel/Railway.
-- **Do not write unit tests with pytest or jest.** Manual smoke tests only. Time is limited.
+- **Do not write unit tests with pytest or jest.** Manual smoke tests only.
 - **Do not build a sharing feature** unless all P0 features are complete and stable.
 - **Do not add WebSockets** unless streaming briefing generation specifically requires it (SSE is preferred).
-- **Do not over-engineer the recommendation system.** TF-IDF + cosine similarity or simple keyword overlap is the ceiling. No embeddings, no fine-tuning, no model training.
-- **Do not refactor working code** for cleanliness during the hackathon. Ship first, refactor never (it's a hackathon).
+- **Do not over-engineer the recommendation system.**
+- **Do not refactor working code** for cleanliness during the hackathon.
 - **Do not add new npm or pip dependencies** without checking if an existing dependency already solves the problem.
 - **Do not modify `data/seed_cards.json`** without coordinating — it is the shared fallback dataset.
 
@@ -357,9 +287,9 @@ If you write any test scripts, put them in `backend/scripts/` and make them runn
 
 ## Deployment
 
-- **Frontend:** Deploy to Vercel. Connect the GitHub repo, set root directory to `frontend/`.
-- **Backend:** Deploy to Railway. Set root directory to `backend/`, start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`.
-- **Database:** Supabase hosted Postgres (already provisioned).
+- **Frontend:** Deploy to Vercel. Root directory: `frontend/`.
+- **Backend:** Deploy to Railway. Root directory: `backend/`, start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+- **Database:** Supabase hosted Postgres.
 - Set all environment variables in the deployment platform dashboards.
 - Deploy early (Sunday morning latest). Have a working deployed URL before demo prep begins.
 
@@ -368,7 +298,7 @@ If you write any test scripts, put them in `backend/scripts/` and make them runn
 ## Fallback strategy
 
 If any system fails during the demo:
-- **Scraping fails →** use `data/seed_cards.json` (pre-curated 15–20 items)
+- **Scraping fails →** use `data/seed_cards.json`
 - **LLM API fails →** serve a pre-generated cached briefing from the `briefings` table
 - **Graph generation fails →** serve a pre-generated graph snapshot
 - **Deployment fails →** run locally and screen-share, or use the backup demo video

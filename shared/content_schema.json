@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ContentItem",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "source": { "type": "string" },
+    "source_url": { "type": "string", "format": "uri" },
+    "title": { "type": "string" },
+    "raw_summary": { "type": "string" },
+    "raw_content": { "type": "string" },
+    "metadata": { "type": "object" },
+    "fetched_at": { "type": "string", "format": "date-time" },
+    "published_at": { "type": "string", "format": "date-time" }
+  },
+  "required": ["id", "source", "source_url", "title"],
+  "additionalProperties": true
+}
