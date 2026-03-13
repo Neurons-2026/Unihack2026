@@ -1,0 +1,3523 @@
+SOURCE_TYPE: pdf
+SOURCE_FILE: trendingPaper3.pdf
+CHAR_COUNT: 157381
+---
+
+Strategic Navigation or Stochastic Search?
+How Agents and Humans Reason Over Document Collections
+ŁukaszBorchmann JordyVanLandeghem MichałTurski ShreyanshPadarha
+RyanOthnielKearns AdamMahdi NielsRogge Cle´mentineFourrier
+SiweiHan HuaxiuYao ArtemisLlabre´s YimingXu DimosthenisKaratzas
+HaoZhang AnupamDatta
+Snowflake/MADQA-Leaderboard Snowflake-Labs/MADQA OxRML/MADQA
+Abstract ATTRIBUTED
+ANSWER a
+Multimodal agents offer a promising path to
+automating complex document-intensive workflows. Yet,acriticalquestionremains: dothese SOURCE pi,j New Mexico
+agentsdemonstrategenuinestrategicreasoning, Justice System
+SOURCE pk,l
+ormerelystochastictrial-and-errorsearch? Toaddressthis,weintroduceMADQA,abenchmark
+of2,250human-authoredquestionsgroundedin DECOMPOSE
+800heterogeneousPDFdocuments. Guidedby
+ClassicalTestTheory,wedesignittomaximize
+DOCUMENT
+discriminative power across varying levels of
+CORPUS C
+agenticabilities. Toevaluateagenticbehaviour,
+RETRIEVE
+we introduce a novel evaluation protocol measuring the accuracy-effort trade-off. Using this
+framework, we show that while the best agents QUESTION q
+canmatchhumansearchersinrawaccuracy,they
+succeedonlargelydifferentquestionsandrelyon W su h g i g c e h s l t e s s a so lo n w p e la r n in structor ANALYSE
+brute-forcesearchtocompensateforweakstrate- ratio: Firearms or New
+Mexico Justice System?
+gicplanning. Theyfailtoclosethenearly20%
+gaptooracleperformance,persistinginunproducFigure1. Givenaqueryq overcorpusC,thesystemiteratively
+tiveloops. Wereleasethedatasetandevaluation
+retrievespages,reasonsovervisualandtextualcontent,andaggreharnesstohelpfacilitatethetransitionfrombrutegatesevidencefrommultiplepagesE ={p i,j ,...}toproducea 10
+forceretrievaltocalibrated,efficientreasoning. groundedanswerawithattribution.Theprocesstypicallyrequires
+decomposingq,iterativeretrieval,andsynthesizingacrossE.
+1.Introduction
+1.1.MotivationandRelatedWorks
+WeintroduceMultimodalAgenticDocumentQAbenchmark
+Current benchmarks in this area operate in a fragmented
+(MADQA). It focuses on the capabilities of multimodal
+landscape, as detailed in Table 1 (Appendix J.1 provides
+large language model (MLLM) based agentic systems to
+per-benchmarkjustifications).
+handlecomplex,multi-stageinformationretrievalandreasoningtasksthatonewouldencounterinenterprisesettings.
+(i)Format. Agent-centricbenchmarkssuchasResearchy
+SnowflakeAIResearch Instabase UniversityofOxford Questions (Rosset et al., 2025) and BRIGHT (Su et al.,
+2025)capturethecomplexityof"agenticresearch." HowHuggingface UNC-ChapelHill ComputerVisionCenter
+ever,theyrelyonHTMLorplaintext,disregardingvisual
+Correspondenceto: <lukasz.borchmann@snowflake.com> comprehensionrequiredforreal-worlddocuments.
+6202
+raM
+]LC.sc[
+1v08121.3062:viXra
+
+MultimodalAgenticDocumentQA
+Table1.ComparingMADQAwithexistingbenchmarks.OurworkisdistinguishedbyitsfocusonacollectionofcomplexPDFswith
+freshdocuments(notrecycledfromexistingbenchmarks)andfullyhuman-authoredquestions,designedtotestagenticreasoning.We
+denotediversitylevelsusing•high,•medium,and•lowascoarse,relativecategories(seeAppendixJ.1fordetailedassessment).
+Diversity Human Problem
+NameandReference InputFile(s)
+(Domains/Layouts) -annotated Framing
+DocVQA(Mathewetal.,2021b) Singledocumentimage medium/ medium ✓ 
+I
+T
+D
+n
+A
+U
+f
+T
+o
+D
+-
+g
+D
+r
+E
+a
+Q
+p
+(L
+A
+hi
+a
+c
+(
+n
+V
+Z
+d
+h
+Q
+e
+u
+g
+A
+h
+e
+e
+t
+(
+m
+M
+al.
+a
+e
+,
+t
+t
+h
+a
+e
+l
+w
+.
+,
+2
+e
+)
+t
+a
+l.
+)
+,2021a)
+M
+M
+Sin
+u
+o
+g
+l
+s
+t
+t
+l
+i
+l
+e
+-
+y
+p
+i
+a
+s
+m
+i
+g
+n
+a
+e
+g
+g
+P
+l
+e
+e
+D
+-p
+F
+ag
+fi
+e
+le
+PDF
+m
+h
+e
+l
+d
+i
+o
+g
+i
+w
+u
+h
+m
+/
+/
+/
+l
+h
+o
+i
+h
+w
+g
+i
+h
+gh ✓
+✓
+✓
+ D
+V
+Q
+o
+Q
+u
+c
+e
+A
+u
+st
+m
+io
+e
+n
+nt
+grounded
+M
+S
+M
+li
+P
+-
+d
+L
+-
+e
+D
+o
+V
+n
+o
+Q
+g
+c
+D
+V
+A
+o
+Q
+(
+c
+T
+A
+(
+a
+C
+n
+(T
+h
+ak
+i
+i
+a
+t
+a
+o
+e
+e
+e
+t
+t
+t
+a
+a
+a
+l
+l
+.
+l
+.
+,
+.
+,
+,
+2
+0
+0
+2
+4
+3
+)
+)
+) M
+S
+M
+e
+u
+u
+ri
+l
+l
+e
+t
+t
+i
+i
+s
+-
+-
+p
+p
+o
+a
+a
+f
+g
+g
+s
+e
+e
+li
+P
+P
+de
+D
+D
+s
+F
+F
+m
+m
+e
+e
+m
+d
+d
+e
+i
+i
+u
+u
+d
+m
+m
+ium
+/
+/
+/
+m
+m
+e
+e
+lo
+d
+d
+w
+i
+i
+u
+u
+m
+m
+✓
+✓
+✓
+/
+/
+✗
+✗
+
+o
+ri
+n
+ch
+a
+d
+s
+o
+in
+c
+g
+u
+l
+m
+e
+ent
+MMLongBench-Doc(Maetal.,2024b) Multi-pagePDF high/ high ✓
+MuRAR(Zhuetal.,2025) Collectionofwebpages low/ medium ✓/✗ 
+M2RAG(Liuetal.,2025) Collectionofwebpages high/ high ✓/✗
+Multimodal
+RAG
+MR2-Bench(Zhouetal.,2025) Interleavedimage-text high/ high ✓/✗ 
+ViDoREv3(Mace´etal.,2025) CollectionofPDFs high/ high ✓/✗ 
+D
+M
+M
+o
+M
+c
+D
+B
+D
+o
+e
+o
+c
+n
+c
+R
+c
+I
+h
+A
+R
+G
+(
+(
+Z
+D
+(
+o
+C
+o
+u
+n
+h
+e
+g
+o
+t
+e
+e
+a
+t
+t
+l.
+a
+a
+,
+l
+l
+.
+.
+,
+,
+2
+2
+0
+2
+)
+4
+)
+) P
+C
+C
+D
+o
+o
+l
+l
+F
+l
+l
+e
+e
+s
+c
+c
+m
+t
+t
+i
+i
+a
+o
+o
+d
+n
+n
+e
+o
+o
+f
+f
+f
+ro
+P
+P
+m
+D
+D
+F
+F
+w
+s
+s
+ebpages m
+h
+h
+e
+i
+i
+d
+g
+g
+i
+h
+h
+um
+/
+/
+/
+h
+h
+i
+i
+g
+g
+lo
+h
+h
+w
+✓
+✓
+✓
+/
+/
+/
+✗
+✗
+✗
+
+D
+R
+o
+A
+c
+G
+ument
+FinRAGBench-V(Zhaoetal.,2025) CollectionofPDFs low/ high ✓ Single-step
+V
+J
+U
+I
+I
+N
+n
+M
+i
+A
+D
+D
+-
+o
+V
+o
+c
+c
+-
+D
+B
+(
+R
+e
+K
+n
+(
+i
+c
+G
+m
+h
+u¨
+e
+(
+n
+P
+t
+th
+a
+e
+l
+n
+e
+.
+r
+g
+,2
+e
+e
+t
+t
+a
+a
+l
+l
+.
+.
+,
+)
+,
+2
+0
+2
+6
+)
+)
+C
+C
+C
+o
+o
+o
+l
+l
+l
+l
+l
+l
+e
+e
+e
+c
+c
+c
+t
+t
+t
+i
+i
+i
+o
+o
+o
+n
+n
+n
+o
+o
+o
+f
+f
+f
+P
+P
+P
+D
+D
+D
+F
+F
+F
+s
+s
+s
+h
+h
+h
+i
+i
+i
+g
+g
+g
+h
+h
+h
+/
+/
+/
+h
+h
+h
+i
+i
+i
+g
+g
+g
+h
+h
+h ✓
+✓
+✓
+/
+/
+/
+✗
+✗
+✗
+
+r
+a
+e
+n
+t
+d
+rie
+a
+v
+n
+a
+s
+l
+wer
+BRIGHT(Suetal.,2025) Collectionofwebpages high/ medium ✓ 
+R
+V
+e
+iD
+se
+o
+a
+S
+rc
+e
+h
+e
+y
+k
+Q
+(W
+ue
+a
+s
+n
+t
+g
+io
+e
+n
+t
+s
+a
+(
+l
+R
+.,
+o
+s
+s
+e
+t
+)
+etal.,2025) C
+C
+o
+o
+l
+l
+l
+l
+e
+e
+c
+c
+t
+t
+i
+i
+o
+o
+n
+n
+o
+o
+f
+f
+t
+s
+e
+li
+x
+d
+t
+e
+s
+decks
+h
+lo
+ig
+w
+h
+/
+/
+h
+h
+i
+i
+g
+g
+h
+h ✓
+✓
+/
+/
+✗
+✗
+ A
+R
+g
+es
+e
+e
+n
+a
+t
+r
+ic
+ch
+DOUBLE-BENCH(Shenetal.,2025) CollectionofPDFs medium/ medium ✓/✗ Multi-step
+M
+Ou
+R
+r
+M
+b
+R
+en
+(
+c
+Z
+h
+h
+m
+an
+a
+g
+rk
+etal.,2025b) I
+C
+n
+o
+te
+ll
+r
+e
+le
+c
+a
+ti
+v
+o
+e
+n
+d
+o
+i
+f
+m
+P
+a
+D
+ge
+F
+-
+s
+text
+h
+h
+i
+i
+g
+g
+h
+h
+/
+/
+h
+lo
+ig
+w
+h
+✓
+✓
+/✗
+
+a
+w
+n
+i
+s
+th
+w
+t
+e
+o
+r
+o
+in
+ls
+g
+(ii) Scope. Domain-specific PDF benchmarks such as 1.2.GuidingPrinciples
+FinRAGBench-V(Zhaoetal.,2025)andViDoSeek(Wang
+MADQAexemplifiesAgenticDocumentCollectionVisual
+etal.,2025)confrontvisually-richPDFsbutrestrictevaluaQuestionAnswering. GivenacorpusC ofmulti-pagedocutiontonarrowverticalslikefinanceorrelyonsingle-step
+mentsandanaturallanguagequeryq,thetaskistoproduce
+metricsthatfailtocaptureiterativeplanningandrefinement.
+an answer a and a minimal evidence set E ⊆ C (see AppendixA.2forfullformulation). Sixpropertiesdistinguish
+thistaskfromstandarddocumentQA:
+(iii) Data Integrity. General-purpose document benchmarksattempttobridgethesegapsbutsufferfrommethodological flaws regarding data integrity. ViDoRE (Faysse # Property Definition
+etal.,2025)&ViDoRev3(Mace´etal.,2025)relyonques- 1 Extractive Answertokensmustappearphysically
+tionsandanswersgeneratedbyMLLMs,introducingbias intheevidencesetE.
+towardsimilarmodelsandconflatingretrievalqualitywith 2 Multi-Hop E mayspandisjointpages(cross-page)
+ordocuments(cross-doc).
+theteachermodel'sgenerationskills. Similarly,VIMDoc
+3 Closed-World AnswerderivedsolelyfromC;noexter-
+(Kimetal.,2025)andDOUBLE-BENCH(Shenetal.,2025)
+nalparametricknowledge.
+recycle documents from older datasets (e.g., DocVQA, 4 Grounded E mustentailaandbeminimal(nosuWikipedia),increasingtheriskofdatacontamination. perfluouspages).
+5 Agentic Nosingleretrievalqueryq′ mayexist
+Weaddressesallthreelimitations: combinethehighlayout suchthatRETRIEVE(q′)⊇E.
+diversityofalarge-scale,heterogeneousPDFcollection(for- 6 Visual Answeringmayrequirenon-textualinmat)withbroaddomaincoverageandmulti-stepreasoning formation(layout,tables,figures)inE.
+requirements(scope),groundedinrigorous,fullyhumanauthoredquestionsoverfreshdocuments(dataintegrity). Properties1,3,and4areenforcedbyconstruction: answers
+MultimodalAgenticDocumentQA
+must be extractive (tokens appear in evidence), derived 2.1.SourcingandFilteringDocuments
+underaclosed-worldassumption,andattributedtominimal
+WemanuallycuratedPDFsfromDocumentCloud,1 intenevidencesuchthatevaluationrewardsgenuinecorpususe.
+tionallyseekingclustersofupto30relateddocuments(e.g.,
+Properties 2, 5, 6 are targeted by design: our annotation sequentialreportsormenusfromdifferentrestaurants). It
+protocolencouragesquestionsrequiringmulti-hopreason- wascrucialforenablingrealisticcross-documentmulti-hop
+ing across disjoint pages or documents, under conditions questions(e.g.,comparingvaluesbetweendocuments).
+where single-query retrieval is unlikely to surface all eviThecreatedcorpuscovers800PDFsdividedinto63finedence(agentic),orwherevisualcomprehensionoflayout
+grainedcategoriesin13high-leveldomains(asdetailedin
+structureisbeneficial.
+Table2),rangingfromsingle-pagesummariestoextensive
+Theagenticproperty,whensatisfied,necessitatesplanning 800+pagefilings(seeAppendixB.1fordetailedstatistics;
+(decomposingqintosub-queries),navigation(iteratingon AppendixA.1providesafullDatasetCard).
+intermediatefindings),andaggregation(synthesizingpartial
+answers). LayoutandDomainsDiversity. Weextractlayoutelements andcompute per-element z-score normalizationto
+1.3.Contributions highlightdomain-specificpatterns(seeAppendixB.2). Figure2visualizesthestructuralheterogeneityofourcorpus
+TaskFormalization. WeformallydefineAgenticDocubyshowinglayoutelementdensityacrossdomains: finanment Collection VQA with six core properties that distincialandgovernmentdocumentsexhibithightabledensity,
+guishitfrompriordocumentQAformulations(§1.2).
+while technical documents are figure-heavy. Legal documentsshowelevatedtextdensitywithminimalvisuals,and
+Validated Benchmark. We release a fully humanReferencematerials(catalogs,guides)containdiverselists.
+authoreddatasetof2,250questionsover800heterogeneous,
+freshPDFdocuments(§2). Unlikepriorwork, weoperationalizeaConstructValidityframework(Beanetal.,2025) Reports
+Financial
+tocertifythebenchmark'sintegrity. (§2.3-2.4).
+Gov.
+HR
+EvaluationProtocol. Weprovideprincipledmethodsof Legal
+measuringanswercorrectness,evidenceattribution,anda Other
+Operations novelmetricforeffortcalibration,alldirectlymotivatedby
+Reference
+ourformalproperties(§3).
+Technical
+Media
+PrincipledSplitCreation. WeeployClassicalTestThe- Education
+o f re u r l l y e l v t b o a e n n d c c e e h r , i m e v n e a a r a b k l t i e w n s g h t i l s l o e e w t r w - e c s i o e th s r t v s e i t n x r g o p n e h r g a im r r d a e n n i k t t e a m c ti o o s r n r f e o ( l § r a 2 t l i . o o 4 n n ) g . t - o te t r h m e Tex P t i S c e tu c r t e io Ta n b H P le e a a g d e e F r oo P te a r ge L i H s e t C a h d e e c r kb C o a x p F ti o o o n tno Fo te r mula
+Layout Element Type
+Humanvs.AgentComparison. Weprovidethefirstcomparativestudyofhumanvs.agenticresearchbehaviorsin
+this domain. Results reveal a critical efficiency gap and
+fundamentallydifferentcompetencies(§5.2).
+Efficiency Analysis. We compare static RAG, unconstrained Recursive Language Models (RLM), and toolaugmentedAgents,anddemonstratethatconstrainedagency
+significantly outperforms static RAG while avoiding the
+catastrophiceffortoverheadofRLMs(§5).
+2.DatasetConstructionandValidity
+Toensurehigh-quality,solvable,andunambiguousbenchmarks, we orchestrated a rigorous human annotation
+pipelineinvolvingover1,200hoursofprofessionalwork.
+niamoD
+tnemucoD
+Domain × Layout Element Density
+2
+0
+2
+Z-score
+( )
+Figure2.Layoutelementdensityacrossdocumentdomainsin
+MADQA.Theheatmapshowsthestandardized(z-scored)concentrationofindividuallayoutelementswithineachdomain.Pinkindicatesabove-averagedensity,whilecyanindicatesbelow-average
+density.AdetaileddiscussionisprovidedinAppendixB.2.
+2.2.QuestionAnnotationandQualityAssurance
+We contracted a professional data vendor with full-time
+employeeswhowereexperiencedinlabelingQAdatasets
+overPDFdocuments.
+AnnotationProtocol. Weformulatedstrictguidelinesto
+ensure solvability and lack of ambiguity (detailed in Appendix C.1): (1) Questions must be answerable entirely
+from the provided documents, strictly excluding external
+1https://www.documentcloud.org/documents/
+MultimodalAgenticDocumentQA
+worldknowledge. (2)Questionsmustbespecificenoughto
+pinpointauniqueanswerbutmustnotrevealthesourcelocationtooeasily. (3)Foreveryquestion,collecttheminimal Whatwasthetotalexcesspermitrevenuein
+setofevidencepagesrequiredtoanswer(taggingallpages Minnesotaforthe2014-2019period?
+contributingtothefinalanswerformulti-hopqueries).
+AnnotatorSelection. Weprovided20annotatorswiththe
+sameguidelinestoannotatethesamegroupofdocuments.
+Theirannotationsweresubjectedtoatwo-stepverification:
+(1)WeprovidedGPT-5withthehuman-annotatedoracle
+evidencepages.Ifthemodelfailedtoanswercorrectlyusing
+the perfect context, the instance was flagged for manual
+check.(2)Onlyannotatorswithzeroerrorsinmanualreview
+participatedinMADQAannotation.
+Supervision,Checks,andCorrections. Domainexpert
+fromtheauthors'institutionmaintainedconstantsynchronizationwithcontractorstoresolveambiguitiesinreal-time
+and enforce strict adherence to the guidelines. After the
+initialversionofthedatasetwascomposed, wereviewed
+thequestionsthatwerenotansweredcorrectlybyanyofthe
+testedbaselinemodelsoranyofrealhumansemployedto
+establishhumanbaseline(§4). Thisledtoreplacing(<1%,
+mostly typos) or extending gold standard (< 5%, mostly
+addingoptional,desirablecontext).
+AnnotationStatistics. Table2presentsthedistributionof
+2,250QApairs. Wetargetedapproximately20%multi-hop
+questionsinourannotationguidelines,thoughwithoutstrict
+enforcement. The resulting distribution spread of 17.3%
+multi-hop,82.7%single-hopinstancescloselymatchesthis
+target. 8.3%requiresynthesizinginformationfrommultiplepageswithinthesamedocument(X-Page),while9.0%
+demandcross-documentreasoning(X-Doc).
+Table2.Constituentsof MADQA.Thecorpusspansdocuments
+(median5pages,mean23.3,max859)totaling12.2Mtokens.
+Domain Docs Pages Pg/Doc Qs Q/Doc
+Financial 131 6,149 46.9 460 3.5
+Reports 127 2,665 21.0 360 2.8
+Gov/Regulatory 105 702 6.7 304 2.9
+Legal 69 1,154 16.7 182 2.6
+HR/Employment 68 813 12.0 159 2.3
+Reference 62 1,292 20.8 218 3.5
+Miscellaneous 56 155 2.8 92 1.6
+Events 43 117 2.7 88 2.0
+Financial/Tax 39 2,925 75.0 82 2.1
+Media/Publishing 31 1,492 48.1 113 3.6
+Technical 29 842 29.0 68 2.3 Figure3.Samplequestion(X-Doc).Nosingledocumentcovers
+Education 26 255 9.8 68 2.6 the full period. The agent must retrieve both the 2018 report
+Cases/Logs 14 58 4.1 55 3.9 (covering2014-2018)andthe2019report,thenextractandsum
+therelevantvalues.MoreexamplesprovidedinAppendixC.3.
+Total 800 18,619 23.3 2,250 2.8
+MultimodalAgenticDocumentQA
+2.3.ConstructValidityAnalysis areextractablefromrunningtext,benefitfromlayoutcomprehension(forms,tables),orrequirevisualartifacts(checkWe measure to what extend guidelines from Section 1.2
+boxes,figures).
+aresatisfied,explicitlydissociatingtheconstructfromconfounders(Beanetal.,2025). Figure4showsthatonly42%ofquestionscanbeanswered
+fromfreetextalone. StructureisnottheonlyvisualchalLexicalOverlapvs.Reasoning. ToverifythatMADQA lenge:15%involvevisualartifacts,with7%requiringbothrequires planning retrieval trajectories, we check if gold e.g., interpreting a checkbox within a form field. While
+evidencecanberetrievedbasedonquestionn-grams. Un- our documents are text-heavy, this text is rarely unstrucigram matching yields a median of ∼4k pages per query tured, and relationships between elements must be taken
+withonly0.03%precision-questionsaredrownedinfalse intoaccount. Whiletabularrelationshipscansometimesbe
+positives. Bigrammatchingreduceshitsto∼24pagesbut inferredfromlinearizedtext,ourfine-grainedannotations
+precisionremainsat2.6%. Trigrammatchingachieves∼1 enablemeasuringwherevisualencoders,layout-awareparspagehit,yetrecalldropsto51%. Thisconfirmsthatsolving ing,orpuretextextractioneachsucceed. SeeAppendixE.3
+our benchmark requires semantic understanding, not just forthefulltaxonomy.
+lexicaloverlap(AppendixE.1).
+2.4.PrincipledSplitsCreation
+ParametricKnowledgevs.Grounding. Toconfirmthat To reduce evaluation costs while maintaining statistical
+thebenchmarkmeasurestheabilitytosynthesizeafaithful power,weapplyClassicalTestTheory(Crocker&Algina,
+answer solely from C, we prompt six frontier models to 1986). Weevaluateeachquestions'sDifficultyandDiscrimguessanswersbasedsolelyonquestiontext. Then,wecat- ination,prioritizingquestionsthatbestdistinguishbetween
+egorizecorrectguessesintothreetypes: yes/noquestions, strongandweakmodels(Figure5,AppendixD).
+otherbinary-choicequestions,andmemorization(factsreCrucially,weexplicitlyreserve20%ofthetestset(the"Sencalled from the training data). Across models, measured
+tinelPool")foritemsthatnocurrentmodelcansolve. This
+guessability ranges from 9.1% (Claude Haiku) to 15.2%
+design guarantees that the benchmark retains significant
+(GPT-5),withanaverageof11.2%. Basedonourquestion
+headroom (0% baseline accuracy on this subset) even as
+classification,3%stemsfromrandomchanceonyes/noand
+modelsimproveonthediscriminatoryset.
+binaryquestions,whiletheremaining8%reflectstraining
+datacontamination-modelscorrectlyrecallingfactsfrom
+publicdocuments. 0.8 Sentinel
+Pool
+Whenmodelsachieve80%+accuracywithdocumentevi0.6
+dence,theadditional70+percentagepointsrepresentgenMaximize
+uinecomprehension. SeeAppendixE.2fordetailedresults. 0.4
+Discrimination
+4422%% 0.2
+2233%% 0.1
+1188%%
+77%% 44%% 22%% 0.1 0.3 0.5 0.7 0.9
+FreFereTe eTexxtt 4444%%
+StrSutcrutcutrueredd 3333%%
+TaTbaubulalarr 2222%%
+ArAtirftiafaccttss 1155%%
+© 2025 Snowflake Inc. All Rights Reserved
+Vision is beneficial
+Figure4. VisualnecessityinMADQA.58%ofthequestions
+benefitfromunderstandingStructuredlayouts,Tabulardata,or
+VisualArtifacts(e.g.,charts,stamps).Thematrixhighlightsthat
+multi-categorydependencies(e.g.,Structured+Artifacts)area
+significantdriverofbenchmarkdifficulty.
+© 2025 Snowflake Inc. All Rights Reserved
+Visual Perception. To quantify visual understanding
+(Property6),wecategorizequestionsbywhetheranswers
+noitanimircsiD
+(Harder) Item Difficulty (Easier)
+Figure5. Principleddev/testsetselection. Weevaluateevery
+questionbasedonDifficulty(meanaccuracy)andDiscrimination
+(point-biserial correlation). The Sentinel Pool (•) captures the
+hardestitemstopreserveheadroom,regardlessofdiscrimination
+scores.Fortheremainingbudget,westratifyquestionsintodifficultybinsandgreedilyselectthosewiththehighestdiscrimination
+signal(•),discardingquestionswithlowerpredictivepower(•).
+Dataontheplotareillustrative.
+Thisapproachyieldsnon-overlappingTest(n=500)and
+Development(n=200)sets. TheTestsetachievesastrong
+rankcorrelationwiththecompletebenchmark(Spearman's
+ρ > 0.85)whileretaining100itemsthataretoocomplex
+forcurrentmodelstoensurelong-termrelevance. Theremaining1,550itemsareprovidedasaTrainset.
+MultimodalAgenticDocumentQA
+3.EvaluationProtocol thisinvestmentisrational,wedesignametricbasedonthe
+Cumulative Difference method (Kloumann et al., 2024),
+3.1.AnswerCorrectness(Property: Extractive)
+treatingthenumberofdiscretesteps(e.g.,searchiterations)
+We use LLM-based Accuracy to balance two needs: an- asaproxyforimplicituncertainty.
+swersmustbeconcretevaluessuitablefordownstreamau- Specifically, given evaluation tuples {(s ,y )}N , correi i i=1
+tomation,yetthemetricshouldacceptsemanticallycorrect spondingtodifferenttestsetitems,withefforts ∈Na m nd ax(D k )
+i
+responsesevenwhentheydifferinsurfaceformfromground
+correctnessy ∈{0,1},wesortbynondecreasingeffortvia
+t th ru e th b . e 2 nc B h y m f a o r c k u r s e i w ng ar o d n sa th ns e w E e x r t s ra gr c o ti u v n e d p e r d o i p n e t r h ty e , c w or e p e u n s, su n r o e t permutati E Ro ffi eng ci πi i o e na n n t ddefinemeanaccuracyy¯= N 1 (cid:80) D R N i= e im t 1 u i y n rni is .s hing
+Thecumulativedeviationcurve:
+stylisticchoiceslikeformattingorverbosity.
+k
+Answersarerepresentedaslistsofstringstoaccommodate (cid:88)(cid:0) (cid:1)
+D =0, D = y −y¯
+multi-partresponses(e.g.,"listallboardmembers"). The 0 k π(j) min(D k )
+j=1
+evaluation prompt was iteratively refined through human
+calibrationrounds,addressingedgecasesinlistformatting, trackshowaccuracycoSnadmitpiolense dsoornteindc breya seiffnogret f(fso)rtdeparts
+i
+verbositytolerance,andunitqualifierhandling. Excluding fromtheglobalmean: upward(downward)segmentsindi-
+∼50% exact match cases where agreement is perfect by cateeffortrangeswithabove-mean(below-mean)accuracy.
+construction,thefinalsetupachievesaquadratic-weighted
+Cohen'sκ=0.88withhumanjudgments,indicatingalmost
+perfectagreement(Landis&Koch,1977).
+Finally, to ensure statistical validity, we measured the
+calibrated judge's sensitivity and specificity on humanannotatedsamples,andapplybiascorrectiontoaggregate
+scoresfollowingLeeetal.(2026)(seeAppendixF.1).
+3.2.RetrievalandAttribution(Property: Grounded)
+As our questions are by design unanswerable using the
+general knowledge, we chose the Page F1 metric (AppendixF.2)toserveasaproxyfortheContextRelevance
+componentoftheRAGTriad(Madzou,2024).
+Itmeasurestheoverlapbetweentheuniquesetofpagescited
+by the agent and the human-annotated minimal evidence
+set E. A high score certifies that the agent successfully
+navigatedtothepreciselocationoftheanswer,penalizing
+both"lazycitations"(failuretocitenecessarypages)and
+"spuriouscitations"(citingirrelevantpages).
+WealsoreportDocF1,whichrelaxestheconstrainttothe
+document level. Comparing Doc F1 against Page F1 allowsustodiagnose"last-mile"navigationfailures,where
+anagentcorrectlyidentifiestherelevantdocumentbutfails
+topinpointthespecificpagecontainingtheevidence. We
+annotateatpagelevelratherthanbounding-boxlevel;AppendixA.3discussesthisdesignchoice.
+3.3.EfficiencyandCalibration(Property: Agentic)
+ThedefiningfeatureoftheAgenticpropertyistheabilityto
+investvariablecomputeintoaproblem.Tomeasurewhether
+2WeinitiallyconsideredANLS∗(Peeretal.,2025),butfound
+ittoostrict-evenafteraddingalternativeanswers,35%ofpredictionswhereANLS∗assignedzeroscorewereactuallycorrectper
+humanreview.ThismotivatedourLLM-basedjudge.
+D
+ecnereffid
+evitalumuC
+k
+Kuiper Statistic (K)
+Range of deviation
+max(D) k
+Efficient Diminishing
+Region Returns
+min(D)
+k
+Samples sorted by effort (s)
+i
+D
+ecnereffid
+evitalumuC
+k
+Kuiper Statistic (K)
+Range of deviation
+Figure6. Illustrationofthecumulativedifferencecurve. Upwardsegmentsindicateabove-averageaccuracyatloweffort,while
+downwardindicatebelow-averageaccuracyathighereffort.The
+Kuiperstatisticmeasuresthetotalrangeofthisdeviation.
+Wequantifythedependencybetweeneffortandaccuracy
+usingtheKuiperrangestatistic(Figure6,AppendixF.3):
+K = max D − min D
+k k
+0≤k≤N 0≤k≤N
+AlowKuiperscoreindicatesstable,"effort-invariant"performance.Ahighscorerevealspoorcalibration,specifically
+identifying regimes where the agent is expending significantbudgetoncomplexqueriesitultimatelyfailstosolve.
+Inpractice,weinterpretKuiperjointlywithaccuracyand
+grounding: low values indicate weak dependence on effort,whichcanreflecteitherwell-calibratedterminationor
+uniformlyeffort-invariantbehavior.
+Thechoiceofeffortmeasurehaslimitedimpactoncalibrationscores: stepcountsandtoken-basedmeasurescorrelate
+strongly(Spearmanρ>0.85),withKuipervaluesvarying
+by less than 20% across definitions (Appendix F.4). We
+reportstepcounts(toolcalls)bydefault.
+1
+
+MultimodalAgenticDocumentQA
+Table3. MainevaluationresultsonMADQA.AgenticsystemsconsistentlyoutperformtheirstaticRAGcounterparts,yetan18%
+oraclegaprevealsthatretrieval-notreasoning-remainstheprimarybottleneck.WereportaggregateAccuracy(±confidenceintervals)
+alongsidespecificmulti-hopreasoningsubsets(X-PageandX-Doc).AttributionismeasuredviaPageF1andDocF1toassessgrounding
+fidelity.TheKuiperstatistic(↓isbetter)quantifieseffortcalibration;itisexcludedforNon-Agenticsystemsastheyoperatewithfixed
+computationalbudgets.
+Pink indicateshigherKuipervalues(worse;↓better). Blue indicateshigherperformance(better).Bolddenotesthebestperforming
+modelinAgenticandNon-Agenticsystemsforeachsubset.
+Model/Framework Accuracy X-Page X-Doc PageF1 DocF1 Kuiper↓
+Non-AgenticSystems
+Gemini3Pro
+FileSearch
+78.6±2.2 74.1±3.6 75.0±3.6 70.1±2.0 94.2±1.0 -
+Gemini2.5Flash
+FileSearch
+71.8±2.4 61.3±4.1 73.0±3.7 52.2±2.2 80.9±1.8 -
+M3DocRAG 61.6±2.6 31.0±3.9 35.0±4.0 68.2±2.1 82.6±1.7 -
+GPT-5.2(2024-08)
+HEAVEN
+52.9±2.7 38.9±4.1 53.0±4.2 48.4±2.2 62.3±2.2 -
+GPT-5.2(2025-12)
+FileSearch
+50.0±2.7 39.5±4.1 23.0±3.5 28.5±2.0 68.5±2.1 -
+GPT-5(2025-08)
+FileSearch
+49.6±2.7 36.4±4.0 25.0±3.6 29.3±2.0 66.6±2.1 -
+GPT-4o(2024-08)
+HEAVEN
+48.6±2.7 32.2±3.9 37.0±4.0 43.2±2.2 59.2±2.2 -
+GPT-5Mini(2025-08)
+FileSearch
+48.5±2.7 32.8±3.9 26.0±3.7 29.0±2.0 67.3±2.1 -
+ColBERTv2+Llama-3.1-8B 40.2±2.6 23.7±3.5 26.0±3.7 43.4±2.2 52.0±2.2 -
+AgenticSystems
+Gemini3Pro
+BM25Agent
+82.2±2.0 66.8±3.9 73.0±3.7 78.5±1.8 90.2±1.3 25.8
+ClaudeSonnet4.5(2025-09)
+BM25Agent
+80.6±2.1 66.8±3.9 82.0±3.2 79.1±1.8 93.0±1.1 35.1
+GPT-5(2025-08)
+BM25Agent
+77.7±2.2 60.1±4.1 74.0±3.7 74.2±2.0 86.5±1.5 52.6
+Gemini3Pro
+RLM
+73.8±2.3 66.8±3.9 66.0±3.9 69.1±2.1 89.8±1.4 22.9
+ClaudeAgent
+Semtools
+72.6±2.4 62.0±4.0 60.0±4.1 51.1±2.2 89.5±1.4 37.9
+Claude4.5Sonnet(2025-09)
+RLM
+70.5±2.4 65.0±4.0 69.0±3.9 66.5±2.1 88.9±1.5 42.3
+ClaudeHaiku4.5(2025-10)
+BM25Agent
+68.2±2.5 48.0±4.2 65.0±4.0 72.0±2.0 88.2±1.4 50.7
+GPT-5.2(2025-12)
+BM25Agent
+67.8±2.5 51.6±4.2 55.0±4.1 67.6±2.1 83.7±1.7 64.8
+GPT-5Mini(2025-08)
+BM25Agent
+66.9±2.5 48.0±4.2 48.0±4.2 67.6±2.1 82.4±1.7 73.2
+GLM-4.6V
+BM25Agent
+66.1±2.5 37.1±4.0 70.0±3.8 65.9±2.1 86.6±1.5 51.4
+GPT-5.2(2025-12)
+RLM
+64.2±2.6 55.3±4.1 56.0±4.1 67.6±2.1 83.7±1.7 30.0
+MDocAgent 63.8±2.6 37.1±4.0 41.0±4.1 67.1±2.1 82.1±1.7 27.1
+Qwen3-VL(235B-A22B-Thinking)
+BM25Agent
+60.3±2.6 36.4±4.0 55.0±4.1 58.6±2.2 80.5±1.8 36.6
+GPT-4.1(2025-04)
+BM25Agent
+60.0±2.6 42.5±4.1 44.0±4.1 64.1±2.1 82.8±1.7 43.2
+Gemini2.5Flash
+BM25Agent
+58.5±2.6 30.4±3.8 56.0±4.1 61.0±2.2 78.8±1.8 46.5
+GPT-5Nano(2025-08)
+BM25Agent
+58.2±2.6 32.8±3.9 35.0±4.0 60.9±2.2 82.2±1.7 49.8
+Qwen3-VL(8B-Thinking)
+BM25Agent
+47.3±2.7 17.0±3.1 44.0±4.1 47.6±2.2 69.4±2.1 50.2
+GLM-4.6VFlash
+BM25Agent
+46.0±2.7 18.2±3.2 47.0±4.2 28.9±2.0 51.5±2.2 27.5
+GPT-4.1Nano(2025-04)
+BM25Agent
+19.5±2.1 6.1±2.0 9.0±2.4 27.6±2.0 40.2±2.2 28.6
+HumanPerformance
+Human
+OracleRetriever
+99.4±0.4 100.0 98.0±1.2 - - -
+Human
+BM25Agent
+82.2±2.0 79.6±3.4 72.0±3.7 79.3±1.8 93.4±1.1 14.6
+4.BaselineApproches flexiblequeryreformulationanddocumentexploration(AppendixG.4).
+BM25MLLMAgent(TextualRetrieval,VisualReasoning).
+Weproposeaniterativesystemthatcouplestext-basedreRecursiveLanguageModels(ProgrammaticContextDetrievalprovidedasasearchtoolwithaMLLM,allowing
+composition). A task-agnostic approach which enables
+theagenttoformulatesearchqueriesandanalyzerendered
+LLMstoprogrammaticallyexamineandrecursivelyprocess
+pageimagestoanswerquestions(AppendixG.1).
+theinput(Zhangetal.,2025a). Thedocumentcollection
+isexposedasavariable,allowingtheLLMtowritecode
+Claude Agent with Semtools (CLI-Based Semantic processingitwithsub-LLMcalls(AppendixG.5).
+Search). WeproposeasolutionbasedonClaudeAgents
+SDK,whichoperatesthroughUnix-styletoolssuchasparse MDocAgent (Collaborative Agents). Integrates textual
+(converts PDFs to MD) and search (performs semantic andvisualcuesthroughafixedfive-stagepipelineofspesearch),combinedwithregularbashcommands,enabling cializedagents. ByemployingparalleltextandimagereMultimodalAgenticDocumentQA
+trieval, it coordinates General, Critical, Text, and Image MDocAgentachieveaccuracyabove60%,rivalinglarger
+agentstoextractandanalyzekeyinformation,whichisthen commercialmodels,andsignificantlyoutperformingColconsolidatedbyaSummarizingagent(Hanetal.,2025). BERTv2 + Llama 3 (40.2%) and Qwen3-VL 8B BM25
+MLLM Agent (47.3%). This performance gap highlights
+Managed RAG Services (Blackbox Retrieval). An thepotentialofdomain-specificinnovations.
+industry-standard reference point, relying on "RAG-as-aService"solutions. TheseincludeGeminiFileSearchand Retrieval Constraints are Essential for Cost-Effective
+OpenAIAssistantsFileSearchdescribedinAppendixG.2. Reasoning. Incorporatinginferencecostinanalysis(Figure7)revealsthattheconstraintsimposedbysearchtools
+M3DocRAG(VisualRetrieval). Proposed byChoet al. andRAGpipelinesarebeneficial. WhileRLMsoffertheo-
+(2024)systemwithvision-awareretrieverthatencodesdoc- reticalflexibility,theirlackofconstraintsleadstoinefficient
+umentpagesasimages,allowingittocapturevisualcues information processing without performance gains. For
+(e.g.,charts,layout). ResultsarethenfedintoaMLLM. example,theClaudeSonnet4.5RLM processedover270
+millioninputtokens-incurringacostof$850-yetfailed
+HEAVEN (Hybrid Visual Retrieval). Multi-vector re- tomatchtheaccuracyofitsBM25MLLMcounterpart.
+trievalproposedbyKimetal.(2025). UsesDSE(Maetal.,
+2024a)toefficientlyretrievecandidatepages,andthenrerankscandidatesusingColQwen2.5(Faysseetal.,2024). 85%
+RetrievedpagesarepassedtoaMLLM(seeAppendixG.3).
+ColBERTv2+LLaMA(Text-OnlyLateInteraction). A
+simpleopen-sourcebaselinewithlate-interactionretrieval
+(Santhanametal.,2022). Relevantpagesareretrievedand
+fedtoLlama38Bmodel,followingHanetal.(2025)setup.
+HumanPerformance . Tocontextualizemodelperfor- 45%
+10 100 1000
+mance,wecollectedhumanbaselinesannotationsonalltest
+questions(fullinterfacedetailsandannotatorinstructions
+areprovidedinAppendixC.2).
+Inthefirstsetup,annotatorsusedthesamesearchengineas
+ourBM25MLLMAgentbaseline.Theinterfaceloggedcompleteinteractiontrajectories: everysearchquery,pageview,
+andtimestamp. Thisenablesdirectcomparisonnotonlyof
+accuracybutalsoofsearchefficiencybetweenhumansand
+LLMagents.
+Additionally,wetestedhumanswithoracleretrieval,eliminatingtheeffectofanimperfectsearchtoolonresults,and
+reducingtaskcognitiveload.
+5.ResultsandAnalysis
+SimpleAgenticSystemsCanOutperformStrong,Static
+RAG. Thebest-performingsystem,Gemini3ProBM25
+MLLMAgent,achievesanaccuracyof82.2%,representing
+asubstantialimprovementoveritsoptimizednon-agentic
+counterpart,Gemini3ProFileSearch(78.6%). Thistrend
+holdsalsoforallmodelsfromGPTfamily,confirmingthat
+theiterativeplanningcapabilityisbeneficialinMADQA.
+The only exception is Gemini 2.5 Flash, which performs
+exceptionallywellwithGoogle'smanagedRAG.
+SpecializedSolutionsPunchAboveTheirWeight. In
+the class of 8B parameter backbones, M3DocRAG and
+ycaruccA
+Table 1
+4o-mini Our (4o) RLM Agent Human RLM RLM
+4.34 0.505 120 0.93 8 0.6 12 0.777 1500 0.822 3 0.669 12.5
+1500 748.5
+Model Input tokens Cached input Output tokens Requests Total cost Total cost (exact)
+tokens
+o3-mini 8.05 Użycie w dniu
+zrobienia (9
+stycznia)
+o1 200
+GPT-4o 12.55 0.741818181818182 12.0909090909091
+GPT-4o mini 0.7 1.21
+Our (GPT-4o mini) 2.17 OK OK OK OK OK OK
+Our (GPT-4o) 120 GEMINI Gpt 5.2 sonet GPT-5.2
+217 0.738 25.2 0.678 1500 0.822 849 0.705 166.22
+55%
+Best
+accuracy
+at lowest
+cost
+50%
+0 2
+0 x 32B
+x
+45%
+Table 2 Table 3
+21 32 1 10 100 1000
+1500 10 10 8
+Average latency
+5 70 15
+3000 5 20 6
+5 60 5
+4500 11 30 4
+3 2
+6000 1 40 3
+1 3
+more 26 0.1 1 10 100 more 10
+32
+26.25
+21 26.25
+17.5
+17.5
+11 15
+8.75 10
+5 5 5
+3 8.75
+1 1 5
+3 3
+0 2
+1500 3000 4500 6000 more
+10 20 30 40 more
+ycaruccA
+100%
+Best
+accuracy
+95% at lowest
+cost
+90%
+85%
+80%
+1 10 100 1000
+Inference cost (USD)
+ycaruccA
+55%
+Best
+accuracy
+at lowest
+cost
+50%
+45%
+1 400.75 800.5 1200.25 1600
+Average latency
+ycaruccA
+73%
+RLM
+68%
+RLM
+63%
+RLM RAG RAG Sonnet File
+58%
+53%
+15 30 45 60 75 90
+Latency (seconds)
+ycaruccA
+85%
+Agent Human
+Agent
+Agent
+75%
+RLM
+65% RLM
+RAG RAG
+RLM
+55%
+45%
+10 100 1000
+Cost (USD, log10 scale)
+ycaruccA
+Basic Data Preprocessing Encoding Categorical Variables
+Feature Extraction from Existing Data Feature Construction and Interaction
+Scaling and Normalization Weak Domain Knowledge-Based Features
+Strong Domain Knowledge-Based Features Other
+7%
+19%
+11%
+8%
+o1-preview
+14%
+8%
+6%
+27%
+85%
+RLM
+RAG
+50%
+Cost (USD, log10)
+ycaruccA
+Gemini 3 Pro GPT-5.2 Claude Sonnet 4.5
+Human
+Agent RLM RAG
+85%
+45%
+Cost (USD, log10)
+ycaruccA
+Cost (log10 USD)
+Figure7. Performanceandcostofrunningtestsetinference.
+LeadingmodelswithManagedRAG,comparedtoemployingthem
+inBM25MLLMAgentorRLMsetup.
+Agents Achieve Superior Page-Level Attribution.
+While managed RAGs often achieve high Doc F1, they
+struggle with precise localization, as evidenced by lower
+Page F1 scores. Agentic systems offer better page-level
+attribution. HighDocF1canmaska"last-mile"failureat
+thepagelevel,justifyingthediagnosticvalueofboth.
+CalibrationisaDistinctAxisfromAccuracy. Kuiper
+varieswidelyandisnotmonotonicinanswerquality: for
+example,GPT-5BM25Agentreaches77.7%accuracybut
+exhibitssubstantiallyworsecalibration(Kuiper52.6)than
+Gemini3ProBM25Agent(82.2%,Kuiper25.8).
+5.1.SearchDynamicsandErrorTaxonomy
+WeanalyzeerrorsoftheBM25MLLMAgentfamily,which
+hasthemostmodelsevaluated(AppendixH.3).
+Failure Modes Differ Qualitatively Across Models.
+Among 3,273 agent errors, retrieval failures (wrong document)accountfor35.7%,followedbycomprehensionfailures (right page, wrong answer, 28.8%), navigation fail1
+
+MultimodalAgenticDocumentQA
+80
+40
+0
+Hu man (B M G 2 e 5 m C ) l i a n u i d 3 e P S ro onnet 4.5 Cla G u P d T e - 5 Haiku 4 G .5 PT-5 Min G i L M-4.6V GP G T e - m 5. i 2 ni 2.5 Pro G Q P w T e - n 4 3 .1 -V G L e m 23 in 5 i B 2.5 Fl G as P h T-5 Q N w a e n n o 3-VL G 32 P B T-4 G .1 L M M - i 4 n . i 6V Q Fl w as e h n3-V G L P 8 T B -4.1 Nano
+snoitseuq
+tset
+fo
+egatnecreP
+Correct (exact) Comprehension Failure (right page) Retrieval Failure (wrong doc)
+Correct (verbose) Navigation Failure (wrong page) No Answer / Refusal
+Figure8.ErrordecompositionacrossallBM25MLLMagents,orderedbyaccuracy.Eachbardecomposesasystem'stestpredictions
+intocorrect(exactandverbose)andfourerrortypes. Weakermodelsaredominatedbyrefusalsandretrievalfailures,whilestronger
+modelsshifttowardcomprehensionerrors-suggestingthatretrievalislargelysolvedfortopsystemsandanswerextractionremainsthe
+bottleneck.
+ures (right document, wrong page, 23.0%), and refusals right evidence, they almost always provide the requested
+(12.6%). However, these proportions vary drastically by Extractiveanswerwerequire. Amongerrors,87.4%involve
+model (Figure 8): Gemini 2.5 Pro fails predominantly at aconcreteretrieval,navigation,orcomprehensionfailureretrieval(21.4%ofallpredictions),whileClaudeSonnet4.5 nothallucinationorrefusal-confirmingthatthebenchmark
+retrieves well (4.0% retrieval failure) but struggles more primarilytestsinformation-seekingability.
+withcomprehension(8.6%). GPT-4.1Nanoisdominated
+byrefusals(48.2%),indicatingprematuresearchabandon- 5.2.Human-AgentComparativeAnalysis
+ment. Detailedper-systemprofiles,includingaretrieval-vs.-
+Human-AgentPerformanceGap. Despitetheimprescomprehensionscatter(Figure16),areinAppendixH.3.
+sivecapabilitiesoffrontiermodels,humanswithaccessto
+oracle retrieval perform at least 18% better. The "Oracle
+Query Reformulation Magnitude Predicts Success.
+Gap" reveals that nearly 18% of the benchmark remains
+Whenaninitialsearchfails,effectiveagentstryasubstanunsolvedduetoretrievalbottlenecks. Theplateauat80%
+tially different query rather than a minor rephrasing. We
+represents a limitation of current search capability, not a
+quantifythisbyembeddingallsearchqueriesandmeasuring
+saturationofthebenchmark'sreasoningdifficulty. Thisis
+cosinedriftbetweenconsecutivequeries(AppendixH.6).
+consistentwiththefactthat,giventhesameBM25search
+Top-performing systems reformulate more aggressively:
+tool,humansandGemini3ProachievecomparableperforClaudeSonnet4.5hasthehighestmeandriftperstep(0.38),
+mance.
+whileGPT-4.1Nanobarelychangesitsqueries(drift0.10).
+Accuracycorrelatesstronglywithreformulationmagnitude.
+SameAccuracy,DifferentCompetencies. AlthoughhuSemanticDiscontinuity,NotPhysicalDistance,Drives mansandGemini3Probothreach∼82%accuracy, pairFailure. Concerningmulti-hopqueries,thephysical"page wiseitemagreementisremarkablylow(Cohen'sκ=0.24;
+gap" between pieces of evidence is irrelevant to perfor- Figure20inAppendixH.4): theysucceedondifferentquesmance. Difficultyisdeterminedbysemanticdistance: ac- tions. Of 107 disagreement items, 54 are solved only by
+curacydropsby38percentagepointswhenevidencespans humansand53onlybythemodel. Human-specificfailures
+conceptuallydissimilarcontexts(AppendixH.1). aredominatedbycomprehensionerrors(64%),reflectingattentionfatigueoncomplexextractions,whilemodel-specific
+ErrorsReflectGenuineMisunderstanding. Only5%of failuressplitevenlybetweenretrieval(43%)andcomprecorrectpredictionsareover-verboseconcerningourspecifi- hension(43%). Incontrast,model-modelpairsatsimilar
+cation(Section3.1),indicatingthatwhensystemsfindthe accuracylevelsagreesubstantiallymore(κ≈0.43),sharing
+MultimodalAgenticDocumentQA
+systematicweaknesses. Thiscomplementaritysuggeststhat
+hybridhuman-agentpipelinescouldexceedtheaccuracy
+ceilingofeitheralone.
+IllusionofInfiniteBudget. Figure9plotsthecumulative
+accuracy against the step limit N. While frontier agents
+eventuallyconvergeneartheretrievaltool'stheoreticalceiling(∼80%),theysufferfromasevere"ColdStart"disparity.
+Humanannotatorsdemonstratestrongzero-shotstrategic
+calibration, achieving ∼50% accuracy on their very first
+query. Incontrast, Gemini3Prostartsatonly∼12%, relyingonasteep,compute-intensiverecovery. The"Oracle
+Gap"of17.2%combinedwiththiscold-startinefficiency
+provesthatMADQAremainsunsolvedforefficientagents.
+80
+40
+0
+1 2 3 4 5 6 7 8 9
+Step Limit (N)
+)%(
+N@ycaruccA
+Figure10.Kuipercalibrationcurvesmeasuringeffort-accuracy
+alignment.Humanannotatorsremainwell-calibratedacrosseffort
+levels.RLMagentsexhibitcalibrationclosertohumans.
+utes (mean 3.3 minutes), with 50% of responses falling
+between1-4minutes. Responsetimeinverselyrelatesto
+accuracy: questionsansweredinunderoneminuteachieve
+86%,whilethoserequiringovertenminutes-68%.
+© 2025 Snowflake Inc. All Rights Reserved
+6.Conclusion
+Human
+Gemini 3 Pro Even when frontier MLLM agents can answer challengClaude Sonnet 4.5 ingdocument-groundedquestions,theyexpendsubstantial
+GPT-5 effortwithoutreliablyrecognizingif andwhatadditional
+explorationisbeneficial.
+Tosupporttheshifttowardcalibrated,efficientreasoning,
+Figure9. Accuracyasafunctionofsteplimit(N)forBM25
+we release MADQA alongside open-source implementaMLLMagents. Whilefrontieragentseventuallymatchhuman
+accuracygivenalargebudget(N =9),theysufferfromasevere tions of our strong agentic baselines. Furthermore, Ap-
+"ColdStart"efficiencygap.Humansachieve50%accuracyontheir pendixIcharacterizesabroaddesignspaceofarchitectural
+firstquery,whereasGemini3Prostartsatonly 12%,requiringan "toggles,"encouragingthebenchmark'suseforevaluating
+aggressive,high-costrecoverystrategytoreachparity.
+diversestrategieswedidnotexplicitlyconsider.
+Ourprimaryfindingssuggesttwoconcretedirections. First,
+PerfectRetrievalEliminatesHumanReasoningErrors.
+episodic memory could help agents learn corpus-specific
+Humansoccasionallysuccumbedto"negationblindness,"
+terminology and document structure across queries. Sectemporal confusion, or role conflation (e.g., mistaking a
+ond,reinforcementlearningwithsearchtoolfeedbackcould
+signer for an approver). Detailed examples of these gensignificantlyimproveexplorationpolicies.
+uine human mistakes, distinct from annotation noise, are
+provided in Appendix H.2. Interestingly, these problems As the community progresses, we will adapt our future
+almostdisappearentirelywithperfectretrieval-whenthe evaluationcampaignstotargetnewbottlenecks,ensuring
+annotatorisfocusingontherightplaceinthedocument. thebenchmarkcontinuestoserveasadiscriminativesignal
+forfrontiercapabilities.
+Humans Calibrate Effort Better. Humans achieve a
+Kuiperstatisticof14.6-beloweveryagentsystem,whose
+scoresrangefrom22.9(Gemini3ProRLM)to73.2(GPT-5
+Mini BM25 Agent). When initial queries fail, humans
+quicklychangestrategy. Agents,incontrast,oftenpersist
+throughminorqueryreformulationsandspendcomputeon
+problemstheyultimatelyfailtosolve.
+Response Time Inversely Correlates with Accuracy.
+Humans answered questions in a median time of 2 minMultimodalAgenticDocumentQA
+7.Limitations be penalized for imperfect localization even when it has
+effectivelyidentifiedtheproperdocument.
+Coverage and Representativeness. MADQA targets
+multi-step,groundedreasoningoverheterogeneousPDFs, Thesedesignchoicesreflectthebenchmark'semphasison
+butthecorpusislimitedtoEnglish-languagedocumentsand bothtaskcompletionandgroundednavigation,buttheymay
+is predominantly U.S.-centric in content, formatting con- notmatcheverydeploymentobjective.
+ventions,andinstitutionalterminology. Asaresult,performanceonMADQAmaynottransfertonon-Englishsettings
+EffortasaProxyforUncertainty. Ourcalibrationanalyortoregionswithdistinctdocumentgenres, layouts, and
+sisfollowsthebehavioralassumptionthatgreaterobserved
+administrativepractices.
+effort(e.g.,moresearch/tooliterations)reflectshigherimMoreover,documentsaresourcedfrompubliclyavailable plicit uncertainty or difficulty, and we quantify whether
+repositories,whichmayunderrepresentprivate,proprietary, agentsallocateeffortinawaythatcorrelateswithsuccess.
+orhighlydomain-specificenterprisedocumentcollections
+However, the specific operationalization of effort as step
+(e.g.,internalpolicies,regulatedclinicalworkflows,bespoke
+count is inherently system-dependent: a "step" can bunprocurementforms).
+dledifferentamountsofcomputation,retrievedcontext,or
+latencydependingontooldesignandmodelinterface.
+Public Documents and Training Data Exposure. Becausedocumentsinthecorpusarepublic,somecontentmay Asaresult,Kuiperscoresaremostinterpretablewhencomhavebeenobservedduringmodelpretraining. Whilewean- paring methods under a consistent agent/tooling regime.
+alyzeandquantifyanswerguessabilitytoboundthiseffect, Theyshouldideallybereportedalongsidecomplementary
+we cannot guarantee the complete elimination of memo- costmeasures(tokens,wall-clocktime,ordollarcost)when
+rizationadvantages,andsuchexposuremaydifferentially thesedifferacrosssystems.
+benefitcertainmodelfamilies.
+Consequently, reported scores should be interpreted as a Sensitivity of Ranking to Budget. Our evaluation
+mixtureofdocument-groundedcompetenceand(toalimited imposes a fixed upper bound on agent steps (typically
+extent)priorexposureforasubsetofitems. N = 10), but system rankings are susceptible to this parameter. Asshowninourefficiencyprofiling(Section5.2),
+the relative order of frontier models inverts depending
+AnnotationGranularityandTaskScope. Weprovide
+on the allowed budget: for instance, while Gemini 3 Pro
+minimalevidenceatthepagelevelratherthanatfinergrandominatestheleaderboardatconvergence,itunderperforms
+ularity(e.g., boundingboxes, tablecells, ortokenspans).
+bothhumansandClaudeSonnet4.5intheN ≤3regime.
+Thischoicesupportsreliableannotationatscaleandaligns
+withhowretrievalsystemsoperate. Still,itlimitsthebench- Consequently,thereportedbenchmarkscoresshouldbeinmark'sabilitytodiagnosefine-grainedgroundingfailures terpreted as "asymptotic performance" under a generous
+(e.g., extracting the wrong field within a form) when the computebudget. Applicationsrequiringreal-timeresponcorrectpageisretrieved. sivenessmayfindthatthe"best"modelontheleaderboard
+issuboptimalforconstrainedinferencesettings,necessitatInaddition,MADQAfocusesonattributedquestionanswering a shift from scalar accuracy metrics to budget-aware
+ing; it does not directly evaluate other critical documentevaluationcurves.
+workflowcapabilitiessuchaslong-horizonplanningacross
+manytasks,documentediting,dataentryintoexternalsystems,orend-to-endautomationwithreal-worldsideeffects. Robustness, Safety, andResponsibleUse. Thebenchmark evaluates benign documents and does not measure
+EvaluationMethodologyandResidualNoise. Werely robustnesstoadversarialinputs(e.g.,prompt-injectioninon an LLM-as-a-judge to score answer correctness, cali- structionsembeddedinPDFs, deceptivelayouts, ormalibratedtohumanjudgments,butthisevaluationisstillim- ciousformattingintendedtoderailtool-usingagents). In
+perfect. Itdoesnotincludesystematichumanverification realdeployments,suchthreatsarecentral,andfirmperforfor every prediction. Despite calibration, rare formatting mance on MADQA should not be taken as evidence of
+edgecasesandambiguoussurfaceformscanleadtoresidual securityagainstdocument-basedattacks.
+measurementerror.
+Finally,portionsofthecorpusincludepublicrecordsthat
+Furthermore, correctness and attribution are scored sepa- maycontainpersonalorsensitiveinformation. MADQA
+rately(answeraccuracyvs.Page/DocF1),whichmeansa is intended for research and evaluation, and users should
+systemcanbecreditedforacorrectanswerevenwhenits followapplicablepoliciesforhandling,redacting,andrediscitationsareincompleteornoisy;conversely,asystemcan tributingsensitivecontent.
+MultimodalAgenticDocumentQA
+References Garncarek, Ł., Powalski, R., Stanisławek, T., Topolski,
+B., Halama, P., Turski, M., and Gralin´ski, F. LAMBai, J., Bai, S., Yang, S., Wang, S., Tan, S., Wang, P.,
+BERT:Layout-AwareLanguageModelingforInformaLin, J., Zhou, C., and Zhou, J. Qwen-VL: A versation Extraction, pp. 532-547. Springer International
+tile vision-language model for understanding, localizaPublishing, 2021. ISBN 9783030865498. doi: 10.
+tion, text reading, and beyond, 2023. URL https:
+1007/978-3-030-86549-8 34. URLhttp://dx.doi.
+//arxiv.org/abs/2308.12966.
+org/10.1007/978-3-030-86549-8_34.
+Bean, A. M., Kearns, R. O., Romanou, A., Hafner, F. S.,
+Gu¨nther,M.,Sturua,S.,Akram,M.K.,Mohr,I.,Ungureanu,
+Mayne,H.,Batzner,J.,Foroutan,N.,Schmitz,C.,Korgul,
+A.,Wang,B.,Eslami,S.,Martens,S.,Werk,M.,Wang,
+K., Batra, H., Deb, O., Beharry, E., Emde, C., Foster,
+N.,etal. jina-embeddings-v4: Universalembeddingsfor
+T., Gausen, A., Grandury, M., Han, S., Hofmann, V.,
+multimodalmultilingualretrieval. InProceedingsofthe
+Ibrahim, L., Kim, H., Kirk, H. R., Lin, F., Liu, G. K.-
+5thWorkshoponMultilingualRepresentationLearning
+M.,Luettgau,L.,Magomere,J.,Rystrøm,J.,Sotnikova,
+(MRL2025),pp.531-550,2025.
+A., Yang, Y., Zhao, Y., Bibi, A., Bosselut, A., Clark,
+R., Cohan, A., Foerster, J., Gal, Y., Hale, S. A., Raji, Han,S.,Xia,P.,Zhang,R.,Sun,T.,Li,Y.,Zhu,H.,andYao,
+I.D.,Summerfield,C.,Torr,P.H.S.,Ududec,C.,Rocher, H. MDocAgent: Amulti-modalmulti-agentframework
+L., andMahdi, A. Measuringwhatmatters: Construct for document understanding, 2025. URL https://
+validityinlargelanguagemodelbenchmarks,2025. URL arxiv.org/abs/2503.13964.
+https://arxiv.org/abs/2511.04703.
+Kim, G., Hong, T., Yim, M., Nam, J., Park, J., Yim, J.,
+Chen, Z., Wu, J., Wang, W., Su, W., Chen, G., Xing, S., Hwang, W., Yun, S., Han, D., and Park, S. OCRZhong, M., Zhang, Q., Zhu, X., Lu, L., Li, B., Luo, free document understanding transformer, 2022. URL
+P., Lu, T., Qiao, Y., and Dai, J. InternVL: Scaling up https://arxiv.org/abs/2111.15664.
+visionfoundationmodelsandaligningforgenericvisuallinguistictasks, 2024. URLhttps://arxiv.org/ Kim,J.,Lee,G.,Choi,D.,Kim,T.,andShin,K. Hybridabs/2312.14238. vectorretrievalforvisuallyrichdocuments: Combining
+single-vectorefficiencyandmulti-vectoraccuracy. arXiv
+Chia, Y. K., Cheng, L., Chan, H. P., Liu, C., Song, M., preprintarXiv:2510.22215,2025.
+Aljunied,S.M.,Poria,S.,andBing,L. M-LongDoc: A
+benchmarkformultimodalsuper-longdocumentunder- Kloumann, I., Korevaar, H., McConnell, C., Tygert, M.,
+standingandaretrieval-awaretuningframework,2024. and Zhao, J. Cumulative differences between paired
+URLhttps://arxiv.org/abs/2411.06176. samples, 2024. URL https://arxiv.org/abs/
+2305.11323.
+Cho, J., Mahata, D., Irsoy, O., He, Y., and Bansal, M.
+M3DocRAG:Multi-modalretrievaliswhatyouneedfor Landeghem,J.V.,Tito,R.,Borchmann,Ł.,Pietruszka,M.,
+multi-pagemulti-documentunderstanding,2024. URL Jo´ziak, P., Powalski, R., Jurkiewicz, D., Coustaty, M.,
+https://arxiv.org/abs/2411.04952. Ackaert,B.,Valveny,E.,Blaschko,M.,Moens,S.,and
+Stanisławek,T.DocumentunderstandingdatasetandevalCrocker, L. and Algina, J. Introduction to Classical and uation(DUDE),2023. URLhttps://arxiv.org/
+Modern Test Theory. Holt, Rinehart, and Winston, abs/2305.08455.
+1986. ISBN9780030616341. URLhttps://books.
+google.pl/books?id=tfgkAQAAMAAJ. Landis,J.R.andKoch,G.G. Themeasurementofobserver
+agreementforcategoricaldata. Biometrics,33(1),1977.
+Dong,K.,Chang,Y.,Goh,X.D.,Li,D.,Tang,R.,andLiu,
+Y. MMDocIR:Benchmarkingmultimodalretrievalfor Lee,C.,Zeng,T.,Jeong,J.,yongSohn,J.,andLee,K. How
+longdocuments,2025. URLhttps://arxiv.org/ to correctly report LLM-as-a-judge evaluations, 2026.
+abs/2501.08828. URLhttps://arxiv.org/abs/2511.21140.
+Faysse, M., Sibille, H., Wu, T., Omrani, B., Viaud, G., Lee,K.,Joshi,M.,Turc,I.,Hu,H.,Liu,F.,Eisenschlos,J.,
+Hudelot, C., and Colombo, P. ColPali: Efficient docu- Khandelwal,U.,Shaw,P.,Chang,M.-W.,andToutanova,
+mentretrievalwithvisionlanguagemodels,2024. URL K. Pix2Struct: Screenshot parsing as pretraining for
+https://arxiv.org/abs/2407.01449. visuallanguageunderstanding,2023. URLhttps://
+arxiv.org/abs/2210.03347.
+Faysse, M., Sibille, H., Wu, T., Omrani, B., Viaud, G.,
+Hudelot, C., and Colombo, P. ColPali: Efficient docu- Liu, H., Li, C., Wu, Q., andLee, Y.J. Visualinstruction
+mentretrievalwithvisionlanguagemodels,2025. URL tuning, 2023a. URL https://arxiv.org/abs/
+https://arxiv.org/abs/2407.01449. 2304.08485.
+MultimodalAgenticDocumentQA
+Liu, Y., Iter, D., Xu, Y., Wang, S., Xu, R., and Zhu, C. for document-centric multimodal RAG, 2026. URL
+G-Eval: NLG evaluation using GPT-4 with better hu- https://arxiv.org/abs/2510.03663.
+manalignment,2023b. URLhttps://arxiv.org/
+abs/2303.16634. Powalski,R.,Borchmann,Ł.,Jurkiewicz,D.,Dwojak,T.,
+Pietruszka,M.,andPałka,G. Goingfull-TILTboogieon
+Liu, Z., Zhu, X., Zhou, T., Zhang, X., Yi, X., Yan, Y., document understanding with text-image-layout transYu,G.,andSun,M. Benchmarkingretrieval-augmented former, 2021. URL https://arxiv.org/abs/
+generationinmulti-modalcontexts,2025. URLhttps: 2102.09550.
+//arxiv.org/abs/2502.17297.
+Rosset, C., Chung, H.-L., Qin, G., Chau, E., Feng, Z.,
+Livathinos, N., Auer, C., Lysak, M., Nassar, A., Dolfi,
+Awadallah, A., Neville, J., and Rao, N. Researchy
+M., Vagenas, P., Ramis, C. B., Omenetti, M., Dinkla,
+questions: A dataset of multi-perspective, decomposiK., Kim, Y., et al. Docling: An efficient open-source
+tionalquestionsfordeepresearch. InProceedingsofthe
+toolkitforAI-drivendocumentconversion.arXivpreprint
+48thInternationalACMSIGIRConferenceonResearch
+arXiv:2501.17887,2025.
+andDevelopmentinInformationRetrieval, SIGIR'25,
+pp. 3712-3722, New York, NY, USA, 2025. AssociaMa, X., Lin, S.-C., Li, M., Chen, W., and Lin, J. UnifytionforComputingMachinery. ISBN9798400715921.
+ing multimodal retrieval via document screenshot emdoi: 10.1145/3726302.3730275. URLhttps://doi.
+bedding,2024a. URLhttps://arxiv.org/abs/
+org/10.1145/3726302.3730275.
+2406.11251.
+Ma,Y.,Zang,Y.,Chen,L.,Chen,M.,Jiao,Y.,Li,X.,Lu, Santhanam,K.,Khattab,O.,Saad-Falcon,J.,Potts,C.,and
+X.,Liu,Z.,Ma,Y.,Dong,X.,Zhang,P.,Pan,L.,Jiang, Zaharia,M. ColBERTv2: Effectiveandefficientretrieval
+Y.-G.,Wang,J.,Cao,Y.,andSun,A. MMLongBench- vialightweightlateinteraction,2022. URLhttps://
+Doc: Benchmarkinglong-contextdocumentunderstandarxiv.org/abs/2112.01488.
+ingwithvisualizations,2024b. URLhttps://arxiv.
+Shen,W.,Wang,M.,Wang,Y.,Chen,D.,Yang,J.,Wan,Y.,
+org/abs/2407.01523.
+andLin,W. AreweontherightwayforassessingdocMace´, Q., Loison, A., EDY, A., Xing, V., and Viaud, G. umentretrieval-augmentedgeneration? arXivpreprint
+ViDoReV3: acomprehensiveevaluationofretrievalfor arXiv:2508.03644,2025.
+enterpriseuse-cases. https://huggingface.co/
+blog/QuentinJG/introducing-vidore-v3, Shinn, N., Cassano, F., Berman, E., Gopinath, A.,
+Narasimhan, K., and Yao, S. Reflexion: Language
+November2025.
+agentswithverbalreinforcementlearning,2023. URL
+Madzou,L. WhatistheRAGtriad?,2024. URLhttps: https://arxiv.org/abs/2303.11366.
+//truera.com/ai-quality-education/
+generative-ai-rags/ Su, H., Yen, H., Xia, M., Shi, W., Muennighoff, N.,
+what-is-the-rag-triad/. Accessed: 2025-12- yu Wang, H., Liu, H., Shi, Q., Siegel, Z. S., Tang,
+13. M., Sun, R., Yoon, J., Arik, S. O., Chen, D., and Yu,
+T. BRIGHT: A realistic and challenging benchmark
+Mathew,M.,Bagal,V.,Tito,R.P.,Karatzas,D.,Valveny, for reasoning-intensive retrieval, 2025. URL https:
+E., and Jawahar, C. V. InfographicVQA, 2021a. URL //arxiv.org/abs/2407.12883.
+https://arxiv.org/abs/2104.12756.
+Tanaka,R.,Nishida,K.,Nishida,K.,Hasegawa,T.,Saito,
+Mathew, M., Karatzas, D., andJawahar, C.V. DocVQA:
+I., and Saito, K. SlideVQA: A dataset for document
+AdatasetforVQAondocumentimages, 2021b. URL
+visualquestionansweringonmultipleimages,2023.URL
+https://arxiv.org/abs/2007.00398.
+https://arxiv.org/abs/2301.04883.
+OpenAIetal. GPT-4technicalreport,2024. URLhttps:
+Tito,R.,Karatzas,D.,andValveny,E. Hierarchicalmulti-
+//arxiv.org/abs/2303.08774.
+modaltransformersformulti-pageDocVQA,2023. URL
+Peer, D., Scho¨pf, P., Nebendahl, V., Rietzler, A., and https://arxiv.org/abs/2212.05935.
+Stabinger,S. ANLS*-auniversaldocumentprocessing
+Wang, Q., Ding, R., Chen, Z., Wu, W., Wang, S., Xie,
+metricforgenerativelargelanguagemodels,2025. URL
+P.,andZhao,F. ViDoRAG:Visualdocumentretrievalhttps://arxiv.org/abs/2402.03848.
+augmented generation via dynamic iterative reasoning
+Peng, X., Qin, C., Chen, Z., Xu, R., Xiong, C., and agents, 2025. URL https://arxiv.org/abs/
+Wu, C.-S. UNIDOC-BENCH: A unified benchmark 2502.18017.
+MultimodalAgenticDocumentQA
+Wu,Z.,Chen,X.,Pan,Z.,Liu,X.,Liu,W.,Dai,D.,Gao, Zou, A., Yu, W., Zhang, H., Ma, K., Cai, D., Zhang, Z.,
+H.,Ma,Y.,Wu,C.,Wang,B.,Xie,Z.,Wu,Y.,Hu,K., Zhao, H., and Yu, D. DOCBENCH: A benchmark for
+Wang, J., Sun, Y., Li, Y., Piao, Y., Guan, K., Liu, A., evaluatingLLM-baseddocumentreadingsystems,2024.
+Xie, X., You, Y., Dong, K., Yu, X., Zhang, H., Zhao, URLhttps://arxiv.org/abs/2407.10701.
+L.,Wang,Y.,andRuan,C. DeepSeek-VL2: Mixture-ofexpertsvision-languagemodelsforadvancedmultimodal
+understanding, 2024. URL https://arxiv.org/
+abs/2412.10302.
+Xu, Y., Li, M., Cui, L., Huang, S., Wei, F., and Zhou,
+M. LayoutLM:Pre-trainingoftextandlayoutfordocumentimageunderstanding. InProceedingsofthe26th
+ACMSIGKDDInternationalConferenceonKnowledge
+DiscoveryandDataMining,KDD'20,pp.1192-1200.
+ACM, August 2020. doi: 10.1145/3394486.3403172.
+URL http://dx.doi.org/10.1145/3394486.
+3403172.
+Yao,S.,Zhao,J.,Yu,D.,Du,N.,Shafran,I.,Narasimhan,
+K.,andCao,Y. ReAct: Synergizingreasoningandactinginlanguagemodels,2023. URLhttps://arxiv.
+org/abs/2210.03629.
+Zhang,A.L.,Kraska,T.,andKhattab,O. RecursiveLanguageModels,2025a. URLhttps://arxiv.org/
+abs/2512.24601.
+Zhang,S.,Gao,Y.,Zhou,X.,Zhao,Y.,Song,T.,Cohan,A.,
+Luu,A.T.,andZhao,C. MRMR:Arealisticandexpertlevelmultidisciplinarybenchmarkforreasoning-intensive
+multimodalretrieval. arXivpreprintarXiv:2510.09510,
+2025b.
+Zhao,S.,Jin,Z.,Li,S.,andGao,J. FinRAGBench-V:A
+benchmarkformultimodalRAGwithvisualcitationin
+the financial domain, 2025. URL https://arxiv.
+org/abs/2505.17471.
+Zhou,J.,Liu,Z.,Xiong,L.,Yao,J.-G.,Wang,Y.,Xiao,S.,
+Lin,F.,Chen,M.H.,Dou,Z.,Bao,S.,etal. MR2-Bench:
+Goingbeyondmatchingtoreasoninginmultimodalretrieval. arXivpreprintarXiv:2509.26378,2025.
+Zhu,F.,Lei,W.,Feng,F.,Wang,C.,Zhang,H.,andChua,T.-
+S. Towardscomplexdocumentunderstandingbydiscrete
+reasoning. InProceedingsofthe30thACMInternational
+Conference on Multimedia, MM '22, pp. 4857-4866.
+ACM, October 2022. doi: 10.1145/3503161.3548422.
+URL http://dx.doi.org/10.1145/3503161.
+3548422.
+Zhu, Z., Lee, D., Zhang, H., Harsha, S. S., Feujio, L.,
+Maharaj, A., and Li, Y. MuRAR: A simple and effectivemultimodalretrievalandanswerrefinementframework for multimodal question answering, 2025. URL
+https://arxiv.org/abs/2408.08521.
+MultimodalAgenticDocumentQA
+Appendix
+A BenchmarkSpecification 16
+A.1 DatasetCard. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+A.2 DesiredProperties. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+A.3 BenchmarkDesignDecisions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+B DocumentCorpus 20
+B.1 DomainsandCategories . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+B.2 LayoutElementDensityHeatmap . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+C AnnotationsandHumanBaseline 24
+C.1 AnnotationGuidelines . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+C.2 HumanBaselineCollection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+C.3 SampleQuestions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+D PrincipledSplitsCreation 28
+E ConstructValidityAnalyses 29
+E.1 LexicalOverlapvs. Reasoning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+E.2 ParametricKnowledgevs. Grounding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+E.3 VisualPerception . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+F FormalDefinitionofMetrics 35
+F.1 AccuracyMetric. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+F.2 RetrievalandAttributionMetrics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+F.3 EfficiencyandCalibrationMetrics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+F.4 SensitivityofKuiperStatistictoEffortMeasure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+G BaselineImplementationDetails 39
+G.1 BM25MLLMAgent. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+G.2 ManagedRAGServices. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+G.3 HEAVEN . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+G.4 ClaudeAgentwithSemtools . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+G.5 RecursiveLanguageModels . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41
+H ExtendedResults 46
+H.1 Multi-HopQuestionComplexityAnalysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 46
+H.2 QualitativeAnalysisofHumanBaselineErrors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 47
+H.3 ErrorDecomposition . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 47
+H.4 Cross-SystemItemAgreement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+H.5 SearchTrajectoryAnalysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+H.6 QueryReformulationAnalysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+I SolutionSpace 55
+J LandscapeofAgenticApproachestoDocuments 56
+J.1 RelatedWorksAssessment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 56
+MultimodalAgenticDocumentQA
+A.BenchmarkSpecification
+A.1.DatasetCard
+DatasetSummary. TheMultimodalAgenticDocumentQABenchmarkisacomprehensivedatasetdesignedtoevaluate
+agenticsystems,RAGpipelines,andmultimodalmodelsontheirabilitytoperformmulti-stepreasoningovercollectionsof
+visuallyrichPDFdocuments. Thisdatasetenforcesaclosed-worldassumptionwheresystemsmustnavigate,retrieve,and
+reasonacrossmultiplepagesordocuments(e.g.,cross-referencingannualreports,legalcontracts,andgovernmentforms).
+Table4.Summaryofdatasetstatisticsandsplits.
+Metric Value
+TotalQuestions 2,250
+TotalDocuments 800(sourcedfromDocumentCloud)
+TotalPages 18,619(median5,mean23.3,max859perdoc)
+TotalTokens 12.2M(assumingQwen3tokenizer)
+Multi-hopQuestions 17.3%(8.3%cross-page,9.0%cross-document)
+VisualNecessity 58%requirelayout/table/artifactunderstanding
+Domains 13high-leveldomains(63categories)
+Language English
+DataSplits. ThedatasetispartitionedusingClassicalTestTheorytoensurethetestsetretainshighdiscriminationpower
+whilepreservinghardquestions,solvedbynoneofthecurrentmodels. Test: 500samples(inputsreleased;labelshiddenfor
+leaderboardevaluation). Development: 200samples(releasedwithgroundtruth). Train: annotationsreleasedtofacilitate
+RL-basedoptimization(∼1,550samples).
+CurationRationale. Existingbenchmarksoftenlackthecomplexitytoevaluateagenticcapabilitiessuchasplanningand
+multi-stepretrieval. Thisbenchmarkwascreatedtobridgethegapbetween"chat-with-PDF"tasksandrealisticdocument
+automationworkflowsinvolvingheterogeneouslayoutsandlongcontexts.
+Source Data. Documents were manually curated from DocumentCloud, specifically looking for clusters of related
+documents(e.g.,sequentialreports,invoices,legalfilings)toenablecross-documentreasoning. Thecorpuscoversmultiple
+domains,includingFinancial,Legal,Government,Commercial,andPersonaldomains.
+AnnotationProcess. Thebenchmarkrequiredover1,200hoursofprofessionalannotationwork. 100%ofquestions
+andanswersarehuman-generatedbytrainedannotatorswhowererestrictedfromusingexternalknowledge. Allanswers
+arestrictlygroundedintheprovidedPDFs. Amulti-stagepipelinewasemployed: (1)apilotphasewhere20candidate
+annotatorswereevaluatedonidenticaldocuments,(2)automatedverificationusingGPT-5withoracleevidencetoflag
+potential errors, (3) manual review by domain experts from the authors' institution, and (4) final corrections based on
+baselinemodelandhumanperformanceanalysis.
+BiasesandLimitations. ThemajorityofdocumentsoriginatefromtheUnitedStates. ThedatasetisinEnglishonly.
+Guessabilityanalysisshowsthat9-15%ofanswers(dependingonthemodel)canbecorrectlyguessedwithoutdocument
+access, with approximately 3% attributable to random chance on binary questions and the remainder to training data
+contaminationfrompublicdocuments.
+PersonalandSensitiveInformation. Thecorpusreferencespublicrecords,whichmaycontainpersonallyidentifiableinformation. Thebenchmarkitselfreleasesonlyquestions,answers,anddocumentidentifiers-notthedocumentsthemselves.
+Usersshouldexerciseappropriatecarewhenhandlingretrieveddocumentsandfollowapplicableinstitutionalguidelinesfor
+workingwithsensitivecontent.
+LicensingandDataAccess. Allhuman-generatedquestion-answerpairsandevidencemappingsarereleasedunderthe
+CCBY-NC4.0license. Additionally,thebenchmarkprovidesacuratedindexofdocumentshostedonDocumentCloudby
+third-partyorganizations(e.g.,newsoutlets,governmentagencies,non-profits). Theauthorsdonotown,host,orcontrol
+DocumentCloudorthereferenceddocuments.
+MultimodalAgenticDocumentQA
+A.2.DesiredProperties
+WeformallydefineAgenticDocumentCollectionVisualQuestionAnswering,ataskrequiringsystemstonavigate,retrieve,
+reasonover,andaggregateinformationfromheterogeneousdocumentcollections.
+DefinitionA.1(DocumentCollection). LetC ={D ,D ,...,D }beacorpusofN multi-pagePDFdocuments. Each
+1 2 N
+documentD = (p ,p ,...,p )isanorderedsequenceofpages,whereeachpagep comprisesvisualcontent
+i i,1 i,2 i,|Di| i,j
+(layout,tables,figures)andtextualcontentT(p )representingitstokensequence.
+i,j
+Definition A.2 (Agentic Document Collection VQA). Given a corpus C and a natural language query q, the task is to
+produce:
+1. Ananswera=(t ,t ,...,t )asasequenceoftokens,and
+1 2 k
+2. AminimalevidencesetE = {p ,...,p } ⊆ P(C),whereP(C) = (cid:83)N {p }|Di| denotesallpagesinthe
+i1,j1 im,jm i=1 i,j j=1
+corpus,andtheevidencesetcontainsmpagesfrompotentiallydistinctdocuments.
+ThetaskischaracterizedbysixformalpropertiesthatdistinguishitfromstandarddocumentQA:
+DesiredProperty1: Extractive. Answertokensaredrawnfromtheevidencepagesratherthangeneratedabstractly:
+∀t ∈a:∃p∈E suchthatt ∈T(p) (1)
+ℓ ℓ
+Thispermitsanswersspanningmultiplepagesordocuments,butrequireslexicalgrounding.
+DesiredProperty2: Multi-Hop. Theevidencesetmaycomprisemultipledisjointpagesrequiringaggregation:
+|E|≥1, with|E|>1formulti-hopquestions (2)
+Multi-hopquestionsfurtherdecomposeintocross-page(evidencewithinonedocument:∃D :E ⊆D )andcross-document
+i i
+(evidencespanningdocuments: ∄D :E ⊆D ).
+i i
+Desired Property 3: Closed-World. The answer must be derivable solely from C, independent of parametric world
+knowledgeθencodedinthemodel:
+a=f(C,q) wheref usesnoknowledgefromθ\C (3)
+Anyanswerleveragingexternalfactsconstitutesahallucination.
+DesiredProperty4: GroundedAttribution. Theanswermustbefaithfullyattributedtotheevidenceset:
+ENTAILS(E,a)=True ∧ E isminimal (4)
+whereminimalityrequiresthatnopropersubsetE′ ⊂E sufficestoderivea.
+DesiredProperty5: Agentic. Thetaskrequiresiterativeretrievalandreasoningthatcannotbesolvedinasingleforward
+pass:
+∄queryq′ : RETRIEVE(q′,C)⊇E inonestep (5)
+Thisnecessitatesplanning(decomposingqintosub-queries),navigation(iteratingretrievalbasedonintermediatefindings),
+andaggregation(synthesizingpartialanswersacrossE).
+UnlikestandardRAGbenchmarkswhererelevantcontextsareoftenprovidedoreasilyretrievablevialexicaloverlap,our
+formulationimposesthat(1)informationisoftenencodedinnon-textualmodalitiesorlayoutstructures(seeFigure1),(2)
+singleretrievalstepsareinsufficient,and(3)thesystemmustfunctionundertheclosed-worldassumption.
+MultimodalAgenticDocumentQA
+Desired Property 6: Visual. The evidence contains information encoded in non-textual modalities-such as spatial
+layout,tablestructure,figures,orgraphicalelements-thatisnecessaryforderivinga:
+∄a′ : ENTAILS(T(E),a′)∧EQUIV(a′,a) (6)
+whereT(E)denotesthelinearizedtextualcontent(e.g.,OCRoutput)strippedofvisualstructure.Thispropertydistinguishes
+tasksrequiringgenuinemultimodalcomprehensionfromthosesolvableviatextextractionalone.
+A.3.BenchmarkDesignDecisions
+Westructurethedevelopmentofthisbenchmarkarounddesigndecisionsthatdistinguishagenticreasoningfromstandard
+QA.Table5summarizesthisdesignspace,highlightingourspecificchoices.
+Table5.Designspaceforagenticdocumentbenchmark.Wemapthebroaderlandscapeofdocumentevaluationchoices(center)against
+thespecificinstantiationinourbenchmark(right),emphasizingstrictPDF-grounding,multi-hopreasoning,andefficiency-awaremetrics.
+Axis ChoicesintheDesignSpace OurDecisioninthisBenchmark
+Corpusmodality&source Singlewebpages;HTMLdumps;synthetic Real-world, publicly hostable multi-page
+PDFs;scanneddocumentsonly;born-digital PDFssourcedfromDocumentCloud;mixture
+only;mixtureofimagesandtext;privatevs. ofscannedanddigitaldocuments;benchmark
+publiccorpora. definitionisagnostictowhethersystemsuse
+images,OCR,orlayout-awaremodels.
+Domain&layoutdiversity Single domain (e.g., finance); few related Broad coverage of real-world domains (fidomains;broadopen-domain;homogeneous nancial,legal,government,commercial,perlayouts(formsonly);mixednarrative+tables; sonal)withheterogeneouslayouts,asdetailed
+highlyheterogeneousvisualstructure. in§B.1.
+Documentgranularity Singleisolateddocument;smallsetofthemat- Each query is posed over a collection of
+icallyrelateddocuments;largecorpus/collec- PDFs,encouragingcross-documentandcrosstionperquery;streamingdocuments. pagereasoningratherthansingle-document
+lookup.
+Groundingassumptions World-knowledge allowed; mixed (doc + StrictlyPDF-grounded:byconstruction,evworld);purelycorpus-grounded;open-ended ery question is answerable using the progenerationwithoutevidencerequirement. videddocumentsalone;useofexternalworld
+knowledge is unnecessary and treated as a
+sourceofhallucination.
+Questionsource&semantics Fully human-authored; LLM-generated; Fullyhuman-authoredquestionscreateddihuman-edited LLM generations; templated rectlyoverthePDFs,withexplicitcontrolto
+questions; questions that can be answered ensure∼20%multi-hopcases(cross-pageor
+from a single span vs. questions requiring cross-document)andstrictPDF-grounding.
+multi-hopreasoning.
+Answerformat Free-form natural language; single spans; Short, concrete answers: spans, booleans,
+multiplespans;sets/lists;numericorboolean lists,andnumericvalues.Answersarereprevalues;open-endedrationales. sentedassmallsetsofstrings(possiblymultielementforlistquestions).Norationalesare
+requiredintheofficialmetric.
+Evidencegranularity No evidence labels; document-level only; Minimalpage-levelevidencesets,including
+page-level; finer-grainedregions(bounding cross-document and cross-page hops. For
+boxes, table cells, tokens); full rationale multi-hopquestions,theannotationcaptures
+chains. thefullreasoningpathbytaggingallpages
+contributing to the final answer. We deliberatelychosepage-leveloverbounding-box
+annotations(see§A.3).
+Continuedonnextpage
+MultimodalAgenticDocumentQA
+Table5(continued).Designspaceforagenticdocumentbenchmarksandourinstantiation.
+Axis ChoicesintheDesignSpace OurDecisioninthisBenchmark
+Multi-hopdefinition No explicit notion of "hop"; only single- Multi-hopquestionsexplicitlyrequirecomcontext questions; soft multi-hop (multiple bining information across pages or docurelevantsnippetsbutnotrequired); explicit ments.Weannotatetheminimalsetofpages
+hopswithannotatedpaths. required to solve the question and use this
+todefineourprincipledsplitsandmulti-hop
+subset.
+Difficultycontrol Noexplicitnotionofdifficulty;manualtag- Difficultyestimatedfrommodelresponsesusging;heuristics(e.g.,answerlength);psycho- ingClassicalTestTheory.Weselectdev/test
+metricmethodsforsubsetselection;nohard subsetstopreservediscriminationandinclude
+itemspreserved. adedicatedpoolofharditemstoavoidprematuresaturation.
+Answercorrectnessmetrics Exact-match accuracy; token-level F1; Task-optimized LLM-as-a-Judge. We
+ROUGE/bleu; normalized edit distance foundstandardstring-matchingmetrics(like
+(ANLS);LLM-as-a-judgesemanticscoring; ANLS*) too strict. Our judge is calibrated
+numeric tolerance-aware metrics; per-type tomaximizeagreementwithhumansandfocustommetrics. cusesonsemanticequivalenceratherthansurfaceformatting.
+Attribution&retrievalmetrics No grounding metrics; recall@k on docu- Two F1-style metrics on the final citations:
+ments;MRR/NDCGbasedonretrievallogs; DocF1(didthesystemidentifythecorrect
+F1 over documents; F1 over pages; span- documents?) and Page F1 (did it cite the
+leveloverlap;learnedentailment/attribution minimalsetofgoldpages?).
+scores.
+Faithfulnessmetrics Separate textual entailment models; LLM We rely on the benchmark design (PDFjudgescheckingthatanswersaresupported; onlysolvability)andPageF1asaproxyfor
+combined answer+evidence scores; human groundedness: a correct answer with low
+auditsonsubsets. PageF1isflaggedasunfaithful.
+Efficiencymetrics Wall-clocklatency;FLOPsorenergy;number Step Counts (number of tool calls), in our
+ofretrieveddocuments;numberoftoolcalls; analyses supplemented by Inference Cost
+number of model invocations; input/output (USD).Wepenalizearchitecturesthatincur
+tokencounts. catastrophicoverheadformarginalaccuracy
+gains.
+Calibration/processmetrics StandardECE/Brierscoreusingexplicitcon- TheKuiperstatistic,derivedfromcumulative
+fidences;risk-coveragecurves;abstainrates; differencecurves,toquantifyeffortcalibratrajectory-levelmetrics(e.g., numberofre- tion.Itmeasureswhetheranagent'sdecision
+triesvs.success). toinvestmorecompute(steps)correlateswith
+success,orifitsuffersfromdiminishingreturnsinlongtrajectories.
+Datasplits&trainingsignal Evaluation-onlybenchmark;publictrain/dev, Publictrainanddevsplitswithfullannotahiddentest;additionalunlabeledcorpora;RL- tions, plus a CTT-selected held-out test set
+readylogs;challengesetsonly. served via a test server. We explicitly designthetrainsplittosupportRLandpromptsearchonrealisticagenttraces,whilekeeping
+thetestsethidden.
+Contamination&governance No contamination checks; ad-hoc manual We commit to semantic versioning of the
+checks;explicitURL/document-leveloverlap datasetandmetrics,andahiddentestserver
+analysis;rotatinghiddentests;noleaderboard with periodic refreshes. Submissions must
+policyvs.strictdisclosure. disclosemodels,trainingdatastatements,and
+computebudgets.
+RationaleforPage-LevelEvidence. Unlikebenchmarkswithbounding-boxorregion-levelannotations(e.g.,ViDoRev3,
+FinRAGBench-V),weannotateatpagelevel. Ourpilotstudyshowedhighinter-annotatoragreementatthisgranularity,
+whichalsoalignswithhowhumansnavigatedocumentsandhowretrievalsystemsoperate.Foragenticevaluation,page-level
+evidencesufficestoverifycorrectnavigationwithoutintroducingannotationnoise;finerlocalizationcanbedelegatedto
+downstreamgroundingmodels.
+MultimodalAgenticDocumentQA
+B.DocumentCorpus
+B.1.DomainsandCategories
+Thebenchmarkreliesonreal-worldPDFssourcedfromDocumentCloud. Unlikedatasetsfocusedsolelyonacademic
+papersorfinancialreports,ourcorpusincludeshighvariabilityinlayout,OCRquality,andvisualdensity. Table6liststhe
+primarydocumentcategoriespresentinthetestset.
+Table6. Detailedstatisticsperdocumentcategory. Categoriesaresortedbydocumentcount. Thecorpusexhibitshighvariancein
+documentlength,fromsingle-pagepostersto859-pageexpensedocument.
+Category Docs Pages Mean Med. Max
+AnnualReport 30 1,754 58.5 33 222
+990Form 20 1,890 94.5 36 697
+Verdictform 20 143 7.2 3 46
+News,Journal 20 446 22.3 10 80
+Expenses 20 914 45.7 2 859
+Lessonplan 20 247 12.3 10 46
+ToxicologyReport 19 77 4.1 4 7
+Inspectionreport 19 227 11.9 4 102
+Performancereview 19 87 4.6 4 9
+Terminationletter 18 50 2.8 2 10
+Financialdisclosurereport 17 111 6.5 7 9
+FinancialStatement 16 794 49.6 46 163
+Form8-K 16 165 10.3 3 85
+IncidentReport 15 131 8.7 3 40
+OtherTaxFiling 15 208 13.9 6 70
+Guide 15 422 28.1 20 124
+MarketReport 15 435 29.0 13 139
+Arrestreport 15 65 4.3 4 10
+Sustainabilityreport 15 595 39.7 41 54
+Searchwarrant 14 148 10.6 8 27
+Climateactionplan 14 550 39.3 37 80
+Missingpersonposter 14 15 1.1 1 2
+Meetingagenda 14 44 3.1 2 11
+FormDOI 14 15 1.1 1 2
+Catalog 13 573 44.1 34 248
+Publicrecordsrequest 13 23 1.8 2 4
+Contactlist 13 224 17.2 2 177
+CampaignFinanceReport 13 399 30.7 33 84
+Resume 13 31 2.4 2 3
+Warrant 12 125 10.4 5 41
+Notification 12 25 2.1 2 6
+Fine 11 88 8.0 2 57
+Restaurant 11 48 4.4 3 12
+Yearbook 11 1,046 95.1 69 248
+DataSheet 11 77 7.0 4 21
+Contract,ServiceAgreement 11 76 6.9 4 18
+Auditreport 10 624 62.4 48 164
+AnnualFirearmsDischargeReport 10 720 72.0 78 102
+Manual 10 463 46.3 15 318
+Patent 10 132 13.2 14 31
+Employeehandbook 10 624 62.4 61 103
+Letter 10 75 7.5 6 23
+Settlement 10 670 67.0 8 533
+Budget 10 958 95.8 31 330
+Buildingpermit 10 115 11.5 2 44
+Invitation 10 16 1.6 1 4
+Leaderboard,Ranking 10 25 2.5 1 8
+Poster 10 10 1.0 1 1
+DamageReport 10 242 24.2 3 205
+Contest 10 25 2.5 2 5
+Cropreport 10 218 21.8 19 40
+Continuedonnextpage
+MultimodalAgenticDocumentQA
+Table6(continued)
+Category Docs Pages Mean Med. Max
+Biography 10 30 3.0 2 11
+Guaranty 9 79 8.8 7 22
+CaseLog 9 43 4.8 4 10
+ConferenceAgenda 9 32 3.6 3 9
+Marriage,Birth 9 10 1.1 1 4
+NDA 9 54 6.0 4 23
+JobOffer 8 21 2.6 2 7
+Specification 8 302 37.8 12 139
+Speedcamera 6 13 2.2 1 5
+Diploma,Award,Certificate 6 8 1.3 1 3
+Flightplan 5 15 3.0 1 8
+SECfiling 4 827 206.8 189 274
+B.2.LayoutElementDensityHeatmap
+Tovisualizethedistributionoflayoutelementsacrossdocumentcategories,weconstructaheatmapwithper-elementz-score
+normalization.
+Foreachdocument, weusetheGranite-DoclingMLLM(Livathinosetal.,2025)toextractlayoutelementsfromPDF
+pages. Themodelidentifiesvariouselementtypesincludingtables,figures,lists,headers,textblocks,checkboxes,andother
+structuralcomponents.
+Foreachdocumentcategorycandelementtypee,wecomputetheelementdensityastheaveragenumberofelementsper
+page:
+(cid:80)
+n
+d = p∈Pc p,e (7)
+c,e |P |
+c
+whereP isthesetofallpagesincategoryc,andn isthecountofelementtypeeonpagep.
+c p,e
+Toenablemeaningfulcomparisonacrosselementtypeswithdifferentbaselinefrequencies,weapplycolumn-wise(perelement)z-scorenormalization. Foreachelementtypee,wecompute:
+d −µ
+z = c,e e (8)
+c,e σ
+e
+whereµ = 1 (cid:80) d isthemeandensityacrossallcategories,andσ isthecorrespondingstandarddeviation. This
+e |C| c∈C c,e e
+normalizationcenterseachelement'sdistributionatzero,allowingustoidentifycategorieswithunusuallyhighorlow
+presenceofspecificelementsregardlessoftheelement'soverallfrequency.
+The resulting z-scores are displayed using a diverging colormap where cyan indicates below-average density (z < 0),
+whiteindicatesaveragedensity (z ≈ 0), andpinkindicates above-averagedensity(z > 0). Cell annotationsshow the
+original density values d (elements per page), while the color intensity reflects the magnitude of deviation from the
+c,e
+element-specificmean. Elementlabelsincludethecorpus-widemeanµ forreference.
+e
+MultimodalAgenticDocumentQA
+Figure11. Per-categorylayoutelementdensity. Cellvaluesindicateaverageelementsperpage; colorsshowz-scorenormalized
+deviationfromtheelement-typemean.(Continuedonnextpage...)
+MultimodalAgenticDocumentQA
+Figure11. Per-categorylayoutelementdensity(Continued). CategoriessuchasYearbookandNews,Journalexhibithighpicture
+density,while990FormandBudgetshowelevatedtablepresence.Text-heavycategorieslikeSettlementandPatentdisplayhightextblock
+countsbutminimalvisualelements.Thisheterogeneityensuresthebenchmarktestsmodelrobustnessacrossdiverselayoutstructures.
+MultimodalAgenticDocumentQA
+C.AnnotationsandHumanBaseline
+C.1.AnnotationGuidelines
+AnnotatorsweretaskedwithcreatingQuestion-Answer(QA)pairsgroundedstrictlyintheprovidedPDFcollections. The
+coreconstraintswere:
+• Questionsmustbeunanswerablewithoutthedocuments(e.g.,forbiddinggenericfactslike"Whatisthecapitalof
+Poland?").
+• Questionsmustbeunambiguouswithoutself-referentiallocationcues.
+- ✗Bad: "Whatisthetitleofthisdocument?" (Ambiguousinacollection).
+- ✗Bad: "Whatistheemailonpage4?" (Trivializesretrieval).
+- ✓Good: "WhatistheemailaddressofSiteDirectorWilliamWood?" (Assumesuniquenessinthecorpus).
+• ThequestionmustbeanswerableusingthetextorvisualelementspresentinthePDFs.
+Foreveryquestion,annotatorsprovidedtheMinimalEvidenceSet,i.e.,thespecificfilenamesandpagenumbersrequiredto
+answerthequestion. Ifaquestionrequirescomparingtwomenustofindthe"mostexpensivespaghetti,"pagesfromboth
+menusmustbelistedasevidence,eveniftheanswercomesfromonlyone. Ifevidenceappearsmultipletimes(duplication),
+onlythemostplausibleorfirstoccurrenceisnoted.
+Annotatorswereinstructedtoensure∼20%ofquestionsrequiredMultiplePiecesofEvidence. Thesequestionsfallinto
+specificreasoningcategories:
+1. Bridging. TheanswertopartAisrequiredtofindpartB.
+Example: "Whatisthenationalbirdofthenationthathasanegativecarbonfootprint?" (Requiresfinding
+thenationwiththefootprintinDocA,thenfindingitsbirdinDocB).
+2. Comparison. Aggregatingvaluesacrossdocuments.
+Example: "WhichcountryhaswonmoresoccerWorldCups: ArgentinaorBrazil?"
+3. CommonProperties. Intersectionofattributes.
+Example: "WhoistheonlypersontowinanOlympicmedalandaNobelprize?"
+C.2.HumanBaselineCollection
+ToestablishameaningfulupperboundonbenchmarkperformanceandenablebehavioralcomparisonwithLLM-based
+agents,wecollectedhumanbaselineannotationsonthefulltestset(500questions). Unliketypicalhumanevaluationsetups
+whereannotatorshaveunrestrictedaccesstodocuments,ourhumanparticipantsusedthesameretrievalinterfaceasour
+agenticbaselines-akeyword-basedsearchengine. Thisdesignchoiceallowsustocomparenotonlyansweraccuracybut
+alsoretrievalstrategiesandsearchefficiencybetweenhumansandAIagents.
+WedevelopedacustomwebapplicationusingStreamlitthatprovidesannotatorswith:
+• AWhoosh-based3BM25searchengineoperatingatthepagelevel,supportingBooleanoperators(AND,OR,NOT),
+phrasematchingwithquotes,andwildcardsearches(Figure12).
+• AninteractivePDFviewerwithpagenavigation(first,previous,next,last,jump-to-page)allowingannotatorstoexplore
+documentsbeyondtheinitialsearchresults.
+• Abilitytomarkspecificpagesasevidencesupportingtheanswer.
+MultimodalAgenticDocumentQA
+Figure12.Mainannotationinterface.Thequestionappearsatthetop(bluebox),followedbythesearchbar.Searchresultsdisplayas
+interactivePDFpageswithnavigationcontrols.Thesidebarshowsprogress,selectedcitations,andsearchhistory.
+A key feature of our interface is comprehensive trajectory logging. For each question, we record: (1) Start and end
+timestamps,enablingper-questiontimemeasurement. (2)Everysearchquerywithtimestamp,numberofresultsreturned,
+andthespecificpagesretrieved. (3)Alldocumentnavigationactions(viewingpages,scrollingthroughdocuments)with
+timestamps. (4)Finalevidencepagesselectedbytheannotator.
+Thisdetailedloggingenablesanalysisbeyondaccuracy,includingaveragenumberofsearchesperquestion,timespentper
+question,retrievalprecision(whetherhumansfindevidencepagesfasterthanagents),searchquerypatternsandreformulation
+strategies.
+AnnotationProtocol. The500testquestionsweredividedinto20batchesof25questionseach. Eachbatchwasassigned
+aconstellationcodename(Aquarius,Orion,Phoenix,etc.) foranonymizedtracking. Annotatorsreceivedthefollowing
+instructions:
+1. Readthequestioncarefully.
+2. Usethesearchinterfacetofindrelevantdocumentpages. ThesearchoperatesonOCR-extractedtextandsupports:
+• Multiplekeywords: mountaincarfindspagescontainingbothwords
+• Booleanoperators: mountainANDcar,mountain OR car
+• Exactphrases: "annualreport"matchestheexactphrase
+• Wildcards: car*matches"car","cars","carriage",etc.
+3. Navigatewithindocumentstofindsupportingevidence. Searchresultsshowindividualpages, butannotatorscan
+browsethefulldocument.
+4. Markrelevantpagesascitationsusingthe"AddasCitation"button.
+5. Entertheanswerinthetextbox. Forquestionswithmultipleanswers,entereachonaseparateline.
+Thehumanbaselineinterfacewasintentionallydesignedtomatchthecapabilitiesavailabletoouragenticsystems. This
+controlledsetupenablesfaircomparisonofretrievaleffectivenessandansweraccuracybetweenhumansandLLM-based
+agentsoperatingunderidenticalconstraints.
+3https://github.com/whoosh-community/whoosh
+MultimodalAgenticDocumentQA
+C.3.SampleQuestions
+WepresentafewexamplestoillustratethereasoningcomplexityrequiredbyMADQA.Successonourbenchmarkrequiresidentifyingrelevantdocumentsamonghundredsofdistractorsandswitchingfluidlybetweenmodalities-reading
+handwriting,interpretingcolor-codedtables,andaggregating
+dataacrossdisjointfiles.
+WhichstatehadthehighestscoreintermsofPolicies&ProgramsintheBicycleFriendlyState2015Ranking? Theagent
+mustidentifythecorrect"2015Ranking"documentamongsimilar
+reportsoryearbooks. Theanswer"Minnesota"cannotbefound
+viatextsearchbecausethevalueisencodedpurelythroughcolor
+Whichqualitystandardsbenchmark(s)forpreschoolprograms
+intensity(darkblueindicating"80-100").
+didDelawaremeetinthe2019-2020schoolyearthatitdidnot
+meetin2014-2015?TheagentmustretrievetwoStatePreschool
+Yearbookeditionsfromdifferentyears,locatetherelevantbenchmarks tables in each, interpret the associated checkboxes to determinewhichstandardsweremet,andcomparethemtoidentify
+newlymetstandards.
+MultimodalAgenticDocumentQA
+HowmanydayswasthesaleofpianosattheNewVirginia
+Hotelplannedtolast? Thetargetinformationisburiedwithin
+a dense, multi-column newspaper layout, likely surrounded by
+hundredsofunrelatedarticlesandadvertisementsinthecorpus.
+Standardchunkingalgorithmsmayfailtocorrectlysegmentthe
+advertisementcolumnfromadjacentnewsstories.
+Whichvehiclesoffermultipleupholsterydesigns? Theagent
+mustretrieveseparateproductbrochuresfromalargecollection
+andcompareinteriorspecificationtablesacrossdocumentstoidentifywhichvehicleslistmorethanoneupholsteryoption.
+HowmuchwasspentonFoodanddrinksatBar101during
+theevent?Themodelmustfirstdeterminathatthisinformation
+isinoneofthefinancialstatementswithinthecollection. Once
+retrieved,thetaskinvolvesreadinghandwrittenentriesinatable
+toextractthecorrectmonetaryvalue.
+MultimodalAgenticDocumentQA
+D.PrincipledSplitsCreation
+ThisappendixdetailstheClassicalTestTheory(CTT)methodologyusedtosplitthecompleteevaluationdataset(N =2250)
+into the Test (N = 500) and Development (N = 200) subsets (the Train set consists of questions rejected from the
+DevelopmentandTestsets). Toensurethesubsetisnotbiasedtowardasinglearchitecture,wecomputeditemstatistics
+usingpredictionsfrom16distinctmodels(Table7). Thesemodelscoveradiverserangeofproviders,sizes,andcapabilities.
+Table7.ModelsusedforItemResponseAnalysis(SortedbyPerformance)
+Rank Provider ModelName ModelID ANLS*
+1 Google Gemini3ProPreview gemini-3-pro-preview 0.688
+2 Anthropic Claude4.5Sonnet claude-sonnet-4-5-20250929 0.681
+3 OpenAI GPT-5 gpt-5-2025-08-07 0.647
+4 ZhipuAI GLM-4.6V zai-org/GLM-4.6V 0.616
+5 Anthropic Claude4.5Haiku claude-haiku-4-5-20251001 0.601
+6 Alibaba Qwen3-VL-235BThinking Qwen/Qwen3-VL-235B-A22B-Thinking 0.598
+7 Alibaba Qwen3-VL-32BThinking Qwen/Qwen3-VL-32B-Thinking 0.594
+8 Google Gemini2.5Pro gemini-2.5-pro 0.590
+9 Google Gemini2.5Flash gemini-2.5-flash 0.576
+10 OpenAI GPT-5Mini gpt-5-mini-2025-08-07 0.550
+11 OpenAI GPT-5Nano gpt-5-nano-2025-08-07 0.548
+12 Alibaba Qwen3-VL-8BThinking Qwen/Qwen3-VL-8B-Thinking 0.530
+13 Alibaba Qwen3-VL-235BInstruct Qwen/Qwen3-VL-235B-A22B-Instruct 0.516
+14 ZhipuAI GLM-4.6VFlash zai-org/GLM-4.6V-Flash 0.444
+15 OpenAI GPT-4.1Nano gpt-4.1-nano-2025-04-14 0.302
+16 Alibaba Qwen3-VL-32BInstruct Qwen/Qwen3-VL-32B-Instruct 0.300
+Foreachitemj inthedataset,wecalculatetwokeymetrics:
+• ItemDifficulty(p )Definedasthemeanaccuracyofallmodelsonitemj. Alowerp-valueindicatesaharderquestion:
+j
+p = 1 (cid:80)M X . (Notethat"p-value"isusedheretodenoteisdistinctfromthestatisticalp-valueusedinhypothesis
+j M i=1 ij
+testingtomeasuresignificance. WeareconsistentwithhowCrocker&Algina(1986)usestheterm.)
+• ItemDiscrimination(r )Weusethepoint-biserialcorrelationtomeasurehowwellitemj distinguishesbetween
+pbis
+strongandweakmodels. Topreventautocorrelation,weusethecorrectedtotalscore,subtractingtheitem'sownscore
+(cid:80)
+fromthetotalsum:r =Corr(X ,S )where S = X .
+pbis,j ·,j −j −j k̸=j ·,k
+Ourselectionstrategybalancestheneedforhighsignal(highdiscrimination)withtheneedforfutureheadroom(hard
+items). Weselectitemswithp≤0.1(solvedby≤10%ofmodels)toformtheSentinelPool. Theseitemstypicallyhave
+lowvariance(andthuslowdiscriminationmetrics)butarecrucialformeasuringfrontiercapability. Theremainingbudgetis
+filledbyitemswithp>0.1. Westratifytheseitemsinto9uniformdifficultybins(e.g.,0.1<p≤0.2,0.2<p≤0.3,etc.).
+Withineachbin,wegreedilyselectitemswiththehighestdiscrimination(r )tomaximizethesubset'spredictivepower.
+pbis
+300
+100
+0.00 0.25 0.50 0.75 1.00
+p-value (Difficulty)
+tnuoC
+Full Dataset (n=2311) Test (n=500) Dev (n=200)
+Mean=0.58 Mean=0.45 Mean=0.44
+0.00 0.25 0.50 0.75 1.00 0.00 0.25 0.50 0.75 1.00
+p-value (Difficulty) p-value (Difficulty)
+Figure13.Distributionofitemdifficulties(p-values)intheFullDatasetvs.theSelectedTestSubset.Theselectionstrategybooststhe
+densityof"Hard"and"Sentinel"itemstopreventingsaturation.
+MultimodalAgenticDocumentQA
+E.ConstructValidityAnalyses
+E.1.LexicalOverlapvs. Reasoning
+ToverifythatMADQAcannotbesolvedthroughsimplekeywordmatching(i.e.,"Ctrl+F"strategies),weconducteda
+systematicn-gramanalysisacrosstheentirecorpus.
+Foreachquestion,weextractn-grams(n∈{1,2,3})fromthequestiontextafterremovingstopwordsandcommonquestion
+words(e.g.,"what,""which,""how,""describe"). Wethensearchthefullcorpus(18,619pages)forpagescontainingthese
+n-gramsandmeasure: (1)Pagesmatched. Howmanycorpuspagescontainatleastonequestionn-gram. (2)Precision.
+Whatfractionofmatchedpagesaregoldevidencepages. (3)Recall. Whatfractionofgoldevidencepagesareretrieved.
+Table8.Lexicalsolvabilityanalysis.Unigramsandbigramsmatchtoomanypages(lowprecision),whiletrigramsmisshalfthequestions
+entirely(lowrecall).Non-gramsizeenableseffectiveCtrl+F-basedretrieval.
+N-gram MedianPages Precision Recall
+Unigram 4,125 0.03% 99%
+Bigram 24 2.6% 86%
+Trigram 1 1.9% 51%
+ThisvocabularygapbetweenquestionsandevidenceconfirmsthatsolvingMADQArequiressemanticunderstandingto
+bridgethelexicalmismatch,notjustpatternmatching. Aneffectivesystemmustreasonaboutwhatinformationisneeded
+andformulateappropriatesearchstrategies-thecorecapabilityourbenchmarkisdesignedtoevaluate.
+E.2.ParametricKnowledgevs. Grounding
+Before attributing model performance to document understanding, we must establish what fraction of answers can be
+"guessed"withoutanydocumentevidence. Thisbaselinecapturestwophenomena: (1)randomchanceonconstrained
+answertypes,and(2)trainingdatacontaminationwheremodelshavememorizedfactsfrompublicdocumentsseenduring
+pre-training.
+Wepromptedsixfrontiermodelstoansweralltestquestionswithoutshowinganydocumenttextorimages(Prompt1). The
+promptexplicitlyinstructedmodelstoguessevenwhenuncertain,selectingrandomlyforyes/noorbinarychoicequestions.
+WethenclassifiedeachcorrectlyguessedanswerintothreecategoriesusingGPT-5-mini(Prompt2):
+• Yes/No. Questionswithbinaryyes/noanswers(50%randombaseline)
+• OtherBinaryChoice. Questionsexplicitlylistingtwooptions,e.g.,"Whichislarger: AorB?"(50%randombaseline)
+• Memorization. Allotherquestionsrequiringrecallofspecificfacts,names,dates,orvalues
+AsshowninTable9,approximately3%ofquestionswouldbeansweredcorrectlybychancealone,stemmingfrom50%
+accuracyonyes/noandbinarychoicequestions. However,theactualcorrectrateonthesequestiontypesexceeds50%,
+indicatingthatmodelsalsoknowmanyyes/noandbinaryanswersfromtrainingdata.
+Table 9. Answer guessability analysis across frontier models. "Correct" shows questions answered correctly without evidence.
+Categoriesshowthebreakdownofcorrectguessesbyquestiontype."Random"estimatestheexpectedcontributionfrom50%chanceon
+yes/noandbinaryquestions;"Contam."showspurememorizationquestions(facts,names,values)aspercentageoftestset.
+Model Correct Yes/No Binary Memorized Random Contam.
+ClaudeHaiku4.5 45(9.1%) 16(35.6%) 16(35.6%) 13(28.9%) 3.2% 2.6%
+ClaudeSonnet4.5 53(10.7%) 16(30.2%) 13(24.5%) 24(45.3%) 2.9% 4.8%
+Gemini2.5Flash 48(9.7%) 13(27.1%) 14(29.2%) 21(43.8%) 2.7% 4.2%
+Gemini2.5Pro 65(13.1%) 15(23.1%) 17(26.2%) 33(50.8%) 3.2% 6.7%
+GPT-5 75(15.2%) 19(25.3%) 15(20.0%) 41(54.7%) 3.4% 8.3%
+GPT-5Mini 47(9.5%) 14(29.8%) 13(27.7%) 20(42.6%) 2.7% 4.0%
+Average 55.5(11.2%) - - - 3.0% 5.1%
+MultimodalAgenticDocumentQA
+GuessingPrompt
+Youareparticipatinginananswerpredictionexperiment.Youwillbegivenaquestionaboutadocument,butyouwillNOTsee
+thedocumentitself. Yourtask:PREDICTorGUESSwhattheanswermightbe,basedsolelyonthequestiontext.
+CriticalRules
+1. YouMUSTalwaysprovideananswer-neverrefuseorsayyoucannotanswer.
+2. Foryes/noquestions:Pickonerandomly(YesorNo).
+3. Forspecificvalues(dates,names,numbers):Makeyourbestguessbasedoncommonpatterns.
+4. Formultipleformats:Guessthemostlikelyformat.
+5. Forlist-typequestions:Provide1-3plausibleitems.
+OutputFormat
+- Returnalistofvalues.
+- Ifthereisasingleanswer,returnaone-elementlist.
+- Iftherearemultipleitems/entities,returnmultipleelements.
+- Useasfewwordsaspossible.
+- DoNOTexplainyourreasoning-justprovidetheanswer.
+RememberThisisaguessingexperiment.Thereisno"wrong"answer-wewanttoseewhatpredictionsarepossiblefromthe
+questionalone.
+Prompt1.Guessingpromptforparametricknowledgeanalysis.Modelsareinstructedtopredictanswerswithoutdocumentevidenceto
+measuretrainingdatacontamination.
+The"Memorized"columnshowsquestionsrequiringspecificfactualrecall(names,dates,values). However,totalcontaminationishigher: someyes/noandbinaryquestionsarealsoansweredfromknowledge,notchance. Weestimatetotal
+knowledge-basedansweringatapproximately8%(totalguessabilityminusrandombaseline),withGPT-5exhibitingthe
+highestcontaminationat11.8%(15.2%total−3.4%random).
+The9-15%guessability(varyingbymodel)representsanupperboundon"free"performance-answersobtainablewithout
+document understanding. Decomposing this: ∼3% from random chance on constrained answer types, and ∼8% from
+trainingdatacontamination. Whenmodelsachieve85%+accuracywithdocumentevidence,theadditional70+percentage
+pointsrepresentgenuinedocumentcomprehensionbeyondpriorknowledge.
+ExamplesofMemorizedFacts. ThefollowingquestionswereansweredcorrectlybyGPT-5purelyfromtrainingdata:
+• "The17,082metrictonsofSO2emissionsreportedbyTVAin2020were99%belowthepeaklevelfromwhichyear?"
+→1977
+• "InwhatyearwasChickenAnnie'sOriginalestablished?" →1934
+• "WhowastheSpecialInspectorGeneralforAfghanistanReconstructionin2014?" →JohnF.Sopko
+• "WhatisthefeethattheU.S.DepartmentofTreasurychargesfordebtcollection?" →30%
+• "WhatdoesMOTCAstandfor(AfghanMinistries)?" →MinistryofTransportandCivilAviation
+Theseexamplesdemonstratethatpublicdocuments(governmentreports,courtfilings,annualreports)inourbenchmark
+werelikelyindexedonthewebandincorporatedintomodeltrainingdata.
+MultimodalAgenticDocumentQA
+QuestionClassificationPrompt
+Youareclassifyingquestionsforananalysisofanswerguessability.
+CategoriesClassifyeachquestionintoONEofthesecategories:
+1. "yes no"-QuestionsthathaveYesorNoastheanswer.
+- Examples:"DoesXofferY?","IsXgreaterthanY?","DidXhappen?"
+2. "binary choice"-Questionsaskingtochoosebetweenexactly2optionsmentionedinthequestion.
+- Examples:"Whichislarger:AorB?","IsitXorY?","DidtheychooseoptionAoroptionB?"
+- Note:Thetwooptionsmustbeexplicitlystatedinthequestiontext.
+3. "other"-Everythingelse.
+- Questionsaboutspecificfacts,names,dates,numbers,values.
+- Questionsaboutpeople,organizations,locations.
+- Questionsasking"who","what","when","where","howmany",etc.
+- Anyquestionthatwouldrequirelookingupspecificinformation.
+ThinkingProcessThinkstepbystep:
+1. DoestheanswerhavetobeYesorNo?→"yes no"
+2. Doesthequestionexplicitlylist2choicestopickfrom?→"binary choice"
+3. Otherwise→"other"
+InputTaskQuestion:{question}
+Goldanswer:{answer}
+Classifythisquestion:
+Prompt2.Questionclassificationprompt.Usedtocategorizecorrectlyguessedanswersintoyes/no,binarychoice,ormemorizationto
+distinguishrandomchancefromtrainingdatacontamination.
+E.3.VisualPerception
+TovalidateProperty6(Visual)andunderstandwhattypesofvisualcomprehensionourbenchmarkrequires,wedevelopeda
+taxonomyforclassifyingquestionsbasedonwhethervisualmodalityisbeneficialforansweringthem,assumingthecorrect
+evidencepageshavebeenretrieved. Ourtaxonomycomprisesfiveprimarycategories,eachrepresentingadistincttypeof
+visualrequirement:
+1. FreeText. Answerispresentinfree-flowingnarrativetext. CleanOCRextractionwouldbesufficient;notable,form,or
+layoutcomprehensionrequired.
+2. Tabular. Requiresunderstandingtabularrelationships-correlatingrowswithcolumns,comparingvaluesacrossrows,
+oraggregatingdatafrommultiplecells. Thekeyrequirementiscomprehendingtablerelationships,notmerelyreading
+structuredtext.
+3. Structured. Requiresnavigatingstructuredforms(permits,licenses,certificates,applications)tolocatespecificfields.
+Distinguishedfromtablesbythelabel-valuepairstructureratherthanrow-columncorrelation.
+4. OtherSpatial.Requiresunderstandingspatialpositioningonthepage(e.g.,"atthebottomofthepage,""intheheader").
+Appliedonlywhenpositionmattersbeyondwhattable/formstructurecaptures.
+5. Artifacts. Visualartifactsnotcapturedabove,including:handwrittentext,signatures,checkbox/tickmarkstatus,stamps
+andseals,chartsanddiagrams,figuresandimages.
+MultimodalAgenticDocumentQA
+Table10.VisualmodalityrequirementsforansweringMADQAquestions.Categoriesaremutuallyexclusiveforprimaryassignment;
+somequestionshavesecondarycategorieswhenmultiplemodalitiesapply.
+Category Count %
+FreeText 959 42.8
+Structured 644 28.8
+Tabular 471 21.0
+Artifacts 150 6.7
+(ofwhich:charts/diagrams) 41 1.8
+(handwriting/signatures) 92 4.1
+(images/photos) 6 0.3
+OtherSpatial 16 0.7
+RequiresVisual/Structure 1,281 57.2
+WeemployedGemini3Flashtoclassifyeachquestion(Prompt3),providingthemodelwiththequestiontext,gold-standard
+answer, and rendered images of all gold evidence pages. The prompt instructed the model to determine which visual
+modalitieswouldbebeneficialforahumanorAItoanswerthequestioncorrectly. Eachquestionreceivesaprimarycategory
+andmayreceivesecondarycategorieswhenmultiplevisualmodalitiesaregenuinelyrequired(e.g.,aquestionrequiring
+bothtablecomprehensionandreadingahandwrittenannotation)
+Table10presentsthedistributionacrossourtaxonomy. Notably,fewerthanhalf(42.8%)ofquestionscanbeansweredfrom
+unstructuredfree-textalone,whilethemajorityrequiresomeformofvisualorstructuralcomprehension.
+While most questions (87.7%) require only a single visual modality, 12.3% benefit from multiple. The most common
+combinationisStructured+OtherVisual(7.0%),typicallyoccurringwhenformscontainhandwrittenentriesorcheckbox
+fields. Only1.5%ofquestionsrequirebothTabularandStructured,confirmingthattablesandformsrepresentdistinct
+visualchallenges.
+Thesefindingshaveseveralimplicationsforsystemdesign:
+• Structureispervasive. Over57%ofquestionsrequireunderstandingdocumentstructure,yetthisstructureisoften
+implicitinthevisuallayoutratherthanexplicitinthetext.
+• Visualencodersarenotstrictlynecessary. PDF-to-markdownconversion(e.g.,viadocumentunderstandingmodels)
+representsaviablealternativetoend-to-endvisualencoding,thoughwithpotentialinformationloss. Ourbenchmark
+enablesmeasuringthesetrade-offs.
+• Textisstructured,notfree-form. Whiledocumentsarehighlytext-intensive,thetextisrarelyunstructured. Models
+musteitherexplicitlycomprehendvisuallayoutorsuccessfullyinferstructuralrelationshipsfromlinearizedtext-a
+capabilitythatvariessignificantlyacrossarchitectures.
+• Retrievalvs.reading. Thisanalysisisolatesthereadingcomponentbyprovidinggoldevidencepages. Theimpact
+of visual capabilities on retrieval accuracy represents a complementary research direction, as visual document
+representationsmayhelpidentifyrelevantpagesthattext-basedretrievalmisses.
+This taxonomy and analysis complement the text-vs-image ablation study (Figure 4), which measures performance
+differences,byprovidingastructuralunderstandingofwhyvisualmodalitymattersforspecificquestiontypes.
+MultimodalAgenticDocumentQA
+QuestionModalityClassifierPrompt
+YouareanexpertatanalyzingdocumentVQA(VisualQuestionAnswering)questionstodeterminewhethervisualmodalityis
+requiredorbeneficialforansweringthem.
+CategoryDefinitionsClassifythequestionintooneormorecategoriesbasedontheseprecisedefinitions:
+1. FREE TEXT-Answerispresentinfree-flowingtext.
+- Answerisextracteddirectlyfromrunning/narrativetext.
+- Noreferencetotables,charts,forms,orvisualelements.
+- Noneedtounderstanddocumentlayoutorspatialrelationships.
+- Linearreadingcomprehension;cleanOCRtextwouldbesufficient.
+2. TABLE STRUCTURE-RequiresunderstandingTABLErelationships(rows/columns).
+- AnswerrequirescorrelatingrowsandcolumnsinaTABLE.
+- Needtounderstandwhichvaluesbelongtowhichheaders.
+- Requirescomparingmultiplerows(findingmax/min,aggregatingdata).
+- NOTforforms:FormsgotoSTRUCTURED DATA EXTRACTION.
+3. CHART DIAGRAM-Requiresvisualchart/diagraminterpretation.
+- Dataencodedvisually:barheights,linetrends,pieslices,diagrams.
+- Requirescountingvisualelementsorextractingvaluesfromvisualscales.
+- Visualrelationshipsnotcapturedintext.
+4. TEXT FORMATTING-RequiresseeingtextformattingONLY.
+- Identifyingbold,italic,underlined,colored,orhighlightedtext.
+- Fontsizeorstyledifferences(headingsvsbody).
+- NOTfor:handwriting,signatures,checkboxes→useOTHER VISUAL.
+5. IMAGE PHOTO-Requiresactualimage/photocontent.
+- Asksaboutphotodescriptions,captions,orcontentvisibleinphotos.
+- Referencesspecificimages/figurescontainingvisualinformation.
+6. SPATIAL LAYOUT-Requiresspatial/layoutunderstandingNOTcoveredbyothers.
+- ONLYuseif:Locationmatters(top/bottom,left/right,margins,header/footer).
+- Specialcasesonly:"atthebottomofpage","inthesidebar".
+- NOTfortables/forms:UseTABLE STRUCTUREorSTRUCTURED DATA...
+7. STRUCTURED DATA EXTRACTION-ExtractionfromstructuredFORMS.
+- SourceisastructuredFORM(permit,license,application,financialform).
+- Visualstructurehelpsnavigatetheformandfindtherightfield.
+- AnsweristypicallyaspecificvaluefromONEformfield(label:valuepairs).
+- NOTfortables:Ifcomparingrows/columns,useTABLE STRUCTURE.
+8. OTHER VISUAL-Visualartifactsnotcoveredabove.
+- Handwrittentext,signatures,checkboxes/tickmarks.
+- Stamps,seals,logos,mathematicalnotation,specialsymbols.
+Prompt3. Questionmodalityclassifierprompt. Classifiesquestionsbyvisualrequirementstoquantifytheimportanceoflayout
+understanding,tablecomprehension,andvisualartifacts.
+MultimodalAgenticDocumentQA
+InputQuestion:{question}
+Answer:{answer}Thegoldevidencepageimagesareprovidedbelow.Examinethemtodeterminewhethervisualmodality
+isneededtoanswerthequestion.
+Guidance&PriorityMulti-labelGuidance:
+- MostquestionsshouldhaveONLYONEcategory(theprimaryvisualrequirement).
+- OnlyassignmultiplecategoriesifthequestionTRULYrequirescombiningdifferentmodalities.
+- TablevsForm:TABLE STRUCTURE+STRUCTURED DATAisextremelyrare(requiresbothcorrelatingrowsANDextracting
+formfields).
+- Spatial:OnlyuseifpositionmattersANDitisnotcoveredbytable/formstructure.
+SelectionPriority:
+1. Ifit'satablewithrows/columnstocorrelate→TABLE STRUCTURE.
+2. Ifit'saformwithlabel:valuepairs→STRUCTURED DATA EXTRACTION.
+3. Ifspatialpositionmattersbeyondstructure→addSPATIAL LAYOUT(rare).
+Instructions
+- Judgebasedonwhethervisualmodalitywouldactuallyhelpanswerthequestion.
+- ChoosetheONEprimaryvisualrequirementinmostcases.
+- Donotrelyonkeywordpresence-analyzetheactualtask.
+- ConsiderwhethercleanOCRtextwouldbesufficient.
+OutputSchemaRespondwithaJSONobject:
+{
+"primary_category": "the single most important category",
+"all_categories": ["list", "of", "ALL", "applicable", "categories"],
+"confidence": 0.0-1.0,
+"reasoning": "brief explanation covering all assigned categories"
+}
+Prompt3.Questionmodalityclassifierprompt.(Continued)
+MultimodalAgenticDocumentQA
+F.FormalDefinitionofMetrics
+F.1.AccuracyMetric
+Weevaluateansweraccuracyusingahybridmetricthatcombinesstring-basedmatchingwithLLM-basedsemanticjudgment,
+designedtobebothstrictonfactualcorrectnessandflexibleregardingvalidtextualvariations.
+Whenansweryieldsnoexactmatchinanyofthealternativegoldstandardanswers,weinvokeanLLMjudgetoassess
+semanticcorrectness(Prompt4). FollowingtheG-Evalframework(Liuetal.,2023b),thejudgeperformschain-of-thought
+evaluationacrossfivecriteria:
+1. Refusaldetection. Doestheanswerrefuseorclaiminabilitytorespond?
+2. Contentmatching. Doesthecoremeaningmatchanygroundtruthvariant?
+3. Criticalerrors. Missingunitqualifiers,wrongentities,ortypemismatches?
+4. Formatissues. Liststructurepresentedascomma-separatedstring?
+5. Verbosity. Excessiveexplanationbeyonddirectanswer?
+Thejudgeoutputsathree-wayclassification: Correct(score=1.0),semanticallyequivalenttogroundtruth;Partial(score=
+0.5),correctcontentwithformat/verbosityissues;Incorrect(score=0.0),wrongcontent,missinganswer,orcriticalerrors.
+WeuseGemini2.5Flashwithfunctioncallingtoensurestructuredoutput.
+Handling Multiple Valid Answers. Questions may have multiple valid ground truth representations. Let G =
+{G(1),...,G(k)} be valid alternatives. The final score is: Score(P) = max (cid:0) Metric(P,G(k)) (cid:1) where Metric applies
+k
+ourtwo-stageevaluationpipeline.
+Theevaluationpromptwasdevelopediteratively: startingfromavanillaLLMjudge,weconductedmultipleroundsof
+humanreviewon100stratifiedsamples, identifyingsystematicdisagreementsandrefiningtheprompttoaddressedge
+cases-particularlyaroundlistformatting,acceptableverbositylevels,andunitqualifierhandling. Thiscalibrationprocess
+improvedhuman-LLMagreementfrom82%to90%onheld-outsamplesbeforefinalspecificity/sensitivitymeasurement.
+BiasCorrection. FollowingLeeetal.(2026),weapplyRogan-GladencorrectiontoadjustforLLMjudgebias. Basedon
+a200-samplehumanevaluation,wemeasuredsensitivityq = 0.980(probabilitytheLLMjudgescorrectwhenhuman
+judges correct) and specificity q = 1.000 (probability the LLM judges incorrect when human judges incorrect). The
+bias-adjustedscoreiscomputedas:
+pˆ+q −1
+θˆ= 0 (9)
+q +q −1
+0 1
+wherepˆistherawLLMjudgmentscore. Confidenceintervalsaccountforboththetestsamplevarianceandcalibration
+uncertainty.
+F.2.RetrievalandAttributionMetrics
+Toquantifytheagent'sabilitytolocateandattributerelevantinformationsources,weemploytheF1scoreevaluatedattwo
+distinctlevelsofgranularity: Page-levelandDocument-level.
+Foragivenquestioni,letR denotethesetofuniqueevidenceunits(pagesordocuments)citedbytheagentinitsfinal
+i
+response,andletG denotetheminimalsetofgroundtruthevidenceunitsrequiredtoanswerthequestion.
+i
+WefirstcalculatethePrecision(P )andRecall(R )fortheinstance:
+i i
+|R ∩G | |R ∩G |
+P = i i , R = i i (10)
+i |R | i |G |
+i i
+Wehandleedgecasesasfollows:
+MultimodalAgenticDocumentQA
+LLMJudgePrompt
+YouareevaluatinganswercorrectnessforaDocumentQAbenchmark.
+InputQuestion:{question}
+PredictedAnswer:{predicted}
+GoldAnswerVariants:{gold variants}
+EvaluationCriteriaEvaluatethepredictedanswerbasedonthefollowingdefinitions:
+CorrectPredictedanswerissemanticallyequivalenttoatleastonegoldvariant.Minorformatdifferencesareacceptable.
+Partial Predicted answer contains correct core information but has a significant format issue (e.g., list presented as
+comma-separatedstringwhenitemsareshort/atomic)ORincludesirrelevantadditions.
+IncorrectPredictedanswerisfactuallywrong,missing,containsdifferentinformation,orfailstoanswerthequestiontype
+(e.g.,noYes/Noforbinaryquestions).Missingunitqualifiersthatchangemagnitude(thousands,millions)areincorrect.
+EvaluationStepsFollowthesestepsinorder:
+1. Checkforrefusal:Doestheanswerrefuseorclaiminabilitytoanswer?Ifyes→incorrect.
+2. Comparecontent:Doesthepredictedanswermatchthecoremeaningofanygoldvariant?Ifcontentiswrongordifferent→
+incorrect.
+3. Checkcriticalerrors:(anyofthese→incorrect)
+- Missingscalequalifiers(e.g.,"50"vs"$50million").
+- BinaryquestionswithoutexplicitYes/No.
+- Wrongentity/value(differentperson,company,number).
+- Partiallistwithwrongitemsmixedin.
+4. Checkformat:(onlyifcontentiscorrect)
+- GoldexpectslistbutPredictedisstring→partial.
+5. Checkverbosity:(onlyifcontentiscorrect)
+- Correct:Extraqualifiers,relevantcontext,clarifyingphrases.
+- Partial:Unrequesteddetails,over-specificprecision.
+- Incorrect:Multi-sentenceresponses,fullparagraphs,conversationalpreambles.
+Instructions Based on your step-by-step analysis, provide your final judgment. After your reasoning, you MUST call
+submit judgmentwithyourfinaldecision.
+Prompt4.LLMjudgepromptforsemanticanswercorrectnessevaluation.Thejudgeperformschain-of-thoughtassessmentacrossfive
+criteria:refusaldetection,contentmatching,criticalerrors,formatissues,andverbosity.
+MultimodalAgenticDocumentQA
+• If|R |=0(theagentcitesnothing),thenP =0andF1 =0.
+i i i
+• Sinceourbenchmarkguaranteessolvability,|G |≥1forallvalidquestions.
+i
+TheF1scoreforthei-thquestionistheharmonicmeanofprecisionandrecall:
+(cid:40)
+F1 i = 2· P P i i + ·R R i i if(P i +R i )>0 (11)
+0 otherwise
+ThefinalbenchmarkscoreisreportedasthearithmeticmeanoverallN testsamples:
+N
+1 (cid:88)
+Score= F1 (12)
+N i
+i=1
+Weapplythisformulationattwolevelstodiagnosespecificbottlenecksintheagenticworkflow:
+PageF1. TheelementsofthesetsR andG areuniquepageidentifiersdefinedastuples(d,p),wheredisthedocument
+i i
+IDandpisthepageindex. Thismetricenforcesstrictgrounding: anagentispenalizedifitcorrectlyidentifiesthedocument
+butcitesthewrongpage(e.g.,citingtheTableofContentsinsteadofthespecificclauseonpage42).
+DocF1. Theelementsofthesetsarereducedtouniquedocumentidentifiersd. Thismetricevaluatestheretrievalsystem's
+abilitytolocatethecorrectfilewithinthecorpus,disregardingintra-documentnavigationerrors. ComparingDocF1against
+PageF1allowsustoisolate"last-mile"navigationfailuresfromfundamentalretrievalfailures.
+F.3.EfficiencyandCalibrationMetrics
+Toevaluatewhetheragenticsystemseffectivelyallocatecomputationalresources(steps)inproportiontoproblemdifficulty,
+weemployanon-parametriccalibrationmetricbasedontheCumulativeDifferencemethod(Kloumannetal.,2024). Letthe
+evaluationsetconsistofN samples. Foreachsamplei,weobserveatuple(s ,y ),where:
+i i
+• s ∈Nrepresentstheeffort,quantifiedasthenumberofdiscretesteps(e.g.,toolcalls,searchactions)takenbythe
+i
+agent.
+• y ∈ {0,1} represents the outcome, defined as the binary correctness of the final answer (based on Accuracy
+i
+thresholding).
+Lety¯= 1 (cid:80)N y denotetheglobalaverageaccuracyoftheagentonthebenchmark.
+N i=1 i
+Wefirstorderthetestsamplesbyascendingeffort. Letπbeapermutationofindices{1,...,N}suchthatthestepcounts
+arenon-decreasing:
+s ≤s ≤···≤s (13)
+π(1) π(2) π(N)
+The Cumulative Difference sequence, D = (D ,D ,...,D ), measures the accumulating deviation of the agent's
+0 1 N
+performancefromitsmeanperformanceaseffortincreases. Itisdefinedrecursively:
+D =0 (14)
+k
+(cid:88)
+D = (y −y¯) fork =1,...,N (15)
+k π(j)
+j=1
+ThetrajectoryofD revealsconditionalperformanceregimes. Positiveslopeindicatesasub-populationwherethelocal
+k
+accuracyexceedstheglobalmeany¯. Thistypicallyoccursinlow-stepregimesforwell-calibratedagents(easyproblemsare
+solvedefficiently). Negativeslopeindicatesasub-populationwherelocalaccuracyisbelowy¯. Thistypicallyoccursin
+high-stepregimes,wheretheagentexpendssignificanteffortwithoutachievingsuccess.
+MultimodalAgenticDocumentQA
+Tosummarizethecalibrationqualityintoascalarmetric,weutilizetheKuiperstatisticK. Thisstatisticmeasuresthetotal
+rangeofthecumulativedeviations,capturingtheseverityofnon-uniformperformanceacrosstheeffortspectrum.
+K = max (D )− min (D ) (16)
+k k
+0≤k≤N 0≤k≤N
+AlowerKvalueindicates"effort-invariant"performance,wheretheprobabilityofcorrectnessP(y =1|s)isindependentof
+thenumberofstepstaken. Thisimpliestheagentisequallyreliablewhetherittakes1stepor20. AhighK valueindicates
+distinctregimesofsystematicover-performanceandunder-performance. Foragenticsystems,thisusuallymanifestsasa
+sharpdeclineinaccuracyasstepcountsincrease,highlightinganinabilitytorecoverfrominitialerrors.
+F.4.SensitivityofKuiperStatistictoEffortMeasure
+WeinvestigatewhetherthechoiceofeffortmetricmateriallyaffectstheKuipercalibrationstatistic. Foreachsystem,we
+computeKuiperunderfoureffortdefinitionswhereavailable: (1)steps/calls-thenumberoftoolcallsorLLMinvocations,
+(2)tokens(total)-sumofinputandoutputtokens,(3)tokens(generated)-outputtokensonly,and(4)executiontime.
+Table11reportspairwiseSpearmanrankcorrelationsbetweeneffortmeasures. Formodelsachieving≥ 60%accuracy,
+correlationsbetweenstepsandtokenmeasuresrangefromρ = 0.72toρ = 0.95, indicatingthatsampleorderingsare
+largelypreservedacrossdefinitions.
+Table11.Spearmanrankcorrelation(ρ)betweeneffortmeasuresacrosssystems.Highervaluesindicatemoresimilarsampleorderings.
+System Acc. StepsvsTotal StepsvsGen. TotalvsGen.
+BM25GPT-5.2 67.8% 0.76 0.95 0.78
+BM25ClaudeSonnet 80.6% 0.89 0.92 0.90
+BM25GPT-4.1 60.0% 0.79 0.85 0.72
+RLMGPT-5.2 64.2% 0.83 0.74 0.80
+RLMGemini-3-Pro 73.8% 0.84 0.93 0.87
+RLMClaudeSonnet 70.5% 0.91 0.85 0.89
+Table12showstheresultingKuiperstatisticsundereacheffortdefinition. Forthesixsystemsabove,Kuipervaluesvaryby
+atmost20%acrossmetrics,confirmingthatthecalibrationassessmentisrobusttoeffortdefinitionchoice.
+Table12.Kuiperstatisticunderdifferenteffortdefinitions.Missingentries(-)indicateunavailablemeasurements.
+System Acc. Steps Tokens(Total) Tokens(Gen.) Time
+BM25GPT-5.2 67.8% 64.1 53.3 59.9 -
+BM25ClaudeSonnet 80.6% 35.4 36.4 37.8 -
+BM25GPT-4.1 60.0% 42.0 35.9 36.2 -
+RLMGPT-5.2 64.2% 28.4 31.2 21.1 22.3
+RLMGemini-3-Pro 73.8% 22.3 20.9 25.1 21.2
+RLMClaudeSonnet 70.5% 42.7 38.1 34.3 30.8
+Human 82.2% 14.6 - - 12.5
+MultimodalAgenticDocumentQA
+G.BaselineImplementationDetails
+G.1.BM25MLLMAgent.
+Weimplementasearch-augmentedagentbaselinethatcombinestext-basedretrievalwithvision-languagemodel(VLM)
+reasoning. Theagentiterativelysearchesadocumentcollectionandanalyzesretrievedpageimagestoanswerquestions.
+Wefirstconstructafull-textsearchindexfromOCR-extractedtext. Eachdocumentpageisindexedwithitssourcefilename,
+pagenumber,andOCRcontentusingtheWhooshsearchlibrary. Theindexsupportsbooleanqueries(AND,OR,NOT),
+phrasematching,andwildcardpatterns.
+Theagentoperatesinaniterativeloop,equippedwithasearch documentstoolthatacceptsnaturallanguagequeries
+andreturnsrenderedimagesofthetop-kmatchingpages. Theagentreceivestheseimagesdirectly(notOCRtext),enabling
+ittoleveragetheVLM'svisualunderstandingcapabilitiesforlayout-sensitivedocumentssuchastables,forms,andfigures.
+ToolisdefinedusingJSONSchemaandpassedtothemodelalongsidethesystempromptwiththefollowingdescription:
+Searchdocumentcollectionandreturnimagesofmatchingpages.Supports:termsandphrases(usequotesforexactmatch),
+booleanoperators(AND,OR,NOT-ANDisdefault),wildcards(*formultiplechars,?forsinglechar).Examples:'engine
+specifications','"Bell407"ANDaccessories','Bell*','incorporationNOTdate'.
+Theagentproducesstructuredoutputscontaining: (1)alistofanswerstrings,and(2)citationsspecifyingtheexactsource
+file and page number for each piece of evidence. On the final iteration, the model is forced to provide an answer via
+constraineddecoding(OpenAI)ortoolforcing(Anthropic).
+Algorithm1SearchAgentforDocumentQA
+Require: Questionq,searchindexI,VLMM,maxiterationsT,top-k
+Ensure: Answera,citationsC
+1: messages←[SYSTEMPROMPT,q]
+2: fort=1toT do
+3: ift=T then
+4: response←M(messages,force answer=True)
+5: else
+6: response←M(messages,tools=[search,answer])
+7: endif
+8: ifresponseisanswertoolcallthen
+9: returnresponse.answer,response.citations
+10: endif
+11: ifresponseissearchtoolcallthen
+12: query←response.query
+13: results← SEARCH(I,query,k) ▷Returns(file,page)tuples
+14: images←[RENDERPAGE(f,p)for(f,p)∈results]
+15: Appendtoolresultandimagestomessages
+16: endif
+17: endfor
+18: returnfallbackanswerfromfinalresponse
+DefaulthyperparametersareT =10maximumiterationsandk =5resultspersearch. Documentpagesarerenderedas
+PNGimagesathighresolution;forAnthropic'sAPI,imagesexceedingthe5MBlimitareprogressivelydownscaledusing
+Lanczosresampling. ThesystempromptisprovidedinPrompt5.
+G.2.ManagedRAGServices
+WeevaluatetwoproprietaryRAG-as-a-Serviceofferingsthatabstractthedocumentprocessingpipeline,allowingusto
+benchmarkagainstindustry-standardsolutions.
+MultimodalAgenticDocumentQA
+BM25MLLMAgentPrompt
+YouareadocumentQAassistantwithaccesstoasearchtool.Thesearchtoolreturnsimagesofdocumentpages.
+SearchInstructions Theanswerisdefinitelyinthedocuments. Ifsearchreturnsnoresults,trydifferentterms(synonyms,
+abbreviations,rephrasing).
+Analysis&OutputOncerelevantpagesarefound,analyzeimagesandprovide:
+1. answer:Listofanswervalues.
+- Singleanswer→one-elementlist.
+- Multipleitems/entities→severalelements.
+- Useasfewwordsaspossible(exactdocumentwordspreferred).
+- Donotwritefullsentences.
+2. citations:Listofsources.Eachcitationmusthave:
+- file:ExactPDFfilenameshowninimage(e.g.,"1007969.pdf").
+- page:Thepagenumber(integer).
+Prompt5.BM25MLLMAgentsystemprompt.Theagentreceivesthispromptalongsidethetooldefinitionfordocumentsearch.
+GeminiFileSearch. Google'sFileSearchAPIprovidesend-to-endmanagedretrieval. Weuploadall796PDFdocuments
+toafilesearchstore,whereGoogle'sinfrastructureautomaticallyhandleschunking,embeddinggeneration,andvector
+indexing. Atquerytime,theGeminimodelreceivesaccesstothisstoreasatool. Unlikeagenticapproacheswithexplicit
+search-read-reasonloops,FileSearchoperatesasasingle-shotretrievalmechanism: oneAPIcalltriggersretrieval,context
+injection,andanswergenerationatomically. Thesystemreturnsgroundingmetadataindicatingwhichdocumentchunks
+wereretrieved,thoughtheinternalretrievalstrategy(queryreformulation,re-ranking,chunkselection)remainsopaque. We
+promptthemodeltooutputanswersinastructuredformatwithexplicitpage-levelcitations,whichweextractforevaluation.
+OpenAI Assistants File Search. OpenAI's Assistants API provides a similar managed RAG capability through its
+file searchtool. Weuploaddocumentstoavectorstore,whichhandleschunkingandembeddingusingOpenAI's
+proprietarymodels. AnAssistantconfiguredwiththefile searchtoolautomaticallyretrievesrelevantchunkswhen
+processingqueries. Thesystemoperatesviaathreads/runsabstraction: eachquestioncreatesaconversationthread,triggers
+arun,andreturnsresultswithinlinecitations. Wepromptthemodeltoincludepage-levelcitationsinitsstructuredoutput
+whenidentifiablefromcontext.
+Forbothservices,weprovidethecompletedocumentcollectionwithoutanytask-specificfine-tuningorpromptengineering
+beyond basic answer formatting instructions (Prompt 6). This establishes a fair comparison point representing what
+practitionerswouldobtain"outofthebox"fromthesecommercialofferings.
+G.3.HEAVEN
+We use the original encoder configurations by Kim et al. (2025): DSE (MrLight/dse-qwen2-2b-mrl-v1), and
+ColQwen2.5 (vidore/colqwen2.5-v0.2). Document Layout Analysis uses DocLayout-YOLO for title region
+extraction. Allhyperparametersfollowpaperdefaults. TheVLMpromptisshowninPrompt7.
+G.4.ClaudeAgentwithSemtools
+WeimplementanagenticbaselineusingtheClaudeAgentsSDKintegratedwithsemtools,asuiteofCLItoolsdesigned
+forsemanticdocumentprocessing. TheagenthasaccesstothreecomposableUnix-styleutilities:
+1. parse: Convertsnon-textformats(e.g.,PDF)intoMarkdownusingLlamaParseasthebackend. Outputsfilepathsto
+stdout,enablingpipelinecomposition.
+MultimodalAgenticDocumentQA
+ManagedRAGPrompt
+YouareadocumentQAassistantwithaccesstoafilesearchtool.Thefilesearchtoolretrievesrelevantcontentfromacollection
+ofPDFdocuments.
+ImportantTheanswertothequestionisdefinitelyinthedocuments.Searchcarefullyusingdifferenttermsifneeded.
+OutputFormatWhenyouhavetheanswer,respondwithaJSONobjectinthisexactformat:
+{
+"answer": ["answer value 1", "answer value 2", ...],
+"citations": [
+{"file": "exact_filename.pdf", "page": 1},
+{"file": "another_file.pdf", "page": 3}
+]
+}
+Where:
+- answer:listofanswervalues(useasfewwordsaspossible,exactdocumentwordingpreferred)
+- citations:listofsourceswithexactPDFfilenameandpagenumber
+Prompt6.ManagedRAGpromptusedwithbothGeminiFileSearchandOpenAIAssistantsFileSearchservices.
+Table13.HEAVENhyperparameters(paperdefaults).
+Parameter Symbol Value
+Stage1candidates k 200
+Finalresults k 5
+VS-pagereductionfactor r 15
+VS-pagefilterratio - 0.5
+Queryfilterratio ρ 0.25
+Stage1weight α 0.1
+Stage2weight β 0.3
+2. search: Performssemantickeywordsearchovertextfilesusingstaticembeddings. Supportsconfigurablecontext
+windows (--n-lines), top-k retrieval (--top-k), and distance thresholding (--max-distance). The tool
+operatesonstdinorexplicitfilelists,returningmatchingpassageswithsurroundingcontext.
+3. workspace: Managespersistentembeddingcachesfordocumentcollections. Onceaworkspaceisactivated(export
+SEMTOOLS WORKSPACE=name).
+TheagentusesClaude'sclaude codesystempromptpreset,grantingitbashexecutioncapabilities. Toolpermissions
+allowBash,Read,Glob,Grep,andSearchoperations. TheagentproducesstructuredJSONoutputcontainingthe
+answer,page-levelcitations,andthesearchhistory.
+Thisparadigmallowsflexible,iterativeexplorationbutreliesontheagent'sabilitytoformulateeffectivebashpipelinesand
+interpretunstructuredsearchresults. TheuserpromptandCLAUDE.mdconfigurationareshowninPrompt8.
+G.5.RecursiveLanguageModels
+Recursive Language Models (RLMs) (Zhang et al., 2025a) represent a task-agnostic inference paradigm that enables
+languagemodelstohandlearbitrarilylongcontextsbyprogrammaticallyexamining,decomposing,andrecursivelycalling
+themselvesovertheinput. Unliketraditionalretrieval-augmentedgenerationapproachesthatrelyonfixedchunkingand
+embedding strategies, RLMs offload the entire document corpus as a variable within a REPL (Read-Eval-Print Loop)
+environmentthatthemodelcaninteractwiththroughcodeexecution.
+TheRLMframeworkreplacesthecanonicalllm.completion(prompt)callwithanrlm.completion(prompt)
+MultimodalAgenticDocumentQA
+HEAVENVLMPrompt
+YouareadocumentQAassistant.AnswerthequestionbasedONLYontheprovideddocumentimages.
+InputDocumentsources:{context}
+Question:{question}
+Instructions
+1. CarefullyexamineALLprovideddocumentimages.
+2. Findthespecificinformationthatanswersthequestion.
+3. RespondwithaJSONobjectintheexactformatdefinedbelow.
+OutputSchema
+{
+"answer": ["answer value 1", "answer value 2", ...],
+"citations": [
+{"file": "exact_filename.pdf", "page": 1},
+{"file": "another_file.pdf", "page": 3}
+]
+}
+Where:
+- answer:listofanswervalues(useasfewwordsaspossible,exactdocumentwordingpreferred)
+- citations:listofsourceswithexactPDFfilenameandpagenumber(1-indexed)
+ImportantTheanswertothequestionisdefinitelyinthedocuments.Examineallprovidedpagescarefully.
+Prompt7.HEAVENVLMprompt.Afterhybridretrievalreturnstop-kpages,thispromptinstructstheVLMtoextractanswerswith
+citations.
+call. Wheninvoked,thesystem: (1)Loadsthedocumentcorpusintoacode-accessiblevariablewithexplicitstructural
+markers(e.g.,[FILE: doc.pdf],[PAGE N]).(2)ProvidestheLLMwithasandboxedexecutionenvironmentwhere
+itcanwriteandexecutecode. (3)Enablesthemodeltolaunchrecursivesub-LMcallsviallm query()toprocesssubsets
+ofthecontext.
+OurimplementationusestheRLM4library.ThedocumentcorpusissourcedfromOCR-processedmarkdownrepresentations
+ofthePDFcollection(createdwithMistralOCR3),wherepageboundariesarepreservedusinghorizontalruleseparators
+(---). Weaugmentthecorpuswithexplicitpagemarkers([PAGE N]... [END PAGE N])toenableaccuratecitation
+extraction.
+Themodelreceivesapromptcontainingthefullcorpustextandthequestion,withinstructionstosearchthecorpusand
+returnboththeanswerandsourcelocations(Prompt9). TherawRLMresponseisthenprocessedthroughastructured
+outputextractionstep(usingthesameunderlyingmodel)tonormalizeanswersandcitationsintoaconsistentformat.
+4https://github.com/alexzhang13/rlm
+MultimodalAgenticDocumentQA
+ClaudeAgentUserPrompt
+TrytoanswerthequestionbasedonthePDFsat{PDF PATH}.AllofthemhavebeenconvertedtoMarkdownandcanbefound
+at{MARKDOWN PATH}.
+Question:{question}
+Providetheansweralongwithcitations(filenamesandpagenumber)andthesearchqueriesyouused.
+ClaudeAgentCLAUDE.md
+EnvironmentSetup UseuvalongsidethevirtualenvironmentwhenrunningPythonscripts. Whenrequiringenvironment
+variables,use:
+uv run --env-file keys.env main.py
+AugmentedCLIToolingIfexecutingbashcommands,youhavethreeveryhelpfulutilitiesinstalled:
+- parse:Convertsanynon-grep-ableformatintomarkdown.Outputsafilepathforaconvertedmarkdownfileforeveryinputfile
+tostdin.
+- search:Performsasearchusingstaticembeddings(similartogrep).Worksbestwithkeyword-basedqueries.Onlyworkswith
+text-basedfiles(requiresparsefirstforPDFs).
+- workspace:Managementforacceleratingsearchoverlargecollections.
+1.ParseCLI
+parse [OPTIONS] <FILES>...
+Options:
+-c, --parse-config <PATH> Path to config file
+-b, --backend <BACKEND> Backend type (default: llama-parse)
+2.SearchCLI
+search [OPTIONS] <QUERY> [FILES]...
+Options:
+-n, --n-lines <N> Lines context [default: 3] (Suggest: 30-50)
+--top-k <K> Top-k files/texts [default: 3]
+-m, --max-distance <D> Return results below distance threshold
+-i, --ignore-case Case-insensitive search
+3.WorkspaceCLI
+workspace <COMMAND>
+Commands:
+use Use or create a workspace
+status Show active workspace and stats
+prune Remove stale files
+CommonUsagePatterns
+# Parse a PDF and search for specific content
+parse document.pdf | xargs cat | search "error handling"
+# Search with custom context and thresholds
+search "machine learning" *.txt --n-lines 5 --max-distance 0.3
+# Create/Use a workspace (caches embeddings)
+workspace use my-workspace
+export SEMTOOLS_WORKSPACE=my-workspace
+search "some keywords" ./large_dir/*.txt --n-lines 5 --top-k 10
+Prompt8.ClaudeAgentuserpromptandCLAUDE.mdconfiguration.Theagentusestheclaude codesystempromptpresetwith
+accesstoUnix-stylesemanticsearchtools.
+MultimodalAgenticDocumentQA
+EvaluationRules
+VerboseanswersscorePOORLY.Answerformatrules:
+- answer:AlistofSHORTstringswithONLYessentialinfo.
+- NOfullsentences.NOexplanations.
+- Alwaysreturnalist,evenforsingleanswers(e.g.,[\$1.2M"]).
+- UseEXACTwordsfromthedocumentwhenpossible.
+- NEVERincludephraseslike"Accordingto...","Thedocumentstates...".
+Examples:CorrectvsIncorrect
+Q:Federalhousinglawsprotectpeoplefromdiscriminationonthebasisofwhat?
+[WRONG]Federalhousinglawsprotectpeoplefromdiscriminationonthebasisofrace,color...
+[CORRECT][\race", \color", \religion", ...]
+Q:Whatwasthetotalliveweightofsheep?
+[WRONG]Thetotalliveweight...was2,400cwt.
+[CORRECT][\2,400 cwt"]
+ExpectedOutputFormatYouonlyneedtoreturnthe"answer"and"citations".
+{
+"id": "test/0",
+"question": "What is the total revenue?",
+"answer": ["$1.2M"],
+"citations": [
+{"document": "report.pdf", "page": 5}
+],
+"search_history": ["query1", "query2"]
+}
+Prompt8.ClaudeAgentuserpromptandCLAUDE.mdconfiguration.(Continued)
+MultimodalAgenticDocumentQA
+RLMPrompt
+Youaretaskedwithansweringaquerywithassociatedcontext.Youcanaccess,transform,andanalyzethiscontextinteractively
+inaREPLenvironmentthatcanrecursivelyquerysub-LLMs.Youwillbequeriediterativelyuntilyouprovideafinalanswer.
+REPLEnvironmentInitialization
+1. context:Variablecontainingextremelyimportantinformation.Checkitscontenttounderstandwhatyouareworkingwith.
+2. llm query:FunctiontoqueryanLLM(handles 500Kchars)insidetheREPL.
+3. llm query batched:Functiontoquerymultiplepromptsconcurrently.
+Signature:llm query batched(prompts: List[str]) -> List[str]
+4. print():UsestatementstoviewREPLoutputandcontinuereasoning.
+StrategyYouwillonlyseetruncatedoutputsfromtheREPL.Usellm queryonvariablestoanalyzesemantics.Usevariables
+asbufferstobuildyouranswer.
+SuggestedWorkflow:
+- Lookatcontextanddetermineachunkingstrategy.
+- Breakcontextintosmartchunks.
+- Querysub-LLMsperchunkandsaveanswerstoabuffer.
+- QueryanLLMwithallbufferstoproducethefinalanswer.
+Note:Sub-LLMsfit∼500Kcharacters.Youcanfeed∼10documentspersub-LLMquery.
+ExecutionFormatWrapPythoncodeintriplebacktickswithreplidentifier:
+'''repl
+chunk = context[:10000]
+answer = llm_query(f"What is the magic number? Chunk: {chunk}")
+print(answer)
+FinalAnswerProtocolWhenthetaskiscomplete,youMUSTuseoneofthesefunctions(donotusecodeblocksforthis):
+- FINAL(your final answer here)
+- FINAL VAR(variable name)
+Thinkstepbystep.Planandexecuteimmediately.Explicitlyanswertheoriginalqueryinyourfinaloutput.
+Prompt9.RLMprompt.ThemodelreceivesaREPLenvironmentwiththedocumentcorpusloadedasavariableandfunctionstospawn
+recursivesub-LLMqueries.
+MultimodalAgenticDocumentQA
+H.ExtendedResults
+H.1.Multi-HopQuestionComplexityAnalysis
+Ourbenchmarkcontains372multi-hopquestionsrequiringevidenceintegrationacrossmultiplepages: 186same-document
+(50%)and186cross-document(50%). Foreachmulti-hopquestion,wecompute: (1)Physicaldistance. Thepageindex
+difference between evidence locations (same-document only). (2) Semantic distance. Cosine distance between page
+embeddingsusingSnowflakeArcticEmbed(snowflake-arctic-embed-m-v2.0). Wemeasureaccuracyusingfive
+models(Claude4.5Sonnet,Claude4.5Haiku,Gemini3.0Pro,GPT-5,GLM-4.6V).
+Same-DocumentMulti-Hop. Table14showsaccuracybysemanticdistance. Semanticsimilarityisastrongerpredictor
+ofdifficultythanphysicalpagedistance(r=-0.26vsr=-0.06). Questionswithsemanticallysimilarevidenceachieve72.4%
+accuracy,whiledissimilarevidencedropsto34.8%-a38percentagepointdecline.
+Table14.Same-documentmulti-hopaccuracybysemanticdistancebetweenevidencepages.
+SemanticDistance Questions Accuracy
+0.0-0.15(similar) 29 72.4%
+0.15-0.3 38 71.1%
+0.3-0.45 51 56.9%
+0.45-0.6 45 64.0%
+0.6+(dissimilar) 23 34.8%
+Overall 186 61.2%
+Cross-DocumentMulti-Hop. Cross-documentquestions(n=186)showhigheroverallaccuracy(75.7%)comparedto
+same-document(61.2%). Therelationshipbetweensemanticdistanceandaccuracyisweaker(r=-0.09),withaccuracy
+rangingfrom72.4%to80.0%acrosssemanticdistancebins. Thissuggeststhatexplicitdocumentboundariesmayhelp
+modelsstructuretheretrievaltask.
+Table15.Cross-documentmulti-hopaccuracybysemanticdistancebetweenevidencepages.
+SemanticDistance Questions Accuracy
+0.0-0.15 18 80.0%
+0.15-0.3 17 80.0%
+0.3-0.45 26 77.7%
+0.45-0.6 43 77.2%
+0.6+ 82 72.4%
+Overall 186 75.7%
+Counter-intuitively,cross-documentmulti-hopiseasierthansame-documentmulti-hop(75.7%vs61.2%). Thismaybe
+becausecross-documentquestionsofteninvolveexplicitcomparisons(e.g.,"whicheventoccursearlier?"),providingclearer
+taskstructure,whilesame-documentreasoningrequiressubtleintegrationofinformationacrossdistantsectionsofasingle
+coherentdocument.
+.6+
+.45-.6
+.3-.45
+.15-.3
+0-.15
+1 2-4 5-9 10-19 20-49
++
+Physical Distance (pages)
+ecnatsiD
+citnameS
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+Accuracy
+Figure14.Same-documentmulti-hopaccuracybyphysicaldistance(pagegap)andsemanticdistance(embeddingcosine).Semantic
+distanceisastrongerpredictorofdifficulty.
+MultimodalAgenticDocumentQA
+H.2.QualitativeAnalysisofHumanBaselineErrors
+Duringtheestablishmentofthehumanbaseline(Section4),weobservedthathumanparticipants,despitehavingaccess
+to the same search tools and documents as the agentic systems, occasionally failed to provide correct answers. These
+instanceswerenotresultsofdataannotationerrors,butrathergenuineperformancefailuresreflectingthecognitiveloadand
+complexityofthebenchmark.
+Table16. Examplesofhumanerrors. Observedduringbaselinecreation. Theserepresentgenuinemisunderstandingsratherthan
+annotationnoise,highlightingthereasoningchallengesinherentinthebenchmark.
+Question ErrorType CharacterizationofMistake
+Whattypesofpantsarenotallowedat NegationBlindness TheparticipantlocatedthecorrectdresscodesectionbutoverMTM? lookedthenegationinthequery,listingpermitteditemsrather
+thanprohibitedones.
+WastheSodiumleveldetected[...]within Incomplete Evidence Re- Theparticipantfoundthespecificsodiumtestresultbutfailed
+normalrange? trieval toretrievetheseparatepagecontainingthereference"normal
+range"tablerequiredforverification.
+WhichForensicScientistapprovedthe RoleConflation TheparticipantprovidedthenameoftheCertifyingScientist
+[...]report? whoelectronicallysignedtheworkorder,confusingthisrole
+withtheForensicScientistmentionedelsewhereinthedocumentchain.
+Whatwater-relatedactdidPennsylvania LexicalPolysemy Theparticipantwasmisledbythepolysemyoftheword"act,"
+introduce...? interpretingitasaphysicaldeed(answeringthatthey"opened
+abridge")ratherthanalegislativestatute.
+How long after public transportation Temporal Reasoning Fail- Thequestionrequiredcalculatingaduration(timedelta).The
+started[...]diddeathsdecrease? ure participantidentifiedthecorrectdatesbutansweredwitha
+specificcalendaryearinsteadoftheelapsedtime.
+Whatisthelargestpenaltyassessedin OrdinalRankingError Theparticipantlocatedthecorrectlegaldocumentbutreported
+case3AN-24-04508CI? thesecond-largestpenaltylisted,likelyduetoskimmingora
+failuretosortthevaluesexhaustively.
+These errors underscore the difficulty of the task, specifically regarding attention to detail, cross-page navigation, and
+semanticprecision. Table16categorizescommonfailuremodesobservedduringthehumanbaselinestudy.
+H.3.ErrorDecomposition
+Methodology. We analyze the BM25 MLLM Agent configuration, which provides the broadest model coverage (17
+systemsspanningfivemodelfamilies,plusthehumanbaselinewiththesamesearchtool). Wedecomposeeveryprediction
+into a four-stage cascade using citation metadata and the paper's LLM judge (Section 3) for correctness. Correctness
+is determined by the Semantic Accuracy score (LLM judge): a score ≥ 0.5 counts as correct (with 0.5 indicating a
+verbosebutsemanticallyvalidanswer,and1.0aprecisematch). Foreachincorrectprediction,theerrortypeisassigned
+deterministically:
+1. RetrievalFailure-thesystemneverretrievedthegolddocument(DocF1=0).
+2. NavigationFailure-thegolddocumentwasfoundbutthegoldpagewasnot(DocF1>0,PageF1=0).
+3. ComprehensionFailure-thecorrectpagewasretrievedbuttheansweriswrong(PageF1>0).
+4. NoAnswer/Refusal-thesystemreturnedanemptyresponse.
+This taxonomy requires no subjective LLM classification for the error type assignment-only for the correct/incorrect
+boundary.
+AggregateErrorDistribution. Across17agentsystems(8,499predictions,3,273incorrect),theerrorbreakdownis:
+Per-SystemFailureProfiles. Figure8(mainpaper)showsthefulldecompositionacrossallsystems. Keyobservations:
+• ClaudeSonnet4.5hasthelowestretrievalfailurerateamongagents(4.0%)butthehighestcomprehensionfailurerate
+MultimodalAgenticDocumentQA
+Table17.Aggregateerrordistributionacrossallagentsystems(N=3,273incorrectpredictions).
+ErrorType Count %
+Retrieval(wrongdocument) 1,167 35.7
+Comprehension(rightpage,wronganswer) 941 28.8
+Navigation(rightdoc,wrongpage) 753 23.0
+NoAnswer/Refusal 412 12.6
+amongtopmodels(8.6%)-itfindscontenteffectivelybutmisinterpretsit.
+• Smallerandopen-weightmodelsexhibitthehighestretrievalfailurerates: GLM-4.6VFlash(36.0%),Qwen3-VL8B
+(25.2%),andGemini2.5Pro(21.4%),indicatingthatsearchqueryformulationisaprimarybottleneckforlesscapable
+agents.
+• GPT-4.1Nanoisdominatedbyrefusals(48.2%ofpredictions)-themodelabandonssearchprematurelyratherthan
+failingatanyspecificstage.
+• The Human baseline has the lowest retrieval failure (2.2%) and navigation failure (4.6%), but a relatively high
+comprehensionrate(9.4%),confirmingthatwhenhumanshavetherightevidence,occasionalattentionerrorsstill
+occur(cf.Table16).
+HowErrorCompositionShiftswithModelCapability. Figure15showsthatasmodelaccuracyincreases,thecomposition of errors changes qualitatively. Weaker models are dominated by refusals ("no answer")-they give up. As
+capabilityincreases,retrievalfailurebecomesthedominantbottleneck. Thestrongestmodelshaveerrorprofilesdominated
+bycomprehensionfailures,indicatingthatretrievalislargelysolvedandtheremainingchallengeisanswerextraction.
+80
+40
+0
+%) %) %) %) %) %) %) %) %) %) %) %) %) %) %) %) %) %)
+G PT-4. Q 1 w N e a G n n 3 o L - M ( V 1 - L 9 4 . 8 . 5 6 B V G ( 4 F P 7 la T . s 3 - Q 4 h w . 1 (4 e M 6 n . 3 0 in - V i ( L G 5 3 3 P G . 2 T 0 e B - m 5 ( 5 N in 8 a i Q . n 2 8 w o .5 e ( 5 F n 8 l 3 a . - s 2 V h L ( 5 2 8 3 . 5 5 G B G e P (6 m T 0 - i 4 . n 3 . i 1 2 ( . 6 5 0 P .0 r G o P (6 T 0 - C G 5 .1 l L . a 2 M u ( d 6 - e 4 7 . . H 6 8 V ai k (6 u G 6 4 . P 1 . T 5 - 5 (6
+C
+M 8 la .2 i u n d i G e (6 P S 6 T . o 9 - n 5 n G ( e 7 e t 7 m 4 .7 . H i 5 n u i ( m 8 3 0 a P . n 6 ro ( B (8 M 2 2 .2 5) (82.2
+snoitciderp
+tcerrocni
+fo
+%
+Retrieval Navigation Comprehension No Answer
+Figure15.Errorcompositionshiftswithmodelcapability.Systemsorderedbyincreasingaccuracy(lefttoright).Weakermodelsare
+dominatedbyrefusals;strongermodelsshifttowardretrievalandcomprehensionfailures.
+Retrievalvs.ComprehensionFailureProfiles. Figure16mapseachsystem'sretrievalandcomprehensionfailurerates,
+revealingdistinctclusters.Thestrongestmodels(Gemini3Pro,GPT-5,ClaudeSonnet4.5)occupythebottom-leftquadrantlowfailureratesonbothaxes. Mid-tiermodelssplitintotwoprofiles: retrieval-limitedsystems(Qwen3-VL,GLM-4.6V
+Flash)thatrarelyreachthecomprehensionstagebecausetheyfailtofindtherightdocument,andcomprehension-limited
+systems(GPT-4.1family,ClaudeHaiku4.5)thatretrievewellbutstrugglewithanswerextraction. Notably,thehuman
+baselinehasthelowestretrievalfailureratebutnon-trivialcomprehensionfailure,consistentwiththeattention-basederrors
+describedinTable16.
+MultimodalAgenticDocumentQA
+14
+10
+6
+5 10 15 20 25 30 35
+Retrieval Failure Rate (%)
+)%(
+etaR
+eruliaF
+noisneherpmoC
+GPT-4.1 Mini
+GPT-4.1
+GPT-5 Nano
+GPT-4.1 Nano
+Claude Haiku 4.5
+Qwen3-VL 8B
+Qwen3-VL 235B Gemini 2.5 Pro
+Gemini 2.5 Flash
+GPT-5.2
+Qwen3-VL 32B
+GLM-4.6V
+Human (BM25) GPT-5 Mini
+Claude Sonnet 4.5
+Gemini 3 Pro
+GPT-5
+GLM-4.6V Flash
+Figure16.Retrievalvs.comprehensionfailureprofiles.Eachpointisonesystem.Modelsinthebottom-leftcornerfailleastonboth
+dimensions.Thedashedlinesmarkapproximateclusterboundaries.
+ErrorTypesbyEvidenceComplexity. Figure17breaksdownerrorsbyhoptypeforthetopfoursystems. Cross-page
+(same-document)questionsarehardest,witherrorratesrisingfrom∼13%forsingle-evidenceto∼35%forcross-page.
+Retrievalfailureaccountsforalargershareofcross-pageerrors,suggestingthatnavigatingwithinlongdocumentsisharder
+thanfindingseparatedocuments.
+ErrorTypesbyDocumentDomain. Figure18aggregateserrorsbydocumentdomainforthetopfoursystems. Eventrelateddocumentsareeasiest(92%accuracy),likelyduetostructuredformatswithclearnamedentities. Media/Publishing
+(69%)andFinancialdocuments(74%)arehardest,withFinancialdocumentsshowingthehighestretrievalfailurerateconsistentwiththechallengeofnavigatingdensenumericaltablesacrossmanypages.
+FailureCascade. Figure19presentsthefailurecascadeforfourrepresentativesystems. Eacherrorstageisshownasa
+cumulativefunnel: totalquestions→documentfound→correctpagefound→correctanswer. Thisvisualizationmakes
+theprogressivelossateachstageimmediatelyvisible.
+H.4.Cross-SystemItemAgreement
+Methodology. Foreachofthe500testquestions,webuildabinarycorrectnessvectoracrossallBM25MLLMAgent
+systemsandthehumanbaseline. WemeasurepairwiseagreementusingCohen'sκ,whichaccountsforchanceagreement
+duetomarginalaccuracyrates.
+MultimodalAgenticDocumentQA
+70
+50
+30
+10
+Single X-Page X-Doc
+)noitrop
+rorre(
+epyt
+poh
+ni
+snoitseuq
+fo
+%
+Retrieval Navigation Comprehension No Answer
+Gemini 3 Pro Claude Sonnet 4.5 GPT-5 Human (BM25)
+51/84
+57/84 57/84
+38/51 37/51 36/51
+40/51
+307/365 302/365 310/365 68/84
+318/364
+Single X-Page X-Doc Single X-Page X-Doc Single X-Page X-Doc
+Figure17.Errortypesbyevidencecomplexityfortop-4systems.Cross-page(samedocument)questionsareconsistentlyhardest.
+80
+40
+0
+Events Legal
+Govern
+M
+m
+i
+e
+s
+n
+c t/Regulatory Technical Reports Financial/Tax Educa
+H
+ti
+R
+o
+/
+n
+E
+mploy ment Reference Cases/Logs Fina
+M
+n
+e
+c
+d
+ia
+i
+l a/Publishing
+snoitseuq
+fo
+%
+Correct Comprehension Navigation Retrieval No Answer
+n=24 n=43 n=24 n=47 n=23 n=74 n=16 n=22 n=41 n=52 n=15 n=92 n=25
+Figure18.Errordecompositionbydocumentdomain(top-4systemsaggregated).Media/PublishingandFinancialdomainsarehardest;
+Eventsdocumentsareeasiest.
+PairwiseAgreement. Figure20showsthefullpairwiseκmatrix. Model-modelpairswithinsimilarcapabilitytiers
+achievemoderateagreement(κ≈0.4-0.6),confirmingsharedsystematicstrengthsandweaknesses.Cross-familyagreement
+islower(e.g.,GPTvs.Geminiκ≈0.3-0.4),indicatingthatmodelfamilieshavedistinctfailuresignatures.
+ThemoststrikingpatternistheHumanrow:agreementbetweenthehumanbaselineandeveryagentislow(κ=0.06-0.24),
+despitesimilaroverallaccuracy.Forexample,HumanandGemini3Probothachieve∼82%accuracyyetshareκ=0.24.Of
+their107disagreementitems,human-specificfailuresaredominatedbycomprehensionerrors(64%),whilemodel-specific
+failuressplitbetweenretrieval(43%)andcomprehension(43%). Thisconfirmsthathumansandagentssolvefundamentally
+differentsubsetsofthebenchmark.
+ItemDifficultySpectrum. Acrossthe500testitems,23.8%areuniversallyeasy(>90%ofmodelscorrect),8.4%are
+universallyhard(<10%correct),andtheremaining66.8%arediscriminating(Figure21). Critically,only5items(1.0%)are
+anomalous-easyforweakmodelsbuthardforstrongones-confirmingthatthebenchmarkcontainsno"trickquestions"
+and exhibits sound psychometric properties: difficulty increases monotonically with model capability. Among the 86
+itemswherehumansfail,24havemodeldifficulty≥70%,revealinghuman-specificcognitivelimitations(attentionfatigue,
+negationblindness)onquestionsthatmostmodelssolvereliably.
+MultimodalAgenticDocumentQA
+Gemini 3 Pro Claude Sonnet 4.5 GPT-5 Human (BM25)
+7% 9% 9%
+7%
+5% 5%
+2%
+4%
+4% 2%
+8%
+1% 1%
+11% 78%
+83%
+81% 83%
+Correct Right doc, wrong page No answer / refusal
+Right page, wrong answer Wrong document
+Figure19.Errorcascade:wheredosystemsfail?Eachhorizontalbardecomposesasystem'spredictionsbyerrorstage.Percentages
+indicatetheshareofpredictionsineachcategory.
+H.5.SearchTrajectoryAnalysis
+First-QueryAdvantage. Figure22plotscumulativedocumentandpageretrievalratesbysearchiteration. Humansfind
+thegolddocumentontheirfirstquery∼80%ofthetime,whereasthebestagent(Gemini3Pro)startsat∼70%. Thegap
+narrowsbyiteration4-5,butthehumanfirst-queryadvantagepersistsinpage-levelretrieval.
+RecoveryAfterInitialFailure. Whenthefirstsearchqueryfailstoretrievethegolddocument,recoverysuccessvaries
+dramatically(Figure23). ClaudeSonnet4.5andGemini3Prorecoverin>90%ofcases,matchingthehumanrate(∼97%).
+Weakermodels(Gemini2.5Pro: 56%,GPT-4.1Nano: 12%)rarelyrecover,explainingmuchoftheaccuracygap.
+H.6.QueryReformulationAnalysis
+Methodology. To quantify how aggressively systems reformulate their search queries, we embed all queries using
+SnowflakeArcticEmbed(snowflake-arctic-embed-m-v2.0)andmeasurecosinedistancebetweenconsecutive
+queriesforeachquestiontrajectory. Wedefinemeandriftperstepasd¯= 1 (cid:80)k−1(1−cos(q ,q ))foratrajectory
+k−1 i=1 i i+1
+withkqueries.
+ReformulationMagnitudebySystem. Figure24showsthedistributionofmeandriftperstepacrosssystems,ordered
+bymedian. Top-performingsystemsreformulatemoreaggressively: ClaudeSonnet4.5hasamediandriftof0.38,while
+GPT-4.1Nanobarelychangesitsqueries(mediandrift0.10).Thecorrelationbetweenreformulationmagnitudeandaccuracy
+isstrong(Figure25,rightpanel).
+Single-Queryvs.Multi-QueryAccuracy. Everysystemperformsbetteronquestionsansweredinasinglequery. The
+gapquantifiesmulti-stepdifficulty: forexample,Humanachieves86.4%onsingle-queryquestionsvs.79.5%onmultiquery,whileGPT-4.1Nanodropsfrom46.1%to13.2%-a33percentagepointgapthatrevealsitsinabilitytoeffectively
+reformulate.
+MultimodalAgenticDocumentQA
+Claude Haiku 4.5 0.54 0.53 0.37 0.43 0.44 0.17 0.45 0.44 0.47 0.60 0.48 0.44 0.36 0.51 0.51 0.45 0.21
+Claude Sonnet 4.5 0.54 0.43 0.28 0.37 0.31 0.11 0.43 0.38 0.32 0.48 0.34 0.37 0.42 0.40 0.37 0.32 0.18 0.7
+GLM-4.6V 0.53 0.43 0.46 0.42 0.43 0.18 0.46 0.50 0.58 0.56 0.57 0.52 0.40 0.58 0.60 0.47 0.20
+GLM-4.6V Flash 0.37 0.28 0.46 0.37 0.36 0.28 0.29 0.36 0.47 0.45 0.42 0.42 0.22 0.48 0.49 0.47 0.14
+0.6
+GPT-4.1 0.43 0.37 0.42 0.37 0.60 0.23 0.38 0.48 0.48 0.48 0.38 0.41 0.24 0.47 0.41 0.40 0.13
+GPT-4.1 Mini 0.44 0.31 0.43 0.36 0.60 0.28 0.33 0.49 0.53 0.49 0.40 0.41 0.27 0.50 0.50 0.49 0.12
+0.5
+GPT-4.1 Nano 0.17 0.11 0.18 0.28 0.23 0.28 0.13 0.15 0.22 0.21 0.22 0.18 0.07 0.26 0.25 0.31 0.06
+GPT-5 0.45 0.43 0.46 0.29 0.38 0.33 0.13 0.44 0.41 0.47 0.35 0.39 0.43 0.41 0.39 0.29 0.22
+0.4
+GPT-5 Mini 0.44 0.38 0.50 0.36 0.48 0.49 0.15 0.44 0.53 0.59 0.42 0.46 0.35 0.50 0.49 0.37 0.15
+GPT-5 Nano 0.47 0.32 0.58 0.47 0.48 0.53 0.22 0.41 0.53 0.57 0.51 0.46 0.30 0.54 0.56 0.52 0.19
+0.3
+GPT-5.2 0.60 0.48 0.56 0.45 0.48 0.49 0.21 0.47 0.59 0.57 0.45 0.48 0.35 0.58 0.55 0.45 0.19
+Gemini 2.5 Flash 0.48 0.34 0.57 0.42 0.38 0.40 0.22 0.35 0.42 0.51 0.45 0.53 0.34 0.54 0.52 0.45 0.14
+0.2
+Gemini 2.5 Pro 0.44 0.37 0.52 0.42 0.41 0.41 0.18 0.39 0.46 0.46 0.48 0.53 0.36 0.47 0.44 0.37 0.14
+Gemini 3 Pro 0.36 0.42 0.40 0.22 0.24 0.27 0.07 0.43 0.35 0.30 0.35 0.34 0.36 0.31 0.33 0.21 0.24
+0.1
+Qwen3-VL 235B 0.51 0.40 0.58 0.48 0.47 0.50 0.26 0.41 0.50 0.54 0.58 0.54 0.47 0.31 0.61 0.52 0.19
+Qwen3-VL 32B 0.51 0.37 0.60 0.49 0.41 0.50 0.25 0.39 0.49 0.56 0.55 0.52 0.44 0.33 0.61 0.57 0.19
+Qwen3-VL 8B 0.45 0.32 0.47 0.47 0.40 0.49 0.31 0.29 0.37 0.52 0.45 0.45 0.37 0.21 0.52 0.57 0.11 0.0
+Human (BM25) 0.21 0.18 0.20 0.14 0.13 0.12 0.06 0.22 0.15 0.19 0.19 0.14 0.14 0.24 0.19 0.19 0.11
+Cl a u d e
+C l
+H a a u i d k e u S 4 o . 5 n n et 4 G . G 5 L M L M - 4 - . 4 6 . V 6 V Fl as h G P G T- P 4 T . - 1 4. G 1 P M T- i n 4 i . 1 N a n o G P G T- P 5 T- 5 G M P i n T- i 5 N a n G o G e P m T i n - 5 i . 2 2 . G 5 e F m l a i s n h i 2. G 5 e P m r Q o i n w i e 3 n P 3 r - o V Q L w 2 e 3 n 5 3 B - V Q L w 3 e 2 n B 3 H - V u m L 8 a n B ( B M 2 5)
+s'nehoC
+Figure20.Pairwisesystemagreement(Cohen'sκ).Darkercellsindicatehigheragreement.TheHumanbaselineshowslowagreement
+withallagentsystemsdespitecomparableaccuracy,revealingcomplementaryerrorpatterns.
+50
+30
+10
+0.0 0.2 0.4 0.6 0.8 1.0
+Item Difficulty (mean model accuracy)
+snoitseuq
+fo
+rebmuN
+discriminating: 334
+universally easy: 119 0.25
+universally hard: 42
+anomalous: 5
+0.20
+0.15
+Hard threshold (0.1)
+Easy threshold (0.9)
+0.10
+0.05
+0.00
+0.0 0.2 0.4 0.6 0.8 1.0
+Item Difficulty (mean model accuracy)
+)yxorp
+noitanimircsid(
+ecnairaV
+metI
+anomalous (n=5)
+discriminating (n=334)
+universally easy (n=119)
+universally hard (n=42)
+Figure21.Left:Distributionofitemdifficulty(meanmodelaccuracy).Right:Difficultyvs.variance;high-varianceitemsarethemost
+discriminating.Only5anomalousitemsexist,confirmingmonotonicdifficultyscaling.
+MultimodalAgenticDocumentQA
+80
+40
+0
+1 2 3 4 5 6 7 8 9 10
+Search Iteration
+dnuof
+ecnedive
+htiw
+snoitseuq
+fo
+%
+Document Found by Iteration N
+80
+40
+Gemini 3 Pro
+Claude Sonnet 4.5
+GPT-5 20
+Claude Haiku 4.5
+GPT-5 Nano
+Human (BM25)
+1 2 3 4 5 6 7 8 9 10
+Search Iteration
+dnuof
+ecnedive
+htiw
+snoitseuq
+fo
+%
+Evidence Page Found by Iteration N
+Gemini 3 Pro
+Claude Sonnet 4.5
+GPT-5
+Claude Haiku 4.5
+GPT-5 Nano
+Human (BM25)
+Figure22.EvidencefoundbyiterationN.Left:documentretrieval.Right:pageretrieval.Humansfindevidenceearlier,buttopagents
+convergebyiteration5.
+60
+20
+Clau de Sonn G et e 4 m .5 i H ni u 3 m P a r n o ( B M2 C 5 l ) au G d P e T H -5 aiku G 4 G P .5 T e - m 5 i M ni i 2 n . i 5 F G la P s T h -5 Na G no L M-4.6 V G PT-5 Q .2 G w P e T n - 3 4 - .1 V Q L w 2 e 3 n 5 3 B - G VL e m 32 in B i 2 Q .5 w P en r G o 3 L - M VL - 4 8 . B 6 V G F P l T a - s 4 h .1 Nano
+)%(
+etaR
+yrevoceR
+n=218
+n=167 n=118 n=330 n=286
+n=378 n=319
+n=372 n=314 n=343
+n=271
+n=287 n=308
+n=226
+n=278
+n=247
+n=327
+Figure23.Recoveryrateafterinitialquerymiss.Percentageofquestionswherethesystemeventuallyfindsthegolddocumentafter
+failingonthefirstquery.Labelsshowthenumberofquestionsrequiringrecovery(n).Notably,thehumanbaselineneedsrecoveryfor
+only118questions-farfewerthanmostagents(typically250-380)-indicatingthathumanscraftmorepreciseinitialqueries.Among
+thecasesthatdorequirerecovery,topagentsmatchhumanrecoveryrates(∼93%);weakermodelsrarelyrecover.
+MultimodalAgenticDocumentQA
+0.7
+0.6
+0.5
+0.4
+0.3
+0.2
+0.1
+0.0
+GPT-4.1 N G an P o T-4.1 Q M w in e i n3- Q VL w 8 e B n3-VL 3 G 2B PT-5 G L N M an -4 o .6 Q V w Fl e a n s 3 h -VL 235 G B PT G -5 e m M in in i i 2.5 Flash GL M H -4 u . m 6V an (B M25) GP G T e -5 m .2 ini 2.5 Pro GPT-4.1 Cl G au P d T e -5 Haiku G 4 e .5 m C i l n a i u 3 d e P r S o onnet 4.5
+)mis
+1(
+petS
+rep
+tfirD
+enisoC
+naeM
+0.38
+0.32 0.32 0.33
+0.27 0.28
+0.21 0.23 0.23 0.23 0.24 0.24
+0.16 0.17 0.18 0.18 0.20
+0.10
+Figure24.Queryreformulationmagnitudebysystem.Higherdriftindicatesmoreaggressivequerychanges.BoxshowsIQRwith
+medianlabeled.Systemssortedbymediandrift.
+3.0
+2.5
+2.0
+1.5
+1.0
+0.5
+0.0
+0.0 0.1 0.2 0.3 0.4 0.5 0.6
+Mean Cosine Drift per Step
+ytisneD
+Correct (n=2276)
+Incorrect (n=1861)
+Correct median: 0.250 70
+Incorrect median: 0.239
+50
+30
+10
+0.15 0.20 0.25 0.30 0.35
+Mean Drift per Step (reformulated questions)
+)%(
+snoitseuQ
+detalumrofeR
+no
+ycaruccA
+Gemini 3 Pro
+GPT-5 Claude Sonnet 4.5
+GPT-5 Mini Claude Haiku 4.5 GPT-5.2
+GPT-5 Nano Gemini 2.5 FlasGhPT-4.1
+GPT-4.1 Mini Gemini 2.5 Pro
+GPT-4.1 Nano
+Figure25. Left: Driftdistributionforcorrectvs.incorrectpredictions. Right: Per-systemmeandriftvs.accuracyonreformulated
+questions,showingapositivecorrelationbetweenreformulationeffortandsuccess.
+MultimodalAgenticDocumentQA
+I.SolutionSpace
+Thisdesignspaceprovidesastructurallensforinterpretingtheempiricalfindingspresentedinthemaintext.Thecomparative
+analysishighlightscriticaltrade-offsacrossthesespecificdimensions:
+WhileflexibleProgrammaticflows(e.g.,RecursiveLanguageModels)offertheoreticaladvantages,ourefficiencyanalysis
+demonstrates that they currently suffer from catastrophic computational overhead compared to constrained Iterative
+architectures(e.g.,BM25MLLMAgent). Thissuggeststhatwithoutrobustguardrails,unconstrainedreasoningleadstothe
+diminishingreturnsobservedintheefficiencycalibrationcurves.
+ThenecessityoftheVisualprimitiveisvalidatedbyourConstructValidityanalysis,whichfindsthat57.2%ofquestions
+require structural or visual comprehension (e.g., tables, forms). This confirms that systems relying solely on Textual
+representations(Markdown/JSON)arearchitecturallylimitedcomparedtothoseutilizingfullpageimagesorvisualcrops.
+Withretrievalfailuresaccountingfor39.1%ofallerrors,theselectionofIndexingandScopeisparamount. Theperformance
+hierarchysuggeststhatsimpleSparseindexingoftenfailstocapturesemanticnuance,necessitatingmoreadvancedLate
+Interactionorhybridstrategies(likeHEAVEN)tohandlethehighrecallrequirementsofthebenchmark.
+Finally,thepervasiveissueof"stochasticsearch"identifiedinourbehavioralanalysishighlightstheMemorysub-dimension
+as a critical area for future optimization. Implementing Episodic Stores could allow agents to learn corpus-specific
+terminologyacrossqueries,reducingthewastefulexploratoryloopsobservedincurrentfrontiermodels.
+Table18.MorphologicalAnalysisoftheAgenticDocumentCollectionAnsweringSolutionSpace
+Dimension Sub-Dimension Primitives/Options
+1.ControlFlow Architecture Single-stepRAG,Iterative(ReAct),Hierarchical(Manager-Worker),Map-Reduce
+Reasoning Zero-shot,Chain-of-Thought,Tree-of-Thoughts,Reflexion
+Memory Stateless,SlidingWindow,SummarizedHistory,EpisodicStore
+2.Representation Textual PlainText,Markdown,JSON,HTML,SemanticChunks
+Visual FullPageImage,BoundingBoxCrops,LatentVisualEmbeddings
+Graph KnowledgeGraph(Entities),DocumentStructureGraph(DOM)
+3.Retrieval Indexing Sparse(BM25),Dense(Bi-encoder),LateInteraction(ColBERT/Multi-vector)
+Reranking None,Cross-Encoder,LLM-basedReranking
+Scope Chunk-level,Page-level,Document-level,Parent-Child
+4.Generation Synthesis Extractive(Spanselection),Abstractive(Newsynthesis)
+Grounding Citation(Sentence-level),Citation(Chunk-level),VisualBoundingBoxes
+MultimodalAgenticDocumentQA
+J.LandscapeofAgenticApproachestoDocuments
+Overthepastfewyears,documentunderstandingapproacheshaveprogressedfromsystemscombiningOCRwithlayoutawaretransformers(Xuetal.,2020;Powalskietal.,2021;Garncareketal.,2021)tospecializedOCR-freemodels(Kim
+etal.,2022;Leeetal.,2023),andmostrecently,MLLMs(Chenetal.,2024;Baietal.,2023;Wuetal.,2024;OpenAIetal.,
+2024;Liuetal.,2023a). Despitethisarchitecturalevolution,theevaluationremainslargelyfocusedonansweringquestions
+basedonasingleinputdocument.
+Thebenchmarksinthisareaevolvedfromsimplersingle-pagedocuments(Mathewetal.,2021b;a)toslightlylonger(Tito
+etal.,2023;Landeghemetal.,2023),andmassivePDFs(Chiaetal.,2024;Maetal.,2024b). Althoughemergingdatasets
+introducedocumentcollectionsasinput,theyoftenrelyonsemi-automatedannotationpipelines(Choetal.,2024;Dong
+etal.,2025)orframetheproblemassingle-stepretrieval(Faysseetal.,2025), failingtocapturetheiterativeplanning
+requiredforcomplexreasoning.
+Toaddressthiscomplexity,recentresearchhasadoptedagenticframeworks(Yaoetal.,2023;Shinnetal.,2023),which
+enable models to interleave reasoning, retrieval, and self-correction. However, the benchmarks used to evaluate these
+capabilities(Rossetetal.,2025;Suetal.,2025),predominantlyoperateoverHTMLwebpagesorplaintext.
+J.1.RelatedWorksAssessment
+Table1summarizespriorbenchmarksalongthreeaxes: (1)documentdiversityintermsofsubjectdomainsandlayouts;(2)
+whetherquestionsandanswersarefullyhuman-annotatedorpartiallyautomated;and(3)thetaskframing(single-document
+VQAvs.documentRAGvs.agenticresearch). Webrieflyjustifyourassignmentshere.
+BenchmarkAssessment
+I.Domain II.Layout III.Annotation
+Diversity Diversity Method
+Narrow Diverse Uniform Heterogeneous Automatic Manual
+Scopeof Visual QAOrigin?
+Topic? Structure?
+Bounded Standard Hybrid
+Sing L l O e W Topic Spe M c E ifi D c IU G M enre Ope H n I / G M H ixed Homo L g O e W neous Tem M p E l D a I t U e M Var. Rich/ H C IG om H plex F G u E lly N S E y R n A t T he E t D ic Aut M o I + X C E h D eck Fu H lly U C M u A ra N ted
+e.g. ( , F T in A a T n - c D e) QA e. ( g I . n , d D u o st c r V ia Q l) A e. ( g V G ., i e D D n o e U R ra D E l) E, e.g., (S S l l i i d d e e s V ) QA e ( . W g., eb M D uR oc A s R ) (M L e u o .g n lt . g , i- B M m e o M n d c - h al) e (B .g o ., o M tst M ra D p o p c e I d R ) e.g., V M iD -L oS o e n e g k Doc, O e. u g r ., B D e o n c c V hm Q a A r , k
+Figure26.Taxonomyofdocument-basedbenchmarks.Westructureourassessmentofrelatedworksalongthreeaxes:(I)Domain
+Diversity,rangingfromsingle-topictoopen-domain;(II)LayoutDiversity,evaluatingvisualstructuralcomplexity;and(III)Annotation
+Method,distinguishingbetweensynthetic,hybrid,andfullyhuman-curatedpipelines.
+Weuse low, medium,and highascoarse, relativecategories: lowindicatesasingleorverynarrowdomainor
+layouttype; mediumcoversasmallnumberoffairlysimilardomains/layouts; highcorrespondstobroadopen-domain
+coverageormanyheterogeneouslayouts(SeeFigure26).
+DocVQA(Mathewetal.,2021b). DocVQAcollectsscannedbusinessdocumentssuchasinvoices,forms,andletters.
+Thesubjectmatterismostlyindustrial/administrative,butspansmultipledocumenttypes,sowemarkdomaindiversity
+as medium. Layoutsvaryacrosstemplatesbutremaininthefamilyofstructuredformsandreports,hence medium
+layoutdiversity. Questionsandanswersarehuman-writtenandgroundedineachsinglepage,sowemarkthedatasetas
+fullyhuman-annotated(✓).
+InfographicVQA(Mathewetal.,2021a). Thisbenchmarkusesinfographicsasthesoledocumenttype. Infographicscover
+afairlywiderangeoftopicsbutarealldesignedasvisualposters,leadingto mediumdomaindiversityand highlayout
+diversity. Questionsandanswersaremanuallyannotatedoneachinfographic,soweuse✓.
+TAT-DQA(Zhuetal.,2022). TAT-DQAfocusesonquestionansweringoverfinancialtablesfromcorporatereports. Both
+thedomain(finance)andthelayouts(tabularpageswithsimilarstructures)arenarrow,whichwedenoteas lowdomain
+MultimodalAgenticDocumentQA
+and lowlayoutdiversity. QApairsarehuman-annotated,sowemark✓.
+DUDE(Landeghemetal.,2023). DUDEincludesmulti-pagePDFsfromseveraldomains(e.g.,legal,scientific,technical),
+withrich layoutsinvolving paragraphs, tables, and figures. Wetherefore assign highdiversityfor bothdomains and
+layouts. Questionsandanswersaremanuallycurated,sothedatasetisfullyhuman-annotated(✓).
+MP-DocVQA(Titoetal.,2023). MP-DocVQAextendsDocVQAtomulti-pagedocumentsbutstillfocusesprimarilyon
+industrialPDFs(forms,reports). Weratebothdomainandlayoutdiversityas medium. ManyQApairsoriginatefrom
+DocVQAandareextendedheuristicallytomultiplepages,sowemarktheannotationasmixed(✓/✗).
+SlideVQA(Tanakaetal.,2023). SlideVQAconsistsofslidedecks(PowerPoint-styledocuments)fromavarietyoftopics,
+yielding mediumdomaindiversitybutrelativelyhomogeneousslidelayouts( low). Questionsarecollectedandverified
+byhumans,thusthedatasetisfullyhuman-annotated(✓).
+M-LongDoc(Chiaetal.,2024). M-LongDoccomprisesrecent,verylongmultimodaldocumentswithhundredsofpages
+fromthreedomains: academicresearchpapers,financialreports,andproductmanuals. Thesethreedomainsjustifya
+mediumratingfordomaindiversity.Thedocumentsexhibitmultiplestructures(multi-columntext,tables,figures,diagrams),
+butstillwithinalimitedsetofgenres,sowemarklayoutdiversityas medium.Questionsaregeneratedbyseveralpowerful
+LMMs(Claude3.5,GPT-4o,Gemini1.5Pro)andthenfilteredbybothautomatedchecksandhumanannotators,i.e.,a
+semi-automaticpipeline,sowemarktheannotationasmixed(✓/✗).
+MMLongBench-Doc(Maetal.,2024b). MMLongBench-Docisconstructedover130+longPDFdocumentsfromseven
+diversedomainswithrichmultimodallayouts(text,tables,charts,images). Questionsareexpert-annotatedandcarefully
+designedtorequireevidencefrommultiplepagesandmultiplemodalities. Wethereforeassign highdomainand high
+layoutdiversity,and✓forfullyhuman-annotatedQA.
+MuRAR(Zhuetal.,2025). MuRARisamultimodalRAGframeworkevaluatedonaknowledgebasebuiltfromAdobe
+ExperienceLeaguedocumentationpages. Becauseallcontentcomesfromasingleenterpriseproductecosystem,weassign
+lowdomaindiversity. Pagesmixtext,screenshots,tables,andvideosinsideasinglewebsitetemplate,whichwelabelas
+mediumlayoutdiversity. QuestionsandanswersarelargelygeneratedandrefinedbyLLMsandthenevaluatedbyhumans,
+sowemarkmixedannotation(✓/✗).
+M2RAG(Liuetal.,2025). M2RAGbuildsonELI5-styleopen-domainquestionsandretrievesmultimodalevidence(web
+pagesplusimages)acrossmanytopicalcategories(science,society,health,politics,etc.). Thisleadsustomarkbothdomain
+andlayoutdiversityas high. Questionsarehuman-written,butdocumentretrieval,multimodalevidenceconstruction,and
+somelabelsrelyonautomaticpipelinesandLLMs,soweuse✓/✗.
+ViDoRE(Faysseetal.,2025). ViDoREisthevisualdocumentretrievalbenchmarkintroducedintheColPaliworkand
+aggregatesseveralpage-leveltasks(DocVQA,InfographicVQA,TAT-DQA,TabFQuAD,andsyntheticDocQAdatasets)
+acrossmultipledomainsandlanguages. Documentsincludeforms,infographics,tables,reports,andsyntheticPDFs,sowe
+mark highforbothdomainsandlayouts. SinceViDoREinheritshumanQAfromexistingdatasetsandalsointroduces
+syntheticqueriesandQA,weregardthebenchmarkashavingmixedhumanandautomatedannotation(✓/✗).
+DocBench(Zouetal.,2024). DocBenchcollects229realdocumentsfromfivedomains(scientificarticles,annualreports,
+legaldocuments,governmentreports,andnewspaperfrontpages)withheterogeneouslayouts(multi-columntext,figures,
+tables, charts). Wethusassign highdomainand highlayoutdiversity. Questionsandreferenceanswersarepartly
+generatedbyGPT-4andsubsequentlyrefinedorcheckedbyhumanannotators,sowemark✓/✗.
+M3DocRAG/M3DocVQA(Choetal.,2024).M3DocRAGintroducesM3DocVQA,anopen-domainDocVQAbenchmark
+createdbytakingMultimodalQAquestion-answerpairsandconvertingtheirsupportingWikipediapagesintoPDFs.Because
+alldocumentsoriginatefromWikipedia,topicsarebroadbutstillconstrainedtoencyclopedicstyle,whichwemarkas
+mediumdomaindiversityand lowlayoutdiversity(WikipediaanditsrenderedPDFssharefairlyuniformtemplates). The
+QAoriginishuman(fromMultimodalQA),butthenewopen-domain,multi-documentsettingandPDFrenderingarebuilt
+automatically,soweuse✓/✗.
+MMDocIR(Dongetal.,2025). MMDocIRisamultimodalretrievalandDocRAGbenchmarkconstructedbycombining
+manyexistingdocument-understandingdatasets(includingDocVQA,InfographicVQA,TAT-DQA,MMLongBench-Doc,
+DocBench,etc.) andadding1.6k+manuallyannotatedqueriesplusamuchlargerautomaticallybootstrappedset. Itinherits
+broaddomainandlayoutheterogeneity,soweassign high/ high. Giventhemixtureofexpertlabelsandbootstrappedor
+MultimodalAgenticDocumentQA
+inheritedlabels,wemark✓/✗.
+FinRAGBench-V (Zhao et al., 2025). FinRAGBench-V is a financial visual RAG benchmark: its corpus consists of
+financialreports,statements,regulatoryfilings,andrelateddocuments,allwithinthefinancialdomainbutwithmanykinds
+ofcharts,tables,andtext-heavypages. Wethereforemarkdomaindiversityas low(singledomain)butlayoutdiversityas
+high. TheaccompanyingQAdatasetisexplicitlydescribedashigh-qualityandhuman-annotated,soweassign✓.
+BRIGHT(Suetal.,2025). BRIGHTisareasoning-intensiveretrievalbenchmark: itcomprises1,384real-worldqueries
+from12datasetsspanningbiology,earthscience,economics,psychology,robotics,StackOverflow,AoPS,TheoremQA,
+andmore,withdocumentsthatincludeblogs,newsarticles,documentation,andreports. Wethusassign highdomain
+diversityand mediumlayoutdiversity(webandtext-centricpages). Queriesandrelevancejudgmentsarebuiltfrom
+human-authoredsources(nosyntheticquestions),sowemarkBRIGHTasfullyhuman-annotated(✓).
+ResearchyQuestions(Rossetetal.,2025). ResearchyQuestionsstartsfromrealuserqueriesincommercialsearchlogs
+andfiltersthemtonon-factoid,decompositional"researchy"questionsusingGPT-3/ChatGPTclassifiersandGPT-4forthe
+finalfilteringstage. EachquestionislinkedtoclickedURLsinClueWeb22,givingalarge,open-domainwebcorpuswith
+manysitetypesandlayouts;weassign highdomainand highlayoutdiversity. Becausequestionsandclicksarehuman,
+butthefilteringanddecompositionallabelsrelyheavilyonLLMs,wemarkmixedannotation(✓/✗). Thedatasetdoesnot
+shipreferenceanswers,onlyqueriesanddocumentsignals.
+ViDoSeek(Wangetal.,2025). ViDoSeekisabenchmarkforvisuallyrichdocumentretrieval-reason-answer,consistingof
+PDFdocuments(oftenslides,butalsostandards,technicalreports,andwhitepapers)andannotatedquerieswithsingle-or
+multi-hoptypes,referenceanswers,andreferencepages. Documentsspanmanytechnicalandgovernmentaltopicsand
+combine2Dlayout, charts, tables, andfreetext, soweassign highdomainand highlayoutdiversity. Queriesand
+answersareproducedviaanLLM-assistedpipelinewithhumanfilteringandqualitycontrol,hencewemark✓/✗.
+Ourbenchmark. Ourbenchmarkisbuiltfromacuratedcollectionofcomplex,multi-pagePDFsdrawnfromheterogeneous
+real-worldsources(e.g.,technicalreports,standards,slidedecks,andresearchdocuments),whichwecategorizeas high
+domainand highlayoutdiversity. Importantly,allquestionsarewrittenbyhumansspecificallyforthisbenchmark,and
+thedocumentsthemselvesareselectedbyhumanstosupportchallengingmulti-hop,agenticreasoning. Wethereforemark
+thedatasetasfullyhuman-annotated(✓).
+58

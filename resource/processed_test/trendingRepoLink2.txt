@@ -1,0 +1,821 @@
+SOURCE_TYPE: github_repo
+SOURCE_URL: https://github.com/langflow-ai/openrag
+REPO: langflow-ai/openrag
+DESCRIPTION: OpenRAG is a comprehensive, single package Retrieval-Augmented Generation platform built on Langflow, Docling, and Opensearch. 
+LANGUAGE: Python
+STARS: 1933
+FORKS: 185
+TOPICS: 
+LICENSE: Apache License 2.0
+CREATED: 2025-07-11T16:19:14Z
+UPDATED: 2026-03-13T12:06:41Z
+---
+
+README CONTENT:
+OpenRAG
+
+  Intelligent Agent-powered document search
+
+[](https://github.com/langflow-ai/langflow)
+[](https://github.com/opensearch-project/OpenSearch)
+[](https://github.com/docling-project/docling)
+
+[](https://www.youtube.com/@OpenRAG/)
+[](https://github.com/langflow-ai/openrag/stargazers)
+[](https://github.com/langflow-ai/openrag/network/members)
+
+[](https://docs.openr.ag) [](https://deepwiki.com/langflow-ai/openrag)
+
+OpenRAG is a comprehensive Retrieval-Augmented Generation platform that enables intelligent document search and AI-powered conversations.
+
+Users can upload, process, and query documents through a chat interface backed by large language models and semantic search capabilities. The system utilizes Langflow for document ingestion, retrieval workflows, and intelligent nudges, providing a seamless RAG experience.
+
+Check out the documentation or get started with the quickstart.
+
+Built with FastAPI and Next.js. 
+Powered by OpenSearch, Langflow, and Docling.
+
+✨ Highlight Features
+
+- Pre-packaged & ready to run - All core tools are hooked up and ready to go, just install and run
+- Agentic RAG workflows - Advanced orchestration with re-ranking and multi-agent coordination
+- Document ingestion - Handles messy, real-world data with intelligent parsing
+- Drag-and-drop workflow builder - Visual interface powered by Langflow for rapid iteration
+- Modular enterprise add-ons - Extend functionality when you need it
+- Enterprise search at any scale - Powered by OpenSearch for production-grade performance
+
+🔄 How OpenRAG Works
+
+OpenRAG follows a streamlined workflow to transform your documents into intelligent, searchable knowledge:
+
+  
+
+🚀 Install OpenRAG
+
+To get started with OpenRAG, see the installation guides in the OpenRAG documentation:
+
+ Quickstart
+ Install the OpenRAG Python package
+* Deploy self-managed services with Docker or Podman
+
+✨ Quick Start Workflow
+
+1. Launch OpenRAG
+
+↓
+
+2. Add Knowledge
+
+↓
+
+3. Start Chatting
+
+📦 SDKs
+
+Integrate OpenRAG into your applications with our official SDKs:
+
+Python SDK
+pip install openrag-sdk
+
+Quick Example:
+import asyncio
+from openragsdk import OpenRAGClient
+
+async def main():
+    async with OpenRAGClient() as client:
+        response = await client.chat.create(message="What is RAG?")
+        print(response.response)
+
+if name == "main":
+    asyncio.run(main())
+
+📖 Full Python SDK Documentation
+
+TypeScript/JavaScript SDK
+npm install openrag-sdk
+
+Quick Example:
+import { OpenRAGClient } from "openrag-sdk";
+
+const client = new OpenRAGClient();
+const response = await client.chat.create({ message: "What is RAG?" });
+console.log(response.response);
+
+📖 Full TypeScript/JavaScript SDK Documentation
+
+🔌 Model Context Protocol (MCP)
+
+Connect AI assistants like Cursor and Claude Desktop to your OpenRAG knowledge base:
+
+pip install openrag-mcp
+
+Quick Example (Cursor/Claude Desktop config):
+{
+  "mcpServers": {
+    "openrag": {
+      "command": "uvx",
+      "args": ["openrag-mcp"],
+      "env": {
+        "OPENRAGURL": "http://localhost:3000",
+        "OPENRAGAPIKEY": "yourapikey_here"
+      }
+    }
+  }
+}
+
+The MCP server provides tools for RAG-enhanced chat, semantic search, and settings management.
+
+📖 Full MCP Documentation
+
+🛠️ Development
+
+For developers who want to contribute to OpenRAG or set up a development environment, see CONTRIBUTING.md.
+
+🛟 Troubleshooting
+
+For assistance with OpenRAG, see Troubleshoot OpenRAG and visit the Discussions page.
+
+To report a bug or submit a feature request, visit the Issues page.
+
+REPOSITORY STRUCTURE:
+  [file] .dockerignore
+  [file] .env.example
+  [dir] .github
+  [dir] .github/ISSUE_TEMPLATE
+  [file] .github/ISSUE_TEMPLATE/bug_report.yml
+  [file] .github/ISSUE_TEMPLATE/config.yml
+  [file] .github/ISSUE_TEMPLATE/documentation.yml
+  [file] .github/ISSUE_TEMPLATE/feature_request.yml
+  [file] .github/changes-filter.yaml
+  [file] .github/dependabot.yml
+  [file] .github/labeler.yml
+  [file] .github/release.yml
+  [dir] .github/workflows
+  [file] .github/workflows/add-labels.yml
+  [file] .github/workflows/auto-delete-branch.yml
+  [file] .github/workflows/build-multiarch.yml
+  [file] .github/workflows/codeql.yml
+  [file] .github/workflows/community-label.yml
+  [file] .github/workflows/conventional-labels.yml
+  [file] .github/workflows/dependency-audit.yml
+  [file] .github/workflows/deploy-docs-draft.yml
+  [file] .github/workflows/deploy-gh-pages.yml
+  [file] .github/workflows/labeler.yml
+  [file] .github/workflows/lint-frontend.yml
+  [file] .github/workflows/pr-checks.yml
+  [file] .github/workflows/publish-mcp.yml
+  [file] .github/workflows/publish-sdk-python.yml
+  [file] .github/workflows/publish-sdk-typescript.yml
+  [file] .github/workflows/test-e2e.yml
+  [file] .github/workflows/test-integration.yml
+  [file] .github/workflows/update-uv-lock.yml
+  [file] .gitignore
+  [file] .pre-commit-config.yaml
+  [file] .python-version
+  [file] .secrets.baseline
+  [file] CONTRIBUTING.md
+  [file] Dockerfile
+  [file] Dockerfile.backend
+  [file] Dockerfile.frontend
+  [file] Dockerfile.langflow
+  [file] Dockerfile.langflow.dev
+  [file] LICENSE
+  [file] MANIFEST.in
+  [file] Makefile
+  [file] README.md
+  [file] SECURITY.md
+  [file] docker-compose.dev.yml
+  [file] docker-compose.gpu.yml
+  [file] docker-compose.yml
+  [dir] docs
+  [file] docs/.gitignore
+  [file] docs/README.md
+  [file] docs/VERSIONING_SETUP.md
+  [dir] docs/docs
+  [file] docs/docs/_partial-anonymous-user-owner.mdx
+  [file] docs/docs/_partial-container-vm.mdx
+  [file] docs/docs/_partial-docker-compose-down-and-prune.mdx
+  [file] docs/docs/_partial-docker-compose-up.mdx
+  [file] docs/docs/_partial-docker-remove-and-cleanup-steps.mdx
+  [file] docs/docs/_partial-docker-stop-all.mdx
+  [file] docs/docs/_partial-edit-agent-flow.mdx
+  [file] docs/docs/_partial-export-flows.mdx
+  [file] docs/docs/_partial-factory-reset-warning.mdx
+  [file] docs/docs/_partial-gpu-mode-tip.mdx
+  [file] docs/docs/_partial-ingestion-flow.mdx
+  [file] docs/docs/_partial-install-next-steps.mdx
+  [file] docs/docs/_partial-oauth-credentials.mdx
+  [file] docs/docs/_partial-ollama-models.mdx
+  [file] docs/docs/_partial-onboarding.mdx
+  [file] docs/docs/_partial-opensearch-auth-modes.mdx
+  [file] docs/docs/_partial-prereq-docker.mdx
+  [file] docs/docs/_partial-prereq-gpu.mdx
+  [file] docs/docs/_partial-prereq-models.mdx
+  [file] docs/docs/_partial-prereq-python.mdx
+  [file] docs/docs/_partial-prereq-uv.mdx
+  [file] docs/docs/_partial-prereq-windows.mdx
+  [file] docs/docs/_partial-setup.mdx
+  [file] docs/docs/_partial-start-tui.mdx
+  [file] docs/docs/_partial-temp-knowledge.mdx
+  [file] docs/docs/_partial-watsonx-models.mdx
+  [dir] docs/docs/core-components
+  [file] docs/docs/core-components/agents.mdx
+  [file] docs/docs/core-components/chat.mdx
+  [file] docs/docs/core-components/ingestion-configure.mdx
+  [file] docs/docs/core-components/ingestion.mdx
+  [file] docs/docs/core-components/knowledge-browse.mdx
+  [file] docs/docs/core-components/knowledge-connectors.mdx
+  [file] docs/docs/core-components/knowledge-filters.mdx
+  [file] docs/docs/core-components/knowledge.mdx
+  [dir] docs/docs/get-started
+  [file] docs/docs/get-started/docker.mdx
+  [file] docs/docs/get-started/install-options.mdx
+  [file] docs/docs/get-started/install-uv.mdx
+  [file] docs/docs/get-started/install-uvx.mdx
+  [file] docs/docs/get-started/install-windows.mdx
+  [file] docs/docs/get-started/manage-services.mdx
+  [file] docs/docs/get-started/quickstart.mdx
+  [file] docs/docs/get-started/reinstall.mdx
+  [file] docs/docs/get-started/tui.mdx
+  [file] docs/docs/get-started/uninstall.mdx
+  [file] docs/docs/get-started/upgrade.mdx
+  [file] docs/docs/get-started/what-is-openrag.mdx
+  [dir] docs/docs/reference
+  [file] docs/docs/reference/api-sdk-overview.mdx
+  [file] docs/docs/reference/configuration.mdx
+  [dir] docs/docs/support
+  [file] docs/docs/support/contribute.mdx
+  [file] docs/docs/support/troubleshoot.mdx
+  [file] docs/docusaurus.config.js
+  [file] docs/package-lock.json
+  [file] docs/package.json
+  [file] docs/scraper.config.json
+  [file] docs/sidebars.js
+  [dir] docs/src
+  [dir] docs/src/components
+  [dir] docs/src/components/icon
+  [file] docs/src/components/icon/icon.tsx
+  [dir] docs/src/css
+  [file] docs/src/css/custom.css
+  [dir] docs/static
+  [file] docs/static/.nojekyll
+  [file] docs/static/CNAME
+  [dir] docs/static/img
+  [file] docs/static/img/add_knowledge_openrag.png
+  [file] docs/static/img/chat_openrag.png
+  [file] docs/static/img/favicon.ico
+  [file] docs/static/img/logo-openrag-docs-dark.svg
+  [file] docs/static/img/logo-openrag-docs-light.svg
+  [file] docs/static/img/openrag-containers.png
+  [file] docs/static/img/openrag-logo-dog.svg
+  [file] docs/static/img/openrag_readme_downsized.gif
+  [file] docs/static/img/openrag_tui_dec_2025.png
+  [file] docs/static/img/opensearch-agent-flow.png
+  [file] docs/static/img/uv_run_openrag.png
+  [file] docs/static/img/workflow-diagram.svg
+  [file] docs/static/robots.txt
+  [dir] flows
+  [dir] flows/components
+  [file] flows/components/ollama_embedding.json
+  [file] flows/components/ollama_llm.json
+  [file] flows/components/ollama_llm_text.json
+  [file] flows/components/opensearch_multimodal.py
+  [file] flows/components/opensearch_multimodel.py
+  [file] flows/components/watsonx_embedding.json
+  [file] flows/components/watsonx_llm.json
+  [file] flows/components/watsonx_llm_text.json
+  [file] flows/ingestion_flow.json
+  [file] flows/openrag_agent.json
+  [file] flows/openrag_nudges.json
+  [file] flows/openrag_url_mcp.json
+  [dir] frontend
+  [file] frontend/.env.test.example
+  [file] frontend/.gitignore
+  [dir] frontend/.husky
+  [file] frontend/.husky/pre-commit
+  [dir] frontend/app
+  [dir] frontend/app/api
+  [dir] frontend/app/api/[...path]
+  [file] frontend/app/api/[...path]/route.ts
+  [file] frontend/app/api/get-query-client.ts
+  [dir] frontend/app/api/mutations
+  [file] frontend/app/api/mutations/useCancelTaskMutation.ts
+  [file] frontend/app/api/mutations/useConnectConnectorMutation.ts
+  [file] frontend/app/api/mutations/useCreateApiKeyMutation.ts
+  [file] frontend/app/api/mutations/useCreateFilter.ts
+  [file] frontend/app/api/mutations/useDeleteDocument.ts
+  [file] frontend/app/api/mutations/useDeleteFilter.ts
+  [file] frontend/app/api/mutations/useDisconnectConnectorMutation.ts
+  [file] frontend/app/api/mutations/useOnboardingMutation.ts
+  [file] frontend/app/api/mutations/useOnboardingRollbackMutation.ts
+  [file] frontend/app/api/mutations/useRevokeApiKeyMutation.ts
+  [file] frontend/app/api/mutations/useSyncConnector.ts
+  [file] frontend/app/api/mutations/useUpdateFilter.ts
+  [file] frontend/app/api/mutations/useUpdateOnboardingStateMutation.ts
+  [file] frontend/app/api/mutations/useUpdateSettingsMutation.ts
+  [dir] frontend/app/api/queries
+  [file] frontend/app/api/queries/useDeleteSessionMutation.ts
+  [file] frontend/app/api/queries/useDoclingHealthQuery.ts
+  [file] frontend/app/api/queries/useGetAllFiltersQuery.ts
+  [file] frontend/app/api/queries/useGetApiKeysQuery.ts
+  [file] frontend/app/api/queries/useGetConnectorTokenQuery.ts
+  [file] frontend/app/api/queries/useGetConnectorsQuery.ts
+  [file] frontend/app/api/queries/useGetConversationsQuery.ts
+  [file] frontend/app/api/queries/useGetFilterByIdQuery.ts
+  [file] frontend/app/api/queries/useGetFiltersSearchQuery.ts
+  [file] frontend/app/api/queries/useGetModelsQuery.ts
+  [file] frontend/app/api/queries/useGetNudgesQuery.ts
+  [file] frontend/app/api/queries/useGetSearchAggregations.ts
+  [file] frontend/app/api/queries/useGetSearchQuery.ts
+  [file] frontend/app/api/queries/useGetSettingsQuery.ts
+  [file] frontend/app/api/queries/useGetTasksQuery.ts
+  [file] frontend/app/api/queries/useProviderHealthQuery.ts
+  [dir] frontend/app/auth
+  [dir] frontend/app/auth/callback
+  [file] frontend/app/auth/callback/page.tsx
+  [dir] frontend/app/chat
+  [dir] frontend/app/chat/_components
+  [file] frontend/app/chat/_components/assistant-message.tsx
+  [file] frontend/app/chat/_components/chat-input.tsx
+  [file] frontend/app/chat/_components/error-message.tsx
+  [file] frontend/app/chat/_components/file-preview.tsx
+  [file] frontend/app/chat/_components/function-calls.tsx
+  [file] frontend/app/chat/_components/message.tsx
+  [file] frontend/app/chat/_components/nudges.tsx
+  [file] frontend/app/chat/_components/selected-knowledge-filter.tsx
+  [file] frontend/app/chat/_components/token-usage.tsx
+  [file] frontend/app/chat/_components/user-message.tsx
+  [dir] frontend/app/chat/_types
+  [file] frontend/app/chat/_types/types.ts
+  [file] frontend/app/chat/page.tsx
+  [dir] frontend/app/connectors
+  [file] frontend/app/connectors/page.tsx
+  [file] frontend/app/error.tsx
+  [file] frontend/app/favicon.ico
+  [file] frontend/app/global-error.tsx
+  [file] frontend/app/globals.css
+  [file] frontend/app/icon.png
+  [dir] frontend/app/knowledge
+  [dir] frontend/app/knowledge/chunks
+  [file] frontend/app/knowledge/chunks/page.tsx
+  [file] frontend/app/knowledge/page.tsx
+  [file] frontend/app/layout.tsx
+  [dir] frontend/app/login
+  [file] frontend/app/login/page.tsx
+  [dir] frontend/app/onboarding
+  [dir] frontend/app/onboarding/_components
+  [file] frontend/app/onboarding/_components/advanced.tsx
+  [file] frontend/app/onboarding/_components/animated-provider-steps.tsx
+  [file] frontend/app/onboarding/_components/anthropic-onboarding.tsx
+  [file] frontend/app/onboarding/_components/ibm-onboarding.tsx
+  [file] frontend/app/onboarding/_components/model-selector.tsx
+  [file] frontend/app/onboarding/_components/ollama-onboarding.tsx
+  [file] frontend/app/onboarding/_components/onboarding-card.tsx
+  [file] frontend/app/onboarding/_components/onboarding-content.tsx
+  [file] frontend/app/onboarding/_components/onboarding-step.tsx
+  [file] frontend/app/onboarding/_components/onboarding-upload.tsx
+  [file] frontend/app/onboarding/_components/openai-onboarding.tsx
+  [file] frontend/app/onboarding/_components/progress-bar.tsx
+  [file] frontend/app/onboarding/_components/tab-trigger.tsx
+  [dir] frontend/app/onboarding/_hooks
+  [file] frontend/app/onboarding/_hooks/useModelSelection.ts
+  [file] frontend/app/onboarding/_hooks/useUpdateSettings.ts
+  [file] frontend/app/page.tsx
+  [file] frontend/app/providers.tsx
+  [dir] frontend/app/settings
+  [dir] frontend/app/settings/_components
+  [file] frontend/app/settings/_components/anthropic-settings-dialog.tsx
+  [file] frontend/app/settings/_components/anthropic-settings-form.tsx
+  [file] frontend/app/settings/_components/card-icon.tsx
+  [file] frontend/app/settings/_components/connector-card.tsx
+  [file] frontend/app/settings/_components/connector-cards.tsx
+  [file] frontend/app/settings/_components/connectors-skeleton.tsx
+  [file] frontend/app/settings/_components/model-provider-card.tsx
+  [file] frontend/app/settings/_components/model-provider-dialog-footer.tsx
+  [file] frontend/app/settings/_components/model-providers.tsx
+  [file] frontend/app/settings/_components/model-selectors.tsx
+  [file] frontend/app/settings/_components/ollama-settings-dialog.tsx
+  [file] frontend/app/settings/_components/ollama-settings-form.tsx
+  [file] frontend/app/settings/_components/openai-settings-dialog.tsx
+  [file] frontend/app/settings/_components/openai-settings-form.tsx
+  [file] frontend/app/settings/_components/watsonx-settings-dialog.tsx
+  [file] frontend/app/settings/_components/watsonx-settings-form.tsx
+  [dir] frontend/app/settings/_helpers
+  [file] frontend/app/settings/_helpers/model-helpers.tsx
+  [file] frontend/app/settings/_helpers/model-select-item.tsx
+  [file] frontend/app/settings/page.tsx
+  [dir] frontend/app/upload
+  [dir] frontend/app/upload/[provider]
+  [file] frontend/app/upload/[provider]/page.tsx
+  [file] frontend/biome.json
+  [file] frontend/components.json
+  [dir] frontend/components
+  [dir] frontend/components/AgGrid
+  [file] frontend/components/AgGrid/agGridStyles.css
+  [file] frontend/components/AgGrid/registerAgGridModules.ts
+  [file] frontend/components/animated-conditional.tsx
+  [file] frontend/components/chat-renderer.tsx
+  [dir] frontend/components/cloud-picker
+  [file] frontend/components/cloud-picker/file-item.tsx
+  [file] frontend/components/cloud-picker/file-list.tsx
+  [file] frontend/components/cloud-picker/index.ts
+  [file] frontend/components/cloud-picker/ingest-settings.tsx
+  [file] frontend/components/cloud-picker/onedrive-v8-handler.ts
+  [file] frontend/components/cloud-picker/picker-header.tsx
+  [file] frontend/components/cloud-picker/provider-handlers.ts
+  [file] frontend/components/cloud-picker/sharepoint-v8-handler.ts
+  [file] frontend/components/cloud-picker/types.ts
+  [file] frontend/components/cloud-picker/unified-cloud-picker.tsx
+  [file] frontend/components/code-component.tsx
+  [file] frontend/components/confirmation-dialog.tsx
+  [file] frontend/components/delete-confirmation-dialog.tsx
+  [file] frontend/components/delete-session-modal.tsx
+  [file] frontend/components/docling-health-banner.tsx
+  [file] frontend/components/duplicate-handling-dialog.tsx
+  [file] frontend/components/filter-icon-popover.tsx
+  [file] frontend/components/header.tsx
+  [dir] frontend/components/icons
+  [file] frontend/components/icons/animated-processing-icon.tsx
+  [file] frontend/components/icons/anthropic-logo.tsx
+  [file] frontend/components/icons/aws-logo.tsx
+  [file] frontend/components/icons/dog-icon.tsx
+  [file] frontend/components/icons/google-drive-logo.tsx
+  [file] frontend/components/icons/google-logo.tsx
+  [file] frontend/components/icons/ibm-logo.tsx
+  [file] frontend/components/icons/ollama-logo.tsx
+  [file] frontend/components/icons/one-drive-logo.tsx
+  [file] frontend/components/icons/openai-logo.tsx
+  [file] frontend/components/icons/openrag-logo.tsx
+  [file] frontend/components/icons/share-point-logo.tsx
+  [file] frontend/components/knowledge-actions-dropdown.tsx
+  [file] frontend/components/knowledge-dropdown.tsx
+  [file] frontend/components/knowledge-filter-list.tsx
+  [file] frontend/components/knowledge-filter-panel.tsx
+  [file] frontend/components/knowledge-search-input.tsx
+  [file] frontend/components/label-input.tsx
+  [file] frontend/components/label-wrapper.tsx
+  [file] frontend/components/layout-wrapper.tsx
+  [file] frontend/components/markdown-renderer.tsx
+  [file] frontend/components/navigation.tsx
+  [file] frontend/components/protected-route.tsx
+  [file] frontend/components/provider-health-banner.tsx
+  [file] frontend/components/task-notification-menu.tsx
+  [file] frontend/components/theme-provider.tsx
+  [file] frontend/components/theme-switcher-buttons.tsx
+  [dir] frontend/components/ui
+  [file] frontend/components/ui/accordion.tsx
+  [file] frontend/components/ui/avatar.tsx
+  [file] frontend/components/ui/badge.tsx
+  [file] frontend/components/ui/banner.tsx
+  [file] frontend/components/ui/button.tsx
+  [file] frontend/components/ui/card.tsx
+  [file] frontend/components/ui/collapsible.tsx
+  [file] frontend/components/ui/command.tsx
+  [file] frontend/components/ui/dialog.tsx
+  [file] frontend/components/ui/dropdown-menu.tsx
+  [file] frontend/components/ui/input.tsx
+  [dir] frontend/components/ui/inputs
+  [file] frontend/components/ui/inputs/number-input.tsx
+  [file] frontend/components/ui/label.tsx
+  [file] frontend/components/ui/multi-select.tsx
+  [file] frontend/components/ui/popover.tsx
+  [file] frontend/components/ui/scroll-area.tsx
+  [file] frontend/components/ui/select.tsx
+  [file] frontend/components/ui/separator.tsx
+  [file] frontend/components/ui/sheet.tsx
+  [file] frontend/components/ui/sidebar.tsx
+  [file] frontend/components/ui/skeleton.tsx
+  [file] frontend/components/ui/slider.tsx
+  [file] frontend/components/ui/sonner.tsx
+  [file] frontend/components/ui/status-badge.tsx
+  [file] frontend/components/ui/switch.tsx
+  [file] frontend/components/ui/tabs.tsx
+  [file] frontend/components/ui/textarea.tsx
+  [file] frontend/components/ui/tooltip.tsx
+  [file] frontend/components/user-nav.tsx
+  [dir] frontend/contexts
+  [file] frontend/contexts/auth-context.tsx
+  [file] frontend/contexts/chat-context.tsx
+  [file] frontend/contexts/knowledge-filter-context.tsx
+  [file] frontend/contexts/task-context.tsx
+  [file] frontend/eslint.config.mjs
+  [dir] frontend/hooks
+  [file] frontend/hooks/use-file-drag.ts
+  [file] frontend/hooks/use-mobile.tsx
+  [file] frontend/hooks/useChatStreaming.ts
+  [file] frontend/knip.config.ts
+  [dir] frontend/lib
+  [file] frontend/lib/constants.ts
+  [file] frontend/lib/debounce.ts
+  [file] frontend/lib/format-files-to-delete.tsx
+  [file] frontend/lib/upload-utils.ts
+  [file] frontend/lib/utils.ts
+  [file] frontend/next.config.ts
+  [file] frontend/package-lock.json
+  [file] frontend/package.json
+  [file] frontend/playwright.config.ts
+  [file] frontend/postcss.config.mjs
+  [dir] frontend/public
+  [file] frontend/public/file.svg
+  [file] frontend/public/globe.svg
+  [file] frontend/public/next.svg
+  [file] frontend/public/vercel.svg
+  [file] frontend/public/window.svg
+  [dir] frontend/stores
+  [file] frontend/stores/loadingStore.ts
+  [file] frontend/tailwind.config.ts
+  [dir] frontend/tests
+  [file] frontend/tests/README.md
+  [dir] frontend/tests/core
+  [file] frontend/tests/core/onboarding.spec.ts
+  [file] frontend/tsconfig.json
+  [dir] keys
+  [file] keys/.gitkeep
+  [dir] kubernetes
+  [dir] kubernetes/helm
+  [dir] kubernetes/helm/openrag
+  [file] kubernetes/helm/openrag/Chart.yaml
+  [dir] kubernetes/helm/openrag/templates
+  [file] kubernetes/helm/openrag/templates/NOTES.txt
+  [file] kubernetes/helm/openrag/templates/_helpers.tpl
+  [dir] kubernetes/helm/openrag/templates/backend
+  [file] kubernetes/helm/openrag/templates/backend/deployment.yaml
+  [file] kubernetes/helm/openrag/templates/backend/service.yaml
+  [dir] kubernetes/helm/openrag/templates/configmaps
+  [file] kubernetes/helm/openrag/templates/configmaps/app-config-configmap.yaml
+  [file] kubernetes/helm/openrag/templates/configmaps/flow-ids-configmap.yaml
+  [dir] kubernetes/helm/openrag/templates/dashboards
+  [file] kubernetes/helm/openrag/templates/dashboards/deployment.yaml
+  [file] kubernetes/helm/openrag/templates/dashboards/service.yaml
+  [dir] kubernetes/helm/openrag/templates/frontend
+  [file] kubernetes/helm/openrag/templates/frontend/deployment.yaml
+  [file] kubernetes/helm/openrag/templates/frontend/hpa.yaml
+  [file] kubernetes/helm/openrag/templates/frontend/service.yaml
+  [dir] kubernetes/helm/openrag/templates/ingress
+  [file] kubernetes/helm/openrag/templates/ingress/ingress.yaml
+  [dir] kubernetes/helm/openrag/templates/langflow
+  [file] kubernetes/helm/openrag/templates/langflow/deployment.yaml
+  [file] kubernetes/helm/openrag/templates/langflow/service.yaml
+  [dir] kubernetes/helm/openrag/templates/secrets
+  [file] kubernetes/helm/openrag/templates/secrets/aws-secret.yaml
+  [file] kubernetes/helm/openrag/templates/secrets/backend-secret.yaml
+  [file] kubernetes/helm/openrag/templates/secrets/langflow-secret.yaml
+  [file] kubernetes/helm/openrag/templates/secrets/llm-providers-secret.yaml
+  [file] kubernetes/helm/openrag/templates/secrets/oauth-secret.yaml
+  [file] kubernetes/helm/openrag/templates/secrets/opensearch-secret.yaml
+  [file] kubernetes/helm/openrag/templates/serviceaccount.yaml
+  [dir] kubernetes/helm/openrag/templates/storage
+  [file] kubernetes/helm/openrag/templates/storage/config-pvc.yaml
+  [file] kubernetes/helm/openrag/templates/storage/keys-pvc.yaml
+  [file] kubernetes/helm/openrag/templates/storage/langflow-pvc.yaml
+  [file] kubernetes/helm/openrag/values.yaml
+  [dir] openrag-documents
+  [file] openrag-documents/docling.pdf
+  [file] openrag-documents/ibm_anthropic.pdf
+  [file] openrag-documents/openrag-documentation.pdf
+  [file] openrag-documents/warmup_ocr.pdf
+  [file] patch-netty.sh
+  [file] pyproject.toml
+  [dir] scripts
+  [file] scripts/clear_opensearch_data.py
+  [file] scripts/docling_ctl.py
+  [file] scripts/extract_flow_component.py
+  [file] scripts/migrate_embedding_model_field.py
+  [file] scripts/setup-e2e.sh
+  [file] scripts/update_flow_components.py
+  [dir] sdks
+  [dir] sdks/mcp
+  [file] sdks/mcp/README.md
+  [file] sdks/mcp/pyproject.toml
+  [dir] sdks/mcp/src
+  [dir] sdks/mcp/src/openrag_mcp
+  [file] sdks/mcp/src/openrag_mcp/__init__.py
+  [file] sdks/mcp/src/openrag_mcp/__main__.py
+  [file] sdks/mcp/src/openrag_mcp/config.py
+  [file] sdks/mcp/src/openrag_mcp/server.py
+  [dir] sdks/mcp/src/openrag_mcp/tools
+  [file] sdks/mcp/src/openrag_mcp/tools/__init__.py
+  [file] sdks/mcp/src/openrag_mcp/tools/chat.py
+  [file] sdks/mcp/src/openrag_mcp/tools/documents.py
+  [file] sdks/mcp/src/openrag_mcp/tools/registry.py
+  [file] sdks/mcp/src/openrag_mcp/tools/search.py
+  [file] sdks/mcp/src/openrag_mcp/tools/settings.py
+  [file] sdks/mcp/uv.lock
+  [dir] sdks/python
+  [file] sdks/python/README.md
+  [dir] sdks/python/openrag_sdk
+  [file] sdks/python/openrag_sdk/__init__.py
+  [file] sdks/python/openrag_sdk/chat.py
+  [file] sdks/python/openrag_sdk/client.py
+  [file] sdks/python/openrag_sdk/documents.py
+  [file] sdks/python/openrag_sdk/exceptions.py
+  [file] sdks/python/openrag_sdk/knowledge_filters.py
+  [file] sdks/python/openrag_sdk/models.py
+  [file] sdks/python/openrag_sdk/search.py
+  [file] sdks/python/pyproject.toml
+  [dir] sdks/python/tests
+  [file] sdks/python/tests/__init__.py
+  [file] sdks/python/tests/test_integration.py
+  [file] sdks/python/uv.lock
+  [dir] sdks/typescript
+  [file] sdks/typescript/README.md
+  [file] sdks/typescript/package-lock.json
+  [file] sdks/typescript/package.json
+  [dir] sdks/typescript/src
+  [file] sdks/typescript/src/chat.ts
+  [file] sdks/typescript/src/client.ts
+  [file] sdks/typescript/src/documents.ts
+  [file] sdks/typescript/src/index.ts
+  [file] sdks/typescript/src/knowledge-filters.ts
+  [file] sdks/typescript/src/search.ts
+  [file] sdks/typescript/src/types.ts
+  [dir] sdks/typescript/tests
+  [file] sdks/typescript/tests/integration.test.ts
+  [file] sdks/typescript/tsconfig.json
+  [file] sdks/typescript/tsup.config.ts
+  [file] sdks/typescript/vitest.config.ts
+  [dir] securityconfig
+  [file] securityconfig/action_groups.yml
+  [file] securityconfig/config.yml
+  [file] securityconfig/internal_users.yml
+  [file] securityconfig/nodes_dn.yml
+  [file] securityconfig/roles.yml
+  [file] securityconfig/roles_mapping.yml
+  [file] securityconfig/tenants.yml
+  [dir] src
+  [file] src/agent.py
+  [dir] src/api
+  [file] src/api/__init__.py
+  [file] src/api/auth.py
+  [file] src/api/chat.py
+  [file] src/api/connector_router.py
+  [file] src/api/connectors.py
+  [file] src/api/docling.py
+  [file] src/api/documents.py
+  [file] src/api/flows.py
+  [file] src/api/keys.py
+  [file] src/api/knowledge_filter.py
+  [file] src/api/langflow_files.py
+  [file] src/api/models.py
+  [file] src/api/nudges.py
+  [file] src/api/oidc.py
+  [file] src/api/provider_health.py
+  [file] src/api/provider_validation.py
+  [file] src/api/router.py
+  [file] src/api/search.py
+  [file] src/api/settings.py
+  [file] src/api/tasks.py
+  [file] src/api/upload.py
+  [dir] src/api/v1
+  [file] src/api/v1/__init__.py
+  [file] src/api/v1/chat.py
+  [file] src/api/v1/documents.py
+  [file] src/api/v1/knowledge_filters.py
+  [file] src/api/v1/models.py
+  [file] src/api/v1/search.py
+  [file] src/api/v1/settings.py
+  [file] src/auth_context.py
+  [dir] src/config
+  [file] src/config/__init__.py
+  [file] src/config/config_manager.py
+  [file] src/config/model_constants.py
+  [file] src/config/settings.py
+  [dir] src/connectors
+  [file] src/connectors/__init__.py
+  [file] src/connectors/base.py
+  [file] src/connectors/connection_manager.py
+  [dir] src/connectors/google_drive
+  [file] src/connectors/google_drive/__init__.py
+  [file] src/connectors/google_drive/connector.py
+  [file] src/connectors/google_drive/oauth.py
+  [file] src/connectors/langflow_connector_service.py
+  [dir] src/connectors/onedrive
+  [file] src/connectors/onedrive/__init__.py
+  [file] src/connectors/onedrive/connector.py
+  [file] src/connectors/onedrive/oauth.py
+  [file] src/connectors/service.py
+  [dir] src/connectors/sharepoint
+  [file] src/connectors/sharepoint/__init__.py
+  [file] src/connectors/sharepoint/connector.py
+  [file] src/connectors/sharepoint/oauth.py
+  [file] src/connectors/sharepoint/utils.py
+  [file] src/dependencies.py
+  [file] src/main.py
+  [dir] src/models
+  [file] src/models/__init__.py
+  [file] src/models/processors.py
+  [file] src/models/tasks.py
+  [dir] src/services
+  [file] src/services/__init__.py
+  [file] src/services/api_key_service.py
+  [file] src/services/auth_service.py
+  [file] src/services/chat_service.py
+  [file] src/services/conversation_persistence_service.py
+  [file] src/services/document_service.py
+  [file] src/services/flows_service.py
+  [file] src/services/knowledge_filter_service.py
+  [file] src/services/langflow_file_service.py
+  [file] src/services/langflow_history_service.py
+  [file] src/services/langflow_mcp_service.py
+  [file] src/services/models_service.py
+  [file] src/services/monitor_service.py
+  [file] src/services/search_service.py
+  [file] src/services/session_ownership_service.py
+  [file] src/services/task_service.py
+  [file] src/session_manager.py
+  [dir] src/tui
+  [file] src/tui/__init__.py
+  [dir] src/tui/_assets
+  [file] src/tui/_assets/docker-compose.gpu.yml
+  [file] src/tui/_assets/docker-compose.yml
+  [dir] src/tui/_assets/flows
+  [dir] src/tui/_assets/flows/components
+  [file] src/tui/_assets/flows/components/ollama_embedding.json
+  [file] src/tui/_assets/flows/components/ollama_llm.json
+  [file] src/tui/_assets/flows/components/ollama_llm_text.json
+  [file] src/tui/_assets/flows/components/watsonx_embedding.json
+  [file] src/tui/_assets/flows/components/watsonx_llm.json
+  [file] src/tui/_assets/flows/components/watsonx_llm_text.json
+  [file] src/tui/_assets/flows/ingestion_flow.json
+  [file] src/tui/_assets/flows/openrag_agent.json
+  [file] src/tui/_assets/flows/openrag_nudges.json
+  [file] src/tui/_assets/flows/openrag_url_mcp.json
+  [dir] src/tui/_assets/openrag-documents
+  [file] src/tui/_assets/openrag-documents/docling.pdf
+  [file] src/tui/_assets/openrag-documents/ibm_anthropic.pdf
+  [file] src/tui/_assets/openrag-documents/openrag-documentation.pdf
+  [file] src/tui/_assets/openrag-documents/warmup_ocr.pdf
+  [file] src/tui/cli.py
+  [file] src/tui/config_fields.py
+  [file] src/tui/main.py
+  [dir] src/tui/managers
+  [file] src/tui/managers/__init__.py
+  [file] src/tui/managers/container_manager.py
+  [file] src/tui/managers/docling_manager.py
+  [file] src/tui/managers/env_manager.py
+  [dir] src/tui/screens
+  [file] src/tui/screens/__init__.py
+  [file] src/tui/screens/config.py
+  [file] src/tui/screens/diagnostics.py
+  [file] src/tui/screens/logs.py
+  [file] src/tui/screens/monitor.py
+  [file] src/tui/screens/welcome.py
+  [dir] src/tui/utils
+  [file] src/tui/utils/__init__.py
+  [file] src/tui/utils/clipboard.py
+  [file] src/tui/utils/platform.py
+  [file] src/tui/utils/startup_checks.py
+  [file] src/tui/utils/validation.py
+  [file] src/tui/utils/version_check.py
+  [dir] src/tui/widgets
+  [file] src/tui/widgets/__init__.py
+  [file] src/tui/widgets/command_modal.py
+  [file] src/tui/widgets/diagnostics_notification.py
+  [file] src/tui/widgets/error_notification.py
+  [file] src/tui/widgets/factory_reset_warning_modal.py
+  [file] src/tui/widgets/flow_backup_warning_modal.py
+  [file] src/tui/widgets/prune_options_modal.py
+  [file] src/tui/widgets/upgrade_instructions_modal.py
+  [file] src/tui/widgets/version_mismatch_warning_modal.py
+  [file] src/tui/widgets/waves.py
+  [dir] src/utils
+  [file] src/utils/__init__.py
+  [file] src/utils/acl_utils.py
+  [file] src/utils/container_utils.py
+  [file] src/utils/docling_client.py
+  [file] src/utils/document_processing.py
+  [file] src/utils/embedding_fields.py
+  [file] src/utils/embeddings.py
+  [file] src/utils/env_utils.py
+  [file] src/utils/file_utils.py
+  [file] src/utils/gpu_detection.py
+  [file] src/utils/hash_utils.py
+  [file] src/utils/langflow_headers.py
+  [file] src/utils/langflow_utils.py
+  [file] src/utils/logging_config.py
+  [file] src/utils/opensearch_queries.py
+  [file] src/utils/opensearch_utils.py
+  [file] src/utils/paths.py
+  [dir] src/utils/telemetry
+  [file] src/utils/telemetry/__init__.py
+  [file] src/utils/telemetry/category.py
+  [file] src/utils/telemetry/client.py
+  [file] src/utils/telemetry/message_id.py
+  [file] src/utils/version_utils.py
+  [dir] tests
+  [file] tests/__init__.py
+  [file] tests/conftest.py
+  [dir] tests/integration
+  [file] tests/integration/__init__.py
+  [file] tests/integration/test_api_endpoints.py
+  [file] tests/integration/test_startup_ingest.py
+  [dir] tests/unit
+  [file] tests/unit/__init__.py
+  [file] tests/unit/conftest.py
+  [file] tests/unit/test_container_manager_cleanup.py
+  [file] tests/unit/test_env_manager.py
+  [file] tests/unit/test_langflow_utils.py
+  [file] tests/unit/test_startup_checks_cleanup.py
+  [file] tests/unit/test_task_service.py
+  [file] uv.lock
+  [file] warm_up_docling.py

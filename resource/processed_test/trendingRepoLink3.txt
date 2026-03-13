@@ -1,0 +1,1101 @@
+SOURCE_TYPE: github_repo
+SOURCE_URL: https://github.com/lightpanda-io/browser
+REPO: lightpanda-io/browser
+DESCRIPTION: Lightpanda: the headless browser designed for AI and automation
+LANGUAGE: Zig
+STARS: 14308
+FORKS: 488
+TOPICS: browser, browser-automation, cdp, headless, playwright, puppeteer, zig
+LICENSE: GNU Affero General Public License v3.0
+CREATED: 2023-02-07T15:19:34Z
+UPDATED: 2026-03-13T12:06:38Z
+---
+
+README CONTENT:
+Lightpanda Browser
+
+lightpanda.io
+
+[](https://github.com/lightpanda-io/browser/blob/main/LICENSE)
+[](https://twitter.com/lightpandaio)
+[](https://github.com/lightpanda-io/browser)
+
+Lightpanda is the open-source browser made for headless usage:
+
+- Javascript execution
+- Support of Web APIs (partial, WIP)
+- Compatible with Playwright[^1], Puppeteer, chromedp through CDP
+
+Fast web automation for AI agents, LLM training, scraping and testing:
+
+- Ultra-low memory footprint (9x less than Chrome)
+- Exceptionally fast execution (11x faster than Chrome)
+- Instant startup
+
+&emsp;
+
+Puppeteer requesting 100 pages from a local website on a AWS EC2 m5.large instance.
+See benchmark details.
+
+[^1]: Playwright support disclaimer:
+Due to the nature of Playwright, a script that works with the current version of the browser may not function correctly with a future version. Playwright uses an intermediate JavaScript layer that selects an execution strategy based on the browser's available features. If Lightpanda adds a new Web API, Playwright may choose to execute different code for the same script. This new code path could attempt to use features that are not yet implemented. Lightpanda makes an effort to add compatibility tests, but we can't cover all scenarios. If you encounter an issue, please create a GitHub issue and include the last known working version of the script.
+
+Quick start
+
+Install
+Install from the nightly builds
+
+You can download the last binary from the nightly
+builds for
+Linux x8664 and MacOS aarch64.
+
+For Linux
+curl -L -o lightpanda https://github.com/lightpanda-io/browser/releases/download/nightly/lightpanda-x8664-linux && \
+chmod a+x ./lightpanda
+
+For MacOS
+curl -L -o lightpanda https://github.com/lightpanda-io/browser/releases/download/nightly/lightpanda-aarch64-macos && \
+chmod a+x ./lightpanda
+
+For Windows + WSL2
+
+The Lightpanda browser is compatible to run on windows inside WSL. Follow the Linux instruction for installation from a WSL terminal.
+It is recommended to install clients like Puppeteer on the Windows host.
+
+Install from Docker
+
+Lightpanda provides official Docker
+images for both Linux amd64 and
+arm64 architectures.
+The following command fetches the Docker image and starts a new container exposing Lightpanda's CDP server on port 9222.
+docker run -d --name lightpanda -p 9222:9222 lightpanda/browser:nightly
+
+Dump a URL
+
+./lightpanda fetch --obeyrobots --logformat pretty  --loglevel info https://demo-browser.lightpanda.io/campfire-commerce/
+INFO  telemetry : telemetry status . . . . . . . . . . . . .  [+0ms]
+      disabled = false
+
+INFO  page : navigate . . . . . . . . . . . . . . . . . . . . [+6ms]
+      url = https://demo-browser.lightpanda.io/campfire-commerce/
+      method = GET
+      reason = addressbar
+      body = false
+      reqid = 1
+
+INFO  browser : executing script . . . . . . . . . . . . . .  [+118ms]
+      src = https://demo-browser.lightpanda.io/campfire-commerce/script.js
+      kind = javascript
+      cacheable = true
+
+INFO  http : request complete . . . . . . . . . . . . . . . . [+140ms]
+      source = xhr
+      url = https://demo-browser.lightpanda.io/campfire-commerce/json/product.json
+      status = 200
+      len = 4770
+
+INFO  http : request complete . . . . . . . . . . . . . . . . [+141ms]
+      source = fetch
+      url = https://demo-browser.lightpanda.io/campfire-commerce/json/reviews.json
+      status = 200
+      len = 1615
+
+Start a CDP server
+
+./lightpanda serve --obeyrobots --logformat pretty  --loglevel info --host 127.0.0.1 --port 9222
+INFO  telemetry : telemetry status . . . . . . . . . . . . .  [+0ms]
+      disabled = false
+
+INFO  app : server running . . . . . . . . . . . . . . . . .  [+0ms]
+      address = 127.0.0.1:9222
+
+Once the CDP server started, you can run a Puppeteer script by configuring the
+browserWSEndpoint.
+
+'use strict'
+
+import puppeteer from 'puppeteer-core';
+
+// use browserWSEndpoint to pass the Lightpanda's CDP server address.
+const browser = await puppeteer.connect({
+  browserWSEndpoint: "ws://127.0.0.1:9222",
+});
+
+// The rest of your script remains the same.
+const context = await browser.createBrowserContext();
+const page = await context.newPage();
+
+// Dump all the links from the page.
+await page.goto('https://demo-browser.lightpanda.io/amiibo/', {waitUntil: "networkidle0"});
+
+const links = await page.evaluate(() => {
+  return Array.from(document.querySelectorAll('a')).map(row => {
+    return row.getAttribute('href');
+  });
+});
+
+console.log(links);
+
+await page.close();
+await context.close();
+await browser.disconnect();
+
+Telemetry
+By default, Lightpanda collects and sends usage telemetry. This can be disabled by setting an environment variable LIGHTPANDADISABLETELEMETRY=true. You can read Lightpanda's privacy policy at: https://lightpanda.io/privacy-policy.
+
+Status
+
+Lightpanda is in Beta and currently a work in progress. Stability and coverage are improving and many websites now work.
+You may still encounter errors or crashes. Please open an issue with specifics if so.
+
+Here are the key features we have implemented:
+
+- [x] HTTP loader (Libcurl)
+- [x] HTML parser (html5ever)
+- [x] DOM tree
+- [x] Javascript support (v8)
+- [x] DOM APIs
+- [x] Ajax
+  - [x] XHR API
+  - [x] Fetch API
+- [x] DOM dump
+- [x] CDP/websockets server
+- [x] Click
+- [x] Input form
+- [x] Cookies
+- [x] Custom HTTP headers
+- [x] Proxy support
+- [x] Network interception
+- [x] Respect robots.txt with option --obeyrobots
+
+NOTE: There are hundreds of Web APIs. Developing a browser (even just for headless mode) is a huge task. Coverage will increase over time.
+
+You can also follow the progress of our Javascript support in our dedicated zig-js-runtime project.
+
+Build from sources
+
+Prerequisites
+
+Lightpanda is written with Zig 0.15.2. You have to
+install it with the right version in order to build the project.
+
+Lightpanda also depends on
+zig-js-runtime (with v8),
+Libcurl and html5ever.
+
+To be able to build the v8 engine for zig-js-runtime, you have to install some libs:
+
+For Debian/Ubuntu based Linux:
+
+sudo apt install xz-utils ca-certificates \
+    pkg-config libglib2.0-dev \
+    clang make curl git
+You also need to install Rust.
+
+For systems with Nix, you can use the devShell:
+nix develop
+
+For MacOS, you need cmake and Rust.
+brew install cmake
+
+Build and run
+
+You an build the entire browser with make build or make build-dev for debug
+env.
+
+But you can directly use the zig command: zig build run.
+
+Embed v8 snapshot
+
+Lighpanda uses v8 snapshot. By default, it is created on startup but you can
+embed it by using the following commands:
+
+Generate the snapshot.
+zig build snapshotcreator -- src/snapshot.bin
+
+Build using the snapshot binary.
+zig build -Dsnapshotpath=../../snapshot.bin
+
+See #1279 for more details.
+
+Test
+
+Unit Tests
+
+You can test Lightpanda by running make test.
+
+End to end tests
+
+To run end to end tests, you need to clone the demo
+repository into ../demo dir.
+
+You have to install the demo's node
+requirements
+
+You also need to install Go > v1.24.
+
+make end2end
+
+Web Platform Tests
+
+Lightpanda is tested against the standardized Web Platform
+Tests.
+
+We use a fork including a custom
+testharnessreport.js.
+
+For reference, you can easily execute a WPT test case with your browser via
+wpt.live.
+
+Configure WPT HTTP server
+
+To run the test, you must clone the repository, configure the custom hosts and generate the
+MANIFEST.json file.
+
+Clone the repository with the fork branch.
+git clone -b fork --depth=1 git@github.com:lightpanda-io/wpt.git
+
+Enter into the wpt/ dir.
+
+Install custom domains in your /etc/hosts
+./wpt make-hosts-file | sudo tee -a /etc/hosts
+
+Generate MANIFEST.json
+./wpt manifest
+Use the WPT's setup
+guide for
+details.
+
+Run WPT test suite
+
+An external Go runner is provided by
+github.com/lightpanda-io/demo/
+repository, located into wptrunner/ dir.
+You need to clone the project first.
+
+First start the WPT's HTTP server from your wpt/ clone dir.
+./wpt serve
+
+Run a Lightpanda browser
+
+zig build run -- --insecuredisabletlshostverification
+
+Then you can start the wptrunner from the Demo's clone dir:
+cd wptrunner && go run .
+
+Or one specific test:
+
+cd wptrunner && go run . Node-childNodes.html
+
+wptrunner command accepts --summary and --json options modifying output.
+Also --concurrency define the concurrency limit.
+
+:warning: Running the whole test suite will take a long time. In this case,
+it's useful to build in releaseFast mode to make tests faster.
+
+zig build -Doptimize=ReleaseFast run
+
+Contributing
+
+Lightpanda accepts pull requests through GitHub.
+
+You have to sign our CLA during the pull request process otherwise
+we're not able to accept your contributions.
+
+Why?
+
+Javascript execution is mandatory for the modern web
+
+In the good old days, scraping a webpage was as easy as making an HTTP request, cURL-like. It’s not possible anymore, because Javascript is everywhere, like it or not:
+
+- Ajax, Single Page App, infinite loading, “click to display”, instant search, etc.
+- JS web frameworks: React, Vue, Angular & others
+
+Chrome is not the right tool
+
+If we need Javascript, why not use a real web browser? Take a huge desktop application, hack it, and run it on the server. Hundreds or thousands of instances of Chrome if you use it at scale. Are you sure it’s such a good idea?
+
+- Heavy on RAM and CPU, expensive to run
+- Hard to package, deploy and maintain at scale
+- Bloated, lots of features are not useful in headless usage
+
+Lightpanda is built for performance
+
+If we want both Javascript and performance in a true headless browser, we need to start from scratch. Not another iteration of Chromium, really from a blank page. Crazy right? But that’s what we did:
+
+- Not based on Chromium, Blink or WebKit
+- Low-level system programming language (Zig) with optimisations in mind
+- Opinionated: without graphical rendering
+
+REPOSITORY STRUCTURE:
+  [dir] .github
+  [dir] .github/actions
+  [dir] .github/actions/install
+  [file] .github/actions/install/action.yml
+  [dir] .github/workflows
+  [file] .github/workflows/build.yml
+  [file] .github/workflows/cla.yml
+  [file] .github/workflows/e2e-integration-test.yml
+  [file] .github/workflows/e2e-test.yml
+  [file] .github/workflows/wpt.yml
+  [file] .github/workflows/zig-fmt.yml
+  [file] .github/workflows/zig-test.yml
+  [file] .gitignore
+  [file] CLA.md
+  [file] CONTRIBUTING.md
+  [file] Dockerfile
+  [file] LICENSE
+  [file] LICENSING.md
+  [file] Makefile
+  [file] README.md
+  [file] build.zig
+  [file] build.zig.zon
+  [file] flake.lock
+  [file] flake.nix
+  [dir] src
+  [file] src/App.zig
+  [file] src/ArenaPool.zig
+  [file] src/Config.zig
+  [file] src/Notification.zig
+  [file] src/SemanticTree.zig
+  [file] src/Server.zig
+  [file] src/Sighandler.zig
+  [file] src/TestHTTPServer.zig
+  [dir] src/browser
+  [file] src/browser/Browser.zig
+  [file] src/browser/EventManager.zig
+  [file] src/browser/Factory.zig
+  [file] src/browser/HttpClient.zig
+  [file] src/browser/Mime.zig
+  [file] src/browser/Page.zig
+  [file] src/browser/ScriptManager.zig
+  [file] src/browser/Session.zig
+  [file] src/browser/URL.zig
+  [file] src/browser/color.zig
+  [dir] src/browser/css
+  [file] src/browser/css/Parser.zig
+  [file] src/browser/css/Tokenizer.zig
+  [file] src/browser/dump.zig
+  [file] src/browser/interactive.zig
+  [dir] src/browser/js
+  [file] src/browser/js/Array.zig
+  [file] src/browser/js/BigInt.zig
+  [file] src/browser/js/Caller.zig
+  [file] src/browser/js/Context.zig
+  [file] src/browser/js/Env.zig
+  [file] src/browser/js/Function.zig
+  [file] src/browser/js/HandleScope.zig
+  [file] src/browser/js/Inspector.zig
+  [file] src/browser/js/Integer.zig
+  [file] src/browser/js/Isolate.zig
+  [file] src/browser/js/Local.zig
+  [file] src/browser/js/Module.zig
+  [file] src/browser/js/Number.zig
+  [file] src/browser/js/Object.zig
+  [file] src/browser/js/Origin.zig
+  [file] src/browser/js/Platform.zig
+  [file] src/browser/js/Private.zig
+  [file] src/browser/js/Promise.zig
+  [file] src/browser/js/PromiseRejection.zig
+  [file] src/browser/js/PromiseResolver.zig
+  [file] src/browser/js/Scheduler.zig
+  [file] src/browser/js/Snapshot.zig
+  [file] src/browser/js/String.zig
+  [file] src/browser/js/TaggedOpaque.zig
+  [file] src/browser/js/TryCatch.zig
+  [file] src/browser/js/Value.zig
+  [file] src/browser/js/bridge.zig
+  [file] src/browser/js/js.zig
+  [file] src/browser/markdown.zig
+  [dir] src/browser/parser
+  [file] src/browser/parser/Parser.zig
+  [file] src/browser/parser/html5ever.zig
+  [file] src/browser/reflect.zig
+  [file] src/browser/structured_data.zig
+  [dir] src/browser/tests
+  [dir] src/browser/tests/animation
+  [file] src/browser/tests/animation/animation.html
+  [file] src/browser/tests/blob.html
+  [dir] src/browser/tests/canvas
+  [file] src/browser/tests/canvas/canvas_rendering_context_2d.html
+  [file] src/browser/tests/canvas/offscreen_canvas.html
+  [file] src/browser/tests/canvas/webgl_rendering_context.html
+  [dir] src/browser/tests/cdata
+  [file] src/browser/tests/cdata/cdata_section.html
+  [file] src/browser/tests/cdata/character_data.html
+  [file] src/browser/tests/cdata/comment.html
+  [file] src/browser/tests/cdata/data.html
+  [file] src/browser/tests/cdata/text.html
+  [dir] src/browser/tests/cdp
+  [file] src/browser/tests/cdp/dom1.html
+  [file] src/browser/tests/cdp/dom2.html
+  [file] src/browser/tests/cdp/dom3.html
+  [file] src/browser/tests/cdp/registry1.html
+  [file] src/browser/tests/cdp/registry2.html
+  [file] src/browser/tests/cdp/registry3.html
+  [dir] src/browser/tests/collections
+  [file] src/browser/tests/collections/radio_node_list.html
+  [dir] src/browser/tests/console
+  [file] src/browser/tests/console/console.html
+  [file] src/browser/tests/crypto.html
+  [file] src/browser/tests/css.html
+  [dir] src/browser/tests/css
+  [file] src/browser/tests/css/font_face.html
+  [file] src/browser/tests/css/font_face_set.html
+  [file] src/browser/tests/css/media_query_list.html
+  [file] src/browser/tests/css/stylesheet.html
+  [dir] src/browser/tests/custom_elements
+  [file] src/browser/tests/custom_elements/attribute_changed.html
+  [file] src/browser/tests/custom_elements/built_in.html
+  [file] src/browser/tests/custom_elements/connected.html
+  [file] src/browser/tests/custom_elements/connected_from_parser.html
+  [file] src/browser/tests/custom_elements/constructor.html
+  [file] src/browser/tests/custom_elements/disconnected.html
+  [file] src/browser/tests/custom_elements/registry.html
+  [file] src/browser/tests/custom_elements/throw_on_dynamic_markup_insertion.html
+  [file] src/browser/tests/custom_elements/upgrade.html
+  [dir] src/browser/tests/document
+  [file] src/browser/tests/document/adopt_import.html
+  [file] src/browser/tests/document/all_collection.html
+  [file] src/browser/tests/document/children.html
+  [file] src/browser/tests/document/collections.html
+  [file] src/browser/tests/document/create_element.html
+  [file] src/browser/tests/document/create_element_ns.html
+  [file] src/browser/tests/document/document-title.html
+  [file] src/browser/tests/document/document.html
+  [file] src/browser/tests/document/element_from_point.html
+  [file] src/browser/tests/document/focus.html
+  [file] src/browser/tests/document/get_element_by_id.html
+  [file] src/browser/tests/document/get_elements_by_class_name-multiple.html
+  [file] src/browser/tests/document/get_elements_by_class_name.html
+  [file] src/browser/tests/document/get_elements_by_name.html
+  [file] src/browser/tests/document/get_elements_by_tag_name-wildcard.html
+  [file] src/browser/tests/document/get_elements_by_tag_name.html
+  [file] src/browser/tests/document/insert_adjacent_element.html
+  [file] src/browser/tests/document/insert_adjacent_html.html
+  [file] src/browser/tests/document/insert_adjacent_text.html
+  [file] src/browser/tests/document/query_selector.html
+  [file] src/browser/tests/document/query_selector_all.html
+  [file] src/browser/tests/document/query_selector_attributes.html
+  [file] src/browser/tests/document/query_selector_edge_cases.html
+  [file] src/browser/tests/document/query_selector_not.html
+  [file] src/browser/tests/document/replace_children.html
+  [file] src/browser/tests/document/write.html
+  [dir] src/browser/tests/document_fragment
+  [file] src/browser/tests/document_fragment/document_fragment.html
+  [file] src/browser/tests/document_fragment/insertion.html
+  [file] src/browser/tests/document_head_body.html
+  [file] src/browser/tests/domexception.html
+  [file] src/browser/tests/domimplementation.html
+  [file] src/browser/tests/domparser.html
+  [dir] src/browser/tests/element
+  [file] src/browser/tests/element/append.html
+  [file] src/browser/tests/element/attributes.html
+  [file] src/browser/tests/element/bounding_rect.html
+  [file] src/browser/tests/element/class_list.html
+  [file] src/browser/tests/element/closest.html
+  [file] src/browser/tests/element/css_style_properties.html
+  [file] src/browser/tests/element/dataset.html
+  [file] src/browser/tests/element/duplicate_ids.html
+  [file] src/browser/tests/element/element.html
+  [file] src/browser/tests/element/get_elements_by_class_name.html
+  [file] src/browser/tests/element/get_elements_by_tag_name.html
+  [file] src/browser/tests/element/get_elements_by_tag_name_ns.html
+  [dir] src/browser/tests/element/html
+  [file] src/browser/tests/element/html/anchor.html
+  [file] src/browser/tests/element/html/button.html
+  [file] src/browser/tests/element/html/details.html
+  [file] src/browser/tests/element/html/dialog.html
+  [file] src/browser/tests/element/html/event_listeners.html
+  [file] src/browser/tests/element/html/fieldset.html
+  [file] src/browser/tests/element/html/form.html
+  [file] src/browser/tests/element/html/htmlelement-props.html
+  [file] src/browser/tests/element/html/image.html
+  [file] src/browser/tests/element/html/input-attrs.html
+  [file] src/browser/tests/element/html/input.html
+  [file] src/browser/tests/element/html/input_click.html
+  [file] src/browser/tests/element/html/input_radio.html
+  [file] src/browser/tests/element/html/label.html
+  [file] src/browser/tests/element/html/li.html
+  [file] src/browser/tests/element/html/link.html
+  [file] src/browser/tests/element/html/media.html
+  [file] src/browser/tests/element/html/ol.html
+  [file] src/browser/tests/element/html/optgroup.html
+  [file] src/browser/tests/element/html/option.html
+  [file] src/browser/tests/element/html/picture.html
+  [file] src/browser/tests/element/html/quote.html
+  [dir] src/browser/tests/element/html/script
+  [file] src/browser/tests/element/html/script/dynamic.html
+  [file] src/browser/tests/element/html/script/dynamic1.js
+  [file] src/browser/tests/element/html/script/dynamic2.js
+  [file] src/browser/tests/element/html/script/dynamic_inline.html
+  [file] src/browser/tests/element/html/script/empty.js
+  [file] src/browser/tests/element/html/script/order.html
+  [file] src/browser/tests/element/html/script/order.js
+  [file] src/browser/tests/element/html/script/order_async.js
+  [file] src/browser/tests/element/html/script/order_defer.js
+  [file] src/browser/tests/element/html/script/script.html
+  [file] src/browser/tests/element/html/select.html
+  [file] src/browser/tests/element/html/slot.html
+  [file] src/browser/tests/element/html/style.html
+  [file] src/browser/tests/element/html/tablecell.html
+  [file] src/browser/tests/element/html/template.html
+  [file] src/browser/tests/element/html/textarea.html
+  [file] src/browser/tests/element/html/time.html
+  [file] src/browser/tests/element/html/track.html
+  [file] src/browser/tests/element/inner.html
+  [file] src/browser/tests/element/inner.js
+  [file] src/browser/tests/element/matches.html
+  [file] src/browser/tests/element/outer.html
+  [file] src/browser/tests/element/position.html
+  [file] src/browser/tests/element/pseudo_classes.html
+  [file] src/browser/tests/element/query_selector.html
+  [file] src/browser/tests/element/query_selector_all.html
+  [file] src/browser/tests/element/query_selector_scope.html
+  [file] src/browser/tests/element/remove.html
+  [file] src/browser/tests/element/replace_with.html
+  [file] src/browser/tests/element/selector_invalid.html
+  [file] src/browser/tests/element/styles.html
+  [dir] src/browser/tests/element/svg
+  [file] src/browser/tests/element/svg/svg.html
+  [dir] src/browser/tests/encoding
+  [file] src/browser/tests/encoding/text_decoder.html
+  [file] src/browser/tests/encoding/text_encoder.html
+  [dir] src/browser/tests/event
+  [file] src/browser/tests/event/abort_controller.html
+  [file] src/browser/tests/event/composition.html
+  [file] src/browser/tests/event/custom_event.html
+  [file] src/browser/tests/event/error.html
+  [file] src/browser/tests/event/focus.html
+  [file] src/browser/tests/event/keyboard.html
+  [file] src/browser/tests/event/listener_removal.html
+  [file] src/browser/tests/event/message.html
+  [file] src/browser/tests/event/message_multiple_listeners.html
+  [file] src/browser/tests/event/mouse.html
+  [file] src/browser/tests/event/pointer.html
+  [file] src/browser/tests/event/promise_rejection.html
+  [file] src/browser/tests/event/text.html
+  [file] src/browser/tests/event/ui.html
+  [file] src/browser/tests/event/wheel.html
+  [file] src/browser/tests/events.html
+  [file] src/browser/tests/file.html
+  [file] src/browser/tests/file_reader.html
+  [dir] src/browser/tests/frames
+  [file] src/browser/tests/frames/frames.html
+  [dir] src/browser/tests/frames/support
+  [file] src/browser/tests/frames/support/after_link.html
+  [file] src/browser/tests/frames/support/page.html
+  [file] src/browser/tests/frames/support/sub 1.html
+  [file] src/browser/tests/frames/support/sub2.html
+  [file] src/browser/tests/frames/support/with_link.html
+  [file] src/browser/tests/frames/target.html
+  [file] src/browser/tests/history.html
+  [file] src/browser/tests/history_after_nav.skip.html
+  [file] src/browser/tests/image_data.html
+  [dir] src/browser/tests/integration
+  [file] src/browser/tests/integration/custom_element_composition.html
+  [dir] src/browser/tests/intersection_observer
+  [file] src/browser/tests/intersection_observer/basic.html
+  [file] src/browser/tests/intersection_observer/disconnect.html
+  [file] src/browser/tests/intersection_observer/multiple_targets.html
+  [file] src/browser/tests/intersection_observer/unobserve.html
+  [dir] src/browser/tests/legacy
+  [file] src/browser/tests/legacy/browser.html
+  [file] src/browser/tests/legacy/crypto.html
+  [file] src/browser/tests/legacy/css.html
+  [dir] src/browser/tests/legacy/cssom
+  [file] src/browser/tests/legacy/cssom/css_style_declaration.html
+  [file] src/browser/tests/legacy/cssom/css_stylesheet.html
+  [dir] src/browser/tests/legacy/dom
+  [file] src/browser/tests/legacy/dom/animation.html
+  [file] src/browser/tests/legacy/dom/attribute.html
+  [file] src/browser/tests/legacy/dom/character_data.html
+  [file] src/browser/tests/legacy/dom/comment.html
+  [file] src/browser/tests/legacy/dom/document.html
+  [file] src/browser/tests/legacy/dom/document_fragment.html
+  [file] src/browser/tests/legacy/dom/document_type.html
+  [file] src/browser/tests/legacy/dom/dom_parser.html
+  [file] src/browser/tests/legacy/dom/element.html
+  [file] src/browser/tests/legacy/dom/event_target.html
+  [file] src/browser/tests/legacy/dom/exceptions.html
+  [file] src/browser/tests/legacy/dom/html_collection.html
+  [file] src/browser/tests/legacy/dom/implementation.html
+  [file] src/browser/tests/legacy/dom/intersection_observer.html
+  [file] src/browser/tests/legacy/dom/named_node_map.html
+  [file] src/browser/tests/legacy/dom/node_filter.html
+  [file] src/browser/tests/legacy/dom/node_list.html
+  [file] src/browser/tests/legacy/dom/node_owner.html
+  [file] src/browser/tests/legacy/dom/performance.html
+  [file] src/browser/tests/legacy/dom/performance_observer.html
+  [file] src/browser/tests/legacy/dom/processing_instruction.html
+  [file] src/browser/tests/legacy/dom/range.html
+  [file] src/browser/tests/legacy/dom/text.html
+  [file] src/browser/tests/legacy/dom/token_list.html
+  [dir] src/browser/tests/legacy/encoding
+  [file] src/browser/tests/legacy/encoding/decoder.html
+  [file] src/browser/tests/legacy/encoding/encoder.html
+  [dir] src/browser/tests/legacy/events
+  [file] src/browser/tests/legacy/events/composition.html
+  [file] src/browser/tests/legacy/events/custom.html
+  [file] src/browser/tests/legacy/events/event.html
+  [file] src/browser/tests/legacy/events/keyboard.html
+  [file] src/browser/tests/legacy/events/mouse.html
+  [dir] src/browser/tests/legacy/fetch
+  [file] src/browser/tests/legacy/fetch/fetch.html
+  [file] src/browser/tests/legacy/fetch/headers.html
+  [file] src/browser/tests/legacy/fetch/request.html
+  [file] src/browser/tests/legacy/fetch/response.html
+  [dir] src/browser/tests/legacy/file
+  [file] src/browser/tests/legacy/file/blob.html
+  [file] src/browser/tests/legacy/file/file.html
+  [dir] src/browser/tests/legacy/html
+  [file] src/browser/tests/legacy/html/abort_controller.html
+  [file] src/browser/tests/legacy/html/canvas.html
+  [file] src/browser/tests/legacy/html/dataset.html
+  [file] src/browser/tests/legacy/html/document.html
+  [file] src/browser/tests/legacy/html/element.html
+  [file] src/browser/tests/legacy/html/error_event.html
+  [dir] src/browser/tests/legacy/html/history
+  [file] src/browser/tests/legacy/html/history/history.html
+  [file] src/browser/tests/legacy/html/history/history2.html
+  [file] src/browser/tests/legacy/html/history/history_after_nav.skip.html
+  [file] src/browser/tests/legacy/html/image.html
+  [file] src/browser/tests/legacy/html/input.html
+  [file] src/browser/tests/legacy/html/link.html
+  [file] src/browser/tests/legacy/html/location.html
+  [dir] src/browser/tests/legacy/html/navigation
+  [file] src/browser/tests/legacy/html/navigation/navigation.html
+  [file] src/browser/tests/legacy/html/navigation/navigation_after_nav.skip.html
+  [file] src/browser/tests/legacy/html/navigation/navigation_currententrychange.html
+  [file] src/browser/tests/legacy/html/navigator.html
+  [file] src/browser/tests/legacy/html/screen.html
+  [dir] src/browser/tests/legacy/html/script
+  [file] src/browser/tests/legacy/html/script/dynamic_import.html
+  [file] src/browser/tests/legacy/html/script/import.html
+  [file] src/browser/tests/legacy/html/script/import.js
+  [file] src/browser/tests/legacy/html/script/import2.js
+  [file] src/browser/tests/legacy/html/script/importmap.html
+  [file] src/browser/tests/legacy/html/script/inline_defer.html
+  [file] src/browser/tests/legacy/html/script/inline_defer.js
+  [file] src/browser/tests/legacy/html/script/order.html
+  [file] src/browser/tests/legacy/html/script/order.js
+  [file] src/browser/tests/legacy/html/script/order_async.js
+  [file] src/browser/tests/legacy/html/script/order_defer.js
+  [file] src/browser/tests/legacy/html/script/script.html
+  [file] src/browser/tests/legacy/html/select.html
+  [file] src/browser/tests/legacy/html/slot.html
+  [file] src/browser/tests/legacy/html/style.html
+  [file] src/browser/tests/legacy/html/svg.html
+  [dir] src/browser/tests/legacy/storage
+  [file] src/browser/tests/legacy/storage/local_storage.html
+  [dir] src/browser/tests/legacy/streams
+  [file] src/browser/tests/legacy/streams/readable_stream.html
+  [file] src/browser/tests/legacy/testing.js
+  [dir] src/browser/tests/legacy/url
+  [file] src/browser/tests/legacy/url/url.html
+  [file] src/browser/tests/legacy/url/url_search_params.html
+  [dir] src/browser/tests/legacy/window
+  [file] src/browser/tests/legacy/window/frames.html
+  [file] src/browser/tests/legacy/window/window.html
+  [dir] src/browser/tests/legacy/xhr
+  [file] src/browser/tests/legacy/xhr/form_data.html
+  [file] src/browser/tests/legacy/xhr/progress_event.html
+  [file] src/browser/tests/legacy/xhr/xhr.html
+  [file] src/browser/tests/legacy/xmlserializer.html
+  [dir] src/browser/tests/media
+  [file] src/browser/tests/media/mediaerror.html
+  [file] src/browser/tests/media/vttcue.html
+  [file] src/browser/tests/message_channel.html
+  [dir] src/browser/tests/mutation_observer
+  [file] src/browser/tests/mutation_observer/attribute_filter.html
+  [file] src/browser/tests/mutation_observer/character_data.html
+  [file] src/browser/tests/mutation_observer/childlist.html
+  [file] src/browser/tests/mutation_observer/multiple_observers.html
+  [file] src/browser/tests/mutation_observer/mutation_observer.html
+  [file] src/browser/tests/mutation_observer/mutations_during_callback.html
+  [file] src/browser/tests/mutation_observer/observe_multiple_targets.html
+  [file] src/browser/tests/mutation_observer/reobserve_same_target.html
+  [file] src/browser/tests/mutation_observer/subtree.html
+  [dir] src/browser/tests/net
+  [file] src/browser/tests/net/fetch.html
+  [file] src/browser/tests/net/form_data.html
+  [file] src/browser/tests/net/headers.html
+  [file] src/browser/tests/net/request.html
+  [file] src/browser/tests/net/response.html
+  [file] src/browser/tests/net/url_search_params.html
+  [file] src/browser/tests/net/xhr.html
+  [dir] src/browser/tests/node
+  [file] src/browser/tests/node/adoption.html
+  [file] src/browser/tests/node/append_child.html
+  [file] src/browser/tests/node/base_uri.html
+  [file] src/browser/tests/node/child_nodes.html
+  [file] src/browser/tests/node/clone_node.html
+  [file] src/browser/tests/node/compare_document_position.html
+  [file] src/browser/tests/node/insert_before.html
+  [file] src/browser/tests/node/is_connected.html
+  [file] src/browser/tests/node/is_equal_node.html
+  [file] src/browser/tests/node/node.html
+  [file] src/browser/tests/node/node_iterator.html
+  [file] src/browser/tests/node/normalize.html
+  [file] src/browser/tests/node/noscript_serialization.html
+  [file] src/browser/tests/node/owner.html
+  [file] src/browser/tests/node/remove_child.html
+  [file] src/browser/tests/node/replace_child.html
+  [file] src/browser/tests/node/text_content.html
+  [file] src/browser/tests/node/tree.html
+  [file] src/browser/tests/node/tree_walker.html
+  [dir] src/browser/tests/page
+  [file] src/browser/tests/page/blob.html
+  [file] src/browser/tests/page/load_event.html
+  [file] src/browser/tests/page/meta.html
+  [file] src/browser/tests/page/mod1.js
+  [file] src/browser/tests/page/module.html
+  [dir] src/browser/tests/page/modules
+  [file] src/browser/tests/page/modules/base.js
+  [file] src/browser/tests/page/modules/circular-a.js
+  [file] src/browser/tests/page/modules/circular-b.js
+  [file] src/browser/tests/page/modules/dynamic-chain-a.js
+  [file] src/browser/tests/page/modules/dynamic-chain-b.js
+  [file] src/browser/tests/page/modules/dynamic-chain-c.js
+  [file] src/browser/tests/page/modules/dynamic-circular-x.js
+  [file] src/browser/tests/page/modules/dynamic-circular-y.js
+  [file] src/browser/tests/page/modules/importer.js
+  [file] src/browser/tests/page/modules/mixed-circular-dynamic.js
+  [file] src/browser/tests/page/modules/mixed-circular-static.js
+  [file] src/browser/tests/page/modules/re-exporter.js
+  [file] src/browser/tests/page/modules/self_async.js
+  [file] src/browser/tests/page/modules/shared.js
+  [file] src/browser/tests/page/modules/syntax-error.js
+  [file] src/browser/tests/page/modules/test-404.js
+  [file] src/browser/tests/page/modules/test-syntax-error.js
+  [file] src/browser/tests/performance.html
+  [dir] src/browser/tests/performance_observer
+  [file] src/browser/tests/performance_observer/performance_observer.html
+  [dir] src/browser/tests/polyfill
+  [file] src/browser/tests/polyfill/webcomponents.html
+  [file] src/browser/tests/processing_instruction.html
+  [file] src/browser/tests/range.html
+  [file] src/browser/tests/range_mutations.html
+  [file] src/browser/tests/selection.html
+  [dir] src/browser/tests/shadowroot
+  [file] src/browser/tests/shadowroot/basic.html
+  [file] src/browser/tests/shadowroot/custom_elements.html
+  [file] src/browser/tests/shadowroot/dom_traversal.html
+  [file] src/browser/tests/shadowroot/dump.html
+  [file] src/browser/tests/shadowroot/edge_cases.html
+  [file] src/browser/tests/shadowroot/events.html
+  [file] src/browser/tests/shadowroot/id_collision.html
+  [file] src/browser/tests/shadowroot/id_management.html
+  [file] src/browser/tests/shadowroot/innerHTML_spec.html
+  [file] src/browser/tests/shadowroot/scoping.html
+  [file] src/browser/tests/storage.html
+  [dir] src/browser/tests/streams
+  [file] src/browser/tests/streams/readable_stream.html
+  [file] src/browser/tests/streams/text_decoder_stream.html
+  [file] src/browser/tests/streams/transform_stream.html
+  [file] src/browser/tests/testing.js
+  [file] src/browser/tests/url.html
+  [dir] src/browser/tests/window
+  [file] src/browser/tests/window/body_onload1.html
+  [file] src/browser/tests/window/body_onload2.html
+  [file] src/browser/tests/window/location.html
+  [file] src/browser/tests/window/named_access.html
+  [file] src/browser/tests/window/navigator.html
+  [file] src/browser/tests/window/onerror.html
+  [file] src/browser/tests/window/report_error.html
+  [file] src/browser/tests/window/screen.html
+  [file] src/browser/tests/window/scroll.html
+  [file] src/browser/tests/window/stubs.html
+  [file] src/browser/tests/window/timers.html
+  [file] src/browser/tests/window/visual_viewport.html
+  [file] src/browser/tests/window/window.html
+  [file] src/browser/tests/window_scroll.html
+  [file] src/browser/tests/xmlserializer.html
+  [dir] src/browser/webapi
+  [file] src/browser/webapi/AbortController.zig
+  [file] src/browser/webapi/AbortSignal.zig
+  [file] src/browser/webapi/AbstractRange.zig
+  [file] src/browser/webapi/Blob.zig
+  [file] src/browser/webapi/CData.zig
+  [file] src/browser/webapi/CSS.zig
+  [file] src/browser/webapi/Console.zig
+  [file] src/browser/webapi/Crypto.zig
+  [file] src/browser/webapi/CustomElementDefinition.zig
+  [file] src/browser/webapi/CustomElementRegistry.zig
+  [file] src/browser/webapi/DOMException.zig
+  [file] src/browser/webapi/DOMImplementation.zig
+  [file] src/browser/webapi/DOMNodeIterator.zig
+  [file] src/browser/webapi/DOMParser.zig
+  [file] src/browser/webapi/DOMRect.zig
+  [file] src/browser/webapi/DOMTreeWalker.zig
+  [file] src/browser/webapi/Document.zig
+  [file] src/browser/webapi/DocumentFragment.zig
+  [file] src/browser/webapi/DocumentType.zig
+  [file] src/browser/webapi/Element.zig
+  [file] src/browser/webapi/Event.zig
+  [file] src/browser/webapi/EventTarget.zig
+  [file] src/browser/webapi/File.zig
+  [file] src/browser/webapi/FileList.zig
+  [file] src/browser/webapi/FileReader.zig
+  [file] src/browser/webapi/HTMLDocument.zig
+  [file] src/browser/webapi/History.zig
+  [file] src/browser/webapi/IdleDeadline.zig
+  [file] src/browser/webapi/ImageData.zig
+  [file] src/browser/webapi/IntersectionObserver.zig
+  [file] src/browser/webapi/KeyValueList.zig
+  [file] src/browser/webapi/Location.zig
+  [file] src/browser/webapi/MessageChannel.zig
+  [file] src/browser/webapi/MessagePort.zig
+  [file] src/browser/webapi/MutationObserver.zig
+  [file] src/browser/webapi/Navigator.zig
+  [file] src/browser/webapi/Node.zig
+  [file] src/browser/webapi/NodeFilter.zig
+  [file] src/browser/webapi/Performance.zig
+  [file] src/browser/webapi/PerformanceObserver.zig
+  [file] src/browser/webapi/PluginArray.zig
+  [file] src/browser/webapi/Range.zig
+  [file] src/browser/webapi/ResizeObserver.zig
+  [file] src/browser/webapi/Screen.zig
+  [file] src/browser/webapi/Selection.zig
+  [file] src/browser/webapi/ShadowRoot.zig
+  [file] src/browser/webapi/SubtleCrypto.zig
+  [file] src/browser/webapi/TreeWalker.zig
+  [file] src/browser/webapi/URL.zig
+  [file] src/browser/webapi/VisualViewport.zig
+  [file] src/browser/webapi/Window.zig
+  [file] src/browser/webapi/XMLDocument.zig
+  [file] src/browser/webapi/XMLSerializer.zig
+  [dir] src/browser/webapi/animation
+  [file] src/browser/webapi/animation/Animation.zig
+  [dir] src/browser/webapi/canvas
+  [file] src/browser/webapi/canvas/CanvasRenderingContext2D.zig
+  [file] src/browser/webapi/canvas/OffscreenCanvas.zig
+  [file] src/browser/webapi/canvas/OffscreenCanvasRenderingContext2D.zig
+  [file] src/browser/webapi/canvas/WebGLRenderingContext.zig
+  [dir] src/browser/webapi/cdata
+  [file] src/browser/webapi/cdata/CDATASection.zig
+  [file] src/browser/webapi/cdata/Comment.zig
+  [file] src/browser/webapi/cdata/ProcessingInstruction.zig
+  [file] src/browser/webapi/cdata/Text.zig
+  [file] src/browser/webapi/children.zig
+  [file] src/browser/webapi/collections.zig
+  [dir] src/browser/webapi/collections
+  [file] src/browser/webapi/collections/ChildNodes.zig
+  [file] src/browser/webapi/collections/DOMTokenList.zig
+  [file] src/browser/webapi/collections/HTMLAllCollection.zig
+  [file] src/browser/webapi/collections/HTMLCollection.zig
+  [file] src/browser/webapi/collections/HTMLFormControlsCollection.zig
+  [file] src/browser/webapi/collections/HTMLOptionsCollection.zig
+  [file] src/browser/webapi/collections/NodeList.zig
+  [file] src/browser/webapi/collections/RadioNodeList.zig
+  [file] src/browser/webapi/collections/iterator.zig
+  [file] src/browser/webapi/collections/node_live.zig
+  [dir] src/browser/webapi/css
+  [file] src/browser/webapi/css/CSSRule.zig
+  [file] src/browser/webapi/css/CSSRuleList.zig
+  [file] src/browser/webapi/css/CSSStyleDeclaration.zig
+  [file] src/browser/webapi/css/CSSStyleProperties.zig
+  [file] src/browser/webapi/css/CSSStyleRule.zig
+  [file] src/browser/webapi/css/CSSStyleSheet.zig
+  [file] src/browser/webapi/css/FontFace.zig
+  [file] src/browser/webapi/css/FontFaceSet.zig
+  [file] src/browser/webapi/css/MediaQueryList.zig
+  [file] src/browser/webapi/css/StyleSheetList.zig
+  [dir] src/browser/webapi/element
+  [file] src/browser/webapi/element/Attribute.zig
+  [file] src/browser/webapi/element/DOMStringMap.zig
+  [file] src/browser/webapi/element/Html.zig
+  [file] src/browser/webapi/element/Svg.zig
+  [dir] src/browser/webapi/element/html
+  [file] src/browser/webapi/element/html/Anchor.zig
+  [file] src/browser/webapi/element/html/Area.zig
+  [file] src/browser/webapi/element/html/Audio.zig
+  [file] src/browser/webapi/element/html/BR.zig
+  [file] src/browser/webapi/element/html/Base.zig
+  [file] src/browser/webapi/element/html/Body.zig
+  [file] src/browser/webapi/element/html/Button.zig
+  [file] src/browser/webapi/element/html/Canvas.zig
+  [file] src/browser/webapi/element/html/Custom.zig
+  [file] src/browser/webapi/element/html/DList.zig
+  [file] src/browser/webapi/element/html/Data.zig
+  [file] src/browser/webapi/element/html/DataList.zig
+  [file] src/browser/webapi/element/html/Details.zig
+  [file] src/browser/webapi/element/html/Dialog.zig
+  [file] src/browser/webapi/element/html/Directory.zig
+  [file] src/browser/webapi/element/html/Div.zig
+  [file] src/browser/webapi/element/html/Embed.zig
+  [file] src/browser/webapi/element/html/FieldSet.zig
+  [file] src/browser/webapi/element/html/Font.zig
+  [file] src/browser/webapi/element/html/Form.zig
+  [file] src/browser/webapi/element/html/Generic.zig
+  [file] src/browser/webapi/element/html/HR.zig
+  [file] src/browser/webapi/element/html/Head.zig
+  [file] src/browser/webapi/element/html/Heading.zig
+  [file] src/browser/webapi/element/html/Html.zig
+  [file] src/browser/webapi/element/html/IFrame.zig
+  [file] src/browser/webapi/element/html/Image.zig
+  [file] src/browser/webapi/element/html/Input.zig
+  [file] src/browser/webapi/element/html/LI.zig
+  [file] src/browser/webapi/element/html/Label.zig
+  [file] src/browser/webapi/element/html/Legend.zig
+  [file] src/browser/webapi/element/html/Link.zig
+  [file] src/browser/webapi/element/html/Map.zig
+  [file] src/browser/webapi/element/html/Media.zig
+  [file] src/browser/webapi/element/html/Meta.zig
+  [file] src/browser/webapi/element/html/Meter.zig
+  [file] src/browser/webapi/element/html/Mod.zig
+  [file] src/browser/webapi/element/html/OL.zig
+  [file] src/browser/webapi/element/html/Object.zig
+  [file] src/browser/webapi/element/html/OptGroup.zig
+  [file] src/browser/webapi/element/html/Option.zig
+  [file] src/browser/webapi/element/html/Output.zig
+  [file] src/browser/webapi/element/html/Paragraph.zig
+  [file] src/browser/webapi/element/html/Param.zig
+  [file] src/browser/webapi/element/html/Picture.zig
+  [file] src/browser/webapi/element/html/Pre.zig
+  [file] src/browser/webapi/element/html/Progress.zig
+  [file] src/browser/webapi/element/html/Quote.zig
+  [file] src/browser/webapi/element/html/Script.zig
+  [file] src/browser/webapi/element/html/Select.zig
+  [file] src/browser/webapi/element/html/Slot.zig
+  [file] src/browser/webapi/element/html/Source.zig
+  [file] src/browser/webapi/element/html/Span.zig
+  [file] src/browser/webapi/element/html/Style.zig
+  [file] src/browser/webapi/element/html/Table.zig
+  [file] src/browser/webapi/element/html/TableCaption.zig
+  [file] src/browser/webapi/element/html/TableCell.zig
+  [file] src/browser/webapi/element/html/TableCol.zig
+  [file] src/browser/webapi/element/html/TableRow.zig
+  [file] src/browser/webapi/element/html/TableSection.zig
+  [file] src/browser/webapi/element/html/Template.zig
+  [file] src/browser/webapi/element/html/TextArea.zig
+  [file] src/browser/webapi/element/html/Time.zig
+  [file] src/browser/webapi/element/html/Title.zig
+  [file] src/browser/webapi/element/html/Track.zig
+  [file] src/browser/webapi/element/html/UL.zig
+  [file] src/browser/webapi/element/html/Unknown.zig
+  [file] src/browser/webapi/element/html/Video.zig
+  [dir] src/browser/webapi/element/svg
+  [file] src/browser/webapi/element/svg/Generic.zig
+  [file] src/browser/webapi/element/svg/Rect.zig
+  [dir] src/browser/webapi/encoding
+  [file] src/browser/webapi/encoding/TextDecoder.zig
+  [file] src/browser/webapi/encoding/TextDecoderStream.zig
+  [file] src/browser/webapi/encoding/TextEncoder.zig
+  [file] src/browser/webapi/encoding/TextEncoderStream.zig
+  [dir] src/browser/webapi/event
+  [file] src/browser/webapi/event/CompositionEvent.zig
+  [file] src/browser/webapi/event/CustomEvent.zig
+  [file] src/browser/webapi/event/ErrorEvent.zig
+  [file] src/browser/webapi/event/FocusEvent.zig
+  [file] src/browser/webapi/event/KeyboardEvent.zig
+  [file] src/browser/webapi/event/MessageEvent.zig
+  [file] src/browser/webapi/event/MouseEvent.zig
+  [file] src/browser/webapi/event/NavigationCurrentEntryChangeEvent.zig
+  [file] src/browser/webapi/event/PageTransitionEvent.zig
+  [file] src/browser/webapi/event/PointerEvent.zig
+  [file] src/browser/webapi/event/PopStateEvent.zig
+  [file] src/browser/webapi/event/ProgressEvent.zig
+  [file] src/browser/webapi/event/PromiseRejectionEvent.zig
+  [file] src/browser/webapi/event/TextEvent.zig
+  [file] src/browser/webapi/event/UIEvent.zig
+  [file] src/browser/webapi/event/WheelEvent.zig
+  [file] src/browser/webapi/global_event_handlers.zig
+  [dir] src/browser/webapi/media
+  [file] src/browser/webapi/media/MediaError.zig
+  [file] src/browser/webapi/media/TextTrackCue.zig
+  [file] src/browser/webapi/media/VTTCue.zig
+  [dir] src/browser/webapi/navigation
+  [file] src/browser/webapi/navigation/Navigation.zig
+  [file] src/browser/webapi/navigation/NavigationActivation.zig
+  [file] src/browser/webapi/navigation/NavigationHistoryEntry.zig
+  [file] src/browser/webapi/navigation/root.zig
+  [dir] src/browser/webapi/net
+  [file] src/browser/webapi/net/Fetch.zig
+  [file] src/browser/webapi/net/FormData.zig
+  [file] src/browser/webapi/net/Headers.zig
+  [file] src/browser/webapi/net/Request.zig
+  [file] src/browser/webapi/net/Response.zig
+  [file] src/browser/webapi/net/URLSearchParams.zig
+  [file] src/browser/webapi/net/XMLHttpRequest.zig
+  [file] src/browser/webapi/net/XMLHttpRequestEventTarget.zig
+  [dir] src/browser/webapi/selector
+  [file] src/browser/webapi/selector/List.zig
+  [file] src/browser/webapi/selector/Parser.zig
+  [file] src/browser/webapi/selector/Selector.zig
+  [dir] src/browser/webapi/storage
+  [file] src/browser/webapi/storage/Cookie.zig
+  [file] src/browser/webapi/storage/storage.zig
+  [dir] src/browser/webapi/streams
+  [file] src/browser/webapi/streams/ReadableStream.zig
+  [file] src/browser/webapi/streams/ReadableStreamDefaultController.zig
+  [file] src/browser/webapi/streams/ReadableStreamDefaultReader.zig
+  [file] src/browser/webapi/streams/TransformStream.zig
+  [file] src/browser/webapi/streams/WritableStream.zig
+  [file] src/browser/webapi/streams/WritableStreamDefaultController.zig
+  [file] src/browser/webapi/streams/WritableStreamDefaultWriter.zig
+  [dir] src/cdp
+  [file] src/cdp/AXNode.zig
+  [file] src/cdp/Node.zig
+  [file] src/cdp/cdp.zig
+  [dir] src/cdp/domains
+  [file] src/cdp/domains/accessibility.zig
+  [file] src/cdp/domains/browser.zig
+  [file] src/cdp/domains/css.zig
+  [file] src/cdp/domains/dom.zig
+  [file] src/cdp/domains/emulation.zig
+  [file] src/cdp/domains/fetch.zig
+  [file] src/cdp/domains/input.zig
+  [file] src/cdp/domains/inspector.zig
+  [file] src/cdp/domains/log.zig
+  [file] src/cdp/domains/lp.zig
+  [file] src/cdp/domains/network.zig
+  [file] src/cdp/domains/page.zig
+  [file] src/cdp/domains/performance.zig
+  [file] src/cdp/domains/runtime.zig
+  [file] src/cdp/domains/screenshot.png
+  [file] src/cdp/domains/security.zig
+  [file] src/cdp/domains/storage.zig
+  [file] src/cdp/domains/target.zig
+  [file] src/cdp/id.zig
+  [file] src/cdp/testing.zig
+  [file] src/crash_handler.zig
+  [file] src/crypto.zig
+  [dir] src/data
+  [file] src/data/public_suffix_list.zig
+  [file] src/data/public_suffix_list_gen.go
+  [file] src/datetime.zig
+  [dir] src/html5ever
+  [file] src/html5ever/Cargo.lock
+  [file] src/html5ever/Cargo.toml
+  [file] src/html5ever/lib.rs
+  [file] src/html5ever/sink.rs
+  [file] src/html5ever/types.rs
+  [file] src/id.zig
+  [file] src/lightpanda.zig
+  [file] src/log.zig
+  [file] src/main.zig
+  [file] src/main_legacy_test.zig
+  [file] src/main_snapshot_creator.zig
+  [file] src/mcp.zig
+  [dir] src/mcp
+  [file] src/mcp/Server.zig
+  [file] src/mcp/protocol.zig
+  [file] src/mcp/resources.zig
+  [file] src/mcp/router.zig
+  [file] src/mcp/tools.zig
+  [dir] src/network
+  [file] src/network/Robots.zig
+  [file] src/network/Runtime.zig
+  [file] src/network/WebBotAuth.zig
+  [file] src/network/http.zig
+  [file] src/network/websocket.zig
+  [file] src/slab.zig
+  [file] src/string.zig
+  [dir] src/sys
+  [file] src/sys/libcurl.zig
+  [dir] src/telemetry
+  [file] src/telemetry/lightpanda.zig
+  [file] src/telemetry/telemetry.zig
+  [file] src/test_runner.zig
+  [file] src/testing.zig
