@@ -1,42 +1,45 @@
-# 10min AI Daily — Hackathon Scaffold
+# 10min AI Daily — Hackathon Stack
 
-Docker-first scaffold for the 10min AI Daily project. Frontend uses Next.js/TypeScript, backend uses FastAPI, with Postgres + Redis and a lightweight worker for scraping/LLM tasks. The planning prompt lives in [.github/agent.md](.github/agent.md) and is mirrored at [scripts/prompts/agent.md](scripts/prompts/agent.md).
+This repo follows the agent instructions in [AGENTS.md](AGENTS.md). Stack: Next.js + Tailwind frontend, FastAPI backend, Supabase Postgres. Keep it hackathon-simple: no auth, no extra infra.
 
-## Quickstart
+## Quickstart (preferred: local dev)
 
-1) Copy envs
+Frontend:
 
 ```sh
+cd frontend
+npm install
+npm run dev   # http://localhost:3000
+```
+
+Backend:
+
+```sh
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 cp .env.example .env
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-2) Build and start
+Env vars (backend/.env): SUPABASE_URL, SUPABASE_KEY, ANTHROPIC_API_KEY.
+Frontend API base overrides: set NEXT_PUBLIC_API_URL in frontend/.env.local if not localhost.
 
-```sh
-make build
-make up
-```
+## Project layout (target)
 
-Services: frontend http://localhost:3000, API http://localhost:8000/health, Postgres on 5432, Redis on 6379.
+- AGENTS.md — working instructions
+- frontend/src/app — pages: home, basket, briefing, graph
+- frontend/src/components — CardDeck, CardItem, BasketBar, BriefingView, GraphView
+- frontend/src/lib — api client, types, Zustand store
+- backend/main.py — FastAPI app, CORS, routers
+- backend/routers — cards, interactions, basket, briefing, graph
+- backend/services — ingestion, preprocessing, recommendation, briefing, knowledge_graph
+- backend/models — schemas, database (Supabase helper)
+- backend/data/seed_cards.json — fallback dataset
+- scripts/prompts/agent.md — prompt reference copy
 
-3) Logs & stop
+## Notes
 
-```sh
-make logs
-make down
-```
-
-## Project layout
-
-- docker-compose.yml — orchestrates frontend, api, worker, db, redis
-- Makefile — common docker commands
-- frontend/ — Next.js app with placeholder card feed
-- backend/ — FastAPI service + worker stub
-- scripts/ — prompt reference + local worker trigger
-
-## Next steps
-
-- Flesh out worker scraping and push data into Postgres/Redis
-- Add real card feed endpoints and persistence
-- Implement swipe interactions and knowledge graph UI
-- Wire LLM-powered briefing generation using prompts in [scripts/prompts/agent.md](scripts/prompts/agent.md)
+- Agent guidance prefers local dev; Docker files remain for convenience but are optional. Ports: frontend 3001 (compose), API 8000, Postgres 55432 when using docker-compose.
+- Keep features inside scope: swipe cards, basket cap, recommendation, briefing generation, knowledge graph; no auth.
