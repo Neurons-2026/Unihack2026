@@ -1,0 +1,49 @@
+{
+  "source_file": "trendingPaper2.txt",
+  "source_title": "IndexCache: Accelerating Sparse Attention via Cross-Layer Index Reuse",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "indexcache framework",
+      "description": "A novel framework that accelerates sparse attention by partitioning transformer layers into 'Full' layers (which compute indices) and 'Shared' layers (which reuse indices from a preceding 'Full' layer).",
+      "why_innovative": "It addresses the O(L^2) bottleneck of sparse attention indexers in long-context LLMs by eliminating redundant computations, leading to significant speedups.",
+      "category": "architecture",
+      "relevance_score": 1.0
+    },
+    {
+      "label": "cross-layer index reuse",
+      "description": "The core principle that top-k token selections are highly stable across consecutive transformer layers, enabling indexer computations to be skipped and reused.",
+      "why_innovative": "This insight extends the known cross-layer stability to sparse attention indexers, allowing for substantial computational savings without relying on a full attention mechanism.",
+      "category": "technique",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "training-free indexcache",
+      "description": "An approach to configure IndexCache on existing sparse attention models without requiring any costly retraining or weight updates.",
+      "why_innovative": "It provides an immediate and practical way to enhance the efficiency of already deployed sparse attention models by adapting the indexer pattern post-training.",
+      "category": "technique",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "greedy layer selection algorithm",
+      "description": "An algorithm used in training-free IndexCache that iteratively identifies and converts 'Full' layers to 'Shared' layers by minimizing language modeling loss on a calibration set.",
+      "why_innovative": "This data-driven approach intelligently prioritizes which indexers to retain, outperforming naive uniform reuse by adapting to the varying importance of different layers.",
+      "category": "technique",
+      "relevance_score": 0.75
+    },
+    {
+      "label": "training-aware indexcache",
+      "description": "An approach that integrates IndexCache optimization directly into the model training pipeline, either from scratch or via continued pre-training.",
+      "why_innovative": "By optimizing the indexers during training, it allows for more aggressive index reuse patterns while maintaining or even improving model quality compared to standard per-layer indexers.",
+      "category": "technique",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "multi-layer distillation loss",
+      "description": "A novel loss function for training-aware IndexCache where each retained indexer is optimized to predict top-k tokens that are jointly useful for all the subsequent layers it serves.",
+      "why_innovative": "It enables indexers to learn a 'consensus' top-k selection, providing a robust and theoretically justified method to generalize indexer capabilities across multiple layers.",
+      "category": "technique",
+      "relevance_score": 0.75
+    }
+  ]
+}
