@@ -1,194 +1,377 @@
-# Prompt Reference — 10min AI Daily
+# 10min AI Daily — Agent Instructions
 
-This is copied from [.github/agent.md](../../.github/agent.md) to keep the hackathon context close to the codebase. Update this copy if the upstream prompt changes.
+You are working on **10min AI Daily**, a hackathon project. It is a lightweight AI news companion where users swipe through daily AI content cards, build a knowledge basket, generate a 10-minute briefing via LLM, and explore a personal knowledge graph. The stack is a **Next.js + Tailwind** frontend with a **FastAPI (Python)** backend and **Supabase Postgres** database.
 
-> Paste the following content in full to an LLM (e.g. Claude / GPT) to receive a complete PRD, individual task breakdowns, and tech stack recommendations.
+This is a hackathon — prioritize speed, demo impact, and working code over perfection. Do not over-engineer. Do not add features not described here.
 
 ---
 
-## System Prompt
+## Project structure
 
 ```
-You are a senior technical product manager and engineering lead. You are helping a 6-person hackathon team plan and execute their project from idea to demo. You must produce three deliverables in order:
-
-1. A detailed PRD (Product Requirements Document)
-2. Individual task breakdowns for each team member
-3. A concrete tech stack recommendation for every component
-
-Be specific, actionable, and hackathon-aware — prioritize speed, feasibility, and demo impact. All project management will be done in Linear, so structure tasks in a way that maps cleanly to Linear issues (with labels, priorities, and dependencies).
-```
-
-## User Prompt
-
-```
-We are a 6-person hackathon team building a product called "10min AI Daily." Please complete the following three tasks in order:
-
----
-
-### Task 1: Write a Detailed PRD
-
-Based on the product description below, generate a complete, well-structured PRD containing the following sections:
-
-#### Product Context
-
-**Product positioning:** 10 minutes a day to stay up-to-date on the latest AI developments.
-
-**Core value proposition:** Spark user curiosity, minimize cognitive load, deliver fast understanding — no wading through repetitive or redundant information. Users get first-hand sources and relief from FOMO/anxiety.
-
-**Core pain points solved:**
-a. The AI industry moves too fast — practitioners and enthusiasts struggle to keep up.
-b. Reporting delays + too many sources → noise, anxiety, wasted time.
-
-#### PRD Sections Required:
-
-1. **Product Overview**
-   - Product name, one-line positioning, target user persona
-   - Core value proposition (as described above)
-   - Pain points addressed
-
-2. **Feature Specifications**
-   For each module below, provide: feature description, user stories, inputs/outputs, acceptance criteria, and priority level (P0/P1/P2).
-
-   - **Module 1: Data Ingestion**
-     - Scrape/API-fetch daily trending content from:
-       - GitHub Trending repos
-       - Hugging Face daily papers / trending models
-       - Official blogs/news from OpenAI, Anthropic, Google DeepMind, etc.
-     - Output: structured raw content list (title, summary, URL, source, timestamp)
-
-   - **Module 2: Pre-processing**
-     - Quality assessment: is a single source sufficient? If not, trigger supplementary web searches
-     - Text cleaning: strip HTML tags, ads, irrelevant content; extract core text
-     - Generate structured data for cards (title, keywords/thumbnail, one-line summary)
-     - Generate cleaned full text for briefing generation
-
-   - **Module 3: Card Interaction (Tinder-style UI)**
-     - Present users with a daily set of info cards
-     - Card content: title + image or keyword tags (minimal, like a YouTube thumbnail + title)
-     - Goal: let users quickly judge interest without needing domain expertise
-     - Interaction: swipe left = Pass, swipe right = add to today's Knowledge Basket
-     - Constraint: Basket has a cap (e.g. max 5 cards) to keep briefing length manageable
-
-   - **Module 4: Recommendation System**
-     - Log user-card interaction history (swipe direction, dwell time, etc.)
-     - Use a lightweight recommendation algorithm to personalize future card feeds
-     - A simple, open-source approach is sufficient
-
-   - **Module 5: Knowledge Graph**
-     - Extract keywords from each card the user adds to their Basket
-     - Feature 1: Create Node — extract key concepts as graph nodes
-     - Feature 2: Connect Nodes — identify relationships between nodes and create edges
-     - Feature 3: Merge Graph — each time new content is added, merge the new subgraph with the user's accumulated historical graph
-     - Provide interactive visualization to enhance understanding, sense of achievement, and retention
-
-   - **Module 6: 10-Minute Briefing**
-     - Generate a readable AI daily briefing based on the user's selected Basket cards
-     - Requirements: understandable without a technical background; focus on what happened and its impact on the industry/individual
-     - Not a deep technical analysis — low cognitive load information consumption
-     - Target reading time: ~10 minutes
-
-   - **Module 7 (P2 — only if time permits): Sharing**
-     - Share the briefing with others
-     - Share the knowledge graph; the recipient's account should support Connect + Merge with their own graph
-
-3. **User Flow**
-   - Complete user journey from opening the app to reading the briefing
-   - Annotate which backend module corresponds to each step
-
-4. **Data Model**
-   - List core data entities and their fields (User, Card, Interaction Record, Knowledge Graph Node/Edge, Briefing, etc.)
-   - Describe entity relationships (ER diagram description is fine)
-
-5. **Non-Functional Requirements**
-   - Performance targets (card load time, briefing generation time, etc.)
-   - Reasonable expectations for a hackathon context
-
-6. **MVP Scope & Prioritization**
-   - Clearly distinguish Must-have (P0), Should-have (P1), Nice-to-have (P2)
-   - Define the critical path for the hackathon demo
-
-7. **Risks & Dependencies**
-   - Technical risks, time risks, API rate limits, etc.
-
----
-
-### Task 2: Generate Detailed Individual Task Lists for Each Team Member
-
-Our team assignments are:
-1. **Sam**: Web scraping + pre-processing + project management (Linear)
-2. **Sunny**: Pre-processing + 10-min briefing generation + demo video
-3. **Steve**: UI + database + testing
-4. **Alex**: UI + demo video + knowledge graph (assisting Harry)
-5. **Liam**: Recommendation system + web scraping + pre-processing
-6. **Harry**: Knowledge graph (primary owner)
-
-For each team member, generate:
-
-#### Each person's task list must include:
-a. **Role Summary**: all modules they own and their role within the team
-b. **Detailed Task List** (ready to import as Linear Issues), where each task contains:
-   - Task title (concise, actionable)
-   - Task description (what to do, how to do it, what the output is)
-   - Priority: P0 / P1 / P2
-   - Estimated time
-   - Upstream dependencies (which person's task must be completed first)
-   - Suggested Linear labels (e.g. `backend`, `frontend`, `data`, `infra`, `testing`, `design`)
-c. **Collaboration interfaces**: clearly state what data/APIs this person needs from whom, and what they need to deliver to whom
-d. **Milestones / Checkpoints**: break down by timeline (e.g. Day 1 Morning, Day 1 Afternoon, Day 2 Morning, etc. — assume a 2-day hackathon)
-
-#### Additional requirement for Sam (Project Manager):
-Generate a **Linear project structure recommendation** including:
-- Project naming and hierarchy
-- Label taxonomy (module labels + type labels)
-- Milestone / Cycle setup suggestions
-- Board View status columns (e.g. Backlog → In Progress → In Review → Done)
-- A suggested workflow for standup check-ins during the hackathon
-
----
-
-### Task 3: Tech Stack Recommendations for Each Component
-
-For each module below, recommend a specific tech stack. Requirements:
-- Suitable for a hackathon (fast development, low configuration overhead)
-- Provide a **primary choice + alternative**
-- Explain the reasoning
-
-Modules to cover:
-1. **Data Ingestion / Scraping**: scraping GitHub, HuggingFace, company blogs
-2. **Pre-processing**: text cleaning, quality assessment, supplementary search
-3. **Backend Services**: API framework, task scheduling
-4. **Database**: storing user data, cards, interaction logs, graph data
-5. **Frontend / UI**: Tinder-style card swiping, knowledge graph visualization
-6. **Recommendation System**: lightweight recommendation algorithm
-7. **Knowledge Graph**: keyword extraction, graph data structure, visualization library
-8. **Briefing Generation**: LLM API integration, prompt design approach
-9. **Sharing Feature**: link generation, graph import/export
-10. **Project Management / DevOps**: Linear setup, code repository, deployment
-11. **Demo Video**: recording and editing tools
-
-Present this in table format with columns: Module | Primary Choice | Alternative | Reasoning
-
----
-
-### Output Format Requirements:
-- Use Markdown formatting throughout
-- PRD section should follow standard document structure
-- Task lists should be organized by team member, using tables or numbered lists per task
-- Tech stack section should use tables
-- If the output is too long, you may split across multiple responses — but provide a table of contents at the beginning
+10min-ai-daily/
+├── AGENTS.md                  # This file
+├── README.md
+├── frontend/                  # Next.js + React + TypeScript + Tailwind
+│   ├── src/
+│   │   ├── app/               # Next.js App Router pages
+│   │   │   ├── page.tsx       # Home — card swipe feed
+│   │   │   ├── basket/        # Basket review page
+│   │   │   ├── briefing/      # Briefing display page
+│   │   │   └── graph/         # Knowledge graph page
+│   │   ├── components/        # Reusable React components
+│   │   │   ├── CardDeck.tsx   # Swipe card stack
+│   │   │   ├── CardItem.tsx   # Individual card
+│   │   │   ├── BasketBar.tsx  # Basket counter/indicator
+│   │   │   ├── BriefingView.tsx
+│   │   │   └── GraphView.tsx  # Knowledge graph visualization
+│   │   ├── lib/               # Utilities, API client, types
+│   │   │   ├── api.ts         # Backend API client functions
+│   │   │   ├── types.ts       # Shared TypeScript types
+│   │   │   └── store.ts       # Zustand store
+│   │   └── styles/
+│   ├── public/
+│   ├── package.json
+│   ├── tailwind.config.ts
+│   ├── tsconfig.json
+│   └── next.config.js
+├── backend/                   # FastAPI + Python
+│   ├── main.py                # FastAPI app entry point, CORS, routers
+│   ├── routers/
+│   │   ├── cards.py           # GET /cards, GET /cards/recommended
+│   │   ├── interactions.py    # POST /interactions
+│   │   ├── basket.py          # POST /basket, GET /basket
+│   │   ├── briefing.py        # POST /briefing/generate, GET /briefing/:id
+│   │   └── graph.py           # POST /graph/generate, GET /graph
+│   ├── services/
+│   │   ├── ingestion.py       # Scraping + API fetching logic
+│   │   ├── preprocessing.py   # Text cleaning, card metadata generation
+│   │   ├── recommendation.py  # Scoring + ranking logic
+│   │   ├── briefing.py        # LLM prompt + generation
+│   │   └── knowledge_graph.py # Node extraction, edge creation, merge
+│   ├── models/
+│   │   ├── schemas.py         # Pydantic request/response models
+│   │   └── database.py        # Supabase client + DB helpers
+│   ├── scripts/
+│   │   ├── ingest.py          # Manual ingestion trigger
+│   │   └── seed.py            # Seed DB with fallback data
+│   ├── data/
+│   │   └── seed_cards.json    # Fallback curated dataset (15-20 items)
+│   ├── requirements.txt
+│   └── .env.example
+├── shared/                    # Shared schemas / contracts
+│   └── content_schema.json    # Canonical content item schema
+└── .github/
+    └── copilot-instructions.md
 ```
 
 ---
 
-## How to Use
+## Dev environment
 
-1. Set the **System Prompt** as the system message (if the platform supports it); otherwise place it at the very top
-2. Paste the entire **User Prompt** and send
-3. If the output gets cut off, send `Please continue` to get the rest
-4. After receiving the output, you can follow up with questions like:
-   - `Please generate Sam's tasks in CSV format importable to Linear`
-   - `Please refine the tech stack recommendations down to specific package names and versions`
-   - `Please write a detailed technical design doc for the Knowledge Graph module`
-   - `Please generate an hour-by-hour schedule for the full hackathon`
-   - `Please write the system prompts needed for the briefing generation module`
-   - `Please define the API contracts (endpoints, request/response schemas) between frontend and backend`
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev          # Starts Next.js dev server on http://localhost:3000
+npm run build        # Production build — run this to verify before committing
+npm run lint         # ESLint check
+```
+
+Key frontend dependencies:
+- `react-tinder-card` — swipe gesture component
+- `react-force-graph-2d` — knowledge graph visualization
+- `zustand` — lightweight state management
+- `tailwindcss` — utility-first CSS
+
+### Backend
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate       # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload      # Starts FastAPI on http://localhost:8000
+```
+
+Key backend dependencies:
+- `fastapi` + `uvicorn` — API framework
+- `beautifulsoup4` + `requests` — web scraping
+- `readability-lxml` — article text extraction
+- `anthropic` — Claude API for briefing generation
+- `scikit-learn` — TF-IDF for recommendation
+- `spacy` — NER for knowledge graph
+- `networkx` — graph data structure + operations
+- `supabase` — database client
+
+After installing, download the spaCy model:
+```bash
+python -m spacy download en_core_web_sm
+```
+
+### Environment variables
+
+Copy `backend/.env.example` to `backend/.env` and fill in:
+```
+SUPABASE_URL=
+SUPABASE_KEY=
+ANTHROPIC_API_KEY=
+```
+
+The frontend calls the backend at `http://localhost:8000` by default. Set `NEXT_PUBLIC_API_URL` in `frontend/.env.local` to override.
+
+---
+
+## Database schema
+
+We use Supabase Postgres. Tables:
+
+**content_items** — raw ingested content from sources
+- `id` (UUID, PK), `source` (text: github/huggingface/openai_blog/anthropic_blog/other), `source_url` (text), `title` (text), `raw_summary` (text), `raw_content` (text), `metadata` (jsonb), `fetched_at` (timestamptz), `published_at` (timestamptz)
+
+**cards** — preprocessed, card-ready data
+- `id` (UUID, PK), `content_item_id` (UUID, FK → content_items), `card_title` (text), `card_summary` (text, < 120 chars), `keywords` (text[]), `thumbnail_keyword` (text), `cleaned_text` (text), `quality_score` (float), `trending_score` (float)
+
+**user_actions** — swipe interaction log
+- `id` (UUID, PK), `session_id` (text), `card_id` (UUID, FK → cards), `action` (text: swipe_right/swipe_left/undo), `dwell_time_ms` (int), `session_date` (date), `created_at` (timestamptz)
+
+**basket_items** — user's selected cards for a session
+- `id` (UUID, PK), `session_id` (text), `card_id` (UUID, FK → cards), `session_date` (date), `added_at` (timestamptz)
+
+**briefings** — generated digests
+- `id` (UUID, PK), `session_id` (text), `card_ids` (UUID[]), `content` (text, Markdown), `reading_time_min` (float), `generated_at` (timestamptz), `share_token` (text, nullable)
+
+**graph_nodes** — knowledge graph concepts
+- `id` (UUID, PK), `session_id` (text), `label` (text), `description` (text), `first_seen` (timestamptz), `last_seen` (timestamptz), `frequency` (int)
+
+**graph_edges** — knowledge graph relationships
+- `id` (UUID, PK), `session_id` (text), `source_node_id` (UUID, FK → graph_nodes), `target_node_id` (UUID, FK → graph_nodes), `relationship` (text), `weight` (float), `created_at` (timestamptz)
+
+When writing migrations or seed scripts, always use these exact table and column names.
+
+---
+
+## API contracts
+
+All backend endpoints are under `http://localhost:8000/api/v1/`.
+
+### Cards
+- `GET /api/v1/cards?session_id={id}` — returns today's card feed (optionally ranked by recommendation)
+- `GET /api/v1/cards/{card_id}` — returns single card detail
+
+### Interactions
+- `POST /api/v1/interactions` — body: `{ session_id, card_id, action, dwell_time_ms }`
+
+### Basket
+- `GET /api/v1/basket?session_id={id}` — returns current basket items
+- `POST /api/v1/basket` — body: `{ session_id, card_id }` — adds card to basket
+- `DELETE /api/v1/basket/{item_id}` — removes card from basket
+
+### Briefing
+- `POST /api/v1/briefing/generate` — body: `{ session_id, card_ids }` — generates briefing via LLM, returns Markdown content. Use streaming if possible.
+- `GET /api/v1/briefing/{briefing_id}` — returns cached briefing
+
+### Knowledge Graph
+- `POST /api/v1/graph/generate` — body: `{ session_id, card_ids }` — extracts nodes/edges from cards
+- `GET /api/v1/graph?session_id={id}` — returns full graph (nodes + edges)
+
+All responses use JSON. Errors return `{ "detail": "error message" }` with appropriate HTTP status codes. Use Pydantic models in `backend/models/schemas.py` for all request/response validation.
+
+---
+
+## Code style
+
+### Python (backend)
+- Use type hints on all function signatures.
+- Use Pydantic `BaseModel` for all request/response schemas.
+- Use `async def` for all route handlers.
+- Keep route handlers thin — delegate logic to service functions in `backend/services/`.
+- Use `logging` module, not `print()`.
+- Format with `black`. Lint with `ruff`.
+- Imports: stdlib first, then third-party, then local, separated by blank lines.
+
+```python
+# PREFERRED: thin router + service layer
+@router.post("/briefing/generate")
+async def generate_briefing(request: BriefingRequest):
+    result = await briefing_service.generate(request.session_id, request.card_ids)
+    return BriefingResponse(**result)
+
+# AVOID: business logic in route handler
+@router.post("/briefing/generate")
+async def generate_briefing(request: BriefingRequest):
+    cards = await db.get_cards(request.card_ids)
+    prompt = f"..."  # Don't do this here
+    response = await client.messages.create(...)  # Don't do this here
+    return {"content": response}
+```
+
+### TypeScript (frontend)
+- Use functional React components with hooks. No class components.
+- Use TypeScript strict mode. Define interfaces for all props and API responses in `lib/types.ts`.
+- Use Tailwind utility classes for styling. No CSS modules, no styled-components.
+- Use Zustand for shared state (basket contents, session ID). Use local `useState` for component-local state.
+- Fetch data with `fetch()` or a thin wrapper in `lib/api.ts`. No Redux, no React Query (overkill for hackathon).
+- Component files: PascalCase (`CardDeck.tsx`). Utility files: camelCase (`api.ts`).
+
+```tsx
+// PREFERRED: typed props, Tailwind, hooks
+interface CardItemProps {
+  card: Card;
+  onSwipe: (direction: "left" | "right") => void;
+}
+
+export function CardItem({ card, onSwipe }: CardItemProps) {
+  return (
+    <div className="rounded-xl bg-white p-6 shadow-lg">
+      <h3 className="text-lg font-semibold">{card.card_title}</h3>
+      <p className="text-sm text-gray-600">{card.card_summary}</p>
+      <div className="mt-2 flex gap-2">
+        {card.keywords.map((kw) => (
+          <span key={kw} className="rounded-full bg-blue-100 px-2 py-1 text-xs">{kw}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// AVOID: inline styles, untyped props, any
+export function CardItem(props: any) {
+  return <div style={{ borderRadius: 12 }}>...</div>;
+}
+```
+
+### General
+- Keep files under 200 lines. Split if longer.
+- No comments that restate the code. Comment only for "why," not "what."
+- Use descriptive variable names. No single-letter variables except loop indices.
+
+---
+
+## LLM integration (briefing generation)
+
+Use the Anthropic Python SDK with `claude-sonnet-4-20250514`. The briefing prompt lives in `backend/services/briefing.py`.
+
+```python
+import anthropic
+
+client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
+
+message = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=4096,
+    messages=[{"role": "user", "content": prompt}],
+)
+```
+
+For streaming responses (preferred for demo UX):
+```python
+with client.messages.stream(
+    model="claude-sonnet-4-20250514",
+    max_tokens=4096,
+    messages=[{"role": "user", "content": prompt}],
+) as stream:
+    for text in stream.text_stream:
+        yield text
+```
+
+The briefing prompt must instruct the model to:
+- Write for a non-technical audience
+- Structure output with clear section headings
+- Include "what happened" and "why it matters" for each item
+- Keep total output around 2,000 words (~10 min reading)
+- Include source URLs as Markdown links
+- Never hallucinate facts not present in the provided source text
+
+---
+
+## Knowledge graph
+
+Node extraction uses spaCy NER + keyword extraction from card text. Edge creation uses co-occurrence (concepts from the same card are connected). Graph operations use NetworkX in-memory, then persist to Postgres.
+
+Merge logic: when new nodes are added, check for existing nodes with the same normalized label (lowercase, stripped). If found, increment `frequency` and update `last_seen`. For edges, increment `weight` if the same pair already exists.
+
+Keep edge relationship types simple: `related_to`, `mentions`, `overlaps_with`, `builds_on`.
+
+---
+
+## Recommendation system
+
+Uses content-based filtering with TF-IDF + cosine similarity from scikit-learn.
+
+- **Cold start** (no interaction history): rank cards by `trending_score`.
+- **Warm start**: build a user interest vector from keywords of liked cards, compute cosine similarity against new card keywords, blend with trending score.
+
+Do not use embeddings, collaborative filtering, or any ML model that requires training. Keep it simple and explainable.
+
+---
+
+## Testing
+
+No unit test framework is required. Testing is manual with a smoke test checklist.
+
+Before any integration or demo:
+1. Verify seeded data loads: `python backend/scripts/seed.py`
+2. Verify card feed returns data: `curl http://localhost:8000/api/v1/cards`
+3. Verify swipe logging works: POST an interaction, check DB
+4. Verify basket add/remove works
+5. Verify briefing generation returns valid Markdown
+6. Verify graph generation returns nodes + edges
+7. Verify frontend renders cards, basket, briefing, and graph pages without console errors
+8. Verify the app works fully offline with seeded/fallback data
+
+If you write any test scripts, put them in `backend/scripts/` and make them runnable with `python backend/scripts/test_*.py`.
+
+---
+
+## Git workflow
+
+- Single `main` branch. Feature branches named `{owner}/{short-description}` (e.g., `sam/github-scraper`, `steve/card-ui`).
+- Commit messages: imperative mood, short first line. Examples:
+  - `Add GitHub trending scraper`
+  - `Fix basket counter not updating on undo`
+  - `Implement briefing generation endpoint`
+- Merge to `main` frequently. Do not let branches diverge for more than a few hours. This is a hackathon — avoid merge conflicts.
+- No squash merges required. Fast-forward or merge commits are both fine.
+- Tag stable demo-ready states: `git tag demo-v1`, `git tag demo-final`.
+
+---
+
+## Boundaries — do NOT do these things
+
+- **Do not add authentication or user accounts.** We use a simple `session_id` (generated client-side, stored in Zustand). No login, no signup, no OAuth.
+- **Do not install a CSS framework besides Tailwind.** No Bootstrap, no Material UI, no Chakra.
+- **Do not add Redux, React Query, SWR, or tRPC.** Zustand + fetch is sufficient.
+- **Do not use a graph database** (Neo4j, ArangoDB, etc.). Store graph data in Postgres tables.
+- **Do not add Docker or Kubernetes.** Local dev + direct deploy to Vercel/Railway.
+- **Do not write unit tests with pytest or jest.** Manual smoke tests only. Time is limited.
+- **Do not build a sharing feature** unless all P0 features are complete and stable.
+- **Do not add WebSockets** unless streaming briefing generation specifically requires it (SSE is preferred).
+- **Do not over-engineer the recommendation system.** TF-IDF + cosine similarity or simple keyword overlap is the ceiling. No embeddings, no fine-tuning, no model training.
+- **Do not refactor working code** for cleanliness during the hackathon. Ship first, refactor never (it's a hackathon).
+- **Do not add new npm or pip dependencies** without checking if an existing dependency already solves the problem.
+- **Do not modify `data/seed_cards.json`** without coordinating — it is the shared fallback dataset.
+
+---
+
+## Deployment
+
+- **Frontend:** Deploy to Vercel. Connect the GitHub repo, set root directory to `frontend/`.
+- **Backend:** Deploy to Railway. Set root directory to `backend/`, start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+- **Database:** Supabase hosted Postgres (already provisioned).
+- Set all environment variables in the deployment platform dashboards.
+- Deploy early (Sunday morning latest). Have a working deployed URL before demo prep begins.
+
+---
+
+## Fallback strategy
+
+If any system fails during the demo:
+- **Scraping fails →** use `data/seed_cards.json` (pre-curated 15–20 items)
+- **LLM API fails →** serve a pre-generated cached briefing from the `briefings` table
+- **Graph generation fails →** serve a pre-generated graph snapshot
+- **Deployment fails →** run locally and screen-share, or use the backup demo video
+- **Swipe gesture buggy →** fall back to Save/Skip buttons (the `CardDeck` component should support both modes)
+
+Always have `python backend/scripts/seed.py` ready to repopulate the database instantly.
