@@ -1,0 +1,63 @@
+{
+  "source_file": "2603.12255.pdf",
+  "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "test-time training fast weights",
+      "description": "Instead of keeping an AI model's settings frozen after training, this approach lets the model continuously update a small portion of its internal settings (called 'fast weights') while watching a video, so it can actively remember and organize what it sees in real time.",
+      "why_innovative": "This lets AI systems process infinitely long video streams without running out of memory, because spatial information is compressed into adaptive weights rather than stored as raw data — something fixed-parameter models fundamentally cannot do.",
+      "impact_on_applications": "This could enable robots and autonomous vehicles to navigate complex, ever-changing environments by continuously building a mental map from live camera feeds. It could also improve AR/VR headsets that need to understand the 3D layout of any room you walk into.",
+      "category": "technique",
+      "relevance_score": 0.98
+    },
+    {
+      "label": "hybrid ttt architecture",
+      "description": "A design that mixes two types of processing layers — standard 'full-attention' layers (which look at everything at once) and 'TTT' layers (which compress and memorize over time) — in a 1:3 ratio, so the model keeps its original language and vision skills while gaining the ability to handle long video streams.",
+      "why_innovative": "This hybrid approach lets developers upgrade existing powerful AI models (like large vision-language models) to handle streaming video without having to retrain them from scratch, preserving years of learned knowledge while adding new streaming capabilities.",
+      "impact_on_applications": "This could allow existing AI assistants — like those used in smart glasses or home robots — to be upgraded to understand long video sequences without expensive retraining, making spatial AI upgrades faster and cheaper to deploy.",
+      "category": "architecture",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "spatial-predictive mechanism",
+      "description": "A method that uses small 3D 'sliding filters' (borrowed from video processing) on the AI's internal attention signals, so that when the model decides what to remember, it considers neighboring pixels and nearby video frames together rather than each pixel in isolation.",
+      "why_innovative": "By baking geometric and temporal neighborhood awareness directly into the memory-update process, the model learns to remember spatially coherent 3D structures rather than disconnected snippets — a key step toward true scene understanding.",
+      "impact_on_applications": "This could dramatically improve how robots understand the physical layout of a room from a moving camera, and could help augmented reality apps more accurately overlay digital objects onto real-world surfaces even as you move around.",
+      "category": "technique",
+      "relevance_score": 0.93
+    },
+    {
+      "label": "large-chunk ttt update",
+      "description": "Instead of updating the model's memory after every few video frames (which is slow), this approach batches many frames together into large chunks and updates memory all at once in parallel, like processing a paragraph at a time instead of word by word.",
+      "why_innovative": "This makes the streaming memory-update process dramatically faster and more practical on real hardware (GPUs), solving a key efficiency bottleneck that previously prevented test-time training from working on long videos.",
+      "impact_on_applications": "This efficiency gain means spatial AI could run in real time on devices like self-driving cars or drones, processing continuous video feeds without lag — something that was previously too slow to be practical.",
+      "category": "technique",
+      "relevance_score": 0.91
+    },
+    {
+      "label": "parallel sliding-window attention",
+      "description": "A technique that runs a 'local memory' attention process (only looking at a nearby window of frames) in parallel alongside the main memory-update process, ensuring that details within each video chunk are not lost due to processing boundaries.",
+      "why_innovative": "This elegantly solves the problem that large-chunk processing can break the natural continuity within a scene, maintaining fine-grained spatial detail without adding significant computational cost.",
+      "impact_on_applications": "For applications like surgical robots or industrial inspection cameras, this means the AI won't miss important spatial details that fall across chunk boundaries, improving reliability in safety-critical settings.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "dense 3d scene description dataset",
+      "description": "A specially constructed training dataset where each video scene is paired with rich, comprehensive text descriptions covering object counts, sizes, positions, and spatial relationships — much more detailed than typical image-caption datasets.",
+      "why_innovative": "Existing spatial datasets were too sparse and local to teach a model how to build a complete mental map of a scene; this dense supervision provides the rich 'ground truth' needed to teach the model what spatial information is worth remembering across a long video.",
+      "impact_on_applications": "Better training data means AI systems can more accurately answer questions like 'how far is the chair from the door?' or 'how many objects are on the left side?' — capabilities useful for assistive technologies for the visually impaired or for home automation.",
+      "category": "dataset",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "muon optimizer for fast weights",
+      "description": "A special mathematical update rule used to adjust the model's fast weights during video processing, which keeps the weight updates 'orthogonal' (well-spread and non-redundant) to prevent the memory from becoming unstable or collapsing over long streams.",
+      "why_innovative": "Standard gradient updates can cause fast weights to drift or become poorly conditioned over long sequences; this optimizer keeps memory updates stable and well-structured, which is critical for reliable spatial reasoning over hundreds of video frames.",
+      "impact_on_applications": "More stable memory updates mean AI systems can reliably track spatial context over very long videos — for example, remembering where an object was placed 10 minutes ago in a home monitoring or elder-care application.",
+      "category": "technique",
+      "relevance_score": 0.82
+    }
+  ]
+}
