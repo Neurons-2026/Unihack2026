@@ -41,6 +41,13 @@ try:
 except Exception as exc:
     logger.warning("Concepts router disabled: %s", exc)
 
+try:
+    from routers import pipeline
+
+    app.include_router(pipeline.router, prefix="/api/v1", tags=["pipeline"])
+except Exception as exc:
+    logger.warning("Pipeline router disabled: %s", exc)
+
 
 @app.get("/health")
 async def health() -> dict[str, str]:
