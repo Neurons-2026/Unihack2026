@@ -3,11 +3,20 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import TinderCard from 'react-tinder-card';
 import { sampleCards } from '@/data/sampleCards';
 import { useBasketStore } from '@/stores/useBasketStore';
+import { unlockAudio, playSaveSound, playSkipSound } from '@/lib/sounds';
+import { emitRipples } from '@/lib/rippleCanvas';
 import CardItem from './CardItem';
 import EmptyState from './EmptyState';
+import RippleCanvas from './RippleCanvas';
+import SwipeBackground from './SwipeBackground';
+import SwipeToast from './SwipeToast';
 
 export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [swipeDir, setSwipeDir] = useState<'left' | 'right' | null>(null);
+  const [swipeIntensity, setSwipeIntensity] = useState(0);
+  const [toastAction, setToastAction] = useState<'save' | 'skip' | null>(null);
+  const [toastTrigger, setToastTrigger] = useState(0);
   const addItem = useBasketStore((s) => s.addItem);
   const logInteraction = useBasketStore((s) => s.logInteraction);
 
@@ -20,9 +29,34 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     setCurrentIndex(0);
   }, [activeTopic]);
 
+  const audioUnlocked = useRef(false);
+  const handleFirstTouch = useCallback(() => {
+    if (!audioUnlocked.current) {
+      unlockAudio();
+      audioUnlocked.current = true;
+    }
+  }, []);
+
   const handleSwipe = useCallback(
     (dir: string, cardId: string) => {
-      if (dir === 'right') {
+      const saved = dir === 'right';
+
+      // Play sound
+      if (saved) playSaveSound(); else playSkipSound();
+
+      // Trigger ripple
+      emitRipples(saved);
+
+      // Show toast
+      setToastAction(saved ? 'save' : 'skip');
+      setToastTrigger((prev) => prev + 1);
+
+      // Reset swipe feedback
+      setSwipeDir(null);
+      setSwipeIntensity(0);
+
+      // Existing basket/logging logic
+      if (saved) {
         addItem(cardId);
         logInteraction(cardId, 'save');
       } else {
@@ -40,7 +74,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
 
   if (!currentCard) {
     return (
-      <div style={{ flex: 1, display: 'flex', padding: '10px 10px 16px' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px 10px 16px' }}>
         <EmptyState />
       </div>
     );
@@ -56,7 +90,15 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
         position: 'relative',
         minHeight: 0,
       }}
+      onTouchStart={handleFirstTouch}
+      onMouseDown={handleFirstTouch}
     >
+      {/* Swipe background color feedback */}
+      <SwipeBackground direction={swipeDir} intensity={swipeIntensity} />
+
+      {/* Ripple animation canvas */}
+      <RippleCanvas />
+
       {/* Peek card — back */}
       <div
         style={{
@@ -69,6 +111,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
           borderRadius: 18,
           transform: 'scale(0.96)',
           opacity: 0.35,
+          zIndex: 1,
         }}
       />
       {/* Peek card — middle */}
@@ -83,6 +126,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
           borderRadius: 18,
           transform: 'scale(0.98)',
           opacity: 0.55,
+          zIndex: 1,
         }}
       />
 
@@ -98,6 +142,9 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
           <CardItem card={currentCard} />
         </div>
       </TinderCard>
+
+      {/* Swipe feedback toast */}
+      <SwipeToast action={toastAction} trigger={toastTrigger} />
     </div>
   );
 }

@@ -17,6 +17,7 @@ export default function CardItem({ card }: { card: CardData }) {
         display: 'flex',
         flexDirection: 'column',
         background: '#1c1c1e',
+        transformOrigin: '50% 135%',
       }}
     >
       {/* IMAGE ZONE — expands to fill available space */}
