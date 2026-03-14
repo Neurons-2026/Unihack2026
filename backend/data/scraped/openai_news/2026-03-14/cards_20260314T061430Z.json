@@ -1,0 +1,67 @@
+[
+  {
+    "id": "openai:rakuten",
+    "card_title": "Rakuten cuts software fix time in half using OpenAI's Codex agent",
+    "card_summary": "Rakuten uses OpenAI's coding tool Codex to fix issues 50% faster and speed up software delivery.",
+    "keywords": [
+      "rakuten",
+      "codex",
+      "openai",
+      "software-development",
+      "ci-cd"
+    ],
+    "thumbnail_keyword": "code"
+  },
+  {
+    "id": "openai:designing-agents-to-resist-prompt-injection",
+    "card_title": "OpenAI shares how ChatGPT agents resist prompt injection attacks",
+    "card_summary": "OpenAI explains how it designs AI agents to block manipulation attempts and protect sensitive data.",
+    "keywords": [
+      "prompt-injection",
+      "ai-agents",
+      "chatgpt",
+      "security",
+      "openai"
+    ],
+    "thumbnail_keyword": "shield"
+  },
+  {
+    "id": "openai:wayfair",
+    "card_title": "Wayfair uses OpenAI to fix product tags and speed up supplier support",
+    "card_summary": "Wayfair corrected 2.5 million product tags and automated 41,000 support tickets monthly using AI.",
+    "keywords": [
+      "wayfair",
+      "openai",
+      "product-catalog",
+      "supplier-support",
+      "retail-automation"
+    ],
+    "thumbnail_keyword": "furniture"
+  },
+  {
+    "id": "openai:equip-responses-api-computer-environment",
+    "card_title": "OpenAI Builds Agent Runtime with Containers and Shell Tools",
+    "card_summary": "OpenAI shares how it built a secure system for running AI agents with files, tools, and memory.",
+    "keywords": [
+      "openai",
+      "ai-agents",
+      "responses-api",
+      "containers",
+      "agent-runtime"
+    ],
+    "thumbnail_keyword": "container"
+  },
+  {
+    "id": "openai:instruction-hierarchy-challenge",
+    "card_title": "OpenAI Trains Models to Prioritize Trusted Instructions Over Attacks",
+    "card_summary": "A new method called IH-Challenge helps AI models resist prompt injection by following trusted instructions first.",
+    "keywords": [
+      "instruction-hierarchy",
+      "prompt-injection",
+      "openai",
+      "safety",
+      "alignment"
+    ],
+    "thumbnail_keyword": "shield"
+  }
+]

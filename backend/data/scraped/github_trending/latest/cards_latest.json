@@ -1,0 +1,67 @@
+[
+  {
+    "id": "github:microsoft/BitNet",
+    "card_title": "Microsoft Releases BitNet.cpp for Fast 1-Bit LLM Inference on CPUs and GPUs",
+    "card_summary": "Microsoft's framework runs ultra-compact AI models on regular CPUs, cutting energy use up to 82%.",
+    "keywords": [
+      "bitnet",
+      "1-bit-llm",
+      "inference",
+      "cpu-optimization",
+      "energy-efficiency"
+    ],
+    "thumbnail_keyword": "chip"
+  },
+  {
+    "id": "github:langflow-ai/openrag",
+    "card_title": "OpenRAG Offers Pre-Packaged AI Document Search Platform",
+    "card_summary": "OpenRAG lets users upload documents and query them via AI chat using semantic search and agent workflows.",
+    "keywords": [
+      "openrag",
+      "retrieval-augmented-generation",
+      "langflow",
+      "document-search",
+      "opensearch"
+    ],
+    "thumbnail_keyword": "document"
+  },
+  {
+    "id": "github:lightpanda-io/browser",
+    "card_title": "Lightpanda Offers Open-Source Headless Browser Built for AI Agents",
+    "card_summary": "Lightpanda is a lightweight browser using 9x less memory and running 11x faster than Chrome for web scraping.",
+    "keywords": [
+      "lightpanda",
+      "headless-browser",
+      "web-scraping",
+      "ai-agents",
+      "open-source"
+    ],
+    "thumbnail_keyword": "browser"
+  },
+  {
+    "id": "github:obra/superpowers",
+    "card_title": "Superpowers gives coding AI agents a structured development workflow",
+    "card_summary": "An open-source plugin guides AI coding agents through planning, test-driven development, and code review.",
+    "keywords": [
+      "superpowers",
+      "coding-agents",
+      "test-driven-development",
+      "claude-code",
+      "workflow"
+    ],
+    "thumbnail_keyword": "workflow"
+  },
+  {
+    "id": "github:public-apis/public-apis",
+    "card_title": "Public APIs Repository Curates Thousands of Free APIs for Developers",
+    "card_summary": "A community-maintained list offers thousands of free web service connections organized by category.",
+    "keywords": [
+      "public-apis",
+      "open-source",
+      "api-directory",
+      "developer-tools",
+      "community"
+    ],
+    "thumbnail_keyword": "catalog"
+  }
+]

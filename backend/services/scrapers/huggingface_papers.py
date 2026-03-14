@@ -13,7 +13,7 @@ HF_PAPER_URL = "https://huggingface.co/papers/{paper_id}"
 ARXIV_ABS_URL = "https://arxiv.org/abs/{paper_id}"
 ARXIV_PDF_URL = "https://arxiv.org/pdf/{paper_id}.pdf"
 REQUEST_TIMEOUT_SECONDS = 15
-MAX_CONTENT_CHARS = 2500
+MAX_CLEANED_TEXT_CHARS = 2500
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -185,7 +185,8 @@ def scrape_huggingface_papers(
             except requests.RequestException:
                 pdf_path = ""
 
-        cleaned_text = _truncate(abstract or hf_summary or title, MAX_CONTENT_CHARS)
+        cleaned_text = _truncate(abstract or hf_summary or title, MAX_CLEANED_TEXT_CHARS)
+        full_raw_content = _clean_whitespace(f"{abstract} {hf_summary}")
         source_rank_score = max(0.0, (limit - rank + 1) / max(1, limit))
 
         output.append(
@@ -196,7 +197,7 @@ def scrape_huggingface_papers(
                 "source_url": hf_url,
                 "title": title,
                 "raw_summary": abstract or hf_summary,
-                "raw_content": _truncate(f"{abstract} {hf_summary}", MAX_CONTENT_CHARS),
+                "raw_content": full_raw_content,
                 "pipeline_state": "raw_scraped",
                 "preprocessing": {
                     "cleaned_text": cleaned_text,

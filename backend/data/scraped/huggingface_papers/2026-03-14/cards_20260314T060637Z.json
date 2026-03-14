@@ -1,0 +1,67 @@
+[
+  {
+    "id": "huggingface:2603.12255",
+    "card_title": "Spatial-TTT Brings Streaming 3D Spatial Understanding to Video AI",
+    "card_summary": "A new model adapts its parameters on the fly to track and organize 3D spatial information from long video streams.",
+    "keywords": [
+      "test-time training fast weights",
+      "hybrid ttt architecture",
+      "spatial-predictive mechanism",
+      "large-chunk ttt update",
+      "parallel sliding-window attention"
+    ],
+    "thumbnail_keyword": "space"
+  },
+  {
+    "id": "huggingface:2603.12180",
+    "card_title": "New Benchmark Reveals AI Agents Use Brute-Force Search, Not Strategy",
+    "card_summary": "A study finds AI document agents match human accuracy but rely on trial-and-error instead of planning.",
+    "keywords": [
+      "madqa benchmark",
+      "accuracy-effort trade-off metric",
+      "classical test theory splits",
+      "sentinel pool",
+      "agentic document collection vqa"
+    ],
+    "thumbnail_keyword": "documents"
+  },
+  {
+    "id": "huggingface:2603.12201",
+    "card_title": "IndexCache Speeds Up Sparse Attention by Reusing Data Across Layers",
+    "card_summary": "A new method cuts 75% of redundant computations in AI attention systems, nearly doubling processing speed.",
+    "keywords": [
+      "indexcache",
+      "sparse-attention",
+      "inference-optimization",
+      "deepseek",
+      "long-context"
+    ],
+    "thumbnail_keyword": "cache"
+  },
+  {
+    "id": "huggingface:2603.10178",
+    "card_title": "Video-Based Reward Model Judges If Computer-Using AI Agents Succeed",
+    "card_summary": "A new model watches screen recordings to check if AI agents completed tasks, beating GPT-5.2 and Gemini-3 Pro.",
+    "keywords": [
+      "reward-modeling",
+      "computer-use-agents",
+      "video-understanding",
+      "evaluation",
+      "exevrm"
+    ],
+    "thumbnail_keyword": "screen"
+  },
+  {
+    "id": "huggingface:2603.12257",
+    "card_title": "DreamVideo-Omni Controls Multiple Characters and Motions in AI Video",
+    "card_summary": "A new AI framework generates videos with precise control over multiple characters and their movements.",
+    "keywords": [
+      "dreamvideo-omni",
+      "video-generation",
+      "multi-subject",
+      "motion-control",
+      "diffusion-models"
+    ],
+    "thumbnail_keyword": "video"
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "anthropic:where-stand-department-war",
+    "card_title": "Anthropic Challenges Department of War Supply Chain Risk Designation",
+    "card_summary": "Anthropic plans to fight a federal designation calling it a national security supply chain risk while continuing to.",
+    "keywords": [
+      "anthropic",
+      "department-of-war",
+      "supply-chain-risk",
+      "national-security",
+      "claude"
+    ],
+    "thumbnail_keyword": "pentagon"
+  },
+  {
+    "id": "anthropic:statement-comments-secretary-war",
+    "card_title": "Anthropic Refuses Pentagon Demands on Surveillance and Autonomous Weapons",
+    "card_summary": "Anthropic says it will fight a Pentagon supply chain risk designation over its refusal to allow mass surveillance and.",
+    "keywords": [
+      "anthropic",
+      "pentagon",
+      "autonomous-weapons",
+      "surveillance",
+      "supply-chain"
+    ],
+    "thumbnail_keyword": "shield"
+  },
+  {
+    "id": "anthropic:statement-department-of-war",
+    "card_title": "Anthropic Refuses Pentagon Demand to Remove AI Safety Guardrails",
+    "card_summary": "Anthropic says the Department of War threatened to drop Claude over two safety limits the company refuses to remove.",
+    "keywords": [
+      "anthropic",
+      "department-of-war",
+      "ai-safety",
+      "military-ai",
+      "claude"
+    ],
+    "thumbnail_keyword": "pentagon"
+  },
+  {
+    "id": "anthropic:claude-sonnet-4-6",
+    "card_title": "Anthropic Launches Claude Sonnet 4.6 With Stronger Coding and Computer Use",
+    "card_summary": "Anthropic releases its most capable mid-tier AI model, improving coding, computer use, and long-context reasoning.",
+    "keywords": [
+      "claude-sonnet-4.6",
+      "anthropic",
+      "computer-use",
+      "coding",
+      "context-window"
+    ],
+    "thumbnail_keyword": "robot"
+  },
+  {
+    "id": "anthropic:claude-is-a-space-to-think",
+    "card_title": "Anthropic pledges to keep Claude permanently free of advertising",
+    "card_summary": "Anthropic commits to never placing ads in Claude, saying they would undermine trust and helpfulness.",
+    "keywords": [
+      "anthropic",
+      "claude",
+      "advertising",
+      "ad-free",
+      "business-model"
+    ],
+    "thumbnail_keyword": "notebook"
+  }
+]

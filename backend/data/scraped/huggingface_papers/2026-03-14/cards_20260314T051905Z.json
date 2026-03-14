@@ -1,0 +1,77 @@
+[
+  {
+    "id": "huggingface:2603.12255",
+    "card_title": "Spatial-TTT Adapts AI Models in Real Time to Understand 3D Spaces from Video",
+    "card_summary": "A new AI system learns to understand 3D spaces from long video streams by updating itself as it watches.",
+    "keywords": [
+      "test-time training fast weights",
+      "hybrid ttt architecture",
+      "spatial-predictive mechanism",
+      "large-chunk ttt update",
+      "parallel sliding-window attention"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12255",
+    "thumbnail_keyword": "room"
+  },
+  {
+    "id": "huggingface:2603.12180",
+    "card_title": "New Benchmark Reveals AI Agents Use Brute Force, Not Strategy, to Search.",
+    "card_summary": "A study finds AI agents match humans in accuracy but rely on trial-and-error rather than smart planning.",
+    "keywords": [
+      "madqa benchmark",
+      "accuracy-effort trade-off metric",
+      "classical test theory splits",
+      "sentinel pool",
+      "agentic document collection vqa"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12180",
+    "thumbnail_keyword": "document"
+  },
+  {
+    "id": "huggingface:2603.12201",
+    "card_title": "IndexCache Speeds Up Sparse Attention by Reusing Indices Across Layers",
+    "card_summary": "A new method cuts 75% of attention indexing work in large AI models by sharing results between layers.",
+    "keywords": [
+      "indexcache",
+      "sparse-attention",
+      "deepseek",
+      "inference-optimization",
+      "long-context"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12201",
+    "thumbnail_keyword": "cache"
+  },
+  {
+    "id": "huggingface:2603.10178",
+    "card_title": "Video-Based Reward Model Evaluates Computer-Use Agents Across OS",
+    "card_summary": "A new model judges if AI agents completed tasks correctly by watching screen recordings, beating GPT-5.2.",
+    "keywords": [
+      "computer-use-agents",
+      "reward-modeling",
+      "video-evaluation",
+      "exevrm",
+      "benchmark"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.10178",
+    "thumbnail_keyword": "screen"
+  },
+  {
+    "id": "huggingface:2603.12257",
+    "card_title": "DreamVideo-Omni Controls Multiple Characters and Motion in AI Videos",
+    "card_summary": "A new AI framework generates videos with precise control over multiple characters' identities and movements.",
+    "keywords": [
+      "video-generation",
+      "multi-subject",
+      "motion-control",
+      "diffusion-models",
+      "reinforcement-learning"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12257",
+    "thumbnail_keyword": "video"
+  }
+]

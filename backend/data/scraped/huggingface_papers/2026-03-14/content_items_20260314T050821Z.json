@@ -1,0 +1,395 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "id": "huggingface:2603.12255",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12255",
+    "title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training",
+    "raw_summary": "Humans perceive and understand real-world spaces through a stream of visual observations. Therefore, the ability to streamingly maintain and update spatial evidence from potentially unbounded video streams is essential for spatial intelligence. The core challenge is not simply longer context windows but how spatial information is selected, organized, and retained over time. In this paper, we propose Spatial-TTT towards streaming visual-based spatial intelligence with test-time training (TTT), which adapts a subset of parameters (fast weights) to capture and organize spatial evidence over long-horizon scene videos. Specifically, we design a hybrid architecture and adopt large-chunk updates parallel with sliding-window attention for efficient spatial video processing. To further promote spatial awareness, we introduce a spatial-predictive mechanism applied to TTT layers with 3D spatiotemporal convolution, which encourages the model to capture geometric correspondence and temporal continuity across frames. Beyond architecture design, we construct a dataset with dense 3D spatial descriptions, which guides the model to update its fast weights to memorize and organize global 3D spatial signals in a structured manner. Extensive experiments demonstrate that Spatial-TTT improves long-horizon spatial understanding and achieves state-of-the-art performance on video spatial benchmarks. Project page: https://liuff19.github.io/Spatial-TTT.",
+    "raw_content": "Humans perceive and understand real-world spaces through a stream of visual observations. Therefore, the ability to streamingly maintain and update spatial evidence from potentially unbounded video streams is essential for spatial intelligence. The core challenge is not simply longer context windows but how spatial information is selected, organized, and retained over time. In this paper, we propose Spatial-TTT towards streaming visual-based spatial intelligence with test-time training (TTT), which adapts a subset of parameters (fast weights) to capture and organize spatial evidence over long-horizon scene videos. Specifically, we design a hybrid architecture and adopt large-chunk updates parallel with sliding-window attention for efficient spatial video processing. To further promote spatial awareness, we introduce a spatial-predictive mechanism applied to TTT layers with 3D spatiotemporal convolution, which encourages the model to capture geometric correspondence and temporal continuity across frames. Beyond architecture design, we construct a dataset with dense 3D spatial descriptions, which guides the model to update its fast weights to memorize and organize global 3D spatial signals in a structured manner. Extensive experiments demonstrate that Spatial-TTT improves long-horizon spatial understanding and achieves state-of-the-art performance on video spatial benchmarks. Project page: https://liuff19.github.io/Spatial-TTT. Humans perceive and understand real-world spaces through a stream of visual observations. Therefore, the ability to streamingly maintain and update spatial evidence from potentially unbounded video streams is essential for spatial intelligence. The core challenge is not simply longer context windows but how spatial information is selected, organized, and retained over time. In this paper, we propose Spatial-TTT towards streaming visual-based spatial intelligence with test-time training (TTT), which adapts a subset of parameters ( fast weights ) to capture and organize spatial evidence over long-horizon scene videos . Specifically, we design a hybrid architecture and adopt large-chunk updates parallel with sliding-window attention for efficient spatial video processing. To further promote spatial awareness, we introduce a spatial-predictive mechanism applied to TTT layers with 3D spatiotemporal convolution , which encourages the model to capture geometric correspondence and temporal continuity across frames. Beyond architecture design, we construct a dataset with dense 3D spatial descriptions, which guides the model to update its fast weights to memorize and organize global 3D spatial signals in a structured manner. Extensive experiments demonstrate that Spatial-TTT improves long-horizon spatial understanding and achieves state-of-the-art performance on video spatial benchmarks . Project page: https://liuff19.github.io/Spatial-TTT.",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "Humans perceive and understand real-world spaces through a stream of visual observations. Therefore, the ability to streamingly maintain and update spatial evidence from potentially unbounded video streams is essential for spatial intelligence. The core challenge is not simply longer context windows but how spatial information is selected, organized, and retained over time. In this paper, we propose Spatial-TTT towards streaming visual-based spatial intelligence with test-time training (TTT), which adapts a subset of parameters (fast weights) to capture and organize spatial evidence over long-horizon scene videos. Specifically, we design a hybrid architecture and adopt large-chunk updates parallel with sliding-window attention for efficient spatial video processing. To further promote spatial awareness, we introduce a spatial-predictive mechanism applied to TTT layers with 3D spatiotemporal convolution, which encourages the model to capture geometric correspondence and temporal continuity across frames. Beyond architecture design, we construct a dataset with dense 3D spatial descriptions, which guides the model to update its fast weights to memorize and organize global 3D spatial signals in a structured manner. Extensive experiments demonstrate that Spatial-TTT improves long-horizon spatial understanding and achieves state-of-the-art performance on video spatial benchmarks. Project page: https://liuff19.github.io/Spatial-TTT. Humans perceive and understand real-world spaces through a stream of visual observations. Therefore, the ability to streamingly maintain and update spatial evidence from potentially unbounded video streams is essential for spatial intelligence. The core challenge is not simply longer context windows but how spatial information is selected, organized, and retained over time. In this paper, we propose Spatial-TTT towards streaming visual-based spatial intelligence with test-time training (TTT), which adapts a subset of parameters ( fast weights ) to capture and organize spatial evidence over long-horizon scene videos . Specifically, we design a hybrid architecture and adopt large-chunk updates parallel with sliding-window attention for efficient spatial video processing. To further promote spatial awareness, we introduce a spatial-predictive mechanism applied to TTT layers with 3D spatiotemporal convolution , which encourages the model to capture geometric correspondence and temporal continuity across frames. Beyond architecture design, we construct a dataset with dense 3D spatial descriptions, which guides the model to update its fast weights to memorize and organize global 3D spatial signals in a structured manner. Extensive experiments demonstrate that Spatial-TTT improves long-horizon spatial understanding and achieves state-of-the-art performance on video spatial benchmarks . Project page: https://liuff19.github.io/Spatial-TTT.",
+      "preview_text": "Humans perceive and understand real-world spaces through a stream of visual observations. Therefore, the ability to streamingly maintain and update spatial evidence from potentially unbounded video streams is essential for spatial intelligence.",
+      "quality_score": 0.826,
+      "quality_notes": [
+        "paper_metadata_extracted",
+        "keyword_enrichment_pending",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 1.0,
+      "trending_score": 1.0
+    },
+    "metadata": {
+      "paper_id": "2603.12255",
+      "arxiv_id": "2603.12255",
+      "authors": [
+        "Liu, Fangfu",
+        "Wu, Diankun",
+        "Chi, Jiawei",
+        "Cai, Yimo",
+        "Hung, Yi-Hsin",
+        "Yu, Xumin",
+        "Li, Hao",
+        "Hu, Han",
+        "Rao, Yongming",
+        "Duan, Yueqi"
+      ],
+      "published_date": "2026/03/12",
+      "hf_url": "https://huggingface.co/papers/2603.12255",
+      "arxiv_abs_url": "https://arxiv.org/abs/2603.12255",
+      "arxiv_pdf_url": "https://arxiv.org/pdf/2603.12255.pdf",
+      "pdf_path": "data/scraped/huggingface_papers/2026-03-14/pdfs/2603.12255.pdf",
+      "pdf_downloaded": true,
+      "rank": 1,
+      "freshness_basis": "huggingface_papers_rank_freshness",
+      "keywords": [
+        "test-time training fast weights",
+        "hybrid ttt architecture",
+        "spatial-predictive mechanism",
+        "large-chunk ttt update",
+        "parallel sliding-window attention"
+      ]
+    },
+    "provenance": {
+      "collector": "huggingface_papers_scraper",
+      "collector_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.12255"
+    },
+    "fetched_at": "2026-03-14T04:02:52.235664+00:00",
+    "card": {
+      "card_title": "Spatial-TTT Adapts AI Models in Real Time to Understand 3D Spaces from Video",
+      "card_summary": "A new AI system learns to track and remember 3D spatial details from long video streams by updating itself as it.",
+      "keywords": [
+        "spatial-intelligence",
+        "test-time-training",
+        "video-understanding",
+        "3d-perception",
+        "streaming"
+      ],
+      "thumbnail_keyword": "room"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "huggingface:2603.12180",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12180",
+    "title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections",
+    "raw_summary": "Multimodal agents offer a promising path to automating complex document-intensive workflows. Yet, a critical question remains: do these agents demonstrate genuine strategic reasoning, or merely stochastic trial-and-error search? To address this, we introduce MADQA, a benchmark of 2,250 human-authored questions grounded in 800 heterogeneous PDF documents. Guided by Classical Test Theory, we design it to maximize discriminative power across varying levels of agentic abilities. To evaluate agentic behaviour, we introduce a novel evaluation protocol measuring the accuracy-effort trade-off. Using this framework, we show that while the best agents can match human searchers in raw accuracy, they succeed on largely different questions and rely on brute-force search to compensate for weak strategic planning. They fail to close the nearly 20% gap to oracle performance, persisting in unproductive loops. We release the dataset and evaluation harness to help facilitate the transition from brute-force retrieval to calibrated, efficient reasoning.",
+    "raw_content": "Multimodal agents offer a promising path to automating complex document-intensive workflows. Yet, a critical question remains: do these agents demonstrate genuine strategic reasoning, or merely stochastic trial-and-error search? To address this, we introduce MADQA, a benchmark of 2,250 human-authored questions grounded in 800 heterogeneous PDF documents. Guided by Classical Test Theory, we design it to maximize discriminative power across varying levels of agentic abilities. To evaluate agentic behaviour, we introduce a novel evaluation protocol measuring the accuracy-effort trade-off. Using this framework, we show that while the best agents can match human searchers in raw accuracy, they succeed on largely different questions and rely on brute-force search to compensate for weak strategic planning. They fail to close the nearly 20% gap to oracle performance, persisting in unproductive loops. We release the dataset and evaluation harness to help facilitate the transition from brute-force retrieval to calibrated, efficient reasoning. Multimodal agents offer a promising path to automating complex document-intensive workflows . Yet, a critical question remains: do these agents demonstrate genuine strategic reasoning , or merely stochastic trial-and-error search? To address this, we introduce MADQA, a benchmark of 2,250 human-authored questions grounded in 800 heterogeneous PDF documents. Guided by Classical Test Theory , we design it to maximize discriminative power across varying levels of agentic abilities. To evaluate agentic behaviour, we introduce a novel evaluation protocol measuring the accuracy-effort trade-off . Using this framework, we show that while the best agents can match human searchers in raw accuracy, they succeed on largely different questions and rely on brute-force search to compensate for weak strategic planning. They fail to close the nearly 20% gap to oracle performance , persisting in unproductive loops. We release the dataset and evaluation harness to help facilitate the transition from brute-force retrieval to calibrated, efficient reasoning.",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "Multimodal agents offer a promising path to automating complex document-intensive workflows. Yet, a critical question remains: do these agents demonstrate genuine strategic reasoning, or merely stochastic trial-and-error search? To address this, we introduce MADQA, a benchmark of 2,250 human-authored questions grounded in 800 heterogeneous PDF documents. Guided by Classical Test Theory, we design it to maximize discriminative power across varying levels of agentic abilities. To evaluate agentic behaviour, we introduce a novel evaluation protocol measuring the accuracy-effort trade-off. Using this framework, we show that while the best agents can match human searchers in raw accuracy, they succeed on largely different questions and rely on brute-force search to compensate for weak strategic planning. They fail to close the nearly 20% gap to oracle performance, persisting in unproductive loops. We release the dataset and evaluation harness to help facilitate the transition from brute-force retrieval to calibrated, efficient reasoning. Multimodal agents offer a promising path to automating complex document-intensive workflows . Yet, a critical question remains: do these agents demonstrate genuine strategic reasoning , or merely stochastic trial-and-error search? To address this, we introduce MADQA, a benchmark of 2,250 human-authored questions grounded in 800 heterogeneous PDF documents. Guided by Classical Test Theory , we design it to maximize discriminative power across varying levels of agentic abilities. To evaluate agentic behaviour, we introduce a novel evaluation protocol measuring the accuracy-effort trade-off . Using this framework, we show that while the best agents can match human searchers in raw accuracy, they succeed on largely different questions and rely on brute-force search to compensate for weak strategic planning. They fail to close the nearly 20% gap to oracle performance , persisting in unproductive loops. We release the dataset and evaluation harness to help facilitate the transition from brute-force retrieval to calibrated, efficient reasoning.",
+      "preview_text": "Multimodal agents offer a promising path to automating complex document-intensive workflows. Yet, a critical question remains: do these agents demonstrate genuine strategic reasoning, or merely stochastic trial-and-error search?",
+      "quality_score": 0.721,
+      "quality_notes": [
+        "paper_metadata_extracted",
+        "keyword_enrichment_pending",
+        "has_summary",
+        "llm_summary_generated",
+        "has_summary",
+        "llm_summary_generated",
+        "has_summary",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.8,
+      "trending_score": 0.8
+    },
+    "metadata": {
+      "paper_id": "2603.12180",
+      "arxiv_id": "2603.12180",
+      "authors": [
+        "Borchmann, Łukasz",
+        "Van Landeghem, Jordy",
+        "Turski, Michał",
+        "Padarha, Shreyansh",
+        "Kearns, Ryan Othniel",
+        "Mahdi, Adam",
+        "Rogge, Niels",
+        "Fourrier, Clémentine",
+        "Han, Siwei",
+        "Yao, Huaxiu",
+        "Llabrés, Artemis",
+        "Xu, Yiming",
+        "Karatzas, Dimosthenis",
+        "Zhang, Hao",
+        "Datta, Anupam"
+      ],
+      "published_date": "2026/03/12",
+      "hf_url": "https://huggingface.co/papers/2603.12180",
+      "arxiv_abs_url": "https://arxiv.org/abs/2603.12180",
+      "arxiv_pdf_url": "https://arxiv.org/pdf/2603.12180.pdf",
+      "pdf_path": "data/scraped/huggingface_papers/2026-03-14/pdfs/2603.12180.pdf",
+      "pdf_downloaded": true,
+      "rank": 2,
+      "freshness_basis": "huggingface_papers_rank_freshness",
+      "keywords": [
+        "madqa benchmark",
+        "accuracy-effort trade-off metric",
+        "classical test theory splits",
+        "sentinel pool",
+        "agentic document collection vqa"
+      ]
+    },
+    "provenance": {
+      "collector": "huggingface_papers_scraper",
+      "collector_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.12180"
+    },
+    "fetched_at": "2026-03-14T04:02:54.274310+00:00",
+    "card": {
+      "card_title": "New Benchmark Reveals AI Agents Use Brute Force, Not Strategy, to Search.",
+      "card_summary": "A study finds AI agents match humans in accuracy but rely on trial-and-error rather than smart planning.",
+      "keywords": [
+        "document-reasoning",
+        "benchmark",
+        "multimodal-agents",
+        "madqa",
+        "evaluation"
+      ],
+      "thumbnail_keyword": "document"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "huggingface:2603.12201",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12201",
+    "title": "IndexCache: Accelerating Sparse Attention via Cross-Layer Index Reuse",
+    "raw_summary": "Long-context agentic workflows have emerged as a defining use case for large language models, making attention efficiency critical for both inference speed and serving cost. Sparse attention addresses this challenge effectively, and DeepSeek Sparse Attention (DSA) is a representative production-grade solution: a lightweight lightning indexer selects the top-k most relevant tokens per query, reducing core attention from $O(L^2)$ to $O(Lk)$. However, the indexer itself retains $O(L^2)$ complexity and must run independently at every layer, despite the fact that the resulting top-k selections are highly similar across consecutive layers. We present IndexCache, which exploits this cross-layer redundancy by partitioning layers into a small set of Full layers that run their own indexers and a majority of Shared layers that simply reuse the nearest Full layer's top-k indices. We propose two complementary approaches to determine and optimize this configuration. Training-free IndexCache applies a greedy search algorithm that selects which layers to retain indexers by directly minimizing language modeling loss on a calibration set, requiring no weight updates. Training-aware IndexCache introduces a multi-layer distillation loss that trains each retained indexer against the averaged attention distributions of all layers it serves, enabling even simple interleaved patterns to match full-indexer accuracy. Experimental results on a 30B DSA model show that IndexCache can remove 75% of indexer computations with negligible quality degradation, achieving up to 1.82$\\times$ prefill speedup and 1.48$\\times$ decode speedup compared to standard DSA. These positive results are further confirmed by our preliminary experiments on the production-scale GLM-5 model (Figure 1).",
+    "raw_content": "Long-context agentic workflows have emerged as a defining use case for large language models, making attention efficiency critical for both inference speed and serving cost. Sparse attention addresses this challenge effectively, and DeepSeek Sparse Attention (DSA) is a representative production-grade solution: a lightweight lightning indexer selects the top-k most relevant tokens per query, reducing core attention from $O(L^2)$ to $O(Lk)$. However, the indexer itself retains $O(L^2)$ complexity and must run independently at every layer, despite the fact that the resulting top-k selections are highly similar across consecutive layers. We present IndexCache, which exploits this cross-layer redundancy by partitioning layers into a small set of Full layers that run their own indexers and a majority of Shared layers that simply reuse the nearest Full layer's top-k indices. We propose two complementary approaches to determine and optimize this configuration. Training-free IndexCache applies a greedy search algorithm that selects which layers to retain indexers by directly minimizing language modeling loss on a calibration set, requiring no weight updates. Training-aware IndexCache introduces a multi-layer distillation loss that trains each retained indexer against the averaged attention distributions of all layers it serves, enabling even simple interleaved patterns to match full-indexer accuracy. Experimental results on a 30B DSA model show that IndexCache can remove 75% of indexer computations with negligible quality degradation, achieving up to 1.82$\\times$ prefill speedup and 1.48$\\times$ decode speedup compared to standard DSA. These positive results are further confirmed by our preliminary experiments on the production-scale GLM-5 model (Figure 1). Long-context agentic workflows have emerged as a defining use case for large language models, making attention efficiency critical for both inference speed and serving cost. Sparse attention addresses this challenge effectively, and DeepSeek Sparse Attention (DSA) is a representative production-grade solution: a lightweight lightning indexer selects the top-k most relevant tokens per query, reducing core attention from O(L^2) to O(Lk). However, the indexer itself retains O(L^2) complexity and must run independently at every layer, despite the fact that the resulting top-k selections are highly similar across consecutive layers. We present IndexCache, which exploits this cross-layer redundancy by partitioning layers into a small set of Full layers that run their own indexer s and a majority of Shared layers that simply reuse the nearest Full layer's top-k indices. We propose two complementary approaches to determine and optimize this configuration. Training-free IndexCache applies a greedy search algorithm that selects which layers to retain indexer s by directly minimizing language modeling loss on a calibration set, requiring no weight updates. Training-aware IndexCache introduces a multi-layer distillation loss that trains each retained indexer against the averaged attention distributions of all layers it serves, enabling even simple interleaved patterns to match full- indexer accuracy. Experimental results on a 30B DSA model show that IndexCache can remove 75% of indexer computations with negligible quality degradation, achieving up to 1.82times prefill speedup and 1.48times decode speedup compared to standard DSA. These positive results are further confirmed by our preliminary experiments on the production-scale GLM-5 model (Figure 1).",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "Long-context agentic workflows have emerged as a defining use case for large language models, making attention efficiency critical for both inference speed and serving cost. Sparse attention addresses this challenge effectively, and DeepSeek Sparse Attention (DSA) is a representative production-grade solution: a lightweight lightning indexer selects the top-k most relevant tokens per query, reducing core attention from $O(L^2)$ to $O(Lk)$. However, the indexer itself retains $O(L^2)$ complexity and must run independently at every layer, despite the fact that the resulting top-k selections are highly similar across consecutive layers. We present IndexCache, which exploits this cross-layer redundancy by partitioning layers into a small set of Full layers that run their own indexers and a majority of Shared layers that simply reuse the nearest Full layer's top-k indices. We propose two complementary approaches to determine and optimize this configuration. Training-free IndexCache applies a greedy search algorithm that selects which layers to retain indexers by directly minimizing language modeling loss on a calibration set, requiring no weight updates. Training-aware IndexCache introduces a multi-layer distillation loss that trains each retained indexer against the averaged attention distributions of all layers it serves, enabling even simple interleaved patterns to match full-indexer accuracy. Experimental results on a 30B DSA model show that IndexCache can remove 75% of indexer computations with negligible quality degradation, achieving up to 1.82$\\times$ prefill speedup and 1.48$\\times$ decode speedup compared to standard DSA. These positive results are further confirmed by our preliminary experiments on the production-scale GLM-5 model (Figure 1). Long-context agentic workflows have emerged as a defining use case for large language models, making attention efficiency critical for both inference speed and serving cost. Sparse attention addresses this challenge effectively, and DeepSeek Sparse Attention (DSA) is a representative production-grade solution: a lightweight lightning indexer selects the top-k most relevant tokens per query, reducing core attention from O(L^2) to O(Lk). However, the indexer itself retains O(L^2) complexity and must run independently at every layer, despite the fact that the resulting top-k selections are highly similar across consecutive layers. We present IndexCache, which exploits this cross-layer redundancy by partitioning layers into a small set of Full layers that run their own indexer s and a majority of Shared layers that simply reuse the nearest Full layer's top-k indices. We propose two complementary approaches to determine and optimize this configuration. Training-free IndexCache applies a greedy search algorithm that selects which layers to retain indexer s by directly minimizing language modeling loss on a calibration set, requiring no weight updates. Training-aware IndexCache introduces a multi-layer distillation loss that trains each retained indexer against the averaged attention distributions of all layers it serves, enabling even simple interleaved patterns to match full- indexer accuracy. Experimental results on a 30B DSA model show that IndexCache can remove 75% of indexer computations with negligible quality degradation, achieving up to 1.82times prefill speedup and 1.48times decode speedup compared to standard DSA. These positive results are further confirmed by our preliminary experiments on the production-scale GLM-5 model (Figure 1).",
+      "preview_text": "Long-context agentic workflows have emerged as a defining use case for large language models, making attention efficiency critical for both inference speed and serving cost.",
+      "quality_score": 0.85,
+      "quality_notes": [
+        "paper_metadata_extracted",
+        "keyword_enrichment_pending",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.6,
+      "trending_score": 0.6
+    },
+    "metadata": {
+      "paper_id": "2603.12201",
+      "arxiv_id": "2603.12201",
+      "authors": [
+        "Bai, Yushi",
+        "Dong, Qian",
+        "Jiang, Ting",
+        "Lv, Xin",
+        "Du, Zhengxiao",
+        "Zeng, Aohan",
+        "Tang, Jie",
+        "Li, Juanzi"
+      ],
+      "published_date": "2026/03/12",
+      "hf_url": "https://huggingface.co/papers/2603.12201",
+      "arxiv_abs_url": "https://arxiv.org/abs/2603.12201",
+      "arxiv_pdf_url": "https://arxiv.org/pdf/2603.12201.pdf",
+      "pdf_path": "",
+      "pdf_downloaded": false,
+      "rank": 3,
+      "freshness_basis": "huggingface_papers_rank_freshness"
+    },
+    "provenance": {
+      "collector": "huggingface_papers_scraper",
+      "collector_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.12201"
+    },
+    "fetched_at": "2026-03-14T04:02:54.903220+00:00",
+    "card": {
+      "card_title": "IndexCache Speeds Up Sparse Attention by Reusing Indices Across Layers",
+      "card_summary": "A new method cuts 75% of attention indexing work in large language models with almost no quality loss.",
+      "keywords": [
+        "indexcache",
+        "sparse-attention",
+        "inference-optimization",
+        "deepseek",
+        "long-context"
+      ],
+      "thumbnail_keyword": "cache"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "huggingface:2603.10178",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.10178",
+    "title": "Video-Based Reward Modeling for Computer-Use Agents",
+    "raw_summary": "Computer-using agents (CUAs) are becoming increasingly capable; however, it remains difficult to scale evaluation of whether a trajectory truly fulfills a user instruction. In this work, we study reward modeling from execution video: a sequence of keyframes from an agent trajectory that is independent of the agent's internal reasoning or actions. Although video-execution modeling is method-agnostic, it presents key challenges, including highly redundant layouts and subtle, localized cues that determine success. We introduce Execution Video Reward 53k (ExeVR-53k), a dataset of 53k high-quality video--task--reward triplets. We further propose adversarial instruction translation to synthesize negative samples with step-level annotations. To enable learning from long, high-resolution execution videos, we design spatiotemporal token pruning, which removes homogeneous regions and persistent tokens while preserving decisive UI changes. Building on these components, we fine-tune an Execution Video Reward Model (ExeVRM) that takes only a user instruction and a video-execution sequence to predict task success. Our ExeVRM 8B achieves 84.7% accuracy and 87.7% recall on video-execution assessment, outperforming strong proprietary models such as GPT-5.2 and Gemini-3 Pro across Ubuntu, macOS, Windows, and Android, while providing more precise temporal attribution. These results show that video-execution reward modeling can serve as a scalable, model-agnostic evaluator for CUAs.",
+    "raw_content": "Computer-using agents (CUAs) are becoming increasingly capable; however, it remains difficult to scale evaluation of whether a trajectory truly fulfills a user instruction. In this work, we study reward modeling from execution video: a sequence of keyframes from an agent trajectory that is independent of the agent's internal reasoning or actions. Although video-execution modeling is method-agnostic, it presents key challenges, including highly redundant layouts and subtle, localized cues that determine success. We introduce Execution Video Reward 53k (ExeVR-53k), a dataset of 53k high-quality video--task--reward triplets. We further propose adversarial instruction translation to synthesize negative samples with step-level annotations. To enable learning from long, high-resolution execution videos, we design spatiotemporal token pruning, which removes homogeneous regions and persistent tokens while preserving decisive UI changes. Building on these components, we fine-tune an Execution Video Reward Model (ExeVRM) that takes only a user instruction and a video-execution sequence to predict task success. Our ExeVRM 8B achieves 84.7% accuracy and 87.7% recall on video-execution assessment, outperforming strong proprietary models such as GPT-5.2 and Gemini-3 Pro across Ubuntu, macOS, Windows, and Android, while providing more precise temporal attribution. These results show that video-execution reward modeling can serve as a scalable, model-agnostic evaluator for CUAs. Computer-using agents (CUAs) are becoming increasingly capable; however, it remains difficult to scale evaluation of whether a trajectory truly fulfills a user instruction. In this work, we study reward modeling from execution video : a sequence of keyframes from an agent trajectory that is independent of the agent's internal reasoning or actions. Although video-execution modeling is method-agnostic, it presents key challenges, including highly redundant layouts and subtle, localized cues that determine success. We introduce Execution Video Reward 53k (ExeVR-53k), a dataset of 53k high-quality video--task--reward triplets. We further propose adversarial instruction translation to synthesize negative samples with step-level annotations. To enable learning from long, high-resolution execution video s, we design spatiotemporal token pruning , which removes homogeneous regions and persistent tokens while preserving decisive UI changes. Building on these components, we fine-tune an Execution Video Reward Model (ExeVRM) that takes only a user instruction and a video-execution sequence to predict task success. Our ExeVRM 8B achieves 84.7% accuracy and 87.7% recall on video-execution assessment, outperforming strong proprietary models such as GPT-5.2 and Gemini-3 Pro across Ubuntu, macOS, Windows, and Android, while providing more precise temporal attribution . These results show that video-execution reward modeling can serve as a scalable, model-agnostic evaluator for CUAs.",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "Computer-using agents (CUAs) are becoming increasingly capable; however, it remains difficult to scale evaluation of whether a trajectory truly fulfills a user instruction. In this work, we study reward modeling from execution video: a sequence of keyframes from an agent trajectory that is independent of the agent's internal reasoning or actions. Although video-execution modeling is method-agnostic, it presents key challenges, including highly redundant layouts and subtle, localized cues that determine success. We introduce Execution Video Reward 53k (ExeVR-53k), a dataset of 53k high-quality video--task--reward triplets. We further propose adversarial instruction translation to synthesize negative samples with step-level annotations. To enable learning from long, high-resolution execution videos, we design spatiotemporal token pruning, which removes homogeneous regions and persistent tokens while preserving decisive UI changes. Building on these components, we fine-tune an Execution Video Reward Model (ExeVRM) that takes only a user instruction and a video-execution sequence to predict task success. Our ExeVRM 8B achieves 84.7% accuracy and 87.7% recall on video-execution assessment, outperforming strong proprietary models such as GPT-5.2 and Gemini-3 Pro across Ubuntu, macOS, Windows, and Android, while providing more precise temporal attribution. These results show that video-execution reward modeling can serve as a scalable, model-agnostic evaluator for CUAs. Computer-using agents (CUAs) are becoming increasingly capable; however, it remains difficult to scale evaluation of whether a trajectory truly fulfills a user instruction. In this work, we study reward modeling from execution video : a sequence of keyframes from an agent trajectory that is independent of the agent's internal reasoning or actions. Although video-execution modeling is method-agnostic, it presents key challenges, including highly redundant layouts and subtle, localized cues that determine success. We introduce Execution Video Reward 53k (ExeVR-53k), a dataset of 53k high-quality video--task--reward triplets. We further propose adversarial instruction translation to synthesize negative samples with step-level annotations. To enable learning from long, high-resolution execution video s, we design spatiotemporal token pruning , which removes homogeneous regions and persistent tokens while preserving decisive UI changes. Building on these components, we fine-tune an Execution Video Reward Model (ExeVRM) that takes only a user instruction and a video-execution sequence to predict task success. Our ExeVRM 8B achieves 84.7% accuracy and 87.7% recall on video-execution assessment, outperforming strong proprietary models such as GPT-5.2 and Gemini-3 Pro across Ubuntu, macOS, Windows, and Android, while providing more precise temporal attribution . These results show that video-execution reward modeling can serve as a scalable, model-agnostic evaluator for CUAs.",
+      "preview_text": "Computer-using agents (CUAs) are becoming increasingly capable; however, it remains difficult to scale evaluation of whether a trajectory truly fulfills a user instruction.",
+      "quality_score": 0.85,
+      "quality_notes": [
+        "paper_metadata_extracted",
+        "keyword_enrichment_pending",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.4,
+      "trending_score": 0.4
+    },
+    "metadata": {
+      "paper_id": "2603.10178",
+      "arxiv_id": "2603.10178",
+      "authors": [
+        "Song, Linxin",
+        "Zhang, Jieyu",
+        "Sheng, Huanxin",
+        "Shi, Taiwei",
+        "Rahul, Gupta",
+        "Liu, Yang",
+        "Krishna, Ranjay",
+        "Kang, Jian",
+        "Zhao, Jieyu"
+      ],
+      "published_date": "2026/03/10",
+      "hf_url": "https://huggingface.co/papers/2603.10178",
+      "arxiv_abs_url": "https://arxiv.org/abs/2603.10178",
+      "arxiv_pdf_url": "https://arxiv.org/pdf/2603.10178.pdf",
+      "pdf_path": "",
+      "pdf_downloaded": false,
+      "rank": 4,
+      "freshness_basis": "huggingface_papers_rank_freshness"
+    },
+    "provenance": {
+      "collector": "huggingface_papers_scraper",
+      "collector_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.10178"
+    },
+    "fetched_at": "2026-03-14T04:02:55.572137+00:00",
+    "card": {
+      "card_title": "Video-Based Reward Model Judges If Computer-Using AI Agents Complete Tasks",
+      "card_summary": "A new model watches screen recordings to check if AI agents completed user tasks, beating GPT-5.2 and Gemini-3.",
+      "keywords": [
+        "computer-use-agents",
+        "reward-modeling",
+        "video-evaluation",
+        "exevrm",
+        "benchmark"
+      ],
+      "thumbnail_keyword": "screen"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "huggingface:2603.12257",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12257",
+    "title": "DreamVideo-Omni: Omni-Motion Controlled Multi-Subject Video Customization with Latent Identity Reinforcement Learning",
+    "raw_summary": "While large-scale diffusion models have revolutionized video synthesis, achieving precise control over both multi-subject identity and multi-granularity motion remains a significant challenge. Recent attempts to bridge this gap often suffer from limited motion granularity, control ambiguity, and identity degradation, leading to suboptimal performance on identity preservation and motion control. In this work, we present DreamVideo-Omni, a unified framework enabling harmonious multi-subject customization with omni-motion control via a progressive two-stage training paradigm. In the first stage, we integrate comprehensive control signals for joint training, encompassing subject appearances, global motion, local dynamics, and camera movements. To ensure robust and precise controllability, we introduce a condition-aware 3D rotary positional embedding to coordinate heterogeneous inputs and a hierarchical motion injection strategy to enhance global motion guidance. Furthermore, to resolve multi-subject ambiguity, we introduce group and role embeddings to explicitly anchor motion signals to specific identities, effectively disentangling complex scenes into independent controllable instances. In the second stage, to mitigate identity degradation, we design a latent identity reward feedback learning paradigm by training a latent identity reward model upon a pretrained video diffusion backbone. This provides motion-aware identity rewards in the latent space, prioritizing identity preservation aligned with human preferences. Supported by our curated large-scale dataset and the comprehensive DreamOmni Bench for multi-subject and omni-motion control evaluation, DreamVideo-Omni demonstrates superior performance in generating high-quality videos with precise controllability.",
+    "raw_content": "While large-scale diffusion models have revolutionized video synthesis, achieving precise control over both multi-subject identity and multi-granularity motion remains a significant challenge. Recent attempts to bridge this gap often suffer from limited motion granularity, control ambiguity, and identity degradation, leading to suboptimal performance on identity preservation and motion control. In this work, we present DreamVideo-Omni, a unified framework enabling harmonious multi-subject customization with omni-motion control via a progressive two-stage training paradigm. In the first stage, we integrate comprehensive control signals for joint training, encompassing subject appearances, global motion, local dynamics, and camera movements. To ensure robust and precise controllability, we introduce a condition-aware 3D rotary positional embedding to coordinate heterogeneous inputs and a hierarchical motion injection strategy to enhance global motion guidance. Furthermore, to resolve multi-subject ambiguity, we introduce group and role embeddings to explicitly anchor motion signals to specific identities, effectively disentangling complex scenes into independent controllable instances. In the second stage, to mitigate identity degradation, we design a latent identity reward feedback learning paradigm by training a latent identity reward model upon a pretrained video diffusion backbone. This provides motion-aware identity rewards in the latent space, prioritizing identity preservation aligned with human preferences. Supported by our curated large-scale dataset and the comprehensive DreamOmni Bench for multi-subject and omni-motion control evaluation, DreamVideo-Omni demonstrates superior performance in generating high-quality videos with precise controllability. While large-scale diffusion models have revolutionized video synthesis , achieving precise control over both multi-subject identity and multi-granularity motion remains a significant challenge. Recent attempts to bridge this gap often suffer from limited motion granularity, control ambiguity, and identity degradation, leading to suboptimal performance on identity preservation and motion control. In this work, we present DreamVideo-Omni, a unified framework enabling harmonious multi-subject customization with omni-motion control via a progressive two-stage training paradigm. In the first stage, we integrate comprehensive control signals for joint training, encompassing subject appearances, global motion, local dynamics, and camera movements. To ensure robust and precise controllability, we introduce a condition-aware 3D rotary positional embedding to coordinate heterogeneous inputs and a hierarchical motion injection strategy to enhance global motion guidance. Furthermore, to resolve multi-subject ambiguity, we introduce group and role embeddings to explicitly anchor motion signals to specific identities, effectively disentangling complex scenes into independent controllable instances. In the second stage, to mitigate identity degradation, we design a latent identity reward feedback learning paradigm by training a latent identity reward model upon a pretrained video diffusion backbone . This provides motion-aware identity rewards in the latent space, prioritizing identity preservation aligned with human preferences. Supported by our curated large-scale dataset and the comprehensive DreamOmni Bench for multi-subject and omni-motion control evaluation, DreamVideo-Omni demonstrates superior performance in generating high-quality videos with precise controllability.",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "While large-scale diffusion models have revolutionized video synthesis, achieving precise control over both multi-subject identity and multi-granularity motion remains a significant challenge. Recent attempts to bridge this gap often suffer from limited motion granularity, control ambiguity, and identity degradation, leading to suboptimal performance on identity preservation and motion control. In this work, we present DreamVideo-Omni, a unified framework enabling harmonious multi-subject customization with omni-motion control via a progressive two-stage training paradigm. In the first stage, we integrate comprehensive control signals for joint training, encompassing subject appearances, global motion, local dynamics, and camera movements. To ensure robust and precise controllability, we introduce a condition-aware 3D rotary positional embedding to coordinate heterogeneous inputs and a hierarchical motion injection strategy to enhance global motion guidance. Furthermore, to resolve multi-subject ambiguity, we introduce group and role embeddings to explicitly anchor motion signals to specific identities, effectively disentangling complex scenes into independent controllable instances. In the second stage, to mitigate identity degradation, we design a latent identity reward feedback learning paradigm by training a latent identity reward model upon a pretrained video diffusion backbone. This provides motion-aware identity rewards in the latent space, prioritizing identity preservation aligned with human preferences. Supported by our curated large-scale dataset and the comprehensive DreamOmni Bench for multi-subject and omni-motion control evaluation, DreamVideo-Omni demonstrates superior performance in generating high-quality videos with precise controllability. While large-scale diffusion models have revolutionized video synthesis , achieving precise control over both multi-subject identity and multi-granularity motion remains a significant challenge. Recent attempts to bridge this gap often suffer from limited motion granularity, control ambiguity, and identity degradation, leading to suboptimal performance on identity preservation and motion control. In this work, we present DreamVideo-Omni, a unified framework enabling harmonious multi-subject customization with omni-motion control via a progressive two-stage training paradigm. In the first stage, we integrate comprehensive control signals for joint training, encompassing subject appearances, global motion, local dynamics, and camera movements. To ensure robust and precise controllability, we introduce a condition-aware 3D rotary positional embedding to coordinate heterogeneous inputs and a hierarchical motion injection strategy to enhance global motion guidance. Furthermore, to resolve multi-subject ambiguity, we introduce group and role embeddings to explicitly anchor motion signals to specific identities, effectively disentangling complex scenes into independent controllable instances. In the second stage, to mitigate identity degradation, we design a latent identity reward feedback learning paradigm by training a latent identity reward model upon a pretrained video diffusion backbone . This provides motion-aware identity rewards in the latent space, prioritizing identity preservation aligned with human preferences. Supported by our curated large-scale dataset and the comprehensive DreamOmni Bench for multi-subject and omni-motion control evaluation, DreamVideo-Omni demonstrates superior performance in generating high-quality videos with precise controllability.",
+      "preview_text": "While large-scale diffusion models have revolutionized video synthesis, achieving precise control over both multi-subject identity and multi-granularity motion remains a significant challenge.",
+      "quality_score": 0.85,
+      "quality_notes": [
+        "paper_metadata_extracted",
+        "keyword_enrichment_pending",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated",
+        "rich_content",
+        "has_summary",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.2,
+      "trending_score": 0.2
+    },
+    "metadata": {
+      "paper_id": "2603.12257",
+      "arxiv_id": "2603.12257",
+      "authors": [
+        "Wei, Yujie",
+        "Liu, Xinyu",
+        "Zhang, Shiwei",
+        "Yuan, Hangjie",
+        "Xing, Jinbo",
+        "Chen, Zhekai",
+        "Wang, Xiang",
+        "Qiu, Haonan",
+        "Zhao, Rui",
+        "Feng, Yutong",
+        "Chu, Ruihang",
+        "Zhang, Yingya",
+        "Guo, Yike",
+        "Liu, Xihui",
+        "Shan, Hongming"
+      ],
+      "published_date": "2026/03/12",
+      "hf_url": "https://huggingface.co/papers/2603.12257",
+      "arxiv_abs_url": "https://arxiv.org/abs/2603.12257",
+      "arxiv_pdf_url": "https://arxiv.org/pdf/2603.12257.pdf",
+      "pdf_path": "",
+      "pdf_downloaded": false,
+      "rank": 5,
+      "freshness_basis": "huggingface_papers_rank_freshness"
+    },
+    "provenance": {
+      "collector": "huggingface_papers_scraper",
+      "collector_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.12257"
+    },
+    "fetched_at": "2026-03-14T04:02:56.228355+00:00",
+    "card": {
+      "card_title": "DreamVideo-Omni Controls Multiple Characters and Motions in AI Video",
+      "card_summary": "A new AI framework generates videos with precise control over multiple characters and their movements.",
+      "keywords": [
+        "dreamvideo-omni",
+        "video-generation",
+        "multi-subject",
+        "motion-control",
+        "diffusion-models"
+      ],
+      "thumbnail_keyword": "video"
+    }
+  }
+]
