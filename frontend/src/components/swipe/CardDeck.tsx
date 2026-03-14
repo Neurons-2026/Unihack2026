@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import TinderCard from 'react-tinder-card';
 import { sampleCards } from '@/data/sampleCards';
 import { useBasketStore } from '@/stores/useBasketStore';
@@ -72,6 +72,8 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
 
   const currentCard = filteredCards[currentIndex];
 
+  const nextCard = filteredCards[currentIndex + 1];
+
   if (!currentCard) {
     return (
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px 10px 16px' }}>
@@ -98,6 +100,15 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
 
       {/* Ripple animation canvas */}
       <RippleCanvas />
+
+      {/* Next card rendered underneath with the same layout as active card */}
+      {nextCard && (
+        <div className="absolute inset-0 z-0" style={{ pointerEvents: 'none' }}>
+          <div style={{ width: '100%', height: '100%', padding: '10px 10px 16px' }}>
+            <CardItem card={nextCard} />
+          </div>
+        </div>
+      )}
 
       {/* Peek card — back */}
       <div
