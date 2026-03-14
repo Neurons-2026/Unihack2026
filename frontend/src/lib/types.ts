@@ -42,7 +42,9 @@ export interface Briefing {
 export interface GraphNode {
   id: string;
   label: string;
+  description?: string;
   frequency?: number;
+  is_today?: boolean;
 }
 
 export interface GraphEdge {
