@@ -10,12 +10,18 @@ class Settings(BaseSettings):
     supabase_key: str = ""
     anthropic_api_key: str = ""
 
+    # Optional / extra settings used by scripts
+    openai_api_key: str = ""
+    scrape_sources: str = ""
+    briefing_max_cards: int = 5
+
     cors_origins: Optional[str] = None
     app_env: str = "development"
 
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"  # allow extra vars without raising errors
 
 
 @lru_cache()
