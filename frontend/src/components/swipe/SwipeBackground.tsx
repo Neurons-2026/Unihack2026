@@ -25,7 +25,7 @@ const CLIP: React.CSSProperties = {
 };
 
 export default function SwipeBackground({ direction, intensity, reveal }: Props) {
-  const dragOpacity = direction ? Math.min(intensity * 0.3, 0.3) : 0;
+  const dragOpacity = direction ? Math.min(intensity * 0.65, 0.65) : 0;
 
   return (
     <>
@@ -48,7 +48,7 @@ export default function SwipeBackground({ direction, intensity, reveal }: Props)
             position: 'absolute',
             inset: 0,
             background: reveal ? bg(reveal.dir) : SAVE,
-            opacity: reveal ? (reveal.fading ? 0 : 0.3) : 0,
+            opacity: reveal ? (reveal.fading ? 0 : 0.65) : 0,
             transition: reveal?.fading
               ? 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1)'
               : 'none',

@@ -16,9 +16,9 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const [swipeDir, setSwipeDir] = useState<'left' | 'right' | null>(null);
   const [swipeIntensity, setSwipeIntensity] = useState(0);
   const [reveal, setReveal] = useState<RevealState>(null);
-  const [confirmAction, setConfirmAction] = useState<'save' | 'skip' | null>(null);
+  const [iconHold, setIconHold] = useState<{ action: 'save' | 'skip'; fading: boolean } | null>(null);
   const revealTimer = useRef<ReturnType<typeof setTimeout>>();
-  const confirmTimer = useRef<ReturnType<typeof setTimeout>>();
+  const iconTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const addItem = useBasketStore((s) => s.addItem);
   const logInteraction = useBasketStore((s) => s.logInteraction);
   const pendingDir = useRef<'left' | 'right' | null>(null);
@@ -61,6 +61,9 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       const t = Math.min(absX / 600, 1);
       const intensity = t * (2 - t);
       setReveal(null);
+      setIconHold(null);
+      iconTimers.current.forEach(clearTimeout);
+      iconTimers.current = [];
       setSwipeDir(offsetX > 0 ? 'right' : 'left');
       setSwipeIntensity(intensity);
     } else {
@@ -108,9 +111,11 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     clearTimeout(revealTimer.current);
     revealTimer.current = setTimeout(() => setReveal(null), 800);
 
-    setConfirmAction(action);
-    clearTimeout(confirmTimer.current);
-    confirmTimer.current = setTimeout(() => setConfirmAction(null), 2000);
+    setIconHold({ action, fading: false });
+    iconTimers.current.forEach(clearTimeout);
+    iconTimers.current = [];
+    iconTimers.current.push(setTimeout(() => setIconHold({ action, fading: true }), 900));
+    iconTimers.current.push(setTimeout(() => setIconHold(null), 1600));
 
     pendingDir.current = null;
     setDismissedCardIds((prev) =>
@@ -187,31 +192,32 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
         </div>
       </GravityCard>
 
-      <ConfirmStamp action={confirmAction} />
+      <ActionIcon swipeDir={swipeDir} swipeIntensity={swipeIntensity} hold={iconHold} />
     </div>
   );
 }
 
-function ConfirmStamp({ action }: { action: 'save' | 'skip' | null }) {
-  const [fading, setFading] = useState(false);
-  const [current, setCurrent] = useState<'save' | 'skip' | null>(null);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+function ActionIcon({
+  swipeDir,
+  swipeIntensity,
+  hold,
+}: {
+  swipeDir: 'left' | 'right' | null;
+  swipeIntensity: number;
+  hold: { action: 'save' | 'skip'; fading: boolean } | null;
+}) {
+  const dragActive = swipeDir !== null && swipeIntensity > 0.35;
+  const holdActive = hold !== null && !hold.fading;
+  const fading = hold?.fading ?? false;
+  const visible = dragActive || holdActive;
 
-  useEffect(() => {
-    if (action) {
-      timers.current.forEach(clearTimeout);
-      timers.current = [];
-      setCurrent(action);
-      setFading(false);
-      timers.current.push(setTimeout(() => setFading(true), 1100));
-      timers.current.push(setTimeout(() => setCurrent(null), 1800));
-    }
-    return () => timers.current.forEach(clearTimeout);
-  }, [action]);
+  const action: 'save' | 'skip' | null = dragActive
+    ? (swipeDir === 'right' ? 'save' : 'skip')
+    : hold?.action ?? null;
 
-  if (!current) return null;
+  if (!visible && !fading) return null;
 
-  const isSave = current === 'save';
+  const isSave = action === 'save';
 
   return (
     <div
@@ -223,9 +229,11 @@ function ConfirmStamp({ action }: { action: 'save' | 'skip' | null }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        opacity: fading ? 0 : 1,
+        opacity: fading ? 0 : visible ? 1 : 0,
         transform: fading ? 'scale(1.15)' : 'scale(1)',
-        transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+        transition: fading
+          ? 'opacity 0.6s ease-out, transform 0.6s ease-out'
+          : 'none',
       }}
     >
       <div
