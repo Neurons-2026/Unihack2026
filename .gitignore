@@ -27,3 +27,8 @@ coverage/
 
 # Docker
 pgdata
+
+#PRD
+PRD.ipynb
+10min_AI_Daily_Full_PRD.md
+Harry_Knowledge_Graph_PRD.md

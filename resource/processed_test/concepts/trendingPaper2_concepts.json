@@ -1,0 +1,55 @@
+{
+  "source_file": "trendingPaper2.txt",
+  "source_title": "IndexCache: Accelerating Sparse Attention via Cross-Layer Index Reuse",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "cross-layer index reuse",
+      "description": "Instead of running a costly 'which tokens matter?' computation at every single layer of an AI model, IndexCache runs it only at a few key layers and shares those results with the surrounding layers.",
+      "why_innovative": "It exploits the newly discovered fact that adjacent layers in a transformer almost always pick the same important tokens, turning a redundant O(NL²) computation into a much cheaper one — without retraining the model.",
+      "impact_on_applications": "AI assistants and document summarizers that work with very long texts (like legal documents or entire codebases) could respond significantly faster and at lower cost, making these services more affordable and accessible.",
+      "category": "technique",
+      "relevance_score": 1.0
+    },
+    {
+      "label": "greedy layer selection",
+      "description": "A smart search algorithm that figures out — without any extra model training — which layers can safely skip the expensive token-selection step by testing small data samples and keeping only the most necessary computations.",
+      "why_innovative": "It allows any existing deployed sparse-attention model to immediately gain speed benefits without retraining, making optimization plug-and-play for production systems.",
+      "impact_on_applications": "Companies running large AI models today can apply this method to their existing systems with minimal effort to cut inference costs and response times — directly lowering the price of AI-powered services like chatbots or search.",
+      "category": "technique",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "multi-layer distillation loss",
+      "description": "A training objective that teaches a single 'which tokens matter?' module to simultaneously serve multiple layers at once, by learning a consensus view of what's important across all those layers.",
+      "why_innovative": "It reframes model training so that a shared indexer is explicitly optimized to be useful for a group of layers rather than just one, closing the quality gap that naive index reuse would otherwise introduce.",
+      "impact_on_applications": "When building new AI models from scratch with this method, developers get both high accuracy and high speed together — leading to more capable AI assistants that don't sacrifice quality for efficiency.",
+      "category": "technique",
+      "relevance_score": 0.93
+    },
+    {
+      "label": "full-shared layer partitioning",
+      "description": "A design pattern that divides a model's layers into two types: 'Full' layers that do the full token-selection computation, and 'Shared' layers that simply borrow the result from the nearest Full layer above them.",
+      "why_innovative": "It introduces a minimal, hardware-friendly architectural change (just one conditional branch in code) that achieves up to 75% reduction in indexer computations with negligible accuracy loss.",
+      "impact_on_applications": "This simple structural change can be dropped into existing AI inference pipelines with very little engineering work, meaning faster and cheaper AI responses in production products almost immediately.",
+      "category": "architecture",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "deepseek sparse attention",
+      "description": "A production-ready method where each layer of an AI model uses a lightweight 'scout' module (the lightning indexer) to pre-select the most relevant pieces of text before doing the main, expensive attention computation.",
+      "why_innovative": "It reduces the core attention cost from quadratic to near-linear in sequence length while maintaining model quality, making long-context inference practical at scale.",
+      "impact_on_applications": "Applications like legal document analysis, long-form code generation, and multi-step AI agents that need to process hundreds of thousands of words become feasible and cost-effective in real products.",
+      "category": "architecture",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "cross-layer token selection stability",
+      "description": "An empirical finding that neighboring layers in a large language model almost always agree on which parts of the input text are most important — their 'top-k' token selections overlap by 70–100%.",
+      "why_innovative": "Proving this property specifically for sparse-attention indexers (not just full attention) is the key insight that justifies and enables the entire IndexCache approach.",
+      "impact_on_applications": "This insight opens a new optimization frontier for any current or future sparse-attention model, potentially leading to a wave of faster, cheaper AI systems across the industry.",
+      "category": "theory",
+      "relevance_score": 0.88
+    }
+  ]
+}

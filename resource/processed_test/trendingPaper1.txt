@@ -1,0 +1,951 @@
+SOURCE_TYPE: pdf
+SOURCE_FILE: trendingPaper1.pdf
+CHAR_COUNT: 64295
+---
+
+TencentHunyuan TsinghuaUniversity
+Spatial-TTT: Streaming Visual-based Spatial Intelligence
+with Test-Time Training
+FangfuLiu∗,1,DiankunWu∗,1,JiaweiChi∗,1,YimoCai1,Yi-HsinHung1,XuminYu2,
+HaoLi3,HanHu2,YongmingRao†,2,YueqiDuan†,1
+1TsinghuaUniversity 2TencentHunyuan 3NTU
+Initialize TTTweights UUppddaattee TTTweights TTTweights TTTweights AAppppllyy RelativeDistance Relative
+SSppaattiiaall SSppaattiiaall RoomSize Direction
+SSttaattee SSttaattee Recall Obj.Size A O p rd p e e r arance
+Previous
+Frames Obj.Count Absolute
+cchhuunnkk--wwiissee rreenneewwwwiitthh rreenneewwwwiitthh rreenneewwwwiitthh Distance
+rreenneewwaall 11ssttcchhuunnkk 22nnddcchhuunnkk 33rrddcchhuunnkk
+Spatial-TTT
+You are a robot beginning at the
+red candles and facing the window. renew
+You want to navigate to the door. Spatial
+You will perform the following States a 1 t . h c t e [p i o le s n a o s s . f . e . a f w il i l t i h n ] h 2 e . a G t o e r f s o r p w o a s r i d ti o u n n e t d il C F u a e ci : ngthe str w ea it m h ing A (cid:180) T (cid:55) u n (cid:88) r s (cid:85) n w (cid:81) e r b r ig : a h c t k (cid:17) ; (cid:181)
+behind it. 3. [please fill in] 4. Go window chunks
+forward until the door. You have
+reached the final destination.
+2ndChunk
+Answ
+er Overall Spatial Cue:sofa with States heaters behind
+StartingPoint:
+Redcandles
+1stChunk
+Route Plan
+Destination:
+Door
+Fig.1: Spatial-TTT.GivenaVisual-basedSpatialtask,ourproposedSpatial-TTTupdates
+spatialstatewithstreamingchunksthenanswersthequestion.
+Abstract
+Humansperceiveandunderstandreal-worldspacesthroughastreamof
+visualobservations.Therefore,theabilitytostreaminglymaintainandupdatespatialevidencefrompotentiallyunboundedvideostreamsisessential
+forspatialintelligence.Thecorechallengeisnotsimplylongercontextwindowsbuthowspatialinformationisselected,organized,andretainedover
+time.Inthispaper,weproposeSpatial-TTTtowardsstreamingvisual-based
+spatialintelligencewithtest-timetraining(TTT),whichadaptsasubsetof
+parameters (fastweights) to capture and organize spatial evidenceover
+long-horizon scene videos. Specifically, we design a hybrid architecture
+andadoptlarge-chunkupdatesparallelwithsliding-windowattentionfor
+efficient spatial video processing. To further promote spatial awareness,
+weintroduceaspatial-predictivemechanismappliedtoTTTlayerswith
+3Dspatiotemporalconvolution,whichencouragesthemodeltocapture
+geometriccorrespondenceandtemporalcontinuityacrossframes.Beyond
+architecturedesign,weconstructadatasetwithdense3Dspatialdescriptions,whichguidesthemodeltoupdateitsfastweightstomemorizeand
+organize global 3D spatial signals in a structured manner. Extensive experiments demonstrate that Spatial-TTT improves long-horizon spatial
+understandingandachievesstate-of-the-artperformanceonvideospatial
+benchmarks.Projectpage:https://liuff19.github.io/Spatial-TTT.
+Keywords: SpatialIntelligence·Test-TimeTraining·MLLM
+∗Equalcontribution.†Correspondingauthor.
+6202
+raM
+]VC.sc[
+1v55221.3062:viXra
+
+TencentHunyuan TsinghuaUniversity
+1 Introduction
+Learningtoperceive,understand,andreasonabout3Dstructureandgeometricrelationships
+ofthephysicalworldisacornerstonecapabilityforspatialintelligence(Fuetal.,2023;Chen
+etal.,2024;Yangetal.,2025c),whichfindsbroadapplicationsindiversefieldsincluding
+embodiedrobots(Driessetal.,2023;Huangetal.,2024),autonomousdriving(Huetal.,2023;
+Weietal.,2025),andaugmentedrealitydevices(Graumanetal.,2022).Inthesereal-world
+scenarios,spatialinformationisrarelycapturedfromasinglestaticviewpointbutrather
+emergesfromacontinuousstreamofvisualobservations,wherethecameramoves,objects
+become occluded, and viewpoints change over time (Li et al., 2020; Yang et al., 2025c).
+Thisnecessitatesstreamingspatialunderstanding-thecapabilitytoselectivelymaintain,
+progressivelyupdate,andreasonoverspatialmemoryfromlong-horizonvideoinputs.
+Recent advances in Multimodal Large Language Models (MLLMs) have demonstrated
+impressiveresultsin2Dvisualunderstanding(Lietal.,2023;Hurstetal.,2024;Zhuetal.,
+2025;Baietal.,2025b;Guoetal.,2025).However,theirperformancedegradessignificantly
+ontasksrequiringspatialunderstanding,primarilyduetotheinherentlackof3Dgeometric
+priors(Yangetal.,2025a;Yinetal.,2025),asthesemodelsarepredominantlytrainedon2D
+semantic-levelimage-textpairswithoutthesupervisionofspatialstructure.Whilerecent
+effortshaveexploredspatial-awareMLLMsthroughaugmentingtheinputrepresentations
+with geometric cues (Hong et al., 2023; Wu et al., 2025a; Fan et al., 2025) with more 3D
+spatial VQA data (Chen et al., 2024; Yang et al., 2025b), they remain confined to single
+images or short video clips (i.e., 16 or 32 images) and cannot scale to the long-horizon
+videostreamsencounteredinpracticalscenarios(Yangetal.,2025c),wherespatialcues
+are scattered across thousands of frames and must be progressively aggregated as the
+observernavigatesthroughtheenvironment.Naivelyextendingtheinputsequenceleadsto
+prohibitivecomputationalcostsduetoquadraticattentioncomplexity(Vaswanietal.,2017;
+Zhangetal.,2025),whileaggressivetemporalsubsamplinginevitablydiscardsfine-grained
+spatialdetailscriticalforaccurate3Dreasoning(Teametal.,2024;Yangetal.,2025c).
+Toaddressthesechallenges,weintroduceSpatial-TTT,anovelframeworkforstreaming
+visual-basedspatialintelligencebuiltontheTest-TimeTraining(TTT)paradigm(Sunetal.,
+2024b).Insteadofusingfixedparametersforinference,Spatial-TTTmaintainsadaptivefast
+weightsthatareupdatedonline,actingasacompactnon-linearmemorytoaccumulate3D
+evidencefromunboundedvideostreams.Toretaincross-modalalignmentandsemantic
+reasoningabilityofpretrainedMLLM,weemployahybridarchitecturethatinterleaves
+TTTlayerswithself-attentionanchorlayers,balancingefficientlong-contextcompression
+withfull-contextreasoning.TomakeTTTpracticalforlongspatialvideos,wefurtheradopt
+a large chunk update strategy (Zhang et al., 2025) for higher parallelism and hardware
+efficiency, and use sliding-window attention (SWA) in parallel to preserve intra-chunk
+spatiotemporalcontinuity.
+WhilethesedesignsenableTTTscalabletolong-horizonvideosandarecompatiblewith
+pretrainedMLLMs,theQ/K/Vusedforupdatesareproducedbypoint-wiselinearprojections,whichignoreneighborhoodstructureamongvisualtokensandmakethememory
+updatedynamicslessspatiallycoherent.Tothisend,weproposeaspatial-predictivemechanism that injects spatiotemporal inductivebias directly into the TTTbranch. Instead of
+usingpoint-wiselinearprojections,weapplylightweightdepth-wise3Dspatiotemporal
+convolutionstoaggregatelocalneighborhoodcontextforvisualtokens.Thisencourages
+thefastweightstolearnpredictivemappingsbetweenspatiotemporalcontextsratherthan
+isolatedtokens,therebybettercapturinggeometriccorrespondenceandtemporalcontinuity
+andimprovingthestabilityandeffectivenessofonlineupdates.
+Beyond architecture, effective TTT requires supervision that teaches the model how to
+updatefastweightstopreservegloballyuseful3Devidenceoverlongstreams.However,
+existingspatialdatasetsaresparseandlocal,providingweakgradientsignalsformodelto
+learnfast-weightupdatedynamics.Toaddressthis,weconstructadensescene-description
+dataset where the model is required to generate comprehensive 3D scene descriptions
+coveringglobalcontext,objectsandcounts,andspatialrelations.Thisdensedescription
+providesrichsupervisionfortrainingfast-weightupdatedynamicstopreservestructured,
+TencentHunyuan TsinghuaUniversity
+scene-level spatial information along video stream. Extensive experiments demonstrate
+thatSpatial-TTTsignificantlyimproveslong-horizonspatialunderstandingandachieves
+state-of-the-art performance on video spatial benchmarks. Our main contributions are
+summarizedasfollows:
+- We propose Spatial-TTT for streaming visual-based spatial intelligence with test-time
+training,whichperformsonlinefast-weightupdatesascompactnon-linearmemoryto
+accumulatespatialevidencefromlong-horizonspatialvideostreams.
+- Wedesignahybridtest-timetrainingarchitecturetogetherwithlarge-chunkupdatesand
+parallelsliding-windowattention,achievingefficientlongspatial-contextcompression
+andreasoning.
+- Weintroduceaspatial-predictivemechanismthatcapturesgeometriccorrespondence
+andspatial-temporalcontinuity,andfurtherconstructadensescene-descriptiondataset
+toproviderichsupervisionforlearningeffectivefast-weightupdatedynamics.
+- Weconductextensiveexperimentsonvideospatialbenchmarks,whichdemonstratethat
+ourmethodachievesstate-of-the-artperformanceonawiderangeofvisual-basedspatial
+understandingtasks.
+2 RelatedWork
+2.1 Visual-basedSpatialIntelligence
+Visual-basedSpatialIntelligenceofMLLMsfocusesonMLLMs'abilitytoperceive,reason
+about,andrecallspatialrelationshipsaswellaslayoutsfromvisualinputs.Whilemost
+existingMLLMsdemonstratestrongperformanceon2Dperceptionandreasoningtasks
+(Liuetal.,2023;Baietal.,2025a),theystillstrugglewithtasksthatrequireprecise3Dspatial
+alignment,suchasroboticmanipulation(Lietal.,2024c)and3Dquestionanswering(Hong
+etal.,2023;Xuetal.,2024;Chenetal.,2024).Tominimizethisgap,previousresearchers
+haveconstructedseveralbenchmarks(Lietal.,2024b;Yangetal.,2025a;Yinetal.,2025;
+Yang et al., 2025c), for example, VSI-Bench for evaluating comprehensive video-based
+visual-spatialintelligence(Yangetal.,2025a),STI-Benchforexaminingspatial-temporal
+understanding(Lietal.,2025b),andVSI-Superforchallengingspatialrecallandcontinual
+counting(Yangetal.,2025c).Meanwhile,severalmethodswereproposedtoenhancevisualbasedspatialintelligenceofMLLMs,likeincorporatingmetricdepthandmulti-viewinputs
+in MM-Spatial (Daxberger et al., 2025), adopting feed-forward visual geometry models
+inSpatial-MLLM(Wuetal.,2025a)andVLM-3R(Fanetal.,2025),SFTandRLmethods
+exploredbySpaceR(Ouyangetal.,2025)andMindCube(Yinetal.,2025),and3Dfeature
+alignmentatoutputproposedby3DThinker(Chenetal.,2025).Recently,VST(Yangetal.,
+2025b)constructed4.1MSFTdatasetforspatialperceptionand135KRLdatasetforspatial
+reasoning.SpatialLadder(Lietal.,2025a)builta26Kdataset,andCambrian-S(Yangetal.,
+2025c)proposedafour-stagetrainingframeworkwithVSI-590Kdataset.However,existing
+methodsmostlyfocusedonpre-trainingorpost-trainingstageswhiletest-timestrategyfor
+nativelyadaptingdiverseandstreamingdataisstillnotfullyexplored.
+2.2 Test-TimeTraining
+Test-time training (TTT) refers to methods that improve model performance using only
+unlabeled test data at inference time (Ba et al., 2016; Sun et al., 2020; Wang et al., 2021;
+Gandelsmanetal.,2022).Unliketest-timescaling(TTS),whichreliesonsamplingmultiple
+trajectoriesandselectingthemostpromisingoneswithfrozenmodelparametersattesttime
+(Snelletal.,2024;DeepSeek-AIetal.,2025;OpenAI,2024),test-timetrainingcontinually
+updatesmodelparametersduringinferencetoadapttodiverseinputsandtasks(Schlag
+etal.,2021;Liangetal.,2024).Priorworkhasshownthatadaptingfastweightsoverlarge
+chunksatinferencetimeenablesefficientmemorization,withapplicationsspanningnovel
+viewsynthesis,languagemodeling,andautoregressivevideodiffusion(Zhangetal.,2025).
+TheseresultshighlightthepotentialofTTTforlong-contextvisualtasks,suchasspatial
+intelligenceinstreamingvideosettings(Zhangetal.,2025).Morerecentstudies,including
+TencentHunyuan TsinghuaUniversity
+C. Turn Right, Turn Answer Detokenize
+Left
+FFN
+Hybrid Decoder Block N Concatenate
+Fast
+Full Attention Weight
+Sliding Apply Update
+Window
+Hybrid Decoder Block 2 (cid:883)(cid:3400) RMSNorm Attention Q K, V
+3DSpatiotemporal Conv
+Hybrid Decoder Block 1 (cid:885)(cid:3400)
+FFN
+Tokenize Vision Transformer Split into Chunks
+SWA TTT
+You are a robot beginning at the table and facing the window. You want
+Question t 1. o [ n p a le v a ig s a e t f e i l t l o i n t ] h 2 e . d G o o o r f . o Y rw ou a r w d i l u l n p t e i r l f t o h r e m s o t f h a e 3 fo . l [ l p o l w ea in s g e : fill in]. You have Q K, V Q K, V
+reached the final destination. Rescale & Shift
+RMSNorm
+Video Frames
+Fig.2:OverviewofSpatial-TTT.Themodelemploysahybridarchitecturethatinterleaves
+TTTlayerswithself-attentionanchorlayersata3:1ratiotopreservepretrainedknowledge
+whileenablingefficientlongspatial-contextcompression.WithineachTTTlayer,sliding
+windowattention(SWA)andTTTbranchoperateinparallelwithsharedQ/K/Vprojections,
+wheretheTTTbranchappliesspatialpredictivemechanismwithdepthwisespatiotemporal
+convolutiontocapturegeometricstructureandtemporalcontinuity.
+TTT-E2E(Tandonetal.,2025)andworkonTTTforfew-shotlearning(Akyu¨reketal.,2025),
+demonstratethatTTTsupportscontinualweightadaptationduringinferenceinanend-toendmannerandyieldssubstantialreasoningimprovementsbeyondin-contextlearning.
+Researchershavealsodevelopedbroaderdesignspace,includingoptimizers,variousloss
+functions and neural representation of memory (Wang et al., 2025; Behrouz et al., 2024;
+KaramiandMirrokni,2025).WhileTTThasachievednotablesuccessinlanguagemodeling,
+itsapplicationtoenhancingthevisualcapabilitiesofMLLMshasreceivedcomparatively
+limitedattention(Shuetal.,2022;Sunetal.,2024a).
+3 Spatial-TTT
+Inthissection,wefirstintroducetheoverallframework(Sec.3.2)ofSpatial-TTTshown
+in Fig. 2, which consists of a hybrid TTT architecture that interleaves TTT layers with
+standard self-attention layers to preserve pretrained visual-semantic knowledge, and a
+spatial-predictivemechanismthatenhancesTTTwithlightweightdepthwiseconvolutions
+tolearnspatiotemporalstructure.Wethendescribehowtobridgesparsespatialsupervision
+withdensescenedescriptionsthatproviderich,scene-levelgradientsignalsforlearning
+effectivefast-weightupdatedynamics(Sec.3.3).Finally,wepresentaspatial-awareprogressivetrainingstrategy(Sec.3.4)towardseffectivevisual-basedspatialreasoningcapability.
+Beforeintroducingourmethodindetail,wefirstreviewthetheoryofTest-TimeTraining
+(TTT).
+3.1 Preliminary
+Test-Time Training. Traditionalneural networks followa static paradigm where model
+parameters θ remain frozen after training, limiting their ability to dynamically adapt to
+evolvinginputsduringinference.Test-TimeTraining(TTT)offersanalternativeparadigm
+thatenableson-the-flyparameteradaptationbyupdatingadesignatedsubsetofparameters
+(i.e.,fastweights)whileprocessingeachtestsequence.TheTTTmechanismmaintainsfast
+weightsW ∈Rdout ×din thatparameterizeasmallneuralnetwork f
+W
+:Rdin →Rdout.Unlike
+conventional model parameters that are fixed post-training, these fast weights function
+asanadaptivememorythatcontinuouslyencodescontextualinformationfromtheinput
+stream.Givenaninputsequencex= [x ,x ,...,x ]wherex ∈Rd,eachtokenisprojected
+1 2 T t
+TencentHunyuan TsinghuaUniversity
+toderiveakeyk ,aqueryq ,andavaluev .TTTalternatesbetweentwooperationsateach
+t t t
+timestep:
+1. UpdateOperation:Thefastweightsaremodifiedtoassociatethecurrentkey-valuepair
+(k ,v )byperformingagradientdescentsteponaself-supervisedlossfunctionL:
+t t
+W t ←W t−1 −η∇ W L(f Wt−1 (k t ),v t ). (1)
+whereη denotesthelearningrate.Thisstepencodesinformationfromthepair(k ,v )
+t t
+intotheneuralmemoryW.
+t
+2. ApplyOperation:Theupdatednetworkproducestheoutputbyprocessingthequery:
+o = f (q ). (2)
+t Wt t
+Theoutputo isenrichedwithcontextualinformationfromallprecedingtokens,astheir
+t
+key-valueassociationshavebeenprogressivelyencodedintoW.
+t
+3.2 OverallFramework
+Hybrid TTT Architecture. The inherent linear complexity of Test-Time Training makes
+itwell-suitedforprocessingunboundedspatialstreamsfromlong-horizonvideos.However, directly replacing all core attention layers with TTT layers is prone to disrupting
+thepretrainedcross-modalalignmentandvisualsemantics,whilerecoveringthesewould
+require heavily retraining (Sun et al., 2020; 2024b). To address this, we employ a hybrid
+TTT architecture that interleaves TTT layers with self-attention layers at a 3:1 ratio. In a
+transformerwithLdecoderlayers,75%useTTTwhiletheremaining25%retainstandard
+self-attentionasanchorlayers.Theanchorlayersmaintainfullattentionaccessoverthe
+entirecontext,preservingthepretrainedmodel'ssemanticreasoningability.Meanwhile,
+TTT layers compress long-range temporal dependencies into adaptive fast weights W,
+t
+achievingsublinearmemorygrowth.
+WithineachTTTlayer,conventionalimplementationsusesmallchunks(e.g.,16or64tokens)
+forfrequentfast-weightupdates(Sunetal.,2023).Thisworkspoorlyforstreamingvisual
+observations:smallchunksleadtolowGPUutilizationduetopoorparallelism,andchunk
+boundariesartificiallybreakthespatialstructureofvideoframes.InspiredbyLaCT(Zhang
+etal.,2025),weinsteadadoptalargechunksizeforvisualtokens,roughlyalignedwith
+multiplevideoframes,tosubstantiallyimproveparallelismandhardwareefficiencyandto
+keepspatiallycoherentvisualcontentinsidethesameupdateunit.Akeychallengewith
+large chunks arises from the causal constraints in TTT updates: to prevent information
+leakage,thecurrentchunkcannotinteractwithitselfduringfast-weightupdates,which
+wouldotherwiseallowearliertokenstoaccesslaterones.Thisrestrictionprecludesanyintrachunktokeninteractions,whichisundesirableformaintainingspatiotemporalcontinuity
+invisualdata.Toaddressthis,weincorporateslidingwindowattention(SWA)withineach
+TTTlayer,operatinginparallelwithTTT,sharingquery,key,andvalueprojections(with
+lightweightlearnablescaleandshiftforTTT'squeriesandkeys).Thewindowsizewissetto
+benosmallerthanthechunksizeb,sothattheSWAfullycoversthecausallower-triangular
+attentionmatrixwithineachchunk,ensuringthecompletenessofthecausalstructure.The
+layeroutputcombinesbothbranches:
+o =WindowAttn(q ,K ,V )+ f (q ), (3)
+t t [t−w:t] [t−w:t] Wt t
+whereK andV denotethekeysandvalueswithintheslidingwindow.Forthe
+[t−w:t] [t−w:t]
+fast-weightnetwork f ,weuseabias-freeSwiGLU-MLPtoincreasethenonlinearityand
+W
+expressivenessofthememory:
+f (x) =W [SiLU(W x)⊙(W x)], (4)
+W 2 1 3
+wherexdenotestheinput(k forupdate,q forapply),W = {W ,W ,W }arethelearnable
+t t 1 2 3
+fastweights,and⊙iselement-wisemultiplication.
+Spatial-PredictiveMechanism.Streamingspatialunderstandingposesuniquechallenges:
+spatialinformationemergesfromcontinuousvisualobservations,wherethecameramoves,
+TencentHunyuan TsinghuaUniversity
+viewpointschange,andobjectsaregraduallyrevealedoroccluded.Adjacentvisualtokens
+describeaprogressivelyunfolding3Dscenewithstronggeometricandtemporalcontinuity.
+However, in conventional TTT designs (Sun et al., 2020; Zhang et al., 2025), Q, K, V are
+generatedthroughpoint-wiselinearprojections:k =W x ,v =W x ,whichignorespatialt k t t v t
+temporal structure among visual tokens. Since fast weights must compress the chunk
+intocompactmemorytorepresent3Dstructure,usingisolatedtokentransformsforK,V
+withoutlocalgeometriccontextforcesthemtolearnspatialpatternsfromscratch-making
+compressionharderandmemorylessstructured.Toaddressthis,weintroduceaspatialpredictivemechanismwithlightweightdepth-wisespatiotemporalconvolutionontheQ,K,
+VoftheTTTbranch.Forvisualtokensfromvideos,wereshapethemintoaspatiotemporal
+gridandaggregateneighborhoodinformationthroughlocalaggregation.Formally,forthe
+i-thchannelofatokenatspatiotemporalposition(t,h,w),theconv-enhancedquery,key
+andvalueare:
+x˜i = ∑ θi·xi , x ∈ {q,k,v}, (5)
+t,h,w δ t+δt,h+δh,w+δw
+δ∈N
+where N = {−⌊κ/2⌋,...,⌊κ/2⌋}3 is the local neighborhood with kernel size κ, and θ ∈
+Rκ3×darelearnablekernelweightsinitializedwithDiracdeltatopreserveidentitymapping
+atinitialization.TofurtherimprovethestabilityandeffectivenessoftheTTTupdate,we
+adopt the Muon update rule (Jordan et al., 2024; Zhang et al., 2025) instead of vanilla
+implementation(i.e.,Equation1)foroptimization:
+G t =MuonUpdate(G t−1 ,∇ W L(f Wt−1 (k˜ t ),v˜ t )), (6)
+W t ←L2Norm(W t−1 −ηG t ), (7)
+whereG istheorthogonalizedgradientwithmomentum,Muon(·,·)accumulatesmoment
+tumandorthogonalizesviaNewton-Schulziterations,andL2Normnormalizesweights
+whilepreservingtheiroriginalmagnitude.Poweredbythespatial-predictivemechanism,
+fastweightsnolongerlearnpredictionbetweenisolatedtokens,butratherpredictivemapping between spatial-temporal contexts. This enables fast weights to implicitly capture
+geometriccorrespondenceandtemporalcontinuityinstreamingspatialunderstanding.
+3.3 BridgingSparseSpatialQAwithDenseSupervision
+TheeffectivenessofTTT(Sunetal.,2024b)dependsonwhetherthemodellearnsfast-weight
+updatedynamicsthatretaininformationusefulforfuturetimesteps.However,supervision
+inexistingspatialintelligencedatasets(Wuetal.,2025a;Yangetal.,2025c;Fanetal.,2025)is
+typicallysparseandlocal.Forinstance,atypicalspatialQAtaskqueriesrelationsbetween
+twoobjectsinasmallregionofthescene(oftenanswerablefromonlyafewframes),and
+thetargetanswersareoftenshort(e.g.,amultiple-choiceoptionoraninteger).Suchtarget
+answersonlysuperviseasmallsubsetoftheunderlying3Dscenestates,providingweak
+andlow-coveragegradientsignalsforlearningfast-weightupdatedynamics.Consequently,
+themodelhaslimitedincentivetoconstructacoherentandpersistentglobal3Dmemory
+overlongvideostreams.
+To bridge this gap, we construct a dense scene-description dataset from SceneVerse annotations(Jiaetal.,2024).Foreachtrainingexample,themodelreceivesaspatialvideo
+streamandisrequiredtogenerateacomprehensivedescriptionoftheunderlying3Dscene.
+Unlikeshort-formanswers,thetargetoutputisformattedasacoherentscenewalkthrough,
+whichisderivedfromobject-centric3Dscenegraphs(Jiaetal.,2024).Specifically,thetarget
+description include following aspects: (1) Global context: identifying the scene type and
+functionalsetting,encouragingfastweightstoencodeglobalsemanticdescriptorsbeyond
+localvisualcues;(2)Objectsandcounts:enumeratingobjectcategoriesandprecisecounts,
+whichencouragesretentionofpersistentinstance-levelevidenceacrosstime;and(3)Object
+relations: describing spatial layouts and pairwise relations, which promotes encoding of
+geometricstructureandinter-objectconstraints.Thisdensescenedescriptiontaskprovides
+richandhigh-coveragesupervisionthatcomplementssparsespatialQA.Bytrainingthe
+modeltogeneratedetailed3Dscenedescriptions,weencouragethefast-weightdynamics
+to capture global and persistent spatial representations that benefit downstream spatial
+reasoning.
+TencentHunyuan TsinghuaUniversity
+3.4 Spatial-AwareProgressiveTraining
+Withthearchitectureanddatadesignedabove,theremainingquestionishowtotrainthe
+modeleffectively.Wemeticulouslydesignatwo-stagespatial-awareprogressivetraining
+strategy:(1)initializingfastweightswithglobal3Dawarenessusingdensescenedescription
+data,and(2)tuningstreamingspatialreasoningcapabilitywithlarge-scalespatialVQA
+data.Specifically,wefirsttrainthehybridTTTarchitectureonthedensescenedescription
+datasetdescribedabove,withthegoalofteachingfastweightstoretaincomprehensive
+scene-levelinformationthroughchunk-by-chunkmemoryupdates.Tobetterpreservethe
+pretrainedvisualknowledgeduringthisprocess,wedonotdirectlysettheslidingwindow
+sizeequaltothechunksize.Instead,weemployaslidingwindowannealingstrategy:the
+sliding window size w is linearly annealed from an initial value w to w = b (the
+max min
+chunksize)overthefirststage.Asthewindowsizegraduallydecreases,TTTlayersare
+forcedtotakeovermoreresponsibilityforcross-chunkinformationpropagationwhilefast
+weightsprogressivelylearntoencodeglobal3Dscenestructureduringmemoryupdates.
+However, spatial understanding requires not only "remembering" spatial information
+but also effectively "recalling and reasoning" about spatial relations during streaming
+observations.Tofurtherpromotestreamingvisual-basedspatialintelligence,wefine-tune
+themodelinthesecondstageusing2MspatialVQAsamplescoveringdiversetaskssuchas
+objectrelativedirection/distanceestimation,spatialcounting,routeplanning,androom
+sizeestimation.Inthisstage,thewindowsizeandchunksizearefixedatthesamevalue
+(w = b),soTTTlayersarefullyfocusedoncross-chunkspatialinformationaggregation.
+Throughthisfine-tuning,themodellearnstoselectivelyretaintask-relevantspatialevidence
+viafastweightupdatesandretrieveaccumulatedspatialknowledgewhenreasoning.
+Atinferencetime,weemployadualKVcachemechanismforconstant-memorystreaming.
+The first is a sliding window KV cache of fixed length w for local context modeling in
+slidingwindowattention;whenthecacheexceedsthewindowsize,theearliestentriesare
+discarded.ThesecondisaTTTpendingKVcachethataccumulateskey-valuepairsforfast
+weightupdates:itstartsemptyandgrowsasnewtokensarrive;wheneveritslengthreaches
+thechunksizeb,theseKVpairsareusedtoperformonefastweightupdate,afterwhichthe
+pendingcacheiscleared.
+4 Experiments
+4.1 ExperimentSetup
+ImplementationDetails.OurmodelisinitializedfromQwen3-VL-2B-Instruct(Baietal.,
+2025a).InthehybridTTTarchitecturedesign,weapplyTTTlayerstoeverythreeofevery
+fourattentionlayers.Topreservepretrainedknowledgeandfacilitateconvergence,wedo
+notinitializenewQKVprojectionmatricesfromscratchandmaketheTTTlayerssharethe
+originalattentionlayer'sQKVprojectionmatrix.ToincreaseexpressivityofTTTlayers,we
+introducelightweightlearnablescale-and-shiftparametersappliedtotheprojectedqandk.
+Atthestartoftraining,thegatingprojectionisinitializedtozero,thescaleparametersare
+settoones,andtheshiftparametersaresettozeros.Inthespatial-predictivemechanism,we
+applydepthwise3Dconvolutionswithkernelsize3×3×3ontheQ,K,VprojectionsofTTT
+layers,whichisDirac-initialized,ensuringthatthenetworkinitiallybehavesidenticallyto
+theoriginalfull-attentionmodel.TheLaCTchunksizebissetto2648,andthewindowsize
+wisinitializedto5600-sufficienttocovertheentiresequence-andannealedto2648over
+thefirsttwoepochsonthedensescene-descriptiondataset,where32framesareuniformly
+sampledfortraining.Wethenperformcontinuousfinetuningwithlarge-scalespatialVQA
+datafrom64to128frames.Weusealearningrateof1e-6forthepretrainedbackboneand
+1e-5forthenewlyintroducedTTT-relatedparameters,withawarmupof1kstepsanda
+cosinelearning-ratescheduleracrossalltrainingstages.
+Datasets. In the first stage, we train our model on the dense scene-description dataset
+(Sec. 3.3). This dataset contains approximately 16k samples, including 3.6k descriptions
+ofScanNet(Daietal.,2017)scenesand12.5kdescriptionsofARKitScenes(Baruchetal.,
+2021)scenes.Inthesecondstage,wetrainthemodelona3Mlarge-scalespatialquestionTencentHunyuan TsinghuaUniversity
+Table1:EvaluationResultsonVSI-Bench(Yangetal.,2025a).ForNumericalQuestions,
+wereportMRAscore.ForMultiple-ChoiceQuestions,wereportACCscore,Avg.isthe
+macroaverageacrossalltasks,followingtheoriginalpaper.Forhuman,wedirectlyuse
+thereportedresultsinVSI-Bench,whichisonasubsetofVSI-Benchwith400samples.We
+use and todenotethebestandsecond-bestresultswithinproprietarymodelsand
+open-sourcemodels,respectively.
+NumericalQuestion Multiple-ChoiceQuestion
+Models Avg.
+Obj.CountAbs.DistObj.SizeRoomSizeRel.DisRel.DirRoutePlanAppr.Order
+Human 94.3 47.0 60.4 45.9 94.7 95.8 95.8 100.0 79.2
+RandomChoice 62.1 32.0 29.9 33.1 25.1 47.9 28.4 25.2 34.0
+ProprietaryModels
+Seed-2.0(BytedanceSeed,2025) 49.4 25.3 69.5 25.8 61.8 44.9 44.3 71.0 50.7
+Grok-4(xAI,2025) 37.1 32.9 60.8 45.4 53.1 39.6 47.4 66.8 47.9
+Gemini-2.5-pro(Comanicietal.,2025) 46.0 37.3 68.7 54.3 61.9 43.9 47.4 68.7 53.5
+Gemini-3-pro(Google) 49.0 42.8 71.5 41.8 56.6 57.5 61.9 60.0 56.0
+Kimi-K2.5(Teametal.,2026) 57.2 34.9 69.3 54.4 59.6 41.3 52.1 67.0 53.6
+GPT-5(OpenAI,2025) 53.3 34.4 73.3 47.5 63.7 48.6 50.2 68.9 55.0
+Open-sourceGeneralModels
+LongVA-7B(Zhangetal.,2024b) 38.0 16.6 38.9 22.2 33.1 43.3 25.4 15.7 29.2
+LLaVA-OneVision-72B(Lietal.,2024a) 43.5 23.9 57.6 37.5 42.5 39.9 32.5 44.6 40.2
+LLaVA-Video-72B(Linetal.,2023) 48.9 22.8 57.4 35.3 42.4 36.7 35.0 48.6 40.9
+InternVL3-2B(Zhuetal.,2025) 64.8 30.8 32.4 22.9 32.2 34.9 32.9 12.6 32.9
+InternVL3-8B(Zhuetal.,2025) 66.0 34.8 43.6 47.5 48.0 39.3 26.2 31.3 42.1
+Qwen2.5-VL-3B-Instruct(Baietal.,2025b) 24.3 24.7 31.7 22.6 38.3 42.6 26.3 21.2 29.0
+Qwen2.5-VL-7B-Instruct(Baietal.,2025b) 40.9 14.8 43.4 10.7 38.6 40.1 33.0 29.8 31.4
+Qwen3-VL-2B-Instruct(Baietal.,2025a) 62.1 40.2 71.4 49.7 52.2 42.0 30.4 54.5 50.3
+Qwen3-VL-8B-Instruct(Baietal.,2025a) 67.5 47.0 76.3 61.9 58.0 50.9 35.0 66.3 57.9
+Open-sourceSpatialIntelligenceModels
+MindCube-3B(Yinetal.,2025) 12.8 22.7 4.3 23.4 20.2 15.7 15.9 22.4 17.2
+SpatialLadder-3B(Lietal.,2025a) 62.1 35.3 61.9 41.4 45.6 46.4 27.3 38.5 44.8
+SpaceR-7B(Ouyangetal.,2025) 44.5 24.7 53.5 37.3 41.9 46.1 29.3 54.8 41.5
+ViLaSR-7B(Wuetal.,2025b) 58.1 33.8 61.4 28.8 45.0 46.5 29.9 53.2 44.6
+VST-3B-SFT(Yangetal.,2025b) 69.3 45.4 71.8 62.4 59.0 46.0 38.7 70.2 57.9
+VST-7B-SFT(Yangetal.,2025b) 72.0 44.4 74.3 68.3 59.7 55.8 44.9 65.2 60.6
+Cambrian-S-3B(Yangetal.,2025c) 70.7 40.6 68.0 46.3 64.8 61.9 27.3 78.8 57.3
+Spatial-MLLM-4B(Wuetal.,2025a) 65.3 34.8 63.1 45.1 41.3 46.9 33.5 46.3 47.0
+Ours
+Spatial-TTT-2B 70.8 47.8 71.7 65.9 61.8 73.0 47.4 77.0 64.4
+answering dataset, which includes open-sourced spatial data and self-constructed data.
+DetailedstatisticsandcurationproceduresareprovidedintheSupplementaryMaterials.
+Baselines. We compare our model against a broad set of baselines, covering proprietarymultimodalmodels(includingGPT-5(OpenAI,2025),Gemini-3-Pro(Google),Seed2.0(BytedanceSeed,2025),Kimi-K2.5(Teametal.,2026)etc.),open-sourcegeneral-purpose
+MLLMs (LLaVA-OneVision (Li et al., 2024a), LLaVA-Video (Lin et al., 2023), InternVL3
+series(Zhuetal.,2025),Qwen2.5-VLseries(Baietal.,2025b),Qwen3-VLseries(Baietal.,
+2025a),etc.),andopen-sourcespatial-intelligencemodels(VST(Yangetal.,2025b),CambrianS(Yangetal.,2025c),Spatial-MLLM(Wuetal.,2025a),etc.).Forlong-horizonrecalland
+counting on VSI-SUPER (Yang et al., 2025c), we additionally include long-video understandingbaselines(MovieChat(Songetal.,2024)andFlash-VStream(Zhangetal.,2024a)).
+Additionally,wereportHumanandRandomChoicescoresforVSI-Bench(Yangetal.,2025a)
+andMindCube(Yinetal.,2025)asreferences.
+4.2 GeneralSpatialUnderstandingResults
+ResultsonVSI-Bench.Toassessthemodels'generalspatialunderstandingcapabilities,
+weevaluateourmodelandthebaselinemodelsonVSI-Bench(Yangetal.,2025a),abenchmarkthatmeasuresmultimodalvisual-spatialintelligencethroughegocentricvideounTencentHunyuan TsinghuaUniversity
+derstanding.VSI-Benchcontainsover5,000question-answerpairsconstructedfrom288
+real-world indoor videos drawn from the validation splits of ScanNet (Dai et al., 2017),
+ScanNet++(Yeshwanthetal.,2023),andARKitScenes(Baruchetal.,2021),coveringdiverse
+environments(e.g.,homes,offices,labs,andfactories)acrossmultiplegeographicregions.
+Followingtheoriginalpaper(Yangetal.,2025a),weuseAccuracy(ACC)formultiple-choice
+questionsandMeanRelativeAccuracy(MRA)fornumericalquestionstoquantifyhow
+closelypredictionsalignwithground-truthvalues.Avg.isthemacroaverageacrossthese
+metrics.TheresultsarereportedinTable1.Asshown,ourSpatial-TTT-2Bachievesthebest
+overallperformanceonVSI-BenchwithanAvg.of64.4,surpassingbothproprietaryand
+open-sourcebaselinesdespiteitscompact2Bscale.Inparticular,ourmodelexhibitsstrong
+advantages on multiple-choice spatial reasoning tasks that require consistent geometric
+understandingacrossegocentricviews,includingRelativeDirectionandRoutePlan,indicatingimprovedcapabilityindirectionreasoningandnavigationplanning.Meanwhile,on
+numericalquestions,ourmodelattainsthebestscoreonAbsoluteDistanceandremains
+highlycompetitiveonRoomSizeandObjectCount,suggestingstrongermetricgrounding
+andscene-scaleestimationthanotherbaselines.
+ResultsonMindCubeBenchmark.We Table 2: Evaluation results on MindCubefurther evaluate our model and the Tiny(Yinetal.,2025).Avg.ismicroaverageacross
+baseline models on MindCube (Yin alltasks,followingtheoriginalpaper.Weuse
+et al., 2025), a benchmark that pairs and to denote the best and second-best remulti-view image groups with spa- sultswithinproprietarymodelsandopen-source
+tialreasoningquestionstoassessfine- models,respectively.
+grainedspatialcapabilities.MindCube
+specifically tests (1) cross-view object
+Models Avg.ROTATIONAMONGAROUND
+consistency and (2) reasoning about
+Human 94.5 - - -
+occluded or unseen elements under
+RandomChoice 33.0 33.3 31.8 35.7
+changing camera viewpoints. Followingcommonpractice(Caietal.,2025), ProprietaryModels
+Seed-2.0(BytedanceSeed,2025) 54.8 89.0 45.2 52.0
+we use MindCube-Tiny as evaluation
+Grok-4(xAI,2025) 63.5 93.0 54.4 61.6
+set, which is a diagnostic subset sam- Gemini-2.5-pro(Comanicietal.,2025)57.6 88.0 44.9 63.2
+pled from MindCube. Mindcube-tiny Gemini-3-pro(Google) 63.9 73.5 59.3 66.0
+contains 1,050 questions in total (600 Kimi-K2.5(Teametal.,2026) 57.7 82.5 50.2 56.5
+GPT-5(OpenAI,2025) 56.3 94.5 38.2 68.4
+AMONG,250AROUND,and200ROTATION).Wereportaccuracy(ACC)forall Open-sourceGeneralModels
+questiontypes. InternVL3-2B(Zhuetal.,2025) 37.5 28.9 36.9 45.6
+InternVL3-8B(Zhuetal.,2025) 41.5 36.5 38.1 53.6
+TheresultsaresummarizedinTable2. Qwen2.5-VL-3B(Baietal.,2025b) 37.6 33.5 35.9 44.8
+Qwen2.5-VL-7B(Baietal.,2025b) 36.0 37.0 32.3 44.0
+As shown, Spatial-TTT achieves 76.2
+Qwen3-VL-2B(Baietal.,2025a) 34.5 32.5 31.6 42.8
+ACCscoreonMindCube-Tiny,outperQwen3-VL-8B(Baietal.,2025a) 29.4 29.5 28.6 31.2
+forming all baseline models. By quesOpen-sourceSpatialIntelligenceModels
+tion type, it attains the best perforMindCube-3B(Yinetal.,2025) 51.7 34.0 51.0 67.6
+manceinACROSSandAMONGsubsets. SpatialLadder-3B(Lietal.,2025a) 43.4 35.0 43.2 50.8
+Relative to the strongest proprietary SpaceR-7B(Ouyangetal.,2025) 37.9 35.0 34.2 49.2
+baseline(Gemini-3-pro;63.9%average) ViLaSR-7B(Wuetal.,2025b) 35.0 35.5 31.0 44.4
+VST-3B-SFT(Yangetal.,2025b) 35.9 32.0 34.9 41.6
+and the strongest open-source spatial
+VST-7B-SFT(Yangetal.,2025b) 39.7 37.0 35.9 50.8
+model(MindCube-3B;51.7%average),
+Cambrian-S-3B(Yangetal.,2025c) 32.5 27.0 33.2 35.2
+Spatial-TTTimprovesby12.3and24.5 Spatial-MLLM-4B(Wuetal.,2025a) 33.4 39.0 30.5 36.0
+percentage points, respectively. These
+Ours
+results indicate that Spatial-TTT pro- Spatial-TTT-2B 76.2 55.5 74.0 89.8
+videsstrongerspatialreasoningunder
+viewpointchangesandocclusions.
+4.3 StreamingSpatialSensingResults
+Toassessmodels'continualspatialsensingunderlong-horizon,streaming-stylevideo,we
+benchmarkourmodelandbaselinesonVSI-SUPER-Recall(VSR)andVSI-SUPER-Count
+(VSC)(Yangetal.,2025c).Bothbenchmarkstargetspatialsupersensinginarbitrarilylong
+egocentricvideosbyrequiringmodelstocontinuouslyaccumulateevidenceasnewobjects
+appear under changing viewpoints and to maintain long-term spatiotemporal memory
+TencentHunyuan TsinghuaUniversity
+Table3:ResultsonVSI-SUPER-Recall(VSR)andVSI-SUPER-Count(VSC)(Yangetal.,
+2025c). We report the average score on the 10-120 minute subset of VSR and the 10-120
+minute subset of VSC. For all subsets, videos are sampled at 1 fps. Qwen3-VL-2B and
+Cambrian-S-7Brunoutofmemory(OOM)onan80GB-GPUforvideoslongerthan120
+minutes;therefore,theirscoresarereportedas0.
+VSI-SUPER-Recall VSI-SUPER-Count
+Models
+10min 30min 60min 120min 10min 30min 60min 120min
+GeneralModelsandSpatialIntelligenceModels
+Qwen3-VL-2B(Baietal.,2025a) 35.0 30.0 28.3 0.0 0.8 0.0 0.0 0.0
+Cambrian-S-7B(Yangetal.,2025c) 38.3 35.0 6.0 0.0 0.6 0.0 0.0 0.0
+Long-videoUnderstandingModels
+MovieChat(Songetal.,2024) 18.3 21.7 16.7 26.7 0.0 0.0 0.0 0.0
+Flash-VStream(Zhangetal.,2024a) 28.3 33.3 23.3 28.3 0.0 0.0 0.0 0.0
+Ours
+Spatial-TTT-2B 38.3 35.0 28.3 30.0 31.8 45.6 36.2 38.4
+forsubsequentqueries.Specifically,VSCrequiresmodelstocountobjectsacrossextended
+sequences, whereas VSR uses a multiple-choice setting to test whether models can recallthetemporalorderofinsertedobjectsoverevenlongervideos.Followingthebenchmark protocol, we report mean recall accuracy (MRA) for VSC and accuracy (ACC) for
+VSR.AsshowninTable3,Spatial-TTTachievescompetitiveperformanceonVSI-SUPERRecall across different video lengths, while significantly outperforming all baselines on
+VSI-SUPER-Count.Long-videounderstandingmodels(e.g.,MovieChat(Songetal.,2024)
+andFlash-VStream(Zhangetal.,2024a))consistentlyunderperformacrossallvideodurations,suggestingthatstronglong-contextmodelingaloneisinsufficientforcontinualspatial
+sensingwithoutrobustspatialreasoningcapabilities.Generalpurposeandspatialintelligencemodels(e.g.,Qwen3-VL(Baietal.,2025a)andCambrian-S(Yangetal.,2025c))achieve
+relativelycompetitiveresultsonshortervideos,buttheirperformancecollapsesonlonger
+sequences. This degradation is largely attributable to practical limitations in processing
+extendedinputs,suchasexceedingcontextbudgetsorrunningintoout-of-memory,which
+preventsthemfromcontinuouslyintegratingnewobservationsandretaininglong-term
+spatiotemporalevidence.Incontrast,Spatial-TTTmaintainsstableperformanceasvideo
+lengthincreasesbyperformingonlineupdatesthatincrementallyintegratenewobservations,enablingcontinualaccumulationandretentionoflong-termspatiotemporalevidence.
+4.4 AblationStudyandAnalysis
+In Table 4, we report ablation results of Spatial-TTT on VSI-Bench (Yang et al., 2025a).
+Asshown,thefullmodelachievesthebestoverallperformance(64.4Avg.),outperforming all ablated variants on both the Numerical and Multiple-Choice subsets, validating
+theeffectivenessofourproposedcomponents.Following,weprovideacomponent-wise
+analysis.
+Spatial-predictivemechanism.Replacingthedepth-wise3Dspatiotemporalconvolution
+withidentityprojections(w/oSP-Mechanism)dropsAvg.from64.4to62.1,withalargerdeclineonNumericalquestions(64.0to60.7).Thissupportsthatinjectinglocalspatiotemporal
+inductivebiasstabilizesfast-weightupdatesandbenefitsmetric-levelspatialreasoning.
+Densescene-descriptionsupervision.Asshown,removingdensescenedescriptiondata
+(w/oDenseData)reducestheoverallAvg.from64.4to61.3.OntheNumericalandMultipleChoicesubsets,thescoresdropby3.0and3.3points,respectively.Theseresultsindicate
+thatdense,scene-levelsupervisionprovidesstrongertrainingsignalsforlearningeffective
+online update dynamics and for retaining globally useful 3D evidence over long video
+streams.
+TencentHunyuan TsinghuaUniversity
+Table5:Peakmemoryusage(GB)andTFLOPsperforwardpassforvaryinginputlengths.
+Theresultsaremeasuredat352×480.Forfaircomparison,weselectrepresentativemodels
+withcomparablebasemodelsizes:Qwen3-VL-2B(Baietal.,2025a)asthegeneral-purpose
+MLLMbaseline,andSpatial-MLLM-4B(Wuetal.,2025a)asthegeometry-augmentedspatial
+VLMbaseline.Spatial-MLLM-4BranoutofGPUmemoryat512and1024framesonour
+testhardware(reportedasOOM),TFLOPsarethereforenotreported.
+128frames 256frames 512frames 1024frames
+Models
+MEM TFLOPs MEM TFLOPs MEM TFLOPs MEM TFLOPs
+Qwen3-VL-2B(Baietal.,2025a) 6.2 75.9 8.3 179.9 12.6 473.9 21.2 1403.1
+Spatial-MLLM-4B(Wuetal.,2025a) 25.9 1698.8 41.8 6002.1 OOM N/A OOM N/A
+Spatial-TTT-2B(Ours) 6.2 74.3 7.0 156.2 8.4 341.9 11.9 799.4
+HybridTTTarchitecture.Eliminatingself-attentionanchorlayers(w/oHybridArch)causes
+thelargestdegradationonaveragescore(from64.4to53.9),especiallyonMultiple-Choice
+(from64.8to52.4).Theseresultshighlightsthenecessityofhybridinterleavingtoretain
+cross-modalalignmentandglobal-contextreasoningwhilescalingtolong-horizonvideos.
+Analysis for memory usage and the- Table 4: Ablations of Spatial-TTT on VSIoretical TFLOPs. We further analyze Bench(Yangetal.,2025a)."w/oSP-Mechanism
+decoding memory usage and theo- "denotesreplacingspatial-predictiveconvwith
+retical TFLOPs across varying input identityprojections."w/oDenseData"denotes
+lengths. As shown in Table 5, Spatial- training without dense scene-description data.
+MLLM(Wuetal.,2025a),whichintro- "w/o Hybrid Arch" denotes pure TTT architecducesanexplicitgeometryencoder,ex- ture.
+hibits prohibitive scaling-its computationalcostgrowssuper-linearlywith
+Setting NumericalMultiple-ChoiceAvg.
+framecount,anditrunsoutofmemory
+(OOM) beyond 256 frames, making it Spatial-TTT 64.0 64.8 64.4
+impracticalforstreamingvideoscenar- w/oSP-Mechanism 60.7 63.4 62.1
+ios. For the general-purpose baseline w/oDenseData 61.0 61.5 61.3
+Qwen3-VL-2B(Baietal.,2025a),while w/oHybridArch 55.4 52.4 53.9
+starting with comparable resource usageatshortcontexts,bothitsmemoryandTFLOPsscalewiththequadraticcomplexity
+inherent to standard Transformer attention. In contrast, our Spatial-TTT benefits from
+linear-complexityattention,wheredoublingtheinputlengthresultsinapproximatelydoubledcomputation-closelytrackingtheoreticallinearscaling.At1024frames,Spatial-TTT
+achievesover40%reductioninbothTFLOPsandmemorycomparedtoQwen3-VL-2B.Crucially,thisefficiencygapwidensascontextlengthgrows,makingourapproachparticularly
+well-suitedforstreamingspatialintelligence.
+5 Conclusion
+Inthispaper,wepresentSpatial-TTT,anovelframeworkforstreamingvisual-basedspatial
+intelligencethatleveragestest-timetrainingtomaintainadaptivefastweightsascompact
+memory for accumulating 3D evidence from long-horizon video streams. We employ a
+hybridarchitecturethatinterleavesTTTlayerswithself-attentionanchorlayerstopreserve
+pretrainedknowledgewhileenablingefficientlong-contextprocessing,furtherenhanced
+by large-chunk updates and sliding-window attention for practical scalability. Beyond
+efficientarchitecturedesign,wefurtherpromotespatialawarenessbyintroducingaspatialpredictivemechanismwith3Dspatiotemporalconvolutionstoinjectlocalneighborhood
+inductivebias,andconstructadensescene-descriptiondatasettoproviderichsupervision
+forlearningeffectivefast-weightupdatedynamics.Extensiveexperimentsdemonstratethat
+Spatial-TTTachievesstate-of-the-artperformanceacrossspatialbenchmarks.Wehopethat
+Spatial-TTT provides a promising direction for building MLLMs with persistent spatial
+memory,enablingmorerobustandscalablespatialintelligenceinreal-worldapplications.
+TencentHunyuan TsinghuaUniversity
+References
+E.Akyu¨rek,M.Damani,A.Zweiger,L.Qiu,H.Guo,J.Pari,Y.Kim,andJ.Andreas. The
+surprisingeffectivenessoftest-timetrainingforfew-shotlearning. InProceedingsofthe
+42ndInternationalConferenceonMachineLearning,volume267ofProceedingsofMachine
+LearningResearch,pages942-963.PMLR,2025. URLhttps://proceedings.mlr.press/
+v267/akyurek25a.html.
+J.Ba,G.E.Hinton,V.Mnih,etal. Usingfastweightstoattendtotherecentpast. InNeurIPS,
+2016.
+S.Bai,Y.Cai,R.Chen,K.Chen,X.Chen,Z.Cheng,L.Deng,W.Ding,C.Gao,C.Ge,W.Ge,
+Z.Guo,Q.Huang,J.Huang,F.Huang,B.Hui,S.Jiang,Z.Li,M.Li,M.Li,K.Li,Z.Lin,
+J.Lin,X.Liu,J.Liu,C.Liu,Y.Liu,D.Liu,S.Liu,D.Lu,R.Luo,C.Lv,R.Men,L.Meng,
+X.Ren,X.Ren,S.Song,Y.Sun,J.Tang,J.Tu,J.Wan,P.Wang,P.Wang,Q.Wang,Y.Wang,
+T.Xie,Y.Xu,H.Xu,J.Xu,Z.Yang,M.Yang,J.Yang,A.Yang,B.Yu,F.Zhang,H.Zhang,
+X.Zhang,B.Zheng,H.Zhong,J.Zhou,F.Zhou,J.Zhou,Y.Zhu,andK.Zhu. Qwen3-vl
+technicalreport. arXivpreprintarXiv:2511.21631,2025a.
+S.Bai,K.Chen,X.Liu,J.Wang,W.Ge,S.Song,K.Dang,P.Wang,S.Wang,J.Tang,etal.
+Qwen2.5-vltechnicalreport. arXivpreprintarXiv:2502.13923,2025b.
+G.Baruch,Z.Chen,A.Dehghan,T.Dimry,Y.Feigin,P.Fu,T.Gebauer,B.Joffe,D.Kurz,
+A.Schwartz,etal. Arkitscenes:Adiversereal-worlddatasetfor3dindoorsceneunderstandingusingmobilergb-ddata. arXivpreprintarXiv:2111.08897,2021.
+A.Behrouz,P.Zhong,andV.Mirrokni. Titans:Learningtomemorizeattesttime. arXiv
+preprintarXiv:2501.00663,2024.
+Bytedance Seed. Seed2.0 model card: Towards intelligence frontier for real-world
+complexity. Technical report, Bytedance, 2025. URL https://lf3-static.bytednsdoc.
+com/obj/eden-cn/lapzild-tss/ljhwZthlaukjlkulzlp/seed2/0214/Seed2.0%20Model%
+20Card.pdf/. TechnicalReport.
+Z.Cai,R.Wang,C.Gu,F.Pu,J.Xu,Y.Wang,W.Yin,Z.Yang,C.Wei,Q.Sun,T.Zhou,J.Li,
+H.E.Pang,O.Qian,Y.Wei,Z.Lin,X.Shi,K.Deng,X.Han,Z.Chen,X.Fan,H.Deng,
+L.Lu,L.Pan,B.Li,Z.Liu,Q.Wang,D.Lin,andL.Yang. Scalingspatialintelligencewith
+multimodalfoundationmodels,2025. URLhttps://arxiv.org/abs/2511.13719.
+B.Chen,Z.Xu,S.Kirmani,B.Ichter,D.Driess,P.Florence,D.Sadigh,L.Guibas,andL.FeiFei.Spatial-vlm:Endowingvision-languagemodelswithspatialreasoningcapabilities.In
+ProceedingsoftheIEEE/CVFConferenceonComputerVisionandPatternRecognition(CVPR),
+2024.
+Z.Chen,M.Zhang,X.Yu,X.Luo,M.Sun,Z.Pan,Y.Feng,P.Pei,X.Cai,andR.Huang.
+Thinkwith3d:Geometricimaginationgroundedspatialreasoningfromlimitedviews.
+arXivpreprintarXiv:2510.18632,2025.
+G.Comanici,E.Bieber,M.Schaekermann,I.Pasupat,N.Sachdeva,I.Dhillon,M.Blistein,
+O. Ram, D. Zhang, E. Rosen, et al. Gemini 2.5: Pushing the frontier with advanced
+reasoning,multimodality,longcontext,andnextgenerationagenticcapabilities. arXiv
+preprintarXiv:2507.06261,2025.
+A.Dai,A.X.Chang,M.Savva,M.Halber,T.Funkhouser,andM.Nießner. Scannet:Richlyannotated3dreconstructionsofindoorscenes. InProceedingsoftheIEEEconferenceon
+computervisionandpatternrecognition,pages5828-5839,2017.
+E.Daxberger,N.Wenzel,D.Griffiths,H.Gang,J.Lazarow,G.Kohavi,K.Kang,M.Eichner,
+Y.Yang,A.Dehghan,andP.Grasch. Mm-spatial:Exploring3dspatialunderstanding
+inmultimodalllms. InProceedingsoftheIEEE/CVFInternationalConferenceonComputer
+Vision(ICCV),pages7395-7408,October2025.
+DeepSeek-AI,D.Guo,D.Yang,H.Zhang,J.Song,P.Wang,etal. Deepseek-r1:Incentivizing
+reasoningcapabilityinllmsviareinforcementlearning. Nature,645:633-638,2025. https:
+//doi.org/10.1038/s41586-025-09422-z.
+N. Deng, L. Gu, S. Ye, Y. He, Z. Chen, S. Li, H. Wang, X. Wei, T. Yang, M. Dou, et al.
+Internspatial:Acomprehensivedatasetforspatialreasoninginvision-languagemodels.
+arXivpreprintarXiv:2506.18385,2025.
+D. Driess, F. Xia, M. S. M. Sajjadi, C. Lynch, A. Chowdhery, B. Ichter, et al. Palm-e: An
+embodiedmultimodallanguagemodel. InInternationalConferenceonMachineLearning
+(ICML),2023.
+Z.Fan,J.Zhang,R.Li,J.Zhang,R.Chen,H.Hu,K.Wang,H.Qu,D.Wang,Z.Yan,etal.
+Vlm-3r:Vision-languagemodelsaugmentedwithinstruction-aligned3dreconstruction.
+arXivpreprintarXiv:2505.20279,2025.
+TencentHunyuan TsinghuaUniversity
+Q.Feng. Towardsvisuospatialcognitionviahierarchicalfusionofvisualexperts. arXiv
+preprintarXiv:2505.12363,2025.
+C.Fu,P.Chen,Y.Shen,Y.Qin,M.Zhang,X.Lin,etal. Mme:Acomprehensiveevaluation
+benchmarkformultimodallargelanguagemodels. arXivpreprintarXiv:2306.13394,2023.
+Y.Gandelsman,Y.Sun,X.Chen,andA.A.Efros. Test-timetrainingwithmaskedautoencoders. InNeurIPS,2022.
+Google. A new era of intelligence with gemini 3. URL https://blog.google/
+products-and-platforms/products/gemini/gemini-3.
+K.Grauman,A.Westbury,E.Byrne,Z.Chavis,A.Furnari,R.Girdhar,etal. Ego4d:Around
+theworldin3,000hoursofegocentricvideo. InProceedingsoftheIEEE/CVFConferenceon
+ComputerVisionandPatternRecognition(CVPR),2022.
+D.Guo,F.Wu,F.Zhu,F.Leng,G.Shi,H.Chen,H.Fan,J.Wang,J.Jiang,J.Wang,etal. Seed1.
+5-vltechnicalreport. arXivpreprintarXiv:2505.07062,2025.
+Y.Hong,H.Zhen,etal. 3D-LLM:Injectingthe3dworldintolargelanguagemodels. In
+ProceedingsoftheNeuralInformationProcessingSystems(NeurIPS),2023.
+Y. Hu, J. Yang, L. Chen, K. Li, C. Sima, X. Zhu, S. Chai, and S. Du. Planning-oriented
+autonomousdriving. InProceedingsoftheIEEE/CVFConferenceonComputerVisionand
+PatternRecognition(CVPR),2023.
+W.Huang,C.Wang,Y.Li,R.Zhang,andL.Fei-Fei. Rekep:Spatio-temporalreasoningof
+relationalkeypointconstraintsforroboticmanipulation. arXivpreprintarXiv:2409.01652,
+2024.
+A.Hurst,A.Lerer,A.P.Goucher,A.Perelman,A.Ramesh,A.Clark,A.Ostrow,A.Welihinda,
+A.Hayes,A.Radford,etal. Gpt-4osystemcard. arXivpreprintarXiv:2410.21276,2024.
+B.Jia,Y.Chen,H.Yu,Y.Wang,X.Niu,T.Liu,Q.Li,andS.Huang. Sceneverse:Scaling3d
+vision-languagelearningforgroundedsceneunderstanding. InEuropeanConferenceon
+ComputerVision,pages289-310.Springer,2024.
+K. Jordan, Y. Jin, V. Boza, J. You, F. Cesista, L. Newhouse, and J. Bernstein. Muon: An
+optimizerforhiddenlayersinneuralnetworks. Citedon,page10,2024.
+M.KaramiandV.Mirrokni. Lattice:Learningtoefficientlycompressthememory. arXiv
+preprintarXiv:2504.05646,2025.
+B.Li,Y.Zhang,D.Guo,R.Zhang,F.Li,H.Zhang,K.Zhang,P.Zhang,Y.Li,Z.Liu,etal.
+Llava-onevision:Easyvisualtasktransfer. arXivpreprintarXiv:2408.03326,2024a.
+H. Li, D. Li, Z. Wang, Y. Yan, H. Wu, W. Zhang, Y. Shen, W. Lu, J. Xiao, and Y. Zhuang.
+Spatialladder:Progressivetrainingforspatialreasoninginvision-languagemodels. arXiv
+preprintarXiv:2510.08531,2025a.
+J.Li,D.Li,S.Savarese,andS.Hoi. Blip-2:Bootstrappinglanguage-imagepre-trainingwith
+frozenimageencodersandlargelanguagemodels. InInternationalconferenceonmachine
+learning,pages19730-19742.PMLR,2023.
+K.Li,Y.Wang,Y.He,etal. Mvbench:Acomprehensivemulti-modalvideounderstanding
+benchmark. InCVPR,2024b.
+M.Li,Y.-X.Wang,andD.Ramanan. Towardsstreamingperception. InEuropeanConference
+onComputerVision(ECCV),2020.
+X.Li,M.Zhang,etal. ManipLLM:Embodiedmultimodallargelanguagemodelforobjectcentricroboticmanipulation. InProceedingsoftheIEEE/CVFConferenceonComputerVision
+andPatternRecognition(CVPR),2024c.
+Y.Li,Y.Zhang,T.Lin,X.Liu,W.Cai,Z.Liu,andB.Zhao. Sti-bench:Aremllmsreadyfor
+precisespatial-temporalworldunderstanding?InProceedingsoftheIEEE/CVFInternational
+ConferenceonComputerVision(ICCV),pages25332-25342,October2025b.
+J.Liang,R.He,andT.Tan. Acomprehensivesurveyontest-timeadaptationunderdistribution shifts. International Journal of Computer Vision, 133(1):31-64, July 2024. ISSN
+1573-1405. https://doi.org/10.1007/s11263-024-02181-w. URL http://dx.doi.org/
+10.1007/s11263-024-02181-w.
+B. Lin, B. Zhu, Y. Ye, M. Ning, P. Jin, and L. Yuan. Video-llava: Learning united visual
+representationbyalignmentbeforeprojection. InarXivpreprintarXiv:2311.10122,2023.
+H.Liu,C.Li,Q.Wu,andY.J.Lee. Visualinstructiontuning. InProceedingsoftheNeural
+InformationProcessingSystems(NeurIPS),2023.
+OpenAI. Openaio1systemcard. Technicalreport,OpenAI,2024. URLhttps://openai.
+com/index/openai-o1-system-card/. TechnicalReport.
+OpenAI. GPT-5SystemCard. Technicalreport,OpenAI,Aug.2025. Accessed:2025-08-10.
+TencentHunyuan TsinghuaUniversity
+K.Ouyang,Y.Liu,H.Wu,Y.Liu,H.Zhou,J.Zhou,F.Meng,andX.Sun. Spacer:Reinforcing
+mllmsinvideospatialreasoning. arXivpreprintarXiv:2504.01805,2025.
+I.Schlag,K.Irie,andJ.Schmidhuber. Lineartransformersaresecretlyfastweightprogrammers. InM.MeilaandT.Zhang,editors,Proceedingsofthe38thInternationalConferenceon
+MachineLearning,volume139ofProceedingsofMachineLearningResearch,pages9355-9366.
+PMLR,18-24Jul2021. URLhttps://proceedings.mlr.press/v139/schlag21a.html.
+M.Shu,W.Nie,D.-A.Huang,etal. Test-timeprompttuningforzero-shotgeneralizationin
+vision-languagemodels. InNeurIPS,2022.
+C.Snell,L.Jaeckle,R.Li,A.Kumar,andS.Levine. Scalingllmtest-timecomputeoptimally
+can be more effective than scaling parameters. In Proceedings of the 41st International
+ConferenceonMachineLearning(ICML),2024.
+E. Song, W. Chai, G. Wang, Y. Zhang, H. Zhou, F. Wu, H. Chi, X. Guo, T. Ye, Y. Zhang,
+etal. Moviechat:Fromdensetokentosparsememoryforlongvideounderstanding. In
+ProceedingsoftheIEEE/CVFConferenceonComputerVisionandPatternRecognition,pages
+18221-18232,2024.
+Y. Sun, X. Wang, Z. Liu, J. Miller, A. Efros, and M. Hardt. Test-time training with selfsupervision for generalization under distribution shifts. In International Conference on
+MachineLearning,pages9229-9248.PMLR,2020.
+Y.Sun,L.Dong,S.Huang,S.Ma,Y.Xia,J.Xue,J.Wang,andF.Wei. Retentivenetwork:A
+successortotransformerforlargelanguagemodels. arXivpreprintarXiv:2307.08621,2023.
+Y.Sun,X.Dong,S.Menon,D.Schwab,andJ.Z.Kolter. Learningto(learnattesttime):Rnns
+withexpressivehiddenstates. InarXivpreprintarXiv:2407.04620,2024a.
+Y.Sun,X.Li,K.Dalal,J.Xu,A.Vikram,G.Zhang,Y.Dubois,X.Chen,X.Wang,S.Koyejo,
+T.Hashimoto,andC.Guestrin. Learningto(learnattesttime):RNNswithexpressive
+hiddenstates. InProceedingsofthe41stInternationalConferenceonMachineLearning(ICML),
+2024b. URLhttps://arxiv.org/abs/2407.04620.
+A.Tandon,K.Dalal,X.Li,D.Koceja,M.Rød,S.Buchanan,X.Wang,J.Leskovec,S.Koyejo,
+T.Hashimoto,C.Guestrin,J.McCaleb,Y.Choi,andY.Sun. End-to-endtest-timetraining
+for long context. arXiv preprint arXiv:2512.23675, 2025. URL https://arxiv.org/abs/
+2512.23675.
+G.Team,P.Georgiev,V.I.Lei,R.Burnell,L.Bai,A.Gulati,G.Tanzer,D.Vincent,Z.Pan,
+S.Wang,etal. Gemini1.5:Unlockingmultimodalunderstandingacrossmillionsoftokens
+ofcontext. arXivpreprintarXiv:2403.05530,2024.
+K.Team,T.Bai,Y.Bai,Y.Bao,S.H.Cai,Y.Cao,Y.Charles,H.S.Che,C.Chen,G.Chen,
+H.Chen,J.Chen,J.Chen,J.Chen,J.Chen,K.Chen,L.Chen,R.Chen,X.Chen,Y.Chen,
+Y.Chen,Y.Chen,Y.Chen,Y.Chen,Y.Chen,Y.Chen,Y.Chen,Z.Chen,Z.Chen,D.Cheng,
+M.Chu,J.Cui,J.Deng,M.Diao,H.Ding,M.Dong,M.Dong,Y.Dong,Y.Dong,A.Du,
+C.Du,D.Du,L.Du,Y.Du,Y.Fan,S.Fang,Q.Feng,Y.Feng,G.Fu,K.Fu,H.Gao,T.Gao,
+Y. Ge, S. Geng, C. Gong, X. Gong, Z. Gongque, Q. Gu, X. Gu, Y. Gu, L. Guan, Y. Guo,
+X.Hao,W.He,W.He,Y.He,C.Hong,H.Hu,J.Hu,Y.Hu,Z.Hu,K.Huang,R.Huang,
+W. Huang, Z. Huang, T. Jiang, Z. Jiang, X. Jin, Y. Jing, G. Lai, A. Li, C. Li, C. Li, F. Li,
+G.Li,G.Li,H.Li,H.Li,J.Li,J.Li,J.Li,L.Li,M.Li,W.Li,W.Li,X.Li,X.Li,Y.Li,Y.Li,
+Y.Li,Y.Li,Z.Li,Z.Li,W.Liao,J.Lin,X.Lin,Z.Lin,Z.Lin,C.Liu,C.Liu,H.Liu,L.Liu,
+S. Liu, S. Liu, S. Liu, T. Liu, T. Liu, W. Liu, X. Liu, Y. Liu, Y. Liu, Y. Liu, Y. Liu, Y. Liu,
+Z.Liu,Z.Liu,E.Lu,H.Lu,Z.Lu,J.Luo,T.Luo,Y.Luo,L.Ma,Y.Ma,S.Mao,Y.Mei,
+X.Men,F.Meng,Z.Meng,Y.Miao,M.Ni,K.Ouyang,S.Pan,B.Pang,Y.Qian,R.Qin,
+Z. Qin, J. Qiu, B. Qu, Z. Shang, Y. Shao, T. Shen, Z. Shen, J. Shi, L. Shi, S. Shi, F. Song,
+P.Song,T.Song,X.Song,H.Su,J.Su,Z.Su,L.Sui,J.Sun,J.Sun,T.Sun,F.Sung,Y.Tai,
+C.Tang,H.Tang,X.Tang,Z.Tang,J.Tao,S.Teng,C.Tian,P.Tian,A.Wang,B.Wang,
+C.Wang,C.Wang,C.Wang,D.Wang,D.Wang,D.Wang,F.Wang,H.Wang,H.Wang,
+H. Wang, H. Wang, H. Wang, J. Wang, J. Wang, J. Wang, K. Wang, L. Wang, Q. Wang,
+S. Wang, S. Wang, S. Wang, W. Wang, X. Wang, X. Wang, Y. Wang, Y. Wang, Y. Wang,
+Y. Wang, Y. Wang, Y. Wang, Z. Wang, Z. Wang, Z. Wang, Z. Wang, Z. Wang, Z. Wang,
+C. Wei, M. Wei, C. Wen, Z. Wen, C. Wu, H. Wu, J. Wu, R. Wu, W. Wu, Y. Wu, Y. Wu,
+Y.Wu,Z.Wu,C.Xiao,J.Xie,X.Xie,Y.Xie,Y.Xin,B.Xing,B.Xu,J.Xu,J.Xu,J.Xu,L.H.
+Xu, L. Xu, S. Xu, W. Xu, X. Xu, X. Xu, Y. Xu, Y. Xu, Y. Xu, Z. Xu, Z. Xu, J. Yan, Y. Yan,
+G.Yang,H.Yang,J.Yang,K.Yang,N.Yang,R.Yang,X.Yang,X.Yang,Y.Yang,Y.Yang,
+Y.Yang,Z.Yang,Z.Yang,Z.Yang,H.Yao,D.Ye,W.Ye,Z.Ye,B.Yin,C.Yu,L.Yu,T.Yu,
+T.Yu,E.Yuan,M.Yuan,X.Yuan,Y.Yue,W.Zeng,D.Zha,H.Zhan,D.Zhang,H.Zhang,
+TencentHunyuan TsinghuaUniversity
+J.Zhang,P.Zhang,Q.Zhang,R.Zhang,X.Zhang,Y.Zhang,Y.Zhang,Y.Zhang,Y.Zhang,
+Y.Zhang,Y.Zhang,Y.Zhang,Y.Zhang,Y.Zhang,Y.Zhang,Z.Zhang,C.Zhao,F.Zhao,
+J. Zhao, S. Zhao, X. Zhao, Y. Zhao, Z. Zhao, H. Zheng, R. Zheng, S. Zheng, T. Zheng,
+J.Zhong,L.Zhong,W.Zhong,M.Zhou,R.Zhou,X.Zhou,Z.Zhou,J.Zhu,L.Zhu,X.Zhu,
+Y. Zhu, Z. Zhu, J. Zhuang, W. Zhuang, Y. Zou, and X. Zu. Kimi k2.5: Visual agentic
+intelligence,2026. URLhttps://arxiv.org/abs/2602.02276.
+A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, Ł. Kaiser, and
+I. Polosukhin. Attention is all you need. In Advances in Neural Information Processing
+Systems(NeurIPS),2017.
+D.Wang,E.Shelhamer,S.Liu,etal.Tent:Fullytest-timeadaptationbyentropyminimization.
+InICLR,2021.
+K.A.Wang,J.Shi,andE.B.Fox. Test-timeregression:aunifyingframeworkfordesigning
+sequencemodelswithassociativememory. arXivpreprintarXiv:2501.12352,2025.
+W. Wei, Z. Luo, L. Feng, and V. E. Liong. Spatial-aware vision language model for autonomousdriving. arXivpreprintarXiv:2512.24331,2025.
+D.Wu,F.Liu,Y.-H.Hung,andY.Duan. Spatial-mllm:Boostingmllmcapabilitiesinvisualbasedspatialintelligence. arXivpreprintarXiv:2505.23747,2025a.
+J.Wu,J.Guan,K.Feng,Q.Liu,S.Wu,L.Wang,W.Wu,andT.Tan. Reinforcingspatial
+reasoninginvision-languagemodelswithinterwoventhinkingandvisualdrawing. arXiv
+preprintarXiv:2506.09965,2025b.
+xAI. Grok4,72025. URLhttps://x.ai/news/grok-4. Modelannouncement.
+R.Xu,X.Wang,T.Zhang,etal. Pointllm:Empoweringlargelanguagemodelstounderstand
+pointclouds. InCVPR,2024.
+J. Yang, S. Yang, A. W. Gupta, R. Han, L. Fei-Fei, and S. Xie. Thinking in space: How
+multimodal large language models see, remember, and recall spaces. In Proceedings
+of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pages
+10632-10643,June2025a.
+R.Yang,Z.Zhu,Y.Li,J.Huang,S.Yan,S.Zhou,Z.Liu,X.Li,S.Li,W.Wang,etal. Visual
+spatialtuning. arXivpreprintarXiv:2511.05491,2025b.
+S.Yang,J.Yang,P.Huang,E.Brown,Z.Yang,Y.Yu,S.Tong,Z.Zheng,Y.Xu,M.Wang,D.Lu,
+R.Fergus,Y.LeCun,L.Fei-Fei,andS.Xie. Cambrian-s:Towardsspatialsupersensingin
+video,2025c. URLhttps://arxiv.org/abs/2511.04670.
+C.Yeshwanth,Y.-C.Liu,M.Nießner,andA.Dai. Scannet++:Ahigh-fidelitydatasetof3d
+indoorscenes. InProceedingsoftheIEEE/CVFInternationalConferenceonComputerVision,
+pages12-22,2023.
+B.Yin,Q.Wang,P.Zhang,J.Zhang,K.Wang,Z.Wang,J.Zhang,K.Chandrasegaran,H.Liu,
+R.Krishna,etal. Spatialmentalmodelingfromlimitedviews. InStructuralPriorsfor
+VisionWorkshopatICCV'25,2025.
+H.Zhang,Y.Wang,Y.Tang,Y.Liu,J.Feng,J.Dai,andX.Jin. Flash-vstream:Memory-based
+real-timeunderstandingforlongvideostreams. arXivpreprintarXiv:2406.08085,2024a.
+P.Zhang,K.Zhang,B.Li,G.Zeng,J.Yang,Y.Zhang,Z.Wang,H.Tan,C.Li,andZ.Liu.
+Longcontexttransferfromlanguagetovision. arXivpreprintarXiv:2406.16852,2024b.
+T. Zhang, S. Bi, Y. Hong, K. Zhang, F. Luan, S. Yang, K. Sunkavalli, W. T. Freeman, and
+H.Tan. Test-timetrainingdoneright. arXivpreprintarXiv:2505.23884,2025. URLhttps:
+//arxiv.org/abs/2505.23884.
+J.Zhu,W.Wang,Z.Chen,Z.Liu,S.Ye,L.Gu,H.Tian,Y.Duan,W.Su,J.Shao,etal.Internvl3:
+Exploringadvancedtrainingandtest-timerecipesforopen-sourcemultimodalmodels.
+arXivpreprintarXiv:2504.10479,2025.
+TencentHunyuan TsinghuaUniversity
+A AdditionalImplementationDetails
+A.1 SpatialDatasetCuration
+Thefirst-stagedensescene-descriptiondatasetisbuiltfromobject-centric3Dscenegraphs
+providedbySceneVerse(Jiaetal.,2024),andisusedtotrainthehybridTTTarchitectureso
+thatfastweightslearntoretaincomprehensivescene-levelinformationthroughchunk-bychunkupdates.Eachsamplepairsaspatialvideostreamwithatargetdescriptioninthe
+formofacoherentscenewalkthrough,coveringglobalcontext(scenetypeandfunctional
+setting),objectcategoriesandcounts,andspatiallayoutsandpairwiserelations.Thedataset
+comprisesapproximately16Ksamplesintotal:3.6KfromScanNet(Daietal.,2017)and
+12.5KfromARKitScenes(Baruchetal.,2021),providingdense,high-coveragesupervision
+thatcomplementsthesparserspatialQAsignalsusedinthesecondstage.
+Inthesecondstage,wetrainthemodelonalarge-scalespatialquestion-answeringdataset,
+whichconsistsof∼2.5Mopen-sourceddataand∼0.5Mself-collecteddata.Fortheopensourcedgeneralspatialunderstandingdata,wecollectVSI-590K(Yangetal.,2025c),VLM3R(Fanetal.,2025),InternSpatial(Dengetal.,2025),ViCA(Feng,2025).Fortheself-collected
+data,wefirstsampleframesfromtherawScanNet(Daietal.,2017;Yeshwanthetal.,2023)
+reconstructionsandassemblethemintoindoor-scenevideosequencesat24fpsand640×480
+resolution.Fromthescenemeshesandsemanticannotationswederivespatialandsemantic
+metadata.Wealigneachrawmeshwiththeprovidedaxis-alignmentmatricesandconvertit
+toapointcloud.Attheroomlevel,weestimateroomextentandcentroidviathealpha-shape
+algorithm.Attheobjectlevel,wefitorientedboundingboxes(OBBs)foreveryvalidobject
+instanceandassignsemanticlabelsfromtheannotations,discardingstructuralelements
+(e.g.,walls,floors)andambiguouscategories.ForconsistencyweremaptheoriginalScanNet
+semanticIDstoaconsolidated40-classindoorlabelset.Wealsocomputeandstorethe2D
+projectedsemanticannotationforeachscenevideotosupportappearance-orderreasoning.
+Theresultingmetadatapersamplecomprises:(i)roomsizeandcentercoordinates;(ii)the
+2Dsemanticprojectionofthescenevideo;(iii)objectinstanceswiththeirOBBparameters
+(rotationmatrices,extents,andcenters);and(iv)semanticlabelsforeachobject.
+A.2 PromptsDetails
+EvaluationandInferencePrompts
+Toensurereproducibility,welistthedetailedprompttemplatesusedforeachbenchmarkin
+Table6.AllpromptsarepresentedinaunifiedPythonf-stringformat.
+Table6:PromptTemplatesforEvaluationBenchmarks
+Benchmark PromptTemplate(UnifiedFormat)
+VSI-Bench 1. f"{question}\nOptions:\n{options}\nAnswer with the option's letter
+from the given choices directly."
+2.f"{question}\nPlease answer the question using a single word or phrase."
+MindCube f"{input prompt}"(datasetinput promptusedas-is;multiple-choice,answerwith
+optionletter.)
+VSI-SUPER-Recall f"{question}\nOptions:\n{options}\nAnswer with the option's letter from
+the given choices directly."
+VSI-SUPER-Countf"These are frames of a video.\n{question}\nPlease answer the question
+using a single word or phrase."
+A.3 AlgorithmsofSpatial-TTT
+Forclarity,weprovidethepseudocodeforasinglehybridTTTlayerℓ ∈ S inAlgorithm1.
+ThearchitectureinterleavesTTTlayers(ℓ ∈ S)withstandardself-attentionanchorlayers
+TencentHunyuan TsinghuaUniversity
+Algorithm1PrefillingofHybridLayerinSpatial-TTT
+Require: FastweightsW;Applyfunctionoffastweights f ;Conv3DkernelΘ;chunksizeC;SWA
+W
+windowB;learningrateη.
+1: Input:HiddenstatesX∈RT×d;videomaskM v;grid(t,h,w). ▷Fullinputsequence.
+2: Q,K,V ←QKVProj(X) ▷Step1:SharedQKVprojections.
+3: Q˜,K˜ ←QKShift(Q,K) ▷Learnablescale/shiftforTTTbranch.
+4: (Q˜ v,K˜ v,Vv )←PackToVolume(Q˜,K˜,V; M v,t,h,w) ▷Step2:Spatial-predictivemechanism.
+5: (Q˜ v,K˜ v,V˜ v )←DWConv3DΘ(Q˜ v,K˜ v,Vv ) ▷Depth-wisespatiotemporalconvolution.
+6: (Q˜,K˜,V˜)←ScatterToTokens(Q˜ v,K˜ v,V˜ v; M v )
+7: PartitionYinto{Y}I withY ∈RC×dandtailY forY∈{Q˜,K˜,V˜} ▷Step3:ChunkedMuon
+i i=1 j tail
+updates.
+8: fori=1,...,Ido
+9: O ← f (Q) ▷Applyfastweightsbeforeupdate.
+i W i
+10: G←MuonUpdate (cid:0) G, ∇ L(f (K˜ ), V˜) (cid:1) ▷Orth.gradient+momentum.
+W W i i
+11: W ←L2Norm(W−ηG) ▷Updatefastweights.
+12: endfor
+13: O ← f (Q ) ▷Tail:applyonly.
+tail W tail
+14: OTTT ←Concat({O}I ,O ) ▷ConcatenateallTTToutput.
+i i=1 tail
+15: OAttn ←SlidingWindowAttn(Q,K,V; B) ▷Step4:SWAbranch.
+16: returnOProj(OTTT+OAttn)
+Table 7: Full ablation results on VSI-Bench (Yang et al., 2025a). "w/o SP-Mehcanism"
+denotesreplacingspatial-predictive3Dconvwithidentityprojections."w/oDenseData"
+denotestrainingwithoutdensescenedata."w/oHybrid"denotespureTTTarchitecture.
+NumericalQuestion Multiple-ChoiceQuestion
+Models Avg.
+Obj.CountAbs.DistObj.SizeRoomSizeRel.DisRel.DirRoutePlanAppr.Order
+Spatial-TTT 70.8 47.8 71.7 65.9 61.8 73.0 47.4 77.0 64.4
+w/oSP-Mechanism 68.7 43.0 70.3 60.9 62.1 71.3 45.9 74.3 62.1
+w/oDenseData 69.7 44.9 70.6 58.8 59.6 66.7 47.9 71.8 61.3
+w/oHybrid 66.5 36.7 64.5 54.1 53.0 58.3 38.1 60.0 53.9
+(ℓ ∈/ S)ata3:1ratio;anchorlayersusestandardcausalself-attentionandareomittedhere
+forbrevity.
+B AdditionalResults
+B.1 MoreQualitativeComparisons
+Full Ablation Results. We report complete ablation results on VSI-Bench in Table 7. As
+shown,Spatial-TTTachievesthebestoverallperformance(Avg.64.4),rankingfirstacross
+allnumerical-questioncategories(Obj.Count,Abs.Dist,Obj.Size,andRoomSize),and
+alsoattainingtopresultsonkeymultiple-choicequestionssuchasRel.DirandAppr.Order.
+RemovingtheSP-Mechanismleadstoaclearperformancedrop,mostnotablyonnumerical
+questionsandRoutePlan,indicatingthattheproposedspatial-predictivemechanismis
+essentialforprecisemetric-awarespatialperceptionandplanning.Incontrast,removing
+Dense Data results in marked degradations on Room Size, Rel. Dir, and Appr. Order,
+suggestingthatdensescenesupervisionhelpsthemodelbuildstrongerlong-horizonspatial
+memory and better integrate temporally dependent observations required by sequencedependentreasoningtasks.
+B.2 QAExamplesVisualization
+WeprovideQAexamplevisualizationsonthefourevaluationbenchmarks.Fig.3shows
+examplesonVSI-Bench,Fig.4onVSI-SUPER-RECALL,Fig.5onVSI-SUPER-COUNT,and
+Fig.6onMindCube.
+TencentHunyuan TsinghuaUniversity
+Question: How many table(s) are in this room?
+Streaming video input ... Recall prev frames ... Answer: 4
+Question: What is the size of this room (in square meters)?
+Streaming video input ... Recall prev frames ... Answer: 14
+Question: Which is the appearance order of four categories: window, bed, backpack, pillow?
+A. pillow, backpack, window, bed B. pillow, window, bed, backpack
+C. window, bed, backpack, pillow D. pillow, bed, backpack, window
+Fig.3:QAExampleVisualizationonVSI-Bench
+Question: Which of the following represents the order in which the Pikachu appeared in video?
+A. Trash can, Bed, Chair, Basket B. Trash can, Bed, Basket, Chair
+C. Bed, Chair, Basket, Trash can D. Bed, Chair, Trash can, Basket
+Question: Which of the following represents the order in which the panda appeared in video?
+A. Cabinet, Sofa, Coffee table, Stairs B. Cabinet, Stairs, Coffee table, Sofa
+C. Stairs, Sofa, Coffee table, Cabinet D. Sofa, Cabinet, Coffee table, Stairs
+Question: Which of the following represents the order in which the Golden Retriever appeared?
+A. Chair, Platform trolley, Cabinet, Table B. Table, Platform trolley, Chair, Cabinet
+C. Table, Platform trolley, Cabinet, Chair D. Platform trolley, Chair, Cabinet, Table
+Fig.4:QAExampleVisualizationonVSI-SUPER-RECALL
+TencentHunyuan TsinghuaUniversity
+Question: How many different table(s) are there in the video?
+Streaming video input ... Recall prev frames ... Answer: 32
+Question: How many different chair(s) are there in the video?
+Streaming video input ... Recall prev frames ... Answer: 21
+Question: How many different socket(s) are there in the video?
+Streaming video input ... Recall prev frames ... Answer: 27
+Fig.5:QAExampleVisualizationonVSI-SUPER-COUNT
+Question: If I was positioned where the light purple sofa is and facing the same direction, what would
+be to the right of the black sneaker from this view?
+A. TV B. Wooden dining table C. Brown curtains and windows
+Question: Based on these four images showing the blue bag from different viewpoints, from the
+viewpoint presented in image 4, what is to the left of the blue bag?
+A. Display shelves and table B. Black sofa C. Door D. Window
+Question: If I'm standing here and facing the direction as shown in image 3, what's behind me?
+A. Window B. Printed glass door C. Wall D. Black table
+Fig.6:QAExampleVisualizationonMindCube
+19

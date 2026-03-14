@@ -1,0 +1,877 @@
+SOURCE_TYPE: pdf
+SOURCE_FILE: trendingPaper2.pdf
+CHAR_COUNT: 52162
+---
+
+IndexCache
+IndexCache: Accelerating Sparse Attention via Cross-Layer
+Index Reuse
+YushiBai1†,QianDong1†,TingJiang2,XinLv2
+ZhengxiaoDu2,AohanZeng12,JieTang1,JuanziLi1
+1TsinghuaUniversity 2Z.ai
+Abstract
+Long-contextagenticworkflowshaveemergedasadefiningusecasefor
+largelanguagemodels,makingattentionefficiencycriticalforbothinferencespeedandservingcost. Sparseattentionaddressesthischallengeeffectively,andDeepSeekSparseAttention(DSA)isarepresentativeproductiongradesolution:alightweightlightningindexerselectsthetop-kmostrelevant
+tokensperquery,reducingcoreattentionfromO(L2)toO(Lk). However,
+theindexeritselfretainsO(L2)complexityandmustrunindependentlyat
+everylayer,despitethefactthattheresultingtop-kselectionsarehighly
+similaracrossconsecutivelayers. WepresentIndexCache,whichexploits
+thiscross-layerredundancybypartitioninglayersintoasmallsetofFulllayersthatruntheirownindexersandamajorityofSharedlayersthatsimply
+reusethenearestFulllayer'stop-kindices. Weproposetwocomplementaryapproachestodetermineandoptimizethisconfiguration. Training-free
+IndexCacheappliesagreedysearchalgorithmthatselectswhichlayersto
+retainindexersbydirectlyminimizinglanguagemodelinglossonacalibrationset,requiringnoweightupdates. Training-awareIndexCacheintroduces
+amulti-layerdistillationlossthattrainseachretainedindexeragainstthe
+averagedattentiondistributionsofalllayersitserves,enablingevensimple
+interleavedpatternstomatchfull-indexeraccuracy. Experimentalresults
+ona30BDSAmodelshowthatIndexCachecanremove75%ofindexercomputationswithnegligiblequalitydegradation,achievingupto1.82×prefill
+speedup and 1.48× decode speedup compared to standard DSA. These
+positiveresultsarefurtherconfirmedbyourpreliminaryexperimentson
+theproduction-scaleGLM-5model(Figure1).
+Figure1: BenchmarkcomparisonbetweenGLM-5andGLM-5+IndexCache. IndexCache
+removes50%ofindexercomputationswhilemaintainingcomparableperformanceacross
+bothlong-contextandreasoningtasks,delivering∼1.2×end-to-endspeedup.
+†WorkdonewhileinternedatZ.ai.
+6202
+raM
+]LC.sc[
+1v10221.3062:viXra
+
+IndexCache
+1 Introduction
+Theself-attentionmechanism(Vaswanietal.,2017)isacornerstoneofmodernlargelanguagemodels(LLMs),yetitsquadraticcomplexityinsequencelengthpresentsafundamentalbottleneckforlong-contextinference. AsLLMsareincreasinglydeployedinsettings
+thatdemandextendedcontexts,suchaslongchain-of-thoughtreasoning,multi-stepagentic
+workflows,andretrieval-augmentedgenerationoverweb-scalesources,reducingattention
+costwithoutsacrificingmodelqualityhasbecomeacriticalresearchproblem.
+80
+40
+0
+10K 60K 120K 200K
+Context Length (#tokens)
+)%(
+noitroporP
+emiT
+rexednI
+Sparseattentionoffersaprincipledsolution: instead
+ofattendingtoallprecedingtokens,eachquerysePrefill 81%
+lectsonlythemostrelevantsubset.Amongrecentap- Decode
+68%
+proaches(Yuanetal.,2025;Luetal.,2025;Zhaoetal.,
+2025;Gaoetal.,2026;Teametal.,2026), DeepSeek 50%
+SparseAttention(DSA)(Liuetal.,2025)standsoutas
+aproduction-gradetrainablesparseattentionmecha- 27% 38% 41%
+31% nism. Forsparsetokenselection,DSAintroducesan 27%
+additionallightningindexermoduleateachlayerthat
+scoresallprecedingtokensandselectsthetop-kfor
+thesubsequentcoreattention. Thisreducesper-layer
+coreattentionfromO(L2)toO(Lk)whilepreservingmodelqualitythroughcontinuedpretraining. However,theindexeritselfstilloperatesatO(L2)ateverylayer: althoughcheaper
+per-FLOP than the main attention computation, its total cost across N layers isO(NL2),
+whichgrowsquadraticallywithcontextlengthandbecomesanon-negligiblefractionofthe
+totalattentionbudget. Asshowninthefigureabove,profilinga30BDSAmodelrevealsthat
+theindexer'sshareoftotallatencyrisessharplywithcontextlength,particularlyduring
+theprefillstage,whiletherestofthecomputationsgrowonlymodestly. Thisindicatesthat
+reducingindexercostisthekeytoacceleratinglong-contextDSAinference.
+A key insight motivating our work is that the top-k selections produced by the indexer
+arehighlycorrelatedacrossconsecutivelayers-aninstanceofthebroadercross-layertoken
+selectionstabilityobservedinfullattentionmodels(Deshmukhetal.,2025;Gaoetal.,2026).
+While prior methods exploit this stability by reusing indices from full attention anchor
+layers,theydonotdirectlyapplytosparseattention,sinceinDSA,fullattentionisonly
+computedviathelightweightindexer. WeempiricallyverifythisforDSAbycomputingthe
+pairwisetop-kindexoverlapacrossalllayers(AppendixA):adjacentlayersshare70-100%
+oftheirselectedtokens,andtheheatmaprevealsdistinctlayerclusterswithmutuallyhigh
+overlap,suggestingthatmostindexercomputationsareredundant. Thisleavesasimple
+butimpactfulopportunity: canweremovethemajorityofindexersinDSAandletmostlayers
+reusetop-kindicesfromasmallnumberofretainedindexerlayers,withoutdegradingquality?
+WeansweraffirmativelywithIndexCache,amethodthateliminatesupto75%ofindexer
+computationsinDSAthroughcross-layerindexreuse. IndexCachepartitionslayersinto
+F(Full)layersthatretaintheirindexersandS(Shared)layersthatinherittop-kindicesfrom
+thenearestprecedingFlayer,addingonlyoneconditionalbranchininference(Figure2).
+Weproposetwocomplementaryapproachestodetermineandoptimizethisconfiguration:
+• Training-freeIndexCacheappliestoanyoff-the-shelfDSAmodelwithoutweightupdates.
+Weshowthatna¨ıveuniforminterleavingdegradesquality,andproposeagreedylayer
+selectionalgorithmthatusesLMlossonasmallcalibrationsettodeterminetheoptimal
+pattern,namelywhichlayerstoretainindexers. Thegreedysolutionretainsonly1/4of
+indexerswhilematchingtheoriginalDSAmodel'sdownstreamperformance.
+• Training-awareIndexCacheoptimizesthemodelparametersforcross-layersharing. We
+introduceamulti-layerdistillationlossthattrainseachretainedindexeragainsttheattention
+distributionsofalllayersitserves.Underthisobjective,evenasimpleuniforminterleaved
+patternachievesonparwiththeoriginalper-layerindexerdesign.
+Empirically,ona30BDSAmodelevaluatedacrossninelong-contextandreasoningbenchmarks, both training-free (with greedy pattern search) and training-aware IndexCache
+IndexCache
+(a)StandardDSAInference (b)IndexCacheInference
+Require: InputX,layers1...N Require: InputX,layers1...N,patternc
+1: forℓ =1toNdo 1: forℓ =1toNdo
+2: I(ℓ) ← INDEXERℓ (X) 2: ifc ℓ =Fthen
+3: T(ℓ) ←Top-k(I(ℓ)) 3: I(ℓ) ← INDEXERℓ (X)
+4: X← SPARSEATTNℓ (X, T(ℓ)) 4: T(ℓ) ←Top-k(I(ℓ))
+5: X← FFNℓ (X) ▷+norm,residual,etc. 5: T
+cache
+← T(ℓ)
+6: endfor 6: else{c ℓ =S}
+7: T(ℓ) ← T ▷reuse
+cache
+8: endif
+9: X← SPARSEATTNℓ (X, T(ℓ))
+10: X← FFNℓ (X) ▷+norm,residual,etc.
+11: endfor
+Figure2: Side-by-sidecomparisonofinferenceloops. (a)StandardDSArunsthelightning
+indexerateverylayer. (b)IndexCacheaddsasingleconditionalbranch(redlines): Flayers
+computeandcachefreshindices; Slayersreusethecachedindices. Notethat T isa
+cache
+temporarybufferholdingonlythecurrentindextensor;itisoverwrittenateachFlayerand
+requiresnoadditionalGPUmemorybeyondwhatstandardDSAalreadyallocates.
+retainonly1/4ofindexerswithnegligiblequalitydegradation,yieldingupto1.82×prefill
+speedup and 1.48× decode speedup at 200K context length. Preliminary results on the
+744BGLM-5furtherconfirmscalability,achievingatleast1.3×speedupwithnegligible
+degradationinlong-contextperformance.
+2 Preliminary
+2.1 DeepSeekSparseAttention
+DeepSeekSparseAttention(DSA)(Liuetal.,2025)decomposeseachattentionlayerintotwo
+stages: selectionandcomputation. Alightweightlightningindexerfirstscoresallpreceding
+tokensagainstthecurrentqueryusingamulti-headReLU-gateddotproduct,thenselects
+thetop-khighest-scoringpositions. Themainattentioniscomputedonlyoverthissparse
+subset,reducingper-layercoreattentionfromO(L2)toO(Lk)withk=2048≪ L,whereL
+isthesequencelength. Theindexerisdesignedforefficiency: itusesfewheads,low-rank
+projections,andFP8arithmetic,makingitanorderofmagnitudecheaperper-FLOPthan
+themainMulti-headLatentAttention(MLA)(Liuetal.,2024a).
+DSAisinstantiatedunderMLAandintroducedthroughtwo-stagedcontinuepre-training.
+First,ashortdensewarm-uptrainsonlytheindexerviaKL-divergencedistillationagainstthe
+aggregatedfullattentiondistributionateachlayer,whileallotherparametersarefrozen.
+Then,alongersparsetrainingphaseactivatestop-kselectionandjointlyoptimizestheentire
+model,withtheindexerreceivingdistillationgradientsonadetachedcomputationalgraph.
+Despitetheseefficiencygains,theindexeritselfstilloperatesatO(L2):ateverylayer,itmust
+independentlyscoreallprecedingtokenstodetermineitsowntop-kset. Acrossamodel
+with N layers,thetotalindexercostisO(NL2),andatlongcontextlengthsthisbecomes
+a significant fraction of the total attention budget. A natural question is whether all N
+per-layerindexercomputationsaretrulynecessary,andwhethertheredundancyacross
+layerscanbeexploited.
+2.2 Cross-LayerStabilityofTokenSelection
+Theanswercomesfromabroaderempiricalfinding: thesetofimportanttokensisremarkablystableacrossconsecutivetransformerlayers. BothDeshmukhetal.(2025)andGao
+IndexCache
+etal.(2026)observethatadjacentlayerssharethevastmajorityoftheirtop-kattentionmass,
+andexploitthisbydesignatingafewanchorlayersthatcomputefullattentionwhileletting
+intermediatelayersreusetheanchor'stop-kindices.
+Crucially,bothapproachesdependonfullattentionastheoracleforidentifyingimportant
+tokens. InDSA,fullattentionhasbeeneliminatedentirely-replacedbythelightweight
+indexer. Thisraisesaquestionthat, toourknowledge, hasnotbeenaddressed: doesthe
+indexer'soutputalsoexhibitcross-layerstability? Ifso,wecanapplythesamesharingprinciple
+toeliminateredundantindexercomputationswithoutrequiringanyfullattentionoracleat
+all. Furthermore,whatisthemaximumreuseratioachievablebeforequalitydegrades,and
+canweadaptthemodeltoclosetheperformancegapintroducedbyaggressiveindexreuse?
+Wepresenttwonovelcomplementarymethodstoachievethisinthefollowingsection.
+3 Method
+Notation. WedenotethenumberoftransformerlayersbyN,thesequencelengthbyL,and
+thenumberofselectedtokensperquerybyk. Atlayerℓ,thelightningindexerproducesa
+scorevectorI (ℓ) ∈RLforquerypositiont,fromwhichthetop-kindexsetT (ℓ) =Top-k(I (ℓ) )
+t t t
+(ℓ)
+isextracted(k = 2048throughoutthispaper). Wewritep fortheaggregatedattention
+t
+distributionatlayerℓforpositiont(obtainedbyaveragingsoftmaxattentionweightsacross
+(ℓ) (ℓ)
+heads),andq =Softmax(I )fortheindexer'soutputdistribution.
+t t
+Overview. IndexCachemodifiesDSAbypartitioningtheNlayersintotworoles,encoded
+asabinarypatternstringc= c
+c
+···c
+N
+withc
+ℓ
+∈ {F,S}:
+(ℓ)
+• F(Full): thelayerretainsitsindexer,computesfreshT overallprecedingtokens,and
+t
+performssparsecoreattentionontheselectedsubset,identicaltostandardDSA.
+• S (Shared): the layer has no indexer. It inherits the index set from the nearest precedingFlayer,i.e.,T
+(ℓ)
+← T
+(f(ℓ))
+where f(ℓ) = max{j < ℓ : c = F},anddirectlyapplies
+t t j
+sparsecoreattentionusingthoseinheritedindices.
+ThefirstlayerisalwaysFtoseedtheinitialindices. Atinference,anSlayersimplyskipsthe
+indexerforwardpassandreusesthecachedindextensorfromitsFpredecessor. Figure2
+illustratesthesimplicityofthismodification: theonlychangetotheper-layerinferenceloop
+isasingleconditionalbranchthateitherrunstheindexerorcopiesthecachedindices.
+The key design question is how to choose the pattern c. If most layers can safely share
+indices,alargefractionoftheO(NL2)totalindexercostcanbeeliminatedwhiletheO(NLk)
+coreattentionremainsunchanged. Weproposetwoapproaches: atraining-freemethodthat
+determinescviagreedysearchonanestablishedDSAmodel(Section3.1),andatrainingawaremethodthatjointlyoptimizestheindexerparametersforcross-layersharingviaa
+multi-layerdistillationloss(Section3.2).
+3.1 Training-FreeIndexCache
+GivenapretrainedDSAmodel,ourgoalistofindapatterncthatmaximizesthenumber
+ofSlayerswhileminimizingtheimpactonmodelquality. Wefirstdiscusswhythemost
+obviousapproachfails,thenpresentourgreedysearchalgorithm.
+3.1.1 WhyUniformInterleavingIsSuboptimal
+Thesimpleststrategyisuniforminterleaving: retaineveryr-thlayer'sindexerandskip
+therest(e.g.,FSSSFSSS...forr=4). However,thisignoresthefactthatindexerimportance
+variessignificantlyacrosslayers. Weobserveempiricallythatcertainlayers,particularly
+thoseintheearlyandtransitionalregionsofthenetwork,arefarmoresensitivetoindexer
+removalthanothers. Uniforminterleavingmayremoveacriticalindexerwhileretaininga
+IndexCache
+Algorithm1GreedyLayerSelectionforTraining-FreeIndexCache
+Require: DSAmodel MwithNlayers,calibrationbatchesD,target#ofSlayersK
+Ensure: Optimizedpatternc∗
+1: c←FN ▷InitializealllayersasFull
+2: R ← {2,3,...,N} ▷Candidates(layer1alwaysF)
+3: forstep=1toKdo
+4: ℓ∗ ←argminℓ∈R EVALLOSS (cid:0) M, D, c| cℓ →S (cid:1)
+5: c ℓ∗ ←S, R ← R\{ℓ∗}
+6: endfor
+7: return c
+redundantone,leadingtonoticeablequalitydegradation(seeSection4.3forquantitative
+comparisons). This motivates a data-driven approach: let the model itself tell us which
+indexersareexpendable,leadingtoourgreedylayerselectionalgorithm.
+3.1.2 LayerSelectionAlgorithm
+WeproposeagreedysearchthatincrementallyconvertsFlayerstoSlayers,usinglanguage
+modelinglossonasmallcalibrationsetasaproxyfordownstreamquality.
+Calibrationset. WecacheBmini-batchesfromthetrainingdata. Allcandidatepatterns
+areevaluatedonexactlythesamebatches,ensuringthatlossdifferencesreflectonlythe
+effectofthepatternchange,notdatavariance. Thelossisderivedfromaforwardpasson
+(cid:0) (cid:1)
+thewholebatchD: EVALLOSS M, D, c .
+Searchprocedure. Startingfromtheall-Fbaseline(c
+ℓ
+=Fforallℓ),thealgorithmproceeds
+for K steps, where K isthetargetnumberofSlayers(e.g., K = 3N/4toretainonly1/4
+ofindexers). Ateachstep,weiterateoverallcurrently-Flayers(excludingthefirstlayer),
+tentativelyflipeachtoS,evaluatetheresultingLMloss,andcommittheflipthatyieldsthe
+lowestloss. Algorithm1presentsthefullprocedure.
+Complexity. Afullsearchfromall-Ftoall-SperformsN(N−1)/2forwardpasses. When
+pipelineparallelismpartitionsthemodelintoPstages,weacceleratethesearchbysplitting
+layersintoPblocks(witheachblock'sfirstlayerfixedasF)andsearchingblockssequentially
+withineachstep:thebestflipineachblockiscommittedbeforethenextblockissearched,so
+thatuptoPlayersareplacedperstepandtotalforwardpassesarereducedbyroughlyP×.
+Properties of the greedy solution. Although greedy
+1/8
+searchdoesnotguaranteeglobaloptimality,weconsistentlyobservethreesatisfyingproperties:
+0.571
+(1) Thesearchedpatternoutperformsuniforminterleavingatthesameretentionratio(Table2).
+1/4
+(2) As shown in the right figure (the steps for the 1/2,
+1/4,and1/8retentionratiosaremarked),theper-step 0.570
+LM validation loss curve reveals a clear separation
+between"easy"layers(thefirst20steps)and"critical" 1/2
+layers(after35steps),suggestinganaturalordering
+ofindexerimportance.
+0.569
+10 20 30 40
+(3) Resultsarestableacrossdifferentcalibrationsets,indicatingthatthisimportancerankingisanintrinsicmodelpropertyratherthanadata
+artifact. Moreover,theLMlossservesasavalidproxyfordownstreamtasks,aslower
+LMlossispositivelycorrelatedwithbettertaskperformance.
+IndexCache
+3.2 Training-AwareIndexCachewithMulti-LayerDistillation
+Training-freeIndexCacherequiresnoweightupdates,butislimitedbythefactthateach
+indexerwasoriginallytrainedtoserveonlyitsownlayer. WhentrainingaDSAmodelfrom
+scratchorviacontinuedpre-training,wecandobetter: explicitlytrainingeachretained
+indexertoservemultiplelayerssimultaneously.
+Fromsingle-layertomulti-layerdistillation. InstandardDSAtraining(Section2.1),each
+indexeratlayerℓisdistilledviaKLdivergenceagainstitsownlayer'saggregatedattention
+distributionp (
+t
+ℓ) : LI = ∑
+t
+D
+KL
+(cid:16) p (
+t
+ℓ)(cid:13) (cid:13)q (
+t
+ℓ) (cid:17) . Wegeneralizethistoamulti-layerobjective.
+LetlayerℓbearetainedFlayer,andletlayersℓ+1,...,ℓ+mbethesubsequentSlayersthat
+(ℓ)
+willreuseitsindexsetT . Themulti-layerdistillationlossis:
+t
+LI
+multi
+= ∑ m
+m+
+1
+∑ D
+KL
+(cid:16) p (
+t
+ℓ+j)(cid:13) (cid:13)q (
+t
+ℓ)(cid:17) , (1)
+j=0 t
+Intuitively, this encouragesthe indexerto predict atop-k setthat isjointly usefulfor all
+layersitserves,ratherthanoverfittingtolayerℓalone.
+Gradientequivalencetodistillationagainsttheaverageddistribution. Anaturalconcern
+iswhetheroptimizingasumofKLtermsintroducesunexpectedinteractions. Weshow
+thatthemulti-layerlosshasacleaninterpretation: itproducesexactlythesamegradientas
+distillingagainstasingleaveragedtarget.
+Definetheaveragedtargetp¯ = ∑m 1 p (ℓ+j) andthecorrespondingsingle-targetloss:
+t j=0 m+1 t
+LI
+avg
+= ∑ D
+KL
+(cid:16) p¯t (cid:13) (cid:13)q (
+t
+ℓ)(cid:17) . (2)
+t
+Proposition1. ∇ LI = ∇ LI .
+θ multi θ avg
+(ℓ) (ℓ)
+Proof. Sinceq istheonlyparameter-dependenttermin D (p∥q ),theentropyofp
+t KL t
+vanishesunderdifferentiation: ∇ D (p∥q (ℓ) ) = −∇ ∑ p(s)logq (ℓ) (s). ApplytoEq.1:
+θ KL t θ s t
+∇ LI =− ∑ m 1 ∑ ∇ ∑ p (ℓ+j) (s)logq (ℓ) (s)
+θ multi m+1 θ t t
+j=0 t s
+=− ∑ ∇ ∑(cid:16) ∑m 1 p (ℓ+j) (s) (cid:17) logq (ℓ) (s) = ∇ LI . (3)
+θ j=0 m+1 t t θ avg
+t s (cid:124) (cid:123)(cid:122) (cid:125)
+p¯t (s)
+□
+Interpretation. Proposition1showsthatmulti-layerdistillationisnotmerelyaheuristic
+regularizer-itisexactlyequivalenttodistillingtheindexertowardthecentroidofthetarget
+layers'attentiondistributions. Theindexerthereforelearnstopredictaconsensustop-kthat
+jointlycoverstheimportanttokensacrossallservedlayers.
+Althoughthetwolossformulationsyieldidenticalgradients,weadoptLI inpracticefor
+multi
+implementationefficiency. WhenthesubsequentlayerisanSlayer,itonlyneedstoreceive
+thecurrentlayer'spredictedq(ℓ). Incontrast,trainingwithLI requirespassingbothq(ℓ)
+avg
+andp(ℓ),whichintroducesunnecessarymemoryoverheadandadditionalruntimecost.
+Training. WefollowthestandardDSAtrainingprocedurewithtwostages.Inthewarm-up
+phase,wetraintheindexerintheFlayerusingLI ,whilekeepingallotherparameters
+multi
+fixed. Inthesparsetrainingphase,wecontinuetotraintheindexerusingLI ,definedas
+multi
+theKLdivergencecomputedonlyovertheselectedtop-ktokens,andadditionallyinclude
+theLMlosstotraintheremainingparameters.
+IndexCache
+Table1: End-to-endinferenceperformanceofthe30BDSAmodelwithIndexCacheattwo
+retentionratios. Prefilltime: seconds(lowerisbetter). Decodeperrequest: tokens/sunder
+singleconcurrency(higherisbetter). Decodefull: totaltokens/s(higherisbetter). Decode
+throughputisreportedperGPU.
+10K 60K 120K 200K
+Prefilltime(s)↓
+DSA 0.57 3.38 8.57 19.5
++IndexCache(1/2) 0.47 2.86 6.57 13.7
++IndexCache(1/4) 0.45 2.59 5.66 10.7
+Decodethroughput,perrequest(tok/s)↑
+DSA 73.5 67.0 63.0 58.0
++IndexCache(1/2) 84.5 80.0 77.0 73.0
++IndexCache(1/4) 91.0 89.5 88.0 86.0
+Decodethroughput,fullKVcache(tok/s)↑
+DSA 2700 613 341 197
++IndexCache(1/2) 3070 750 431 253
++IndexCache(1/4) 3310 840 498 297
+4 Experiments
+4.1 Setup
+Model. The DSA model used in our experiments was obtained through a two-stage
+trainingprocessstartingfromthebasemodelofGLM-4.7-Flash*,a30B-A3BMoEmodel
+with Multi-head Latent Attention (MLA) and 47 layers. Its evaluation performance is
+comparabletothatoftheoriginalGLM-4.7-Flash(seeTable6inZengetal.(2026)).
+Training-freeIndexCache. Thegreedypatternsearchisguidedbytheper-tokenvalidation
+losscomputedonSFTdatawithabatchsizeof768andacontextlengthof200K.
+Training-awareIndexCache. AfullDSAtrainingpipelinestartingfromthebasemodel
+requiressubstantialcomputationalresources. Instead,weinitializedirectlyfromtheGLM4.7-FlashmodelandtrainitintoaDSAmodelonSFTdatawithacontextlengthof200K.
+Thetrainingconsistsofa1,000-stepdensewarm-upphasefollowedbya4,000-stepsparse
+trainingphase. ThisshorterpipelinecloselymatchestheperformanceoffullDSAtraining
+andsufficesforevaluatingIndexCache'straining-awarecomponent.
+Evaluation. We include five long-context benchmarks: MRCR v2 (OpenAI, 2025b),
+GraphWalks (OpenAI, 2025a), LongBench v2 (Bai et al., 2025), RULER (Hsieh et al.,
+2024), and AA-LCR (Artificial Analysis, 2025); four general & reasoning benchmarks:
+AIME 2025 (Mathematical Association of America, 2025), GPQA-Diamond (Rein et al.,
+2024),LiveCodeBenchv6(Jainetal.,2024),andIFBench(Pyatkinetal.,2025). Evaluation
+setupsarefurtherdetailedinAppendixD.
+4.2 End-to-EndInferenceSpeedup
+Wemeasureend-to-endinferenceperformanceusingthe30B-parameterDSAmodelserved
+withdp attentionenabled(dp size=8)inSGLang,runningonanNVIDIAH100node. We
+comparetheoriginalDSAbaselineagainstIndexCacheattworetentionratios: 1/2(halfof
+theindexerlayersretained)and1/4(aquarterretained). Wereportthreecomplementary
+metricsacrosscontextlengthsof10K,60K,120K,and200Ktokens: (1)prefilllatencywhich
+measures time-to-first-token; (2) per-request decode throughput under single concurrency
+(single request on each GPU); and (3) total decode throughput when the KV cache is fully
+utilized(∼800KtokensoneachGPU).Table1andFigure3summarizetheresults.
+*https://huggingface.co/zai-org/GLM-4.7-Flash
+IndexCache
+180%
+160%
+140% 120%
+100%
+10K 60K 120K 200K
+Context Length
+)%( pudeepS
+evitaleR
+(a) Prefill (time)
+D In S d A e x ( C ba a s c e h l e in ( e 1 ) /2 indexer) 182% IndexCache (1/4 indexer) 160%
+151% 140%
+142% 127% 131% 130% 120% 121% 118%
+100%
+10K 60K 120K 200K
+Context Length
+)%( pudeepS
+evitaleR
+(b) Decode (per request throughput)
+DSA (baseline) IndexCache (1/2 indexer) IndexCache (1/4 indexer) 160%
+148% 140% 140%
+133% 115 1 % 24% 119% 122% 126% 120%
+100%
+10K 60K 120K 200K
+Context Length
+)%( pudeepS
+evitaleR
+(c) Decode (full throughput)
+DSA (baseline) IndexCache (1/2 indexer) IndexCache (1/4 indexer)
+151% 146% 137%
+126% 128% 123% 122% 114%
+Figure 3: Relative speedup of IndexCache over the DSA baseline across three inference
+settingsonthe30Bmodel. DSAbaselineisnormalizedto100%.
+Table2: Training-freeIndexCacheat1/2,1/4,and1/8indexerretention. 'Long'and'G&R'
+aggregatebenchmarkscores. Wecompareuniforminterleavingagainstsearchedpatterns.
+Averages Long-Context General&Reasoning
+Config Long G&R MRCR GW LB2 RULER LCR AIME GPQA LCB IFB
+OriginalDSA 50.2 74.6 24.5 49.6 45.5 87.9 43.6 91.0 77.6 71.4 58.4
+1/2Unif.IndexCache 47.4 74.3 22.0 46.6 46.0 83.6 38.6 92.2 76.4 69.7 59.0
++Searchpattern 50.3 74.4 24.7 49.5 46.3 87.8 43.2 91.9 76.3 71.3 58.2
+1/4Unif.IndexCache 43.0 73.8 17.7 37.2 43.1 79.2 37.8 91.3 75.7 69.4 58.9
++Searchpattern 49.9 74.9 25.1 47.4 45.7 87.6 43.8 92.6 78.6 70.0 58.3
+1/8Unif.IndexCache 35.3 70.0 12.9 33.1 37.7 68.8 24.0 89.1 74.1 58.7 58.0
++Searchpattern 46.1 73.7 21.7 43.8 42.3 82.0 40.8 90.7 76.5 69.6 58.1
+Prefill. IndexCachedeliverssubstantialprefillaccelerationthatgrowswithcontextlength.
+At200Ktokens,IndexCache(1/4)reducesprefilllatencyfrom19.5sto10.7s,achievinga
+1.82×speedup,byeliminating75%oftheindexercomputationsthatdominatetheprefill
+phase. Even at 10K, where the indexer accounts for a smaller fraction of total compute,
+a 1.27× speedup is observed. Extrapolating to longer contexts (>200K), IndexCache is
+expectedtodeliverevengreaterspeedups.
+Decode. Theper-requestdecodethroughputimprovementissignificantatlongcontexts.
+At 200K, DSA's decode speed is 58 tok/s, while IndexCache (1/4) achieves 86 tok/s, a
+1.48×speedup. ThisisbecausethedecodephaseinDSAinvolvesaper-tokenindexerpass
+overthefullcontext,whichbecomesthebottleneckatlongsequences;IndexCachedirectly
+reducesthisbottleneck. WhentheKVcacheisfullysaturated,IndexCache(1/4)improves
+totaldecodethroughputby22-51%acrosscontextlengths,withthelargestgainsatlonger
+contexts(197→297tok/sat200K,a1.51×increase).
+We observe similar trends on the larger GLM-5 model (744B parameters), where IndexCache(1/4)yieldsatleast1.3×improvementinbothprefilllatencyanddecodethroughput
+atcontextlengthsbeyond100K.Overall,ourend-to-endprefilllatencyanddecodethroughputsuggestIndexCacheisparticularlyvaluableforthelong-contextscenario.
+4.3 Training-FreeIndexCacheResults
+Table2reportsresultsoftraining-freeIndexCacheonthesame30BDSAmodel,comparing
+threeretentionratios: 1/2,1/4,and1/8,eachunderauniforminterleavebaselineanda
+greedy-searchedpattern(AppendixB).
+Searchedpatternsclosethegaponlong-contexttasks. Uniforminterleavingataggressive
+retentionratiosincurssignificantlong-contextdegradation: 1/2and1/4uniforminterleavingdropsLongAvgby2.8and7.2points(50.2→47.4and50.2→43.0)Thegreedy-searched
+pattern largely eliminates this deficit, recovering Long Avg to 49.9 at 1/4 retention and
+to 50.3 at 1/2 retention, both comparable to the original DSA. This confirms that which
+IndexCache
+Table3: Training-awareIndexCacheat1/2and1/4indexerretentionwithuniforminterleaving. w/searchedpattern: thegreedy-searchedpatternreplacesuniforminterleaving. w/o
+cross-layerloss: eachindexerisdistilledonlyagainstitsownlayer.
+Averages Long-Context General&Reasoning
+Config Long G&R MRCR GW LB2 RULER LCR AIME GPQA LCB IFB
+OriginalDSA 51.0 74.2 24.7 49.1 46.9 87.3 47.0 88.8 79.4 70.5 57.9
+1/2Unif.IndexCache 51.6 74.5 23.8 50.2 47.2 87.0 49.8 89.3 76.7 72.2 59.9
+w/searchedpattern 50.6 73.6 23.9 48.1 47.1 87.5 46.6 89.6 78.6 68.5 57.7
+w/ocross-layerloss 49.8 74.5 24.6 48.3 45.0 87.1 44.0 88.8 79.4 71.7 58.0
+1/4Unif.IndexCache 50.6 74.1 23.7 48.1 46.9 86.1 48.4 89.3 78.0 70.5 58.7
+indexerlayersareretainedmattersfarmorethanhowmany. Nevertheless,whenretaining
+only1/8oftheindexerlayers,weobserveasubstantialdegradation: LongAvgdropsto
+35.3withuniforminterleavingandto46.1withthesearchedpattern. Whilesearch-based
+IndexCachestillmarkedlymitigatesthelosscausedbyremovingindexers,theresulting
+declineinlong-contextperformanceatthisextremesparsitybecomesnon-negligible.
+Longchain-of-thoughtreasoningcapabilitiesarepreserved. Acrossallconfigurations
+exceptforuniforminterleaveat1/8ratio,G&RAvgstayswithin1pointofthe74.6baseline
+(73.7-74.9vs.74.6). Notably,the1/4searchedpatternimprovesoverDSAonAIME2025(92.6
+vs.91.0)andGPQA-Diamond(78.6vs.77.6),suggestingthatremovingredundantindexer
+computationmayactasamildregularizerduringinference. ThisconfirmsthatIndexCache
+doesnottradegeneralreasoningabilityforlong-contextefficiency.
+4.4 Training-AwareIndexCacheResults
+Weperformtraining-awareIndexCacheusingthemulti-layerdistillationloss(Section3.2)
+attworetentionratios: 1/2and1/4,bothwithuniforminterleaving. Wefurtherablatetwo
+designchoicesatthe1/2retentionratio: (1)replacingtheuniforminterleavingpatternwith
+thegreedy-searchedpatternfromSection4.3,and(2)removingthecross-layerdistillation
+loss(i.e.,trainingeachindexeronlyagainstitsownlayer'sattentiondistribution). Table3
+reports the evaluation results. Note that the DSA baseline in this section is also trained
+usingourshortenedDSAtrainingpipeline,whichresultsinasmallperformancedifference
+comparedtotheoriginalDSAreportedinTable2.
+Training-awareIndexCachematchesDSAbaseline. UniformIndexCachewith1/2ratio
+achievesaLongAvgof51.6,surpassingthebaseline(51.0),whileG&RAvgremainscomparable(74.5vs.74.2). At1/4retention,bothLongAvgandG&RAvgarewithin0.4%ofthe
+baseline. TheseresultsconfirmthatDSAcanbetrainedtoadapttothesharingpattern.
+Thepatternsensitivityobservedintraining-freeIndexCachevanisheswithtraining. A
+strikingcontrastwithSection4.3emerges: uniforminterleavingat1/2retentionperforms
+onparwithandevenslightlyabovethegreedy-searchedpattern(LongAvg51.6vs.50.6;
+G&RAvg74.5vs.73.6). Recallthatinthetraining-freesetting,thesearchedpatternwas
+essentialforrecoveringqualityataggressiveretentionratios. Thisisbecause,withoutretraining,certainlayersarestronglycoupledtotheirownindexer'stop-kselection;inheriting
+indicesfromanearlierlayerintroducesadistributionalshiftthatcausessharpperformance
+drops. The greedy search in the training-free setting works precisely by avoiding these
+sensitive layers. However, when the model is retrained with a sharing-aware objective,
+theSlayerslearntoadapttheirattentiontoinheritedindices,andtheretainedindexers
+simultaneouslylearntoproduceselectionsthatgeneralizeacrosstheirservedlayers. This
+jointadaptationeliminatesthelayer-specificsensitivityentirely, allowingevenasimple
+uniformpatterntomatchthefull-indexerbaseline.
+Cross-layerdistillationprovidesameaningfulbenefit. Removingthecross-layerloss
+dropsLongAvgfrom51.6to49.8,withAA-LCRfallingfrom49.8to44.0. Thisconfirms
+IndexCache
+Table4: PreliminaryresultsonGLM-5(744B)withtraining-freeIndexCache.
+LongAvg MRCRv2 GraphWalks LongBenchv2 RULER AA-LCR
+OriginalDSA 78.4 71.1 92.7 64.5 97.7 66.2
+1/2Unif.IndexCache 78.1 72.8 90.2 65.1 97.6 64.6
++Searchedpattern 78.7 72.3 90.8 66.0 97.3 67.2
+1/4Unif.IndexCache 72.7 65.8 74.9 62.2 96.2 64.6
++Searchedpattern 78.0 70.8 90.3 63.7 97.6 67.6
+thatthemulti-layerdistillationobjectiveispracticallybeneficial: bytrainingeachindexer
+towardthecentroidofitsservedlayers'attentiondistributions,itlearnsaconsensustop-k
+thatgeneralizesacrosslayersratherthanoverfittingtoasingleone.
+4.5 ScalingExperiment
+Weapplytraining-freeIndexCachetoGLM-5,a744B-parameter(40Bactive)modelthat
+usesDSAbydefault. Table4reportsresultsonfivelong-contextbenchmarks. Theoverall
+trendsmirrorthe30Bfindings: uniforminterleavingdegradesataggressiveretention,while
+thesearchedpatternrecoversquality. Interestingly,uniforminterleavingat1/2retention
+happenstopreserveLongAvg(78.1vs.78.4),butthisislikelycoincidental,wherethefixed
+alternatingpatternsimplyavoidsskippingthemostcriticalindexerlayersbychance. The
+searchedpatternprovidesconsistentlystableresults: at1/2retentionitslightlyexceedsthe
+baseline(78.7vs.78.4),andat1/4retentionitremainswithin0.4points(78.0vs.78.4). We
+alsoconductedanall-roundevaluationofIndexCachewith1/2indexerretentionacrossall
+testsontheArtificialAnalysisIndex,anditsperformanceisnearlyidenticaltothatofthe
+originalGLM-5model(Figure1).
+Weplantoapplytraining-awareIndexCachetothisproduction-scalemodelinthenearfuture. Giventhatthetraining-freevariantalreadymatchesbaselinequality,weareoptimistic
+thattraining-awareadaptationwillfurthersolidifythesegainsandtranslateintoconcrete
+deployment-timeefficiencybenefits.
+5 RelatedWork
+5.1 EfficientAttention
+Reducingthequadraticcostofself-attentionisacentralresearchtheme,especiallyinthe
+eraoflong-horizonagents. Training-freesparsemethodsintroducesparsityatinferencevia
+fixedpatterns,heuristicevictionstrategies,orlightweightimportanceestimation(Zhang
+et al., 2023; Xiao et al., 2024; Ribar et al., 2024; Tang et al., 2024; Jiang et al., 2024; Xiao
+et al., 2025; Xu et al., 2025; Lai et al., 2025; Fu et al., 2025; Zhu et al., 2025; Yang et al.,
+2025c; Zhang et al., 2025). Nevertheless, the resulting training-inference mismatch can
+cause error accumulation in long-context settings (Hu et al., 2026). In contrast, trainable
+sparsemethodsincorporatesparsitydirectlyintothetrainingstage,forexample,through
+learnedgatingmechanisms(Gaoetal.,2024;2025),end-to-endsparsepre-training(Yuan
+etal.,2025),block-levelmixturerouting(Luetal.,2025;Zhaoetal.,2025;Teametal.,2025b),
+orfull-to-sparsedistillation(Liuetal.,2025;Shenetal.,2025). DSA(Liuetal.,2025),the
+foundationofourwork,distillsalightweightlightningindexerfromfullattentiontoselect
+thetop-ktokensforeachquery,reducingthecoreattentioncomplexitytoO(Lk). Beyond
+sparsity,hybridarchitecturesreducethenumberofexpensivequadraticlayersbyinterleaving
+themwithslidingwindowattention(withorwithoutsink)(Agarwaletal.,2025;Gemma
+Team,2025;Xiaoetal.,2026;Teametal.,2026),linearattention(Yangetal.,2025d;Lietal.,
+2025;Blakemanetal.,2025;Teametal.,2025a),orstate-spacelayers(Gu&Dao,2024;Dao&
+Gu,2024;Lieberetal.,2024).
+IndexCache
+5.2 Cross-LayerSharing
+Recentstudiesdemonstratethatrepresentationexhibitsstrongconsistencyacrossadjacent
+layers. Thisstructuralpropertyisoftenleveragedtoreducecomputationalredundancy
+andaccelerateinference. TidalDecode(Yangetal.,2025a),LessIsMore(Yangetal.,2025b),
+OmniKV(Haoetal.,2025),andDELTA(Zarchetal.,2025)reusetop-kindicesfromperiodic
+anchor layers for sparse decoding. Kascade (Deshmukh et al., 2025) formalizes anchor
+layerselectionviadynamicprogrammingoveracross-layersimilaritymatrixandidentifies
+head-awareremappingascriticalformaintainingaccuracy. Allofthesemethodsrelyonfull
+attentionatanchorlayerstocomputeexacttop-kindices.Independently,cross-layerKVcache
+sharingreducesmemorybylettingmultiplelayersreusethesamekey-valuetensors(Sun
+etal.,2024;Brandonetal.,2024;Liuetal.,2024b;Qiaoetal.,2025;Zuhrietal.,2025;Wuetal.,
+2025). HySparse(Gaoetal.,2026)unifiesbothdirections,interleavingfullattentionlayers
+withsparselayersthatinheritbothtop-kblockindicesandKVcaches. However,allofthese
+approachesrequirefullattentionlayersastheoracle,whichDSAremovescompletely.
+IndexCachediffersintwokeyaspects.First,theoracleisfundamentallycheaperbecausewe
+sharetheoutputofDSA'slightweightindexerratherthanfullO(L2)attentionscores.Second,
+weintroducesystematictechniquesforoptimizingthesharingconfiguration,includinga
+training-freegreedysearchtoidentifytheoptimalstructurallayoutandatraining-aware
+multi-layerdistillationlossforparameteradaptation. AlthoughweinstantiateIndexCache
+onDSA,thecoreprincipleextendstoanysparseattentionmethodthatdoesnotrelyona
+fixedsparsepatternbutratherinvolvesadynamictokenselectionstep: forinstance,the
+block-levelselectioninMoBA(Luetal.,2025)andNSA(Yuanetal.,2025)couldsimilarly
+benefitfromcross-layerreuse.
+6 Conclusion
+WehavepresentedIndexCache,amethodthatacceleratessparseattentionbyexploitingthe
+cross-layerredundancyoftheindexerinchargeoftokenselection. IndexCachepartitions
+layersintoasmallnumberofFlayersthatretaintheirindexersandamajorityofSlayers
+thatreuseinheritedtop-kindices,eliminatingupto75%oftheO(NL2)totalindexercost
+withasingleconditionalbranchwithoutanyperformancedegradation. Morebroadly,our
+workdemonstratesthatthecross-layersharingprinciplethatpreviouslyappliedonlywhere
+fullattentionservesastheoracleextendsnaturallytosparseattention. Assparseattention
+becomesthedefaultforfrontierLLMs(DeepSeek-V3.2,GLM-5),weexpectcross-layerindex
+reusetobecomeastandardcomponentofefficientinferencepipelines.
+References
+SandhiniAgarwal,LamaAhmad,JasonAi,SamAltman,AndyApplebaum,EdwinArbus,
+RahulKArora, YuBai, BowenBaker, HaimingBao, etal. gpt-oss-120b&gpt-oss-20b
+modelcard. arXivpreprintarXiv:2508.10925,2025.
+Artificial Analysis. Artificial analysis long context reasoning (AA-LCR). https://
+artificialanalysis.ai/evaluations/artificial-analysis-long-context-reasoning,
+2025.
+YushiBai,ShangqingTu,JiajieZhang,HaoPeng,XiaozhiWang,XinLv,ShulinCao,Jiazheng
+Xu, Lei Hou, Yuxiao Dong, et al. Longbench v2: Towards deeper understanding and
+reasoningonrealisticlong-contextmultitasks. InProceedingsofthe63rdAnnualMeetingof
+theAssociationforComputationalLinguistics(Volume1: LongPapers),pp.3639-3664,2025.
+Aaron Blakeman, Aarti Basant, Abhinav Khattar, Adithya Renduchintala, Akhiad
+Bercovich,AleksanderFicek,AlexisBjorlin,AliTaghibakhshi,AmalaSanjayDeshmukh,
+AmeyaSunilMahabaleshwarkar,etal. Nemotron-h: Afamilyofaccurateandefficient
+hybridmamba-transformermodels. arXivpreprintarXiv:2504.03624,2025.
+IndexCache
+WilliamBrandon,MayankMishra,AniruddhaNrusimha,RameswarPanda,andJonathan
+Ragan-Kelley. Reducing transformer key-value cache size with cross-layer attention.
+AdvancesinNeuralInformationProcessingSystems,37:86927-86957,2024.
+TriDaoandAlbertGu. Transformersaressms: Generalizedmodelsandefficientalgorithms
+throughstructuredstatespaceduality. InInternationalConferenceonMachineLearning,pp.
+10041-10071.PMLR,2024.
+Dhruv Deshmukh, Saurabh Goyal, Nipun Kwatra, and Ramachandran Ramjee. Kascade: Apracticalsparseattentionmethodforlong-contextllminference. arXivpreprint
+arXiv:2512.16391,2025.
+TianyuFu,HaofengHuang,XuefeiNing,GenghanZhang,BojuChen,TianqiWu,Hongyi
+Wang,ZixiaoHuang,ShiyaoLi,ShengenYan,etal. Moa: Mixtureofsparseattention
+forautomaticlargelanguagemodelcompression. InICLR2025WorkshoponFoundation
+ModelsintheWild,2025.
+YizhaoGao,ZhichenZeng,DayouDu,ShijieCao,HaydenKwok-HaySo,TingCao,Fan
+Yang,andMaoYang. Seerattention: Learningintrinsicsparseattentioninyourllms. URL
+https://arxiv.org/abs/2410.13276,2024.
+YizhaoGao,ShumingGuo,ShijieCao,YuqingXia,YuCheng,LeiWang,LingxiaoMa,Yutao
+Sun, Tianzhu Ye, Li Dong, et al. Seerattention-r: Sparse attention adaptation for long
+reasoning. arXivpreprintarXiv:2506.08889,2025.
+YizhaoGao,JianyuWei,QihaoZhang,YuCheng,ShimaoChen,ZhengjuTang,ZihanJiang,
+YifanSong,HailinZhang,LiangZhao,etal. Hysparse: Ahybridsparseattentionarchitecturewithoracletokenselectionandkvcachesharing. arXivpreprintarXiv:2602.03560,
+2026.
+GemmaTeam. Gemma3technicalreport. arXivpreprintarXiv:2503.19786,2025.
+AlbertGuandTriDao. Mamba: Linear-timesequencemodelingwithselectivestatespaces.
+InFirstconferenceonlanguagemodeling,2024.
+Jitai Hao, Yuke Zhu, Tian Wang, Jun Yu, Xin Xin, Bo Zheng, Zhaochun Ren, and Sheng
+Guo. Omnikv: Dynamiccontextselectionforefficientlong-contextllms. InTheThirteenth
+InternationalConferenceonLearningRepresentations,2025.
+Cheng-PingHsieh,SimengSun,SamuelKriman,ShantanuAcharya,DimaRekesh,FeiJia,
+andBorisGinsburg. Ruler: What'stherealcontextsizeofyourlong-contextlanguage
+models? InFirstConferenceonLanguageModeling,2024.
+JunhaoHu,FangzeLi,MingtaoXu,FeifanMeng,ShijuZhao,TianchengHu,TingPeng,
+AnminLiu,WenruiHuang,ChenxuLiu,etal.Lil:Lessislesswhenapplyingpost-training
+sparse-attentionalgorithmsinlong-decodestage. arXivpreprintarXiv:2601.03043,2026.
+Naman Jain, King Han, Alex Gu, Wen-Ding Li, Fanjia Yan, Tianjun Zhang, Sida Wang,
+Armando Solar-Lezama, Koushik Sen, and Ion Stoica. Livecodebench: Holistic and
+contamination free evaluation of large language models for code. In The Thirteenth
+InternationalConferenceonLearningRepresentations,2024.
+HuiqiangJiang,YuchengLi,ChengruidongZhang,QianhuiWu,XufangLuo,SurinAhn,
+ZhenhuaHan,AmirHAbdi,DongshengLi,Chin-YewLin,etal. Minference1.0: Acceleratingpre-fillingforlong-contextllmsviadynamicsparseattention. AdvancesinNeural
+InformationProcessingSystems,37:52481-52515,2024.
+Xunhao Lai, Jianqiao Lu, Yao Luo, Yiyuan Ma, and Xun Zhou. Flexprefill: A contextawaresparseattentionmechanismforefficientlong-sequenceinference. InTheThirteenth
+InternationalConferenceonLearningRepresentations,2025.
+AonianLi,BangweiGong,BoYang,BojiShan,ChangLiu,ChengZhu,ChunhaoZhang,
+CongchaoGuo,DaChen,DongLi,etal. Minimax-01: Scalingfoundationmodelswith
+lightningattention. arXivpreprintarXiv:2501.08313,2025.
+IndexCache
+OpherLieber,BarakLenz,HofitBata,GalCohen,JhonathanOsin,ItayDalmedigos,Erez
+Safahi,ShakedMeirom,YonatanBelinkov,ShaiShalev-Shwartz,etal. Jamba: Ahybrid
+transformer-mambalanguagemodel. arXivpreprintarXiv:2403.19887,2024.
+AixinLiu,BeiFeng,BinWang,BingxuanWang,BoLiu,ChenggangZhao,ChengqiDengr,
+Chong Ruan, Damai Dai, Daya Guo, et al. Deepseek-v2: A strong, economical, and
+efficientmixture-of-expertslanguagemodel. arXivpreprintarXiv:2405.04434,2024a.
+AixinLiu,AoxueMei,BangcaiLin,BingXue,BingxuanWang,BingzhengXu,BochaoWu,
+BoweiZhang,ChaofanLin,ChenDong,etal. Deepseek-v3.2: Pushingthefrontierof
+openlargelanguagemodels. arXivpreprintarXiv:2512.02556,2025.
+Akide Liu, Jing Liu, Zizheng Pan, Yefei He, Gholamreza Haffari, and Bohan Zhuang.
+Minicache:Kvcachecompressionindepthdimensionforlargelanguagemodels.Advances
+inNeuralInformationProcessingSystems,37:139997-140031,2024b.
+Enzhe Lu, Zhejun Jiang, Jingyuan Liu, Yulun Du, Tao Jiang, Chao Hong, Shaowei Liu,
+WeiranHe,EnmingYuan,YuzhiWang,etal. Moba: Mixtureofblockattentionforlongcontextllms. InTheThirty-ninthAnnualConferenceonNeuralInformationProcessingSystems,
+2025.
+Mathematical Association of America. AIME 2025. https://artofproblemsolving.com/
+wiki/index.php/2025 AIME,2025.
+OpenAI. GraphWalks. https://huggingface.co/datasets/openai/graphwalks,2025a.
+OpenAI. Multi-roundcoreferenceresolution(MRCR). https://huggingface.co/datasets/
+openai/mrcr,2025b.
+ValentinaPyatkin,SaumyaMalik,VictoriaGraf,HamishIvison,ShengyiHuang,Pradeep
+Dasigi,NathanLambert,NoahA.Smith,andHannanehHajishirzi. Generalizingverifiableinstructionfollowing. InAdvancesinNeuralInformationProcessingSystems,2025.
+AurickQiao, ZheweiYao, SamyamRajbhandari, andYuxiongHe. Swiftkv: Fastprefilloptimizedinferencewithknowledge-preservingmodeltransformation. InProceedingsof
+the2025ConferenceonEmpiricalMethodsinNaturalLanguageProcessing,pp.25745-25764,
+2025.
+David Rein, Betty Li Hou, Asa Cooper Stickland, Jackson Petty, Richard Yuanzhe Pang,
+JulienDirani,JulianMichael,andSamuelRBowman. Gpqa: Agraduate-levelgoogleproofq&abenchmark. InFirstconferenceonlanguagemodeling,2024.
+Luka Ribar, Ivan Chelombiev, Luke Hudlass-Galley, Charlie Blake, Carlo Luschi, and
+DouglasOrr.Sparqattention:Bandwidth-efficientllminference.InInternationalConference
+onMachineLearning,pp.42558-42583.PMLR,2024.
+ZhenyiShen,JunruLu,LinGui,JiazhengLi,YulanHe,DiYin,andXingSun. Ssa: Sparse
+sparse attention by aligning full and sparse attention outputs in feature space. arXiv
+preprintarXiv:2511.20102,2025.
+YutaoSun,LiDong,YiZhu,ShaohanHuang,WenhuiWang,ShumingMa,QuanluZhang,
+JianyongWang,andFuruWei. Youonlycacheonce: Decoder-decoderarchitecturesfor
+languagemodels. AdvancesinNeuralInformationProcessingSystems,37:7339-7361,2024.
+JiamingTang,YilongZhao,KanZhu,GuangxuanXiao,BarisKasikci,andSongHan. Quest:
+Query-awaresparsityforefficientlong-contextllminference. InInternationalConference
+onMachineLearning,pp.47901-47911.PMLR,2024.
+KimiTeam,YuZhang,ZongyuLin,XingchengYao,JiaxiHu,FanqingMeng,ChengyinLiu,
+XinMen,SonglinYang,ZhiyuanLi,etal. Kimilinear: Anexpressive,efficientattention
+architecture. arXivpreprintarXiv:2510.26692,2025a.
+IndexCache
+MeituanLongCatTeam,AnchunGui,BeiLi,BingyangTao,BoleZhou,BorunChen,Chao
+Zhang, Chen Gao, Chen Zhang, Chengcheng Han, et al. Longcat-flash-thinking-2601
+technicalreport. arXivpreprintarXiv:2601.16725,2026.
+MiniCPM Team, Chaojun Xiao, Yuxuan Li, Xu Han, Yuzhuo Bai, Jie Cai, Haotian Chen,
+WentongChen,XinCong,GanquCui,etal. Minicpm4:Ultra-efficientllmsonenddevices.
+arXivpreprintarXiv:2506.07900,2025b.
+AshishVaswani,NoamShazeer,NikiParmar,JakobUszkoreit,LlionJones,AidanNGomez,
+ŁukaszKaiser,andIlliaPolosukhin. Attentionisallyouneed. Advancesinneuralinformationprocessingsystems,30,2017.
+ZhoutongWu,YuanZhang,YimingDong,ChenhengZhang,CongFang,KunYuan,and
+ZhouchenLin. ImprovingmodelrepresentationandreducingKVcacheviaskipconnectionswithfirstvalueheads. InTheThirty-ninthAnnualConferenceonNeuralInformation
+ProcessingSystems,2025.
+BangjunXiao,BingquanXia,BoYang,BofeiGao,BowenShen,ChenZhang,ChenhongHe,
+ChihengLou,FuliLuo,GangWang,etal. Mimo-v2-flashtechnicalreport. arXivpreprint
+arXiv:2601.02780,2026.
+GuangxuanXiao,YuandongTian,BeidiChen,SongHan,andMikeLewis. Efficientstreaming language models with attention sinks. In The Twelfth International Conference on
+LearningRepresentations,2024.
+Guangxuan Xiao, Jiaming Tang, Jingwei Zuo, Shang Yang, Haotian Tang, Yao Fu, Song
+Han,etal. Duoattention: Efficientlong-contextllminferencewithretrievalandstreaming
+heads. InTheThirteenthInternationalConferenceonLearningRepresentations,2025.
+RuyiXu,GuangxuanXiao,HaofengHuang,JunxianGuo,andSongHan. Xattention: Block
+sparseattentionwithantidiagonalscoring. InInternationalConferenceonMachineLearning,
+pp.69819-69831.PMLR,2025.
+Lijie Yang, Zhihao Zhang, Zhuofu Chen, Zikun Li, and Zhihao Jia. Tidaldecode: Fast
+andaccuratellmdecodingwithpositionpersistentsparseattention. InTheThirteenth
+InternationalConferenceonLearningRepresentations,2025a.
+Lijie Yang, Zhihao Zhang, Arti Jain, Shijie Cao, Baihong Yuan, Yiwei Chen, Zhihao Jia,
+andRaviNetravali. Lessismore: Training-freesparseattentionwithgloballocalityfor
+efficientreasoning. arXivpreprintarXiv:2508.07101,2025b.
+Shang Yang, Junxian Guo, Haotian Tang, Qinghao Hu, Guangxuan Xiao, Jiaming Tang,
+YujunLin,ZhijianLiu,YaoLu,andSongHan. Lserve:Efficientlong-sequencellmserving
+withunifiedsparseattention. ProceedingsofMachineLearningandSystems,7,2025c.
+SonglinYang,JanKautz,andAliHatamizadeh. Gateddeltanetworks: Improvingmamba2
+withdeltarule. InTheThirteenthInternationalConferenceonLearningRepresentations,2025d.
+JingyangYuan,HuazuoGao,DamaiDai,JunyuLuo,LiangZhao,ZhengyanZhang,Zhenda
+Xie, Yuxing Wei, Lean Wang, Zhiping Xiao, et al. Native sparse attention: Hardwarealignedandnativelytrainablesparseattention. InProceedingsofthe63rdAnnualMeetingof
+theAssociationforComputationalLinguistics(Volume1: LongPapers),pp.23078-23097,2025.
+Hossein Entezari Zarch, Lei Gao, Chaoyi Jiang, and Murali Annavarm. DELTA: Dynamic layer-aware token attention for efficient long-context reasoning. arXiv preprint
+arXiv:2510.09883,2025.
+AohanZeng,XinLv,ZhenyuHou,ZhengxiaoDu,QinkaiZheng,BinChen,DaYin,Chendi
+Ge,ChengxingXie,CunxiangWang,etal.Glm-5:fromvibecodingtoagenticengineering.
+arXivpreprintarXiv:2602.15763,2026.
+IndexCache
+JintaoZhang,ChendongXiang,HaofengHuang,JiaWei,HaochengXi,JunZhu,andJianfei
+Chen. Spargeattention: Accurate and training-free sparse attention accelerating any
+modelinference. InInternationalConferenceonMachineLearning,pp.76397-76413.PMLR,
+2025.
+ZhenyuZhang,YingSheng,TianyiZhou,TianlongChen,LianminZheng,RuisiCai,Zhao
+Song,YuandongTian,ChristopherRe´,ClarkBarrett,etal. H2o: Heavy-hitteroraclefor
+efficientgenerativeinferenceoflargelanguagemodels. AdvancesinNeuralInformation
+ProcessingSystems,36:34661-34710,2023.
+WeilinZhao, ZihanZhou, ZhouSu, ChaojunXiao, YuxuanLi, YanghaoLi, YudiZhang,
+WeilunZhao,ZhenLi,YuxiangHuang,etal. Infllm-v2:Dense-sparseswitchableattention
+forseamlessshort-to-longadaptation. arXivpreprintarXiv:2509.24663,2025.
+QianchaoZhu,JiangfeiDuan,ChangChen,SiranLiu,XiuhongLi,GuanyuFeng,XinLv,
+XiaoChuanfu,DahuaLin,andChaoYang. Sampleattention: Near-losslessacceleration
+oflongcontextllminferencewithadaptivestructuredsparseattention. Proceedingsof
+MachineLearningandSystems,7,2025.
+ZaydMuhammadKawakibiZuhri,MuhammadFaridAdilazuarda,AyuPurwarianti,and
+AlhamFikriAji. Mlkv: Multi-layerkey-valueheadsformemoryefficienttransformer
+decoding. InFindingsoftheAssociationforComputationalLinguistics: NAACL2025, pp.
+5516-5525,2025.
+IndexCache
+Appendix
+A Cross-LayerTop-k IndexOverlap
+Toempiricallyvalidatethecross-layerredundancyoftop-k indexselectionsinDSA,we
+compute the pairwise overlap ratio between the top-k indices selected by each layer's
+lightning indexer. Specifically, for every pair of layers (i,j), we measure |T(i)∩T(j)|/k
+(wherek =2048)averagedover768samplesof200Klengthinacalibrationset.
+Figure4: Pairwisetop-kindexoverlapratiobetweenalllayerpairsofthe30BDSAmodel.
+Sharedblocksaccordingtothegreedy-searched1/4IndexCachepatternaremarked.
+Figure 4 visualizes this overlap as a heatmap for the 47-layer 30B DSA model, with the
+sharingblocksfromthegreedy-searched1/4-retentionpatternmarkedasredboxes. Several
+patternsareevident:
+• Highoverlapnearthediagonal. Adjacentlayersexhibitoverlapratiosof0.7-1.0,confirmingthatconsecutivelayersselectlargelythesamesetoftokens.
+• Block structure. The heatmap reveals distinct clusters of layers with mutually high
+overlap,forinstance,layers3-5,6-8,17-30,31-36,etc.,suggestingthatthemodelorganizes
+intofunctionalblockswheretokenselectionisinternallyconsistent.
+• Uneven decay. Overlap decreases more rapidly across block boundaries than within
+them,indicatingthatafew"transition"layersshifttheattentionfocussubstantially.
+• Early-latedistinction. Thebottom-leftandtop-rightcornersoftheheatmaparenotably
+dark(overlap≤0.4),showingthatearlyandlatelayersattendtofundamentallydifferent
+tokensubsets.
+Greedy-searchedblocksvs.overlapclusters. Comparingtheredboxes(greedy-searched
+sharingblocks)withthenaturaloverlapclustersrevealsaninformativemismatch. While
+thegreedysearchdoesplaceFlayersnearsomevisuallyobviousclusterboundaries,the
+twopartitionsdonotfullycoincide. Therootcauseisthatoverlapisanaggregatemetric: it
+countshowmanytokensaresharedbutnotwhichonesdiffer. Inthetraining-freesetting,
+weightsarefrozen,soevenasmallsetofmismatchedcriticaltokenscanperturbalayer's
+hiddenstateinwaysthatcascadethroughalldownstreamlayers. Earlylayersareespecially
+vulnerablebecausetheirperturbationstraversethelongestpropagationpath.
+IndexCache
+Thisobservationalsoechoesournegativeresultwiththesimilarity-basedpatternsearch
+(AppendixC):localmetrics-whethercosinesimilarityofattentionoutputsortop-kindex
+overlap-lackthediscriminativepowertoidentifytheoptimalsharingpattern,necessitating
+end-to-endevaluation.
+B SearchedPatterns
+SearchedpatternsforGLM-4.7-Flash30BDSA:
+• Keep1/2'F's: FSFSFSSSSFSFFFFSFFSSFFSFFFSSFFSSFSSSSFSFFFSFSSF
+• Keep1/4'F's: FSFSFSSSSFSSSFSSFFSSFSSFSSSSFSSSFSSSSFSSSSSSSSS
+• Keep1/8'F's: FSSSFSSSSSSSSFSSSFSSSSSFSSSSFSSSSSSSSFSSSSSSSSS
+SearchedpatternsforGLM-5:
+• Keep1/2'F's: FFSFSSSFSSFFFSSSFFFSFSSSSSSFFSFFSFFSSFFFFFFSFFFFFSFFSSSSSSFSFFFS
+FSSSFSFFSFFSSS
+• Keep1/4'F's: FFSFSSSFSSFSFSSSSSSSFSSSSSSFSSSFSFSSSSFFFFFSSSFFSSSFSSSSSSSSFSSS
+FSSSSSSFSFSSSS
+C Similarity-basedPatternSearch
+Webelievepapersshouldreportnotonlypositiveresultsbutalsonegative(orunsuccessful)
+ones. Beforearrivingatthegreedyloss-basedsearchdescribedinSection3.1.2,weexplored
+aseeminglynaturalalternative: choosingthesharingpatternbydirectlymeasuringhow
+similartheattentionoutputsarewhenanindexerisreusedacrosslayers. Althoughthis
+approachistheoreticallymotivatedandcomputationallycheaperthanthegreedysearch,it
+ultimatelyprovedinsufficientasaproxyfordownstreamquality. Wedescribeitherefor
+completenessandtoprovideinsightintowhytheloss-basedsearchisnecessary.
+Constructingthesimilaritymatrix. GivenaDSAmodelwith N layers,weperform N
+singleforwardpassesoveracalibrationsetand,foreachlayerpair(i,j)withi > j,compute
+thecosinesimilaritybetween:
+1. thecoreattentionoutputatlayeri whenusinglayeri'sownindexer(i.e.,theoriginal
+model),and
+2. thecoreattentionoutputatlayeriwhenreusinglayerj'sindexer(i.e.,asiflayeriwere
+anSlayersharingfromlayerj).
+ThisyieldsanN×Nlower-triangularsimilaritymatrixS,whereS quantifieshowwell
+i,j
+layer j'sindexcanserveasaproxyforlayeri'sownindex. Intuitively,ifS iscloseto1,
+i,j
+thenlayericansafelyskipitsownindexercomputationandreusetheindexfromlayerj
+withminimaldistortiontoitsattentionoutput.
+Dynamicprogrammingformulation. GiventhesimilaritymatrixSandatargetnumber
+ofFlayersM(equivalently,N−MSlayers),weseekthepatternc∗ thatmaximizesthetotal
+similarity:
+c ∗ =arg max ∑ S (4)
+ℓ,src(ℓ)
+c:|{i:ci =F}|=M
+ℓ:cℓ =S
+wheresrc(ℓ)denotesthemostrecentprecedingFlayerfromwhichlayerℓinheritsitsindex
+(i.e.,src(ℓ) =max{j < ℓ : c =F}).
+j
+Thiscanbesolvedexactlyviadynamicprogramming. Letdp[i][k]denotethemaximum
+cumulativesimilarityachievableforlayers1,...,iusingexactlykFlayers,withlayeriitself
+IndexCache
+Table5: Evaluationresultsoftraining-freesimilarity-basedsearchedpattern.
+Avg MRCRv2 GraphWalks RULER
+OriginalDSA 54.0 24.5 49.6 87.9
+1/2Unif.IndexCache 50.7 22.0 46.6 83.6
++Searchedpattern 49.8 22.9 43.5 82.9
+beinganFlayer. ThetransitionconsidersallpossiblepreviousFlayers:
+(cid:40) (cid:41)
+i−1
+∑
+dp[i][k] = max dp[j][k−1]+ S (5)
+m,j
+j<i,cj =F
+m=j+1
+wherethesummationaccountsforallSlayersbetweenjandi,eachreusinglayerj'sindex.
+WerecovertheoptimalpatternbybacktrackingthroughtheDPtable.
+Result: similarity-optimal patterns perform comparably to uniform interleaving on
+downstream tasks. Like uniform interleaving, DP-searched patterns exhibit the same
+significantqualitydegradationrelativetotheoriginalDSAmodel,asshowninTable5. In
+otherwords,despiteexplicitlyoptimizingformaximalcross-layersimilarity,theresulting
+patternsoffernomeaningfuladvantageoverthena¨ıveuniformbaseline. Incontrast,the
+greedyloss-basedsearch(Section3.1.2)producespatternsthatsubstantiallyoutperformboth
+uniformandsimilarity-optimalpatterns,especiallyataggressiveretentionratios.
+Whysimilarityfailsasaproxy. Thefundamentalissueisthatper-layeroutputsimilarityis
+alocalmetric:itmeasureshowwellasinglelayer'sattentionoutputispreservedinisolation,
+withoutaccountingforhowsmallperturbationspropagateacrosstheremaininglayers. Two
+layersmayhavenearlyidenticalattentionoutputs(S ≈1)yetdifferinsubtlewaysthat
+i,j
+matterfordownstreamquality: forinstance,thereusedindexmaymissasmallnumberof
+criticaltokenswhoseimportanceonlybecomesapparentinlaterlayers'reasoningsteps.
+These subtle mismatches accumulate through the layers, leading to non-negligible final
+qualitydegradationthatalayer-localsimilarityscorecannotpredict.
+The greedy loss-based search avoids this pitfall by directly optimizing a global metric,
+i.e., the LM loss, which captures the end-to-end effect of each sharing decision on the
+model'soutputdistribution. Thisallowsittoidentify"critical"layers(thosewhoseindexers
+must be retained to avoid cascading errors) that the similarity-based approach treats as
+interchangeablewiththeirneighbors.
+D EvaluationSetup
+All benchmarks are evaluated with temperature 1.0, top-p = 0.95, and top-k = 40. For
+long-context tasks, we set a total context window of 200K tokens with 32K reserved for
+the output. For general & reasoning tasks, we allow a maximum output length of 64K
+tokens. OnMRCRv2,wereporttheaveragescoreacross2-,4-,and8-needlesettings. On
+GraphWalks,wereporttheaveragescoreovertheParent-typeandBFS-typeproblems. On
+RULER,wereportscoresonallinstanceswithcontextlengthsrangingfrom4Kto128K.For
+MRCRv2andGraphWalks,weincludeonlyinstanceswhoseinputlengthfitswithinthe
+effectiveinputbudget(200K−32K=168Ktokens). ForLongBenchv2,RULER,andAA-LCR,
+weincludeallinstancesandapplymiddletruncationtothoseexceeding168Ktokens.
+18

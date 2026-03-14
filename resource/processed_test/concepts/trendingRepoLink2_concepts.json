@@ -1,0 +1,56 @@
+{
+  "source_file": "trendingRepoLink2.txt",
+  "source_title": "OpenRAG - Intelligent Agent-powered document search",
+  "source_type": "github_repo",
+  "concepts": [
+    {
+      "label": "retrieval-augmented generation",
+      "description": "A system that lets an AI answer questions by first searching through your own uploaded documents, then using that found information to generate accurate, grounded answers.",
+      "why_innovative": "It allows businesses to chat with their own private document libraries using AI without retraining any models, making enterprise knowledge instantly searchable and conversational.",
+      "category": "technique",
+      "relevance_score": 1.0
+    },
+    {
+      "label": "agentic rag workflow",
+      "description": "An AI system where multiple specialized 'agents' (mini-programs with specific jobs) coordinate together — one searches, one re-ranks results, one generates answers — rather than a single step doing everything.",
+      "why_innovative": "Multi-agent coordination with re-ranking produces significantly more accurate and relevant answers than simple single-pass retrieval, making the system usable for real enterprise decision-making.",
+      "category": "architecture",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "visual workflow builder",
+      "description": "A drag-and-drop graphical interface (powered by Langflow) where users can visually connect and configure the steps of a document-processing and AI-answering pipeline without writing code.",
+      "why_innovative": "It lowers the barrier for non-engineers to customize and iterate on complex AI pipelines, dramatically reducing the time from idea to deployed RAG application.",
+      "category": "tool",
+      "relevance_score": 0.9
+    },
+    {
+      "label": "model context protocol",
+      "description": "A standardized way to connect external AI tools (like Cursor code editor or Claude chatbot) directly to OpenRAG's knowledge base, so those tools can search your documents as part of their own answers.",
+      "why_innovative": "It enables any MCP-compatible AI assistant to tap into private organizational knowledge, turning siloed document stores into universally accessible AI context.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "docling document ingestion",
+      "description": "A document-parsing engine that can intelligently read and extract structured content from messy, real-world files (PDFs, presentations, scanned pages) before storing them for search.",
+      "why_innovative": "Handling complex, real-world document formats reliably is the hardest part of building RAG systems; having this pre-integrated means users get accurate search over difficult documents out of the box.",
+      "category": "technique",
+      "relevance_score": 0.87
+    },
+    {
+      "label": "opensearch semantic search",
+      "description": "A production-grade search engine that understands the meaning of questions (not just keywords) and can scale to handle large volumes of documents and queries in a business environment.",
+      "why_innovative": "Using meaning-based search instead of keyword matching means users find relevant documents even when they phrase questions differently from how content is written, and it scales to enterprise workloads.",
+      "category": "architecture",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "knowledge connector integration",
+      "description": "Built-in connections to external cloud storage services (like Google Drive, OneDrive, SharePoint) that automatically pull documents into OpenRAG without manual uploading.",
+      "why_innovative": "Eliminating manual data migration means organizations can instantly make their existing cloud document libraries AI-searchable, dramatically cutting deployment time.",
+      "category": "application",
+      "relevance_score": 0.82
+    }
+  ]
+}
