@@ -56,6 +56,15 @@
       "type": "string",
       "format": "date-time"
     },
+    "pipeline_state": {
+      "type": "string",
+      "enum": [
+        "raw_scraped",
+        "keywords_enriched",
+        "preprocessed",
+        "card_ready"
+      ]
+    },
     "preprocessing": {
       "type": "object",
       "additionalProperties": false,
@@ -114,6 +123,10 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "source_rank_score": {
+          "type": "number",
+          "minimum": 0
+        },
         "trending_score": {
           "type": "number",
           "minimum": 0
