@@ -4,7 +4,6 @@ export interface GraphNode {
   description: string;
   frequency: number;
   isToday: boolean;
-  // Runtime rendering state
   x: number;
   y: number;
   vx: number;
@@ -15,27 +14,34 @@ export interface GraphNode {
   labelAlpha: number;
   targetLabelAlpha: number;
   orbiters: { angle: number; speed: number; dist: number; size: number }[];
-  // Entrance animation state
-  tx: number;       // target x (where physics will settle it)
-  ty: number;       // target y
-  cpx: number;      // bezier control point x (for arc trajectory)
-  cpy: number;      // bezier control point y
-  animT: number;    // 0..1 progress along arc
+  todayTx: number;
+  todayTy: number;
+  fullTx: number;
+  fullTy: number;
+  tx: number;
+  ty: number;
+  startX: number;
+  startY: number;
+  cpx: number;
+  cpy: number;
+  animT: number;
   animating: boolean;
   entered: boolean;
   settled: boolean;
   opacity: number;
   scale: number;
-  delay: number;    // frames to wait before entering
+  delay: number;
+  fadeIn?: boolean;
+  fadeOut?: boolean;
 }
 
 export interface GraphEdge {
   source: string;
   target: string;
-  relationship: string;
 }
 
 export interface GraphData {
   nodes: GraphNode[];
-  edges: GraphEdge[];
+  todayEdges: GraphEdge[];
+  fullEdges: GraphEdge[];
 }

@@ -18,50 +18,64 @@ const rawNodes: Pick<GraphNode, 'id' | 'label' | 'description' | 'frequency' | '
   { id: 'n14', label: 'RLHF', description: 'Reinforcement learning from human feedback for alignment.', frequency: 1, isToday: true },
 ];
 
-const rawEdges: GraphEdge[] = [
-  { source: 'n0', target: 'n1', relationship: 'related_to' },
-  { source: 'n0', target: 'n2', relationship: 'related_to' },
-  { source: 'n0', target: 'n5', relationship: 'mentions' },
-  { source: 'n0', target: 'n6', relationship: 'mentions' },
-  { source: 'n0', target: 'n12', relationship: 'related_to' },
-  { source: 'n0', target: 'n4', relationship: 'related_to' },
-  { source: 'n1', target: 'n14', relationship: 'builds_on' },
-  { source: 'n2', target: 'n12', relationship: 'overlaps_with' },
-  { source: 'n2', target: 'n4', relationship: 'related_to' },
-  { source: 'n3', target: 'n4', relationship: 'related_to' },
-  { source: 'n3', target: 'n7', relationship: 'related_to' },
-  { source: 'n3', target: 'n8', relationship: 'related_to' },
-  { source: 'n4', target: 'n7', relationship: 'related_to' },
-  { source: 'n4', target: 'n8', relationship: 'related_to' },
-  { source: 'n4', target: 'n9', relationship: 'related_to' },
-  { source: 'n4', target: 'n14', relationship: 'related_to' },
-  { source: 'n4', target: 'n13', relationship: 'related_to' },
-  { source: 'n5', target: 'n6', relationship: 'overlaps_with' },
-  { source: 'n8', target: 'n9', relationship: 'builds_on' },
-  { source: 'n10', target: 'n11', relationship: 'builds_on' },
-  { source: 'n10', target: 'n0', relationship: 'related_to' },
-  { source: 'n14', target: 'n4', relationship: 'related_to' },
+const todayEdgeList: [string, string][] = [
+  ['n0','n1'],['n0','n2'],['n0','n5'],['n0','n6'],['n0','n12'],
+  ['n1','n14'],['n2','n12'],['n5','n6'],['n8','n9'],['n3','n8'],
 ];
 
-export function buildSampleGraph(canvasW: number, canvasH: number): GraphData {
-  var todayIdx = 0;
+const fullEdgeList: [string, string][] = [
+  ['n0','n1'],['n0','n2'],['n0','n5'],['n0','n6'],['n0','n12'],['n0','n4'],
+  ['n1','n14'],['n2','n12'],['n2','n4'],['n3','n4'],['n3','n7'],['n3','n8'],
+  ['n4','n7'],['n4','n8'],['n4','n9'],['n4','n14'],['n4','n13'],
+  ['n5','n6'],['n8','n9'],['n10','n11'],['n10','n0'],['n14','n4'],
+];
+
+function toEdges(list: [string, string][]): GraphEdge[] {
+  return list.map(([s, t]) => ({ source: s, target: t }));
+}
+
+export function buildAdjMap(edges: GraphEdge[]): Record<string, string[]> {
+  const adj: Record<string, string[]> = {};
+  edges.forEach((e) => {
+    if (!adj[e.source]) adj[e.source] = [];
+    if (!adj[e.target]) adj[e.target] = [];
+    adj[e.source].push(e.target);
+    adj[e.target].push(e.source);
+  });
+  return adj;
+}
+
+export function buildSampleGraph(W: number, H: number): GraphData {
+  let todayIdx = 0;
   const nodes: GraphNode[] = rawNodes.map((raw) => {
     const baseR = 8 + raw.frequency * 2.5;
-    const tx = canvasW * 0.15 + Math.random() * canvasW * 0.7;
-    const ty = canvasH * 0.1 + Math.random() * canvasH * 0.8;
-
+    const todayTx = W * 0.3 + Math.random() * W * 0.4;
+    const todayTy = H * 0.3 + Math.random() * H * 0.4;
+    const fullTx = W * 0.1 + Math.random() * W * 0.8;
+    const fullTy = H * 0.08 + Math.random() * H * 0.84;
     const isToday = raw.isToday;
-    const delay = isToday ? 30 + todayIdx * 12 : 0;
+    const delay = isToday ? 20 + todayIdx * 12 : 0;
     if (isToday) todayIdx++;
 
     return {
       ...raw,
-      // Position: today nodes start at top-left corner, previous start at target
-      x: isToday ? -20 : tx,
-      y: isToday ? -20 : ty,
-      vx: 0,
-      vy: 0,
       r: baseR,
+      x: isToday ? -20 : fullTx,
+      y: isToday ? -20 : fullTy,
+      vx: 0, vy: 0,
+      todayTx, todayTy, fullTx, fullTy,
+      tx: isToday ? todayTx : fullTx,
+      ty: isToday ? todayTy : fullTy,
+      startX: -20, startY: -20,
+      cpx: todayTx * 0.5 + Math.random() * 60,
+      cpy: -20 + todayTy * 0.3,
+      animT: isToday ? 0 : 1,
+      animating: false,
+      entered: !isToday,
+      settled: !isToday,
+      opacity: 0,
+      scale: isToday ? 0.3 : 1,
+      delay,
       breathPhase: Math.random() * Math.PI * 2,
       breathSpeed: 0.015 + Math.random() * 0.01,
       labelAlpha: 0,
@@ -74,29 +88,12 @@ export function buildSampleGraph(canvasW: number, canvasH: number): GraphData {
             size: 1.2 + Math.random(),
           }))
         : [],
-      // Entrance animation
-      tx,
-      ty,
-      cpx: tx * 0.5 + Math.random() * 60,          // arc control point
-      cpy: -20 + ty * 0.3,                           // arc control point
-      animT: isToday ? 0 : 1,
-      animating: false,
-      entered: !isToday ? true : false,
-      settled: !isToday ? true : false,
-      opacity: isToday ? 0 : 0,                      // previous nodes also start at 0 for fade-in
-      scale: isToday ? 0.3 : 1,
-      delay,
     };
   });
-  return { nodes, edges: rawEdges };
-}
 
-export function buildAdjMap(nodes: GraphNode[], edges: GraphEdge[]): Record<string, string[]> {
-  const adj: Record<string, string[]> = {};
-  nodes.forEach((n) => (adj[n.id] = []));
-  edges.forEach((e) => {
-    if (adj[e.source]) adj[e.source].push(e.target);
-    if (adj[e.target]) adj[e.target].push(e.source);
-  });
-  return adj;
+  return {
+    nodes,
+    todayEdges: toEdges(todayEdgeList),
+    fullEdges: toEdges(fullEdgeList),
+  };
 }
