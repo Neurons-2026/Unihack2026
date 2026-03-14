@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     supabase_url: str = ""
     supabase_key: str = ""
     anthropic_api_key: str = ""
+    pexels_api_key: str = ""
+    openai_api_key: str = ""
+    google_api_key: str = ""
 
     cors_origins: List[AnyHttpUrl] = []
     app_env: str = "development"

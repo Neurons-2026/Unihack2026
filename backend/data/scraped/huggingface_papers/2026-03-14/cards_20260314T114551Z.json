@@ -1,0 +1,72 @@
+[
+  {
+    "id": "huggingface:2603.12255",
+    "card_title": "Spatial-TTT Adapts AI Models in Real Time to Understand 3D Spaces from Video",
+    "card_summary": "A new AI system learns to build 3D spatial understanding from long video streams by updating itself while running.",
+    "keywords": [
+      "test-time training fast weights",
+      "hybrid ttt architecture",
+      "spatial-predictive mechanism",
+      "large-chunk ttt update",
+      "parallel sliding-window attention"
+    ],
+    "thumbnail_keyword": "floorplan",
+    "image_url": "/static/images/fc6affad7ec745f89226968c779ce13e.png"
+  },
+  {
+    "id": "huggingface:2603.12180",
+    "card_title": "Multimodal agents offer a promising path to automating complex...",
+    "card_summary": "Multimodal agents offer a promising path to automating complex document-intensive workflows.",
+    "keywords": [
+      "madqa benchmark",
+      "accuracy-effort trade-off metric",
+      "classical test theory splits",
+      "sentinel pool",
+      "agentic document collection vqa"
+    ],
+    "thumbnail_keyword": "madqa benchmark",
+    "image_url": ""
+  },
+  {
+    "id": "huggingface:2603.12201",
+    "card_title": "IndexCache Speeds Up Sparse Attention by Reusing Indexes Across Layers",
+    "card_summary": "A new method cuts 75% of attention indexing work in large language models with almost no quality loss.",
+    "keywords": [
+      "indexcache",
+      "sparse-attention",
+      "inference-speed",
+      "deepseek",
+      "long-context"
+    ],
+    "thumbnail_keyword": "cache",
+    "image_url": "/static/images/a4769b93a0c0400899ec19b8505cc9d2.png"
+  },
+  {
+    "id": "huggingface:2603.10178",
+    "card_title": "Video-Based Reward Model Judges If Computer-Use Agents Complete Tasks",
+    "card_summary": "A new AI watches screen recordings to judge whether automated computer agents successfully completed user tasks.",
+    "keywords": [
+      "computer-use-agents",
+      "reward-modeling",
+      "video-evaluation",
+      "execution-video",
+      "exevrm"
+    ],
+    "thumbnail_keyword": "screen",
+    "image_url": "/static/images/2bd1dcbd34d84ddc825ba53cf6f8f09a.png"
+  },
+  {
+    "id": "huggingface:2603.12257",
+    "card_title": "DreamVideo-Omni Controls Multiple Characters and Motions in AI Video",
+    "card_summary": "A new AI framework generates videos with precise control over multiple characters and their movements.",
+    "keywords": [
+      "video-generation",
+      "multi-subject",
+      "motion-control",
+      "diffusion-models",
+      "reinforcement-learning"
+    ],
+    "thumbnail_keyword": "video",
+    "image_url": "/static/images/511f7e952b294fb8b9f0a029da96a165.png"
+  }
+]

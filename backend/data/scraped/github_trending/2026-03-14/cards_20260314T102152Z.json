@@ -1,0 +1,72 @@
+[
+  {
+    "id": "github:microsoft/BitNet",
+    "card_title": "Microsoft Releases BitNet.cpp for Running 1-Bit AI Models on CPUs and GPUs",
+    "card_summary": "Microsoft's framework runs ultra-compact AI models on regular computers, cutting energy use up to 82%.",
+    "keywords": [
+      "bitnet",
+      "1-bit-llm",
+      "inference",
+      "energy-efficiency",
+      "microsoft"
+    ],
+    "thumbnail_keyword": "chip",
+    "image_url": "https://images.pexels.com/photos/30855412/pexels-photo-30855412.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "github:langflow-ai/openrag",
+    "card_title": "OpenRAG Launches Open-Source AI Document Search Platform",
+    "card_summary": "OpenRAG lets users upload documents and chat with them using AI-powered search and language models.",
+    "keywords": [
+      "openrag",
+      "retrieval-augmented-generation",
+      "langflow",
+      "document-search",
+      "opensearch"
+    ],
+    "thumbnail_keyword": "document",
+    "image_url": "https://images.pexels.com/photos/18498317/pexels-photo-18498317.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "github:lightpanda-io/browser",
+    "card_title": "Lightpanda Offers Open-Source Headless Browser Built for AI Agents",
+    "card_summary": "Lightpanda is a lightweight browser for web automation that uses 9x less memory and runs 11x faster than Chrome.",
+    "keywords": [
+      "lightpanda",
+      "headless-browser",
+      "web-scraping",
+      "ai-agents",
+      "zig"
+    ],
+    "thumbnail_keyword": "browser",
+    "image_url": "https://images.pexels.com/photos/30530414/pexels-photo-30530414.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "github:obra/superpowers",
+    "card_title": "Superpowers gives coding AI agents a structured development workflow",
+    "card_summary": "An open-source plugin guides AI coding agents through design, planning, and test-driven development.",
+    "keywords": [
+      "superpowers",
+      "coding-agents",
+      "test-driven-development",
+      "claude-code",
+      "workflow"
+    ],
+    "thumbnail_keyword": "blueprint",
+    "image_url": "https://images.pexels.com/photos/16461434/pexels-photo-16461434.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "github:public-apis/public-apis",
+    "card_title": "Public APIs Repository Curates Thousands of Free APIs for Developers",
+    "card_summary": "A community-maintained list organizes thousands of free web APIs across dozens of categories for building apps.",
+    "keywords": [
+      "public-apis",
+      "api-directory",
+      "open-source",
+      "developer-tools",
+      "community-curated"
+    ],
+    "thumbnail_keyword": "catalog",
+    "image_url": "https://images.pexels.com/photos/16027824/pexels-photo-16027824.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  }
+]

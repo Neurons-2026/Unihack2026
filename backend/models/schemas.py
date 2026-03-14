@@ -11,6 +11,7 @@ class Card(BaseModel):
     source_url: HttpUrl
     thumbnail_keyword: Optional[str] = None
     trending_score: Optional[float] = None
+    image_url: Optional[str] = None
 
 
 class Interaction(BaseModel):

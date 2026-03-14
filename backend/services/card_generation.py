@@ -92,6 +92,19 @@ def generate_card_fields(item: Dict[str, Any]) -> Dict[str, Any]:
     if harry_keywords:
         card_fields["keywords"] = [str(k).lower().strip() for k in harry_keywords[:5]]
 
+    # Auto-fetch a relevant image from Pexels
+    try:
+        from services.image_search import get_card_image
+        image_url = get_card_image(
+            keywords=card_fields.get("keywords", []),
+            title=item.get("title", ""),
+            thumbnail_keyword=card_fields.get("thumbnail_keyword", ""),
+        )
+        if image_url:
+            card_fields["image_url"] = image_url
+    except Exception:
+        pass  # Non-critical
+
     item["card"] = card_fields
     return item
 

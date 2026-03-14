@@ -27,6 +27,7 @@ load_dotenv(_BACKEND / ".env")
 
 from services.preprocessing import preprocess_item, summarize_from_raw_text
 from services.card_generation import generate_card_fields
+from services.image_search import reset_used_ids
 from models.database import get_supabase
 
 # Source folder names under backend/data/scraped/
@@ -107,6 +108,7 @@ def _item_to_card_dict(item: dict) -> dict:
         "card_summary": card.get("card_summary", ""),
         "keywords": card.get("keywords", []),
         "thumbnail_keyword": card.get("thumbnail_keyword", ""),
+        "image_url": card.get("image_url", ""),
     }
 
 
@@ -156,6 +158,7 @@ def _upsert_to_supabase(processed_items: list[dict], cards: list[dict]) -> None:
             "thumbnail_keyword": card.get("thumbnail_keyword", ""),
             "cleaned_text": pre.get("cleaned_text", ""),
             "quality_score": pre.get("quality_score", 0),
+            "image_url": card.get("image_url", ""),
         }
         try:
             db.table("cards").upsert(row).execute()
@@ -243,6 +246,7 @@ def main() -> None:
 
     sources = [args.source] if args.source else SOURCES
     total = 0
+    reset_used_ids()
 
     for src in sources:
         print(f"\n=== {src} ===")

@@ -2,14 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: light;
+html, body {
+  background: #111111;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-body {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
-
-a {
-  color: #0f172a;
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }

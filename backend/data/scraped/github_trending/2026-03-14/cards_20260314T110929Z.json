@@ -1,0 +1,72 @@
+[
+  {
+    "id": "github:microsoft/BitNet",
+    "card_title": "Microsoft Releases BitNet.cpp for Fast 1-Bit AI Model Inference",
+    "card_summary": "Microsoft's open-source tool runs ultra-compact AI models on regular CPUs and GPUs with major speed and energy gains.",
+    "keywords": [
+      "bitnet",
+      "1-bit-llm",
+      "inference",
+      "energy-efficiency",
+      "microsoft"
+    ],
+    "thumbnail_keyword": "chip",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-fOu0Hot9XXr6FVYuNxceXbcJ.png?st=2026-03-14T10%3A07%3A46Z&se=2026-03-14T12%3A07%3A46Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-13T22%3A08%3A35Z&ske=2026-03-14T22%3A08%3A35Z&sks=b&skv=2026-02-06&sig=m8JRoPLkW4XzBFCu8wlBhth8%2B3bzT3F9u59iGsuNQZ8%3D"
+  },
+  {
+    "id": "github:langflow-ai/openrag",
+    "card_title": "OpenRAG launches open-source AI document search platform",
+    "card_summary": "OpenRAG lets users upload documents and query them via AI chat using semantic search and language models.",
+    "keywords": [
+      "openrag",
+      "retrieval-augmented-generation",
+      "langflow",
+      "document-search",
+      "opensearch"
+    ],
+    "thumbnail_keyword": "document",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-473AGfaji1UsegGMmdi3qAWo.png?st=2026-03-14T10%3A08%3A14Z&se=2026-03-14T12%3A08%3A14Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=35890473-cca8-4a54-8305-05a39e0bc9c3&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T06%3A10%3A30Z&ske=2026-03-15T06%3A10%3A30Z&sks=b&skv=2026-02-06&sig=Q6M2RomRaXytK6JwER11gQLwtcq2HoIB3n3/EFa%2Bw7s%3D"
+  },
+  {
+    "id": "github:lightpanda-io/browser",
+    "card_title": "Lightpanda Offers Open-Source Headless Browser 11x Faster Than Chrome",
+    "card_summary": "Lightpanda is a lightweight open-source browser for web automation that uses 9x less memory than Chrome.",
+    "keywords": [
+      "lightpanda",
+      "headless-browser",
+      "web-scraping",
+      "puppeteer",
+      "zig"
+    ],
+    "thumbnail_keyword": "browser",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-LjR5idk9hmGByKFGZ10J9x4W.png?st=2026-03-14T10%3A08%3A43Z&se=2026-03-14T12%3A08%3A43Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=ed3ea2f9-5e38-44be-9a1b-7c1e65e4d54f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T05%3A16%3A59Z&ske=2026-03-15T05%3A16%3A59Z&sks=b&skv=2026-02-06&sig=dwAMhhvUCL72YYFtj4WNVmp35vj9EB9wR1adOI3FIr8%3D"
+  },
+  {
+    "id": "github:obra/superpowers",
+    "card_title": "Superpowers gives coding AI agents a structured development workflow",
+    "card_summary": "An open-source plugin guides AI coding agents through spec writing, planning, testing, and code review.",
+    "keywords": [
+      "superpowers",
+      "coding-agents",
+      "test-driven-development",
+      "claude-code",
+      "workflow"
+    ],
+    "thumbnail_keyword": "workflow",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-KZpgWHCqjzkLoK1RA53vOqDE.png?st=2026-03-14T10%3A09%3A04Z&se=2026-03-14T12%3A09%3A04Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=7daae675-7b42-4e2e-ab4c-8d8419a28d99&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T05%3A10%3A45Z&ske=2026-03-15T05%3A10%3A45Z&sks=b&skv=2026-02-06&sig=3c3PCBgZvVUk7uAR3Xyc0O8nEY%2BIE6Rj6rkrpO9pCag%3D"
+  },
+  {
+    "id": "github:public-apis/public-apis",
+    "card_title": "Public APIs Repository Lists Thousands of Free APIs by Category",
+    "card_summary": "A community-curated collection organizes hundreds of free web APIs across 40+ categories for developers.",
+    "keywords": [
+      "public-apis",
+      "api-directory",
+      "open-source",
+      "developer-tools",
+      "community-curated"
+    ],
+    "thumbnail_keyword": "directory",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-BIO1RDpuK71n3JwcqmWxTjOs.png?st=2026-03-14T10%3A09%3A29Z&se=2026-03-14T12%3A09%3A29Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-13T23%3A20%3A00Z&ske=2026-03-14T23%3A20%3A00Z&sks=b&skv=2026-02-06&sig=REJG/QtmLI1Cw7Kmy9sdPKH4hCLf1GS6xA%2BFzEhgfQw%3D"
+  }
+]

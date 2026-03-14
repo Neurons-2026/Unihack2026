@@ -1,5 +1,8 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from config import get_settings
 from routers import basket, briefing, cards, concepts, graph, interactions
@@ -22,6 +25,11 @@ app.include_router(basket.router, prefix="/api/v1", tags=["basket"])
 app.include_router(briefing.router, prefix="/api/v1", tags=["briefing"])
 app.include_router(graph.router, prefix="/api/v1", tags=["graph"])
 app.include_router(concepts.router, prefix="/api/v1", tags=["concepts"])
+
+
+static_dir = Path(__file__).parent / "static" / "images"
+static_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
 
 
 @app.get("/health")

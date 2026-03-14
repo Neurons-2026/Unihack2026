@@ -1,0 +1,72 @@
+[
+  {
+    "id": "openai:rakuten",
+    "card_title": "Rakuten cuts software fix times in half using OpenAI's Codex",
+    "card_summary": "Rakuten reports resolving software issues 50% faster after adopting OpenAI's AI coding assistant.",
+    "keywords": [
+      "rakuten",
+      "codex",
+      "openai",
+      "software-development",
+      "automation"
+    ],
+    "thumbnail_keyword": "code",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-wfW4ByHISltgOH82A4BMhpKW.png?st=2026-03-14T10%3A29%3A15Z&se=2026-03-14T12%3A29%3A15Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-13T13%3A02%3A16Z&ske=2026-03-14T13%3A02%3A16Z&sks=b&skv=2026-02-06&sig=QD9Js3AqiRY9gk7N0zHxHyBhaGCYDDhpptTlVqBq%2Bdo%3D"
+  },
+  {
+    "id": "openai:designing-agents-to-resist-prompt-injection",
+    "card_title": "OpenAI reveals how ChatGPT agents resist prompt injection attacks",
+    "card_summary": "OpenAI explains how it designs AI agents to block manipulation attempts and protect sensitive data.",
+    "keywords": [
+      "prompt-injection",
+      "ai-agents",
+      "chatgpt",
+      "security",
+      "openai"
+    ],
+    "thumbnail_keyword": "shield",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-5JxH1Na6Go5bg4OW4m3OwUTB.png?st=2026-03-14T10%3A29%3A35Z&se=2026-03-14T12%3A29%3A35Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T02%3A39%3A17Z&ske=2026-03-15T02%3A39%3A17Z&sks=b&skv=2026-02-06&sig=X1hGVswWCAEMQGNN8z1k%2BLjw8JeZPudJMx7V0W/sHUk%3D"
+  },
+  {
+    "id": "openai:wayfair",
+    "card_title": "Wayfair uses OpenAI to fix product tags and speed up supplier support",
+    "card_summary": "Wayfair corrected 2.5 million product tags and automated 41,000 support tickets monthly using AI.",
+    "keywords": [
+      "wayfair",
+      "openai",
+      "product-catalog",
+      "supplier-support",
+      "retail-automation"
+    ],
+    "thumbnail_keyword": "furniture",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-0tBZ302My2X3xxvGSUyGZl3S.png?st=2026-03-14T10%3A30%3A00Z&se=2026-03-14T12%3A30%3A00Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=ed3ea2f9-5e38-44be-9a1b-7c1e65e4d54f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T07%3A28%3A54Z&ske=2026-03-15T07%3A28%3A54Z&sks=b&skv=2026-02-06&sig=ZqGoP7Azb7rlj3hcM9FN6pr2dlZTQGGrT6fSeOt6Zkg%3D"
+  },
+  {
+    "id": "openai:equip-responses-api-computer-environment",
+    "card_title": "OpenAI Builds Agent Runtime with Containers and Shell Tools",
+    "card_summary": "OpenAI created a system that lets AI agents securely run code and manage files inside hosted containers.",
+    "keywords": [
+      "openai",
+      "agent-runtime",
+      "responses-api",
+      "containers",
+      "shell-tool"
+    ],
+    "thumbnail_keyword": "container",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-A9lZmb5J5OaRMembYqOsC64R.png?st=2026-03-14T10%3A30%3A24Z&se=2026-03-14T12%3A30%3A24Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=9346e9b9-5d29-4d37-a0a9-c6f95f09f79d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T03%3A37%3A58Z&ske=2026-03-15T03%3A37%3A58Z&sks=b&skv=2026-02-06&sig=b3qlDeXulNvMJjyawswmzUe9e%2BBLmvkCUI60oRNsk6k%3D"
+  },
+  {
+    "id": "openai:instruction-hierarchy-challenge",
+    "card_title": "OpenAI Trains Models to Prioritize Trusted Instructions Over Attacks",
+    "card_summary": "A new method called IH-Challenge helps AI models follow trusted instructions and resist prompt injection attacks.",
+    "keywords": [
+      "instruction-hierarchy",
+      "prompt-injection",
+      "safety",
+      "openai",
+      "alignment"
+    ],
+    "thumbnail_keyword": "shield",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-2M9jweCPvcTuuwiZeHUOh3Tp.png?st=2026-03-14T10%3A31%3A06Z&se=2026-03-14T12%3A31%3A06Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=7daae675-7b42-4e2e-ab4c-8d8419a28d99&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T05%3A17%3A18Z&ske=2026-03-15T05%3A17%3A18Z&sks=b&skv=2026-02-06&sig=ETGrOnxUPSdXn74A5N8pXtwLgapw7H1y0o0NKKgWlNk%3D"
+  }
+]

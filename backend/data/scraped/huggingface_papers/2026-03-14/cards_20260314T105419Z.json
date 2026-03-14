@@ -1,0 +1,72 @@
+[
+  {
+    "id": "huggingface:2603.12255",
+    "card_title": "Spatial-TTT Brings Streaming 3D Spatial Understanding to Video AI",
+    "card_summary": "A new AI model learns to track and understand 3D spaces from long video streams by adapting on the fly.",
+    "keywords": [
+      "test-time training fast weights",
+      "hybrid ttt architecture",
+      "spatial-predictive mechanism",
+      "large-chunk ttt update",
+      "parallel sliding-window attention"
+    ],
+    "thumbnail_keyword": "room",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-pK7MVGyw0zkxyJ344opYhDvk.png?st=2026-03-14T09%3A52%3A33Z&se=2026-03-14T11%3A52%3A33Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=ed3ea2f9-5e38-44be-9a1b-7c1e65e4d54f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T06%3A42%3A08Z&ske=2026-03-15T06%3A42%3A08Z&sks=b&skv=2026-02-06&sig=O6GhIMiqyC%2BkzCxg0zXN03L4kAJy8pP6vPOqmGenv6E%3D"
+  },
+  {
+    "id": "huggingface:2603.12180",
+    "card_title": "New Benchmark Reveals AI Agents Use Brute Force, Not Strategy, to Search.",
+    "card_summary": "A study finds AI agents match humans in accuracy but rely on trial-and-error instead of smart planning.",
+    "keywords": [
+      "madqa benchmark",
+      "accuracy-effort trade-off metric",
+      "classical test theory splits",
+      "sentinel pool",
+      "agentic document collection vqa"
+    ],
+    "thumbnail_keyword": "documents",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-Xb1LSTg0gPdiaMMDnJgwHG6P.png?st=2026-03-14T09%3A53%3A05Z&se=2026-03-14T11%3A53%3A05Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=13da7400-b3f7-4f8c-9cba-908fecbd114c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T05%3A02%3A23Z&ske=2026-03-15T05%3A02%3A23Z&sks=b&skv=2026-02-06&sig=D3FxZYXrsTazvisYMC181kklexjfC03T7b6YX9mRQhI%3D"
+  },
+  {
+    "id": "huggingface:2603.12201",
+    "card_title": "IndexCache Speeds Up Sparse Attention by Reusing Indexes Across Layers",
+    "card_summary": "A new method cuts 75% of attention indexing work in large language models with almost no quality loss.",
+    "keywords": [
+      "indexcache",
+      "sparse-attention",
+      "deepseek",
+      "inference-speed",
+      "long-context"
+    ],
+    "thumbnail_keyword": "cache",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-uJ05sdHBJGMLck2OlXFQcSRU.png?st=2026-03-14T09%3A53%3A32Z&se=2026-03-14T11%3A53%3A32Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=13da7400-b3f7-4f8c-9cba-908fecbd114c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-13T21%3A06%3A06Z&ske=2026-03-14T21%3A06%3A06Z&sks=b&skv=2026-02-06&sig=mctezOyOghF1GOo%2BNcptLBoCJvonwxC6ImDsvHLakc8%3D"
+  },
+  {
+    "id": "huggingface:2603.10178",
+    "card_title": "Video-Based Reward Model Judges If Computer-Using AI Agents Complete Tasks",
+    "card_summary": "A new model watches screen recordings to judge whether AI agents successfully completed user tasks.",
+    "keywords": [
+      "reward-modeling",
+      "computer-use-agents",
+      "video-understanding",
+      "evaluation",
+      "exevrm"
+    ],
+    "thumbnail_keyword": "screen",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-sTcSMO6IP6JwrPPH613jrt3U.png?st=2026-03-14T09%3A53%3A54Z&se=2026-03-14T11%3A53%3A54Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=ed3ea2f9-5e38-44be-9a1b-7c1e65e4d54f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T10%3A03%3A16Z&ske=2026-03-15T10%3A03%3A16Z&sks=b&skv=2026-02-06&sig=wAmj18o%2BwKK6Yr2nWlihIkW4t4MJNEGMuNsvp6eCXbs%3D"
+  },
+  {
+    "id": "huggingface:2603.12257",
+    "card_title": "DreamVideo-Omni Controls Multiple Characters and Motions in AI Video",
+    "card_summary": "A new AI framework generates videos with precise control over multiple characters and their movements.",
+    "keywords": [
+      "dreamvideo-omni",
+      "video-generation",
+      "multi-subject",
+      "motion-control",
+      "diffusion-models"
+    ],
+    "thumbnail_keyword": "video",
+    "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-eSJ20bOludxxcADA1xNV1PoA.png?st=2026-03-14T09%3A54%3A19Z&se=2026-03-14T11%3A54%3A19Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=13da7400-b3f7-4f8c-9cba-908fecbd114c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T06%3A00%3A38Z&ske=2026-03-15T06%3A00%3A38Z&sks=b&skv=2026-02-06&sig=9xqt9hOlvjeIRpUkd8sMemyWD2bwYzAMNTq9bCpKogA%3D"
+  }
+]

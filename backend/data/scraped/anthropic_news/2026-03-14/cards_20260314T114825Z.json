@@ -1,0 +1,72 @@
+[
+  {
+    "id": "anthropic:where-stand-department-war",
+    "card_title": "Anthropic Plans Legal Challenge After Pentagon Supply Chain Risk Label",
+    "card_summary": "Anthropic says it will fight a Department of War designation calling it a national security supply chain risk.",
+    "keywords": [
+      "anthropic",
+      "department-of-war",
+      "supply-chain-risk",
+      "national-security",
+      "claude"
+    ],
+    "thumbnail_keyword": "pentagon",
+    "image_url": "/static/images/e4be65768c6f4cd887da5b892f3c575d.png"
+  },
+  {
+    "id": "anthropic:statement-comments-secretary-war",
+    "card_title": "Anthropic Refuses Pentagon Demands on Autonomous Weapons and Surveillance",
+    "card_summary": "Anthropic says it will fight a Pentagon supply chain risk designation over its refusal to allow mass surveillance and.",
+    "keywords": [
+      "anthropic",
+      "pentagon",
+      "autonomous-weapons",
+      "surveillance",
+      "supply-chain-risk"
+    ],
+    "thumbnail_keyword": "shield",
+    "image_url": "/static/images/13c3d5e82660499fb87dbaadb7fc2f91.png"
+  },
+  {
+    "id": "anthropic:statement-department-of-war",
+    "card_title": "Anthropic Refuses Pentagon Demand to Remove AI Safety Safeguards",
+    "card_summary": "Anthropic says it won't drop two military AI safeguards despite Pentagon threats to remove it from defense systems.",
+    "keywords": [
+      "anthropic",
+      "department-of-war",
+      "ai-safety",
+      "military-ai",
+      "national-security"
+    ],
+    "thumbnail_keyword": "pentagon",
+    "image_url": "/static/images/b9db32a93472495f992789cd6c56579f.png"
+  },
+  {
+    "id": "anthropic:claude-sonnet-4-6",
+    "card_title": "Anthropic Launches Claude Sonnet 4.6 with Major Coding and Computer Use Upgrades",
+    "card_summary": "Anthropic releases its most capable Sonnet model with improved coding, computer use, and a 1M token context window.",
+    "keywords": [
+      "claude-sonnet-4.6",
+      "anthropic",
+      "computer-use",
+      "coding",
+      "context-window"
+    ],
+    "thumbnail_keyword": "robot",
+    "image_url": "/static/images/2a755ca5550849fb909b669ed4604b5e.png"
+  },
+  {
+    "id": "anthropic:claude-is-a-space-to-think",
+    "card_title": "Anthropic pledges to keep Claude permanently ad-free",
+    "card_summary": "Anthropic commits to never showing ads in Claude, saying advertising conflicts with being a helpful AI assistant.",
+    "keywords": [
+      "anthropic",
+      "claude",
+      "advertising",
+      "ad-free",
+      "business-model"
+    ],
+    "thumbnail_keyword": "notebook",
+    "image_url": "/static/images/f0a711c6e64945138d48b496e4cc10af.png"
+  }
+]

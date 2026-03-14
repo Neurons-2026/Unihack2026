@@ -1,0 +1,72 @@
+[
+  {
+    "id": "github:microsoft/BitNet",
+    "card_title": "Microsoft Releases BitNet.cpp for Running 1-Bit AI Models on CPUs and GPUs",
+    "card_summary": "Microsoft's framework runs ultra-compressed AI models on regular hardware with major speed and energy gains.",
+    "keywords": [
+      "bitnet",
+      "1-bit-llm",
+      "cpu-inference",
+      "energy-efficiency",
+      "microsoft"
+    ],
+    "thumbnail_keyword": "chip",
+    "image_url": "https://images.pexels.com/photos/30547574/pexels-photo-30547574.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "github:langflow-ai/openrag",
+    "card_title": "OpenRAG Offers Pre-Packaged AI Document Search Platform",
+    "card_summary": "OpenRAG lets users upload documents and query them via AI chat using semantic search and multi-agent workflows.",
+    "keywords": [
+      "openrag",
+      "retrieval-augmented-generation",
+      "langflow",
+      "document-search",
+      "opensearch"
+    ],
+    "thumbnail_keyword": "document",
+    "image_url": "https://images.pexels.com/photos/28428588/pexels-photo-28428588.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "github:lightpanda-io/browser",
+    "card_title": "Lightpanda Offers Open-Source Headless Browser 11x Faster Than Chrome",
+    "card_summary": "Lightpanda is a lightweight open-source browser for web automation that uses 9x less memory than Chrome.",
+    "keywords": [
+      "lightpanda",
+      "headless-browser",
+      "web-scraping",
+      "puppeteer",
+      "zig"
+    ],
+    "thumbnail_keyword": "browser",
+    "image_url": "https://images.pexels.com/photos/28428587/pexels-photo-28428587.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "github:obra/superpowers",
+    "card_title": "Superpowers gives coding AI agents a structured development workflow",
+    "card_summary": "An open-source plugin guides AI coding agents through planning, test-driven development, and code review.",
+    "keywords": [
+      "superpowers",
+      "coding-agents",
+      "test-driven-development",
+      "claude-code",
+      "developer-tools"
+    ],
+    "thumbnail_keyword": "workflow",
+    "image_url": "https://images.pexels.com/photos/11710905/pexels-photo-11710905.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "github:public-apis/public-apis",
+    "card_title": "Public APIs Repository Curates Thousands of Free APIs for Developers",
+    "card_summary": "A community-maintained list organizes thousands of free web APIs across dozens of categories for developers.",
+    "keywords": [
+      "public-apis",
+      "api-directory",
+      "open-source",
+      "developer-tools",
+      "community-curated"
+    ],
+    "thumbnail_keyword": "catalog",
+    "image_url": "https://images.pexels.com/photos/34943664/pexels-photo-34943664.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  }
+]

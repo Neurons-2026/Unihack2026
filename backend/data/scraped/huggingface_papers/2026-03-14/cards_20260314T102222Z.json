@@ -1,0 +1,72 @@
+[
+  {
+    "id": "huggingface:2603.12255",
+    "card_title": "Spatial-TTT Learns 3D Scene Understanding from Streaming Video",
+    "card_summary": "A new AI model adapts its own settings while processing video to build and update 3D spatial awareness over time.",
+    "keywords": [
+      "test-time training fast weights",
+      "hybrid ttt architecture",
+      "spatial-predictive mechanism",
+      "large-chunk ttt update",
+      "parallel sliding-window attention"
+    ],
+    "thumbnail_keyword": "room",
+    "image_url": "https://images.pexels.com/photos/8294823/pexels-photo-8294823.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "huggingface:2603.12180",
+    "card_title": "Benchmark Reveals AI Agents Use Brute-Force Search, Not Strategy",
+    "card_summary": "A new test shows AI agents match humans in accuracy but rely on trial-and-error instead of planning.",
+    "keywords": [
+      "madqa benchmark",
+      "accuracy-effort trade-off metric",
+      "classical test theory splits",
+      "sentinel pool",
+      "agentic document collection vqa"
+    ],
+    "thumbnail_keyword": "documents",
+    "image_url": "https://images.pexels.com/photos/4604607/pexels-photo-4604607.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "huggingface:2603.12201",
+    "card_title": "IndexCache Speeds Up Sparse Attention by Reusing Indices Across Layers",
+    "card_summary": "A new method cuts 75% of attention indexing work in large language models with almost no quality loss.",
+    "keywords": [
+      "indexcache",
+      "sparse-attention",
+      "inference-optimization",
+      "deepseek",
+      "long-context"
+    ],
+    "thumbnail_keyword": "cache",
+    "image_url": "https://images.pexels.com/photos/30530406/pexels-photo-30530406.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "huggingface:2603.10178",
+    "card_title": "Video-Based Reward Model Judges If Computer-Using Agents Complete Tasks",
+    "card_summary": "A new AI model watches screen recordings to judge whether automated agents successfully completed user tasks.",
+    "keywords": [
+      "computer-use-agents",
+      "reward-modeling",
+      "video-evaluation",
+      "execution-video",
+      "exevrm"
+    ],
+    "thumbnail_keyword": "screen",
+    "image_url": "https://images.pexels.com/photos/15863103/pexels-photo-15863103.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "huggingface:2603.12257",
+    "card_title": "DreamVideo-Omni Controls Multiple Characters and Motions in AI Video",
+    "card_summary": "A new AI framework generates videos with precise control over multiple characters and their movements.",
+    "keywords": [
+      "dreamvideo-omni",
+      "video-generation",
+      "multi-subject",
+      "motion-control",
+      "diffusion-models"
+    ],
+    "thumbnail_keyword": "video",
+    "image_url": "https://images.pexels.com/photos/18465017/pexels-photo-18465017.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  }
+]

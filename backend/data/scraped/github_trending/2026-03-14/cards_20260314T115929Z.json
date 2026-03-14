@@ -1,0 +1,72 @@
+[
+  {
+    "id": "github:microsoft/BitNet",
+    "card_title": "Microsoft Releases BitNet.cpp for Fast 1-Bit LLM Inference on CPUs and GPUs",
+    "card_summary": "Microsoft's open-source tool runs ultra-compact AI models on regular computers, cutting energy use up to 82%.",
+    "keywords": [
+      "bitnet",
+      "1-bit-llm",
+      "inference",
+      "energy-efficiency",
+      "microsoft"
+    ],
+    "thumbnail_keyword": "chip",
+    "image_url": "/static/images/9e36ef4e76ab436e97c4622b1b4608ad.png"
+  },
+  {
+    "id": "github:langflow-ai/openrag",
+    "card_title": "OpenRAG Offers Pre-Packaged AI Document Search With Agentic Workflows",
+    "card_summary": "OpenRAG lets users upload documents and query them via AI chat using semantic search and multi-agent coordination.",
+    "keywords": [
+      "openrag",
+      "retrieval-augmented-generation",
+      "langflow",
+      "document-search",
+      "opensearch"
+    ],
+    "thumbnail_keyword": "document",
+    "image_url": "/static/images/0bdbdd8fbb144c419e0e7879ef4b26d0.png"
+  },
+  {
+    "id": "github:lightpanda-io/browser",
+    "card_title": "Lightpanda Offers Open-Source Headless Browser Built for Speed",
+    "card_summary": "Lightpanda is a lightweight browser for automation that uses 9x less memory and runs 11x faster than Chrome.",
+    "keywords": [
+      "lightpanda",
+      "headless-browser",
+      "web-automation",
+      "puppeteer",
+      "open-source"
+    ],
+    "thumbnail_keyword": "browser",
+    "image_url": "/static/images/e7c5dd7dcda64eb6bd0314f614c37277.png"
+  },
+  {
+    "id": "github:obra/superpowers",
+    "card_title": "Superpowers gives coding AI agents a structured development workflow",
+    "card_summary": "An open-source plugin guides AI coding agents through design, planning, and test-driven development.",
+    "keywords": [
+      "superpowers",
+      "coding-agents",
+      "test-driven-development",
+      "claude-code",
+      "developer-tools"
+    ],
+    "thumbnail_keyword": "workflow",
+    "image_url": "/static/images/604986a91af14cbab9174a9440daae91.png"
+  },
+  {
+    "id": "github:public-apis/public-apis",
+    "card_title": "Public APIs Repository Curates Thousands of Free APIs for Developers",
+    "card_summary": "A community-maintained list organizes thousands of free web APIs across dozens of categories for building apps.",
+    "keywords": [
+      "public-apis",
+      "api-directory",
+      "open-source",
+      "developer-tools",
+      "community"
+    ],
+    "thumbnail_keyword": "catalog",
+    "image_url": "/static/images/d6ccd53843754a8aa1f23da7a3fe5211.png"
+  }
+]

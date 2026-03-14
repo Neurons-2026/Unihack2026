@@ -1,0 +1,72 @@
+[
+  {
+    "id": "openai:rakuten",
+    "card_title": "Rakuten cuts software fix time in half using OpenAI's Codex",
+    "card_summary": "Rakuten uses OpenAI's Codex coding tool to resolve issues 50% faster and automate code reviews.",
+    "keywords": [
+      "rakuten",
+      "codex",
+      "openai",
+      "software-development",
+      "automation"
+    ],
+    "thumbnail_keyword": "code",
+    "image_url": "/static/images/5e23796afbd34807bb9e705c64359d71.png"
+  },
+  {
+    "id": "openai:designing-agents-to-resist-prompt-injection",
+    "card_title": "OpenAI reveals how ChatGPT defends against prompt injection attacks",
+    "card_summary": "OpenAI explains how it designs AI agents to block manipulation attempts and protect sensitive data.",
+    "keywords": [
+      "prompt-injection",
+      "ai-agents",
+      "security",
+      "chatgpt",
+      "openai"
+    ],
+    "thumbnail_keyword": "shield",
+    "image_url": "/static/images/9a5f7f678440424c9dba7fe386daad6a.png"
+  },
+  {
+    "id": "openai:wayfair",
+    "card_title": "Wayfair uses OpenAI to fix product tags and speed up supplier support",
+    "card_summary": "Wayfair automated catalog tagging and supplier ticket routing, correcting 2.5 million product tags.",
+    "keywords": [
+      "wayfair",
+      "openai",
+      "product-catalog",
+      "supplier-support",
+      "retail-automation"
+    ],
+    "thumbnail_keyword": "furniture",
+    "image_url": "/static/images/0e8d249f326a4034a4f91d69e39b8d4f.png"
+  },
+  {
+    "id": "openai:equip-responses-api-computer-environment",
+    "card_title": "OpenAI Builds Agent Runtime with Hosted Containers and Shell Tools",
+    "card_summary": "OpenAI created a system to run AI agents securely in cloud containers with access to files and tools.",
+    "keywords": [
+      "openai",
+      "ai-agents",
+      "responses-api",
+      "containers",
+      "agent-runtime"
+    ],
+    "thumbnail_keyword": "container",
+    "image_url": "/static/images/aa2885e8e7f945febbe8e7ab92402ef2.png"
+  },
+  {
+    "id": "openai:instruction-hierarchy-challenge",
+    "card_title": "OpenAI Trains Models to Prioritize Trusted Instructions Over Attacks",
+    "card_summary": "A new method called IH-Challenge helps AI models follow trusted instructions and resist prompt injection attacks.",
+    "keywords": [
+      "instruction-hierarchy",
+      "prompt-injection",
+      "safety",
+      "openai",
+      "alignment"
+    ],
+    "thumbnail_keyword": "shield",
+    "image_url": "/static/images/9ff59d904a964c269b9ef69c8d5a2543.png"
+  }
+]

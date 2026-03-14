@@ -1,0 +1,337 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "id": "openai:rakuten",
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/rakuten",
+    "title": "Rakuten fixes issues twice as fast with Codex",
+    "raw_summary": "",
+    "raw_content": "Rakuten uses Codex, the coding agent from OpenAI, to ship software faster and safer, reducing MTTR 50%, automating CI/CD reviews, and delivering full-stack builds in weeks.",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "Rakuten uses Codex, the coding agent from OpenAI, to ship software faster and safer, reducing MTTR 50%, automating CI/CD reviews, and delivering full-stack builds in weeks.",
+      "preview_text": "Rakuten uses Codex, the coding agent from OpenAI, to ship software faster and safer, reducing MTTR 50%, automating CI/CD reviews, and delivering full-stack builds in weeks.",
+      "quality_score": 0.432,
+      "quality_notes": [
+        "rss_scraped",
+        "metadata_cleaned",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 1.0,
+      "trending_score": 1.0
+    },
+    "metadata": {
+      "published_date": "Wed, 11 Mar 2026 13:00:00 GMT",
+      "rank": 1,
+      "keywords": [],
+      "freshness_basis": "news_listing_order"
+    },
+    "provenance": {
+      "collector": "openai_news_scraper",
+      "collector_version": "0.2.0",
+      "dedupe_key": "openai:rakuten"
+    },
+    "fetched_at": "2026-03-14T04:03:47.303138+00:00",
+    "card": {
+      "card_title": "Rakuten cuts software fix times in half using OpenAI's Codex",
+      "card_summary": "Rakuten reports resolving software issues 50% faster after adopting OpenAI's AI coding assistant.",
+      "keywords": [
+        "rakuten",
+        "codex",
+        "openai",
+        "software-development",
+        "automation"
+      ],
+      "thumbnail_keyword": "code",
+      "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-wfW4ByHISltgOH82A4BMhpKW.png?st=2026-03-14T10%3A29%3A15Z&se=2026-03-14T12%3A29%3A15Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-13T13%3A02%3A16Z&ske=2026-03-14T13%3A02%3A16Z&sks=b&skv=2026-02-06&sig=QD9Js3AqiRY9gk7N0zHxHyBhaGCYDDhpptTlVqBq%2Bdo%3D"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "openai:designing-agents-to-resist-prompt-injection",
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/designing-agents-to-resist-prompt-injection",
+    "title": "Designing AI agents to resist prompt injection",
+    "raw_summary": "",
+    "raw_content": "How ChatGPT defends against prompt injection and social engineering by constraining risky actions and protecting sensitive data in agent workflows.",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "How ChatGPT defends against prompt injection and social engineering by constraining risky actions and protecting sensitive data in agent workflows.",
+      "preview_text": "How ChatGPT defends against prompt injection and social engineering by constraining risky actions and protecting sensitive data in agent workflows.",
+      "quality_score": 0.425,
+      "quality_notes": [
+        "rss_scraped",
+        "metadata_cleaned",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.8,
+      "trending_score": 0.8
+    },
+    "metadata": {
+      "published_date": "Wed, 11 Mar 2026 11:30:00 GMT",
+      "rank": 2,
+      "keywords": [],
+      "freshness_basis": "news_listing_order"
+    },
+    "provenance": {
+      "collector": "openai_news_scraper",
+      "collector_version": "0.2.0",
+      "dedupe_key": "openai:designing-agents-to-resist-prompt-injection"
+    },
+    "fetched_at": "2026-03-14T04:03:47.304813+00:00",
+    "card": {
+      "card_title": "OpenAI reveals how ChatGPT agents resist prompt injection attacks",
+      "card_summary": "OpenAI explains how it designs AI agents to block manipulation attempts and protect sensitive data.",
+      "keywords": [
+        "prompt-injection",
+        "ai-agents",
+        "chatgpt",
+        "security",
+        "openai"
+      ],
+      "thumbnail_keyword": "shield",
+      "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-5JxH1Na6Go5bg4OW4m3OwUTB.png?st=2026-03-14T10%3A29%3A35Z&se=2026-03-14T12%3A29%3A35Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T02%3A39%3A17Z&ske=2026-03-15T02%3A39%3A17Z&sks=b&skv=2026-02-06&sig=X1hGVswWCAEMQGNN8z1k%2BLjw8JeZPudJMx7V0W/sHUk%3D"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "openai:wayfair",
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/wayfair",
+    "title": "Wayfair boosts catalog accuracy and support speed with OpenAI",
+    "raw_summary": "",
+    "raw_content": "March 11, 2026 By embedding OpenAI models into supplier support and catalog systems, Wayfair improved data accuracy and automated complex retail workflows across millions of products. Wayfair, one of the world’s largest home goods retailers, has integrated OpenAI models into critical internal systems to improve supplier support workflows and product catalog quality at scale. What began as value-testing small scale releases in 2024 has evolved into a full production system that reduces manual effort, accelerates decision-making and improves data quality across millions of products. Rather than treat generative AI as an experiment or point solution, Wayfair embedded OpenAI models into core operational workflows. The company focused first where complexity and need for scale were highest: routing and resolving supplier support requests and improving tens of thousands of product attributes consistently across a catalog of roughly 30 million items. Wayfair’s catalog team manages tens of millions of products across nearly a thousand different product classes. Consistent and accurate product attribute tags — such as color, material, size or specific features — are essential for search, recommendations and merchandising. \"The better our data quality, the more trust we build with the customer. It's essential because it empowers shoppers to make the right buying decisions, directly reducing costly downstream issues like returns from misrepresented products,\" said Jessica D'Arcy, Associate Director of Catalog Merchandising at Wayfair. Before OpenAI, tagging improvements primarily relied on suppliers and customers to tell Wayfair that something looked wrong. Manual effort could not keep up with the volume. Early custom AI models for individual tags were effective, but proved expensive to build and maintain. “We started by building bespoke models for individual tags, and technically that worked,” said Carolyn Phillips, Wayfair’s staff machine learning scientist. “But when you’re looking at 47,000 tags, that approach just doesn’t scale.” To get beyond one-off models, Wayfair created a tag-agnostic system built on a single OpenAI model. A “definition agent” ingests the web and internal definitions to produce contextual meaning for each tag. “The real bottleneck wasn’t the model performance,” said Phillips. “It was the human time required to define and encode what each tag actually meant.” This context, along with product data aggregated from across Wayfair’s data ecosystem, feeds into a framework that can classify attributes across product classes . The team is now expanding model coverage to new attributes at 70x the rate they were just a year ago. The system has now run in production on more than 1 million products. And the first wave of products with enhanced attributes has now been live long enough to measure the impact of improving data quality on the customer journey. “When you improve attribute completeness, it’s not abstract. You see it show up in SEO and PLA performance - in how customers discover products”, said Phillips. A controlled A/B test showed a substantial and significantly significant increase in impressions, clicks , and page rank in the treatment group. However, Wayfair didn't simply hand off decisions on correcting product data to the model. “Our objective is to build trust so that customers are completely confident in what they are purchasing ,” said Phillips. The company developed structured testing using a hands-on audit process in which associates physically inspect samples to validate model output, and worked with suppliers to validate changes. Now, when data-based confidence is high, automated systems will overwrite the content directly and notify the supplier of the change. And, when a high standard is not met or the tag is deemed high risk, Wayfair first seeks supplier confirmation before making the change. Wayfair works with tens of thousands of suppliers to support their comprehensive catalog. To manage supplier support requests, Wayfair associates historically reviewed every incoming ticket, manually identified what suppliers were trying to accomplish, and routed issues to the correct internal owner—a time-consuming and error-prone process. “Supplier requests aren’t simple,” said Graham Ganssle, supplier support and operations at Wayfair. “They span hundreds of issue types, and no single associate can realistically master all of them.” Wayfair added agentic features to a product named Wilma to augment these workflows with AI. One of the first features in production is ticket triage powered by an OpenAI model. The system reads incoming requests, fills in missing context and routes tickets to the appropriate team. Wilma was designed to be deployable fast; built on a system already integrated with OpenAI APIs, it moved from prototype to live in approximately one month. “Wilma gives associates leverage,” said Ganssle. “It reads the ticket, identifies intent, fills in context from our databases, reaches back out to suppliers if necessary, and points the issue in the right direction.” Beyond routing, Wayfair has deployed a dozen agentic AI flows for specific resolution teams. For example, a co-pilot for the Replacement Part Operations team reads complex case history, proposes next steps and suggests draft responses that human associates review. These assistants are trained on historical data so they learn what success looks like in context. “The models can synthesize context across the entire journey in a way that’s hard for a single associate to do,” said Ganssle. “That broader visibility contributes to higher customer and supplier satisfaction.” Wayfair tracks how often the AI’s recommendations match the human agent’s final decision—a metric called “alignment rate.” Within each team, when alignment consistently reaches a predetermined threshold, workflows can shift from assistive (“co-pilot”) to semi-autonomous (“autopilot”) modes. This staged approach builds trust and ensures quality controls during rollout. Wayfair reports measurable improvements since integrating OpenAI models into internal systems. On the catalog side, the company reduced the number of wrong or missing product attribute tags a customer might see—having corrected 2.5M product tags across over a million of the most visible and purchased products in the Wayfair catalog. They expect to quadruple this impact in the next six months. In supplier support, triage, co-pilot, and auto-pilot systems have increased throughput by automating 41,000 tickets per month (that’s up to 70% in some workflows) and reduced turnaround times by removing routine manual work from associate workloads. This dramatically cuts time to resolution for multiple workflows, significantly lifts supplier satisfaction, and reduces ticket re-opens in those workflows. The broader visibility that models provide into tickets and supplier intent—beyond what a single associate can see on a screen—has contributed to that increase in satisfaction. Operationally, teams report: Wayfair has also deployed more than 1,200 ChatGPT Enterprise seats across its approximately 12,000-person workforce to support ad hoc tasks, internal problem solving and experimentation with generative models. Wayfair has a long history of investing in machine learning and partnering with AI platforms and LLM providers to advance their business. Now, advances in frontier models, particularly multimodal systems, are expanding what its teams can build. That matters in home retail, where products are visual, stylistic and often subjective. “We’re excited about the scope of problems we can now tackle,” said Carolyn Phillips. “Traditional algorithms require tightly defined datasets. These models allow us to work through ambiguity and context in a way that wasn’t previously scalable.” From early pilots to production services, the relationship between Wayfair and OpenAI has grown into a strategic partnership that spans model selection, best practices for deployment and broader internal adoption. “What’s been most valuable is the thought partnership,” said Fiona Tan, Chief Technology Officer, Wayfair. “It’s not just access to the models. It’s working through new use cases together and being able to move quickly.” Looking forward, the employee demand for ChatGPT Enterprise has been strong. Teams at Wayfair see it as a practical tool that helps them move faster. Customer expectations are also shifting quickly. More shoppers are becoming comfortable using AI in their daily lives, and they are beginning to expect similar capabilities when they browse, compare and buy online. “At home, customers often don’t have the exact words for what they’re looking for,” said Fiona Tan. “Natural language and multimodal systems help bridge that gap.” For Wayfair leaders, the goal remains to augment human expertise while scaling internal capability. “We’re building for a world where AI is part of the shopping journey—whether that’s on our site, through support, or through conversational interfaces,” concluded Fiona Tan. API Mar 11, 2026 API Mar 6, 2026 API Mar 6, 2026",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "March 11, 2026 By embedding OpenAI models into supplier support and catalog systems, Wayfair improved data accuracy and automated complex retail workflows across millions of products. Wayfair, one of the world’s largest home goods retailers, has integrated OpenAI models into critical internal systems to improve supplier support workflows and product catalog quality at scale. What began as value-testing small scale releases in 2024 has evolved into a full production system that reduces manual effort, accelerates decision-making and improves data quality across millions of products. Rather than treat generative AI as an experiment or point solution, Wayfair embedded OpenAI models into core operational workflows. The company focused first where complexity and need for scale were highest: routing and resolving supplier support requests and improving tens of thousands of product attributes consistently across a catalog of roughly 30 million items. Wayfair’s catalog team manages tens of millions of products across nearly a thousand different product classes. Consistent and accurate product attribute tags — such as color, material, size or specific features — are essential for search, recommendations and merchandising. \"The better our data quality, the more trust we build with the customer. It's essential because it empowers shoppers to make the right buying decisions, directly reducing costly downstream issues like returns from misrepresented products,\" said Jessica D'Arcy, Associate Director of Catalog Merchandising at Wayfair. Before OpenAI, tagging improvements primarily relied on suppliers and customers to tell Wayfair that something looked wrong. Manual effort could not keep up with the volume. Early custom AI models for individual tags were effective, but proved expensive to build and maintain. “We started by building bespoke models for individual tags, and technically that worked,” said Carolyn Phillips, Wayfair’s staff machine learning scientist. “But when you’re looking at 47,000 tags, that approach just doesn’t scale.” To get beyond one-off models, Wayfair created a tag-agnostic system built on a single OpenAI model. A “definition agent” ingests the web and internal definitions to produce contextual meaning for each tag. “The real bottleneck wasn’t the model performance,” said Phillips. “It was the human time required to define and encode what each tag actually meant.” This context, along with product data aggregated from across Wayfair’s data ecosystem, feeds into a framework that can classify attributes across product classes . The team is now expanding model coverage to new attributes at 70x the rate they were just a year ago. The system has now run in production on more than 1 million products. And the first wave of products with enhanced attributes has now been live long enough to measure the impact of improving data quality on the customer journey. “When you improve attribute completeness, it’s not abstract. You see it show up in SEO and PLA performance - in how customers discover products”, said Phillips. A controlled A/B test showed a substantial and significantly significant increase in impressions, clicks , and page rank in the treatment group. However, Wayfair didn't simply hand off decisions on correcting product data to the model. “Our objective is to build trust so that customers are completely confident in what they are purchasing ,” said Phillips. The company developed structured testing using a hands-on audit process in which associates physically inspect samples to validate model output, and worked with suppliers to validate changes. Now, when data-based confidence is high, automated systems will overwrite the content directly and notify the supplier of the change. And, when a high standard is not met or the tag is deemed high risk, Wayfair first seeks supplier confirmation before making the change. Wayfair works with tens of thousands of suppliers to support their comprehensive catalog. To manage supplier support requests, Wayfair associates historically reviewed every incoming ticket, manually identified what suppliers were trying to accomplish, and routed issues to the correct internal owner—a time-consuming and error-prone process. “Supplier requests aren’t simple,” said Graham Ganssle, supplier support and operations at Wayfair. “They span hundreds of issue types, and no single associate can realistically master all of them.” Wayfair added agentic features to a product named Wilma to augment these workflows with AI. One of the first features in production is ticket triage powered by an OpenAI model. The system reads incoming requests, fills in missing context and routes tickets to the appropriate team. Wilma was designed to be deployable fast; built on a system already integrated with OpenAI APIs, it moved from prototype to live in approximately one month. “Wilma gives associates leverage,” said Ganssle. “It reads the ticket, identifies intent, fills in context from our databases, reaches back out to suppliers if necessary, and points the issue in the right direction.” Beyond routing, Wayfair has deployed a dozen agentic AI flows for specific resolution teams. For example, a co-pilot for the Replacement Part Operations team reads complex case history, proposes next steps and suggests draft responses that human associates review. These assistants are trained on historical data so they learn what success looks like in context. “The models can synthesize context across the entire journey in a way that’s hard for a single associate to do,” said Ganssle. “That broader visibility contributes to higher customer and supplier satisfaction.” Wayfair tracks how often the AI’s recommendations match the human agent’s final decision—a metric called “alignment rate.” Within each team, when alignment consistently reaches a predetermined threshold, workflows can shift from assistive (“co-pilot”) to semi-autonomous (“autopilot”) modes. This staged approach builds trust and ensures quality controls during rollout. Wayfair reports measurable improvements since integrating OpenAI models into internal systems. On the catalog side, the company reduced the number of wrong or missing product attribute tags a customer might see—having corrected 2.5M product tags across over a million of the most visible and purchased products in the Wayfair catalog. They expect to quadruple this impact in the next six months. In supplier support, triage, co-pilot, and auto-pilot systems have increased throughput by automating 41,000 tickets per month (that’s up to 70% in some workflows) and reduced turnaround times by removing routine manual work from associate workloads. This dramatically cuts time to resolution for multiple workflows, significantly lifts supplier satisfaction, and reduces ticket re-opens in those workflows. The broader visibility that models provide into tickets and supplier intent—beyond what a single associate can see on a screen—has contributed to that increase in satisfaction. Operationally, teams report: Wayfair has also deployed more than 1,200 ChatGPT Enterprise seats across its approximately 12,000-person workforce to support ad hoc tasks, internal problem solving and experimentation with generative models. Wayfair has a long history of investing in machine learning and partnering with AI platforms and LLM providers to advance their business. Now, advances in frontier models, particularly multimodal systems, are expanding what its teams can build. That matters in home retail, where products are visual, stylistic and often subjective. “We’re excited about the scope of problems we can now tackle,” said Carolyn Phillips. “Traditional algorithms require tightly defined datasets. These models allow us to work through ambiguity and context in a way that wasn’t previously scalable.” From early pilots to production services, the relationship between Wayfair and OpenAI has grown into a strategic partnership that spans model selection, best practices for deployment and broader internal adoption. “What’s been most valuable is the thought partnership,” said Fiona Tan, Chief Technology Officer, Wayfair. “It’s not just access to the models. It’s working through new use cases together and being able to move quickly.” Looking forward, the employee demand for ChatGPT Enterprise has been strong. Teams at Wayfair see it as a practical tool that helps them move faster. Customer expectations are also shifting quickly. More shoppers are becoming comfortable using AI in their daily lives, and they are beginning to expect similar capabilities when they browse, compare and buy online. “At home, customers often don’t have the exact words for what they’re looking for,” said Fiona Tan. “Natural language and multimodal systems help bridge that gap.” For Wayfair leaders, the goal remains to augment human expertise while scaling internal capability. “We’re building for a world where AI is part of the shopping journey—whether that’s on our site, through support, or through conversational interfaces,” concluded Fiona Tan. API Mar 11, 2026 API Mar 6, 2026 API Mar 6, 2026",
+      "preview_text": "March 11, 2026 By embedding OpenAI models into supplier support and catalog systems, Wayfair improved data accuracy and automated complex retail workflows across millions of products.",
+      "quality_score": 0.9,
+      "quality_notes": [
+        "rss_scraped",
+        "metadata_cleaned",
+        "rich_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "rich_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "rich_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "rich_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "rich_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "rich_content",
+        "source_authoritative",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.6,
+      "trending_score": 0.6
+    },
+    "metadata": {
+      "published_date": "2026-03-11T13:00",
+      "rank": 3,
+      "keywords": [],
+      "freshness_basis": "news_listing_order"
+    },
+    "provenance": {
+      "collector": "openai_news_scraper",
+      "collector_version": "0.2.0",
+      "dedupe_key": "openai:wayfair"
+    },
+    "fetched_at": "2026-03-14T04:03:47.304886+00:00",
+    "card": {
+      "card_title": "Wayfair uses OpenAI to fix product tags and speed up supplier support",
+      "card_summary": "Wayfair corrected 2.5 million product tags and automated 41,000 support tickets monthly using AI.",
+      "keywords": [
+        "wayfair",
+        "openai",
+        "product-catalog",
+        "supplier-support",
+        "retail-automation"
+      ],
+      "thumbnail_keyword": "furniture",
+      "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-0tBZ302My2X3xxvGSUyGZl3S.png?st=2026-03-14T10%3A30%3A00Z&se=2026-03-14T12%3A30%3A00Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=ed3ea2f9-5e38-44be-9a1b-7c1e65e4d54f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T07%3A28%3A54Z&ske=2026-03-15T07%3A28%3A54Z&sks=b&skv=2026-02-06&sig=ZqGoP7Azb7rlj3hcM9FN6pr2dlZTQGGrT6fSeOt6Zkg%3D"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "openai:equip-responses-api-computer-environment",
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/equip-responses-api-computer-environment",
+    "title": "From model to agent: Equipping the Responses API with a computer environment",
+    "raw_summary": "",
+    "raw_content": "How OpenAI built an agent runtime using the Responses API, shell tool, and hosted containers to run secure, scalable agents with files, tools, and state.",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "How OpenAI built an agent runtime using the Responses API, shell tool, and hosted containers to run secure, scalable agents with files, tools, and state.",
+      "preview_text": "How OpenAI built an agent runtime using the Responses API, shell tool, and hosted containers to run secure, scalable agents with files, tools, and state.",
+      "quality_score": 0.431,
+      "quality_notes": [
+        "rss_scraped",
+        "metadata_cleaned",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.4,
+      "trending_score": 0.4
+    },
+    "metadata": {
+      "published_date": "Wed, 11 Mar 2026 11:00:00 GMT",
+      "rank": 4,
+      "keywords": [],
+      "freshness_basis": "news_listing_order"
+    },
+    "provenance": {
+      "collector": "openai_news_scraper",
+      "collector_version": "0.2.0",
+      "dedupe_key": "openai:equip-responses-api-computer-environment"
+    },
+    "fetched_at": "2026-03-14T04:03:47.305967+00:00",
+    "card": {
+      "card_title": "OpenAI Builds Agent Runtime with Containers and Shell Tools",
+      "card_summary": "OpenAI created a system that lets AI agents securely run code and manage files inside hosted containers.",
+      "keywords": [
+        "openai",
+        "agent-runtime",
+        "responses-api",
+        "containers",
+        "shell-tool"
+      ],
+      "thumbnail_keyword": "container",
+      "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-A9lZmb5J5OaRMembYqOsC64R.png?st=2026-03-14T10%3A30%3A24Z&se=2026-03-14T12%3A30%3A24Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=9346e9b9-5d29-4d37-a0a9-c6f95f09f79d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T03%3A37%3A58Z&ske=2026-03-15T03%3A37%3A58Z&sks=b&skv=2026-02-06&sig=b3qlDeXulNvMJjyawswmzUe9e%2BBLmvkCUI60oRNsk6k%3D"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "openai:instruction-hierarchy-challenge",
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/instruction-hierarchy-challenge",
+    "title": "Improving instruction hierarchy in frontier LLMs",
+    "raw_summary": "",
+    "raw_content": "IH-Challenge trains models to prioritize trusted instructions, improving instruction hierarchy, safety steerability, and resistance to prompt injection attacks.",
+    "pipeline_state": "card_ready",
+    "preprocessing": {
+      "cleaned_text": "IH-Challenge trains models to prioritize trusted instructions, improving instruction hierarchy, safety steerability, and resistance to prompt injection attacks.",
+      "preview_text": "IH-Challenge trains models to prioritize trusted instructions, improving instruction hierarchy, safety steerability, and resistance to prompt injection attacks.",
+      "quality_score": 0.422,
+      "quality_notes": [
+        "rss_scraped",
+        "metadata_cleaned",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated",
+        "short_content",
+        "source_authoritative",
+        "llm_summary_generated"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.2,
+      "trending_score": 0.2
+    },
+    "metadata": {
+      "published_date": "Tue, 10 Mar 2026 11:00:00 GMT",
+      "rank": 5,
+      "keywords": [],
+      "freshness_basis": "news_listing_order"
+    },
+    "provenance": {
+      "collector": "openai_news_scraper",
+      "collector_version": "0.2.0",
+      "dedupe_key": "openai:instruction-hierarchy-challenge"
+    },
+    "fetched_at": "2026-03-14T04:03:47.306036+00:00",
+    "card": {
+      "card_title": "OpenAI Trains Models to Prioritize Trusted Instructions Over Attacks",
+      "card_summary": "A new method called IH-Challenge helps AI models follow trusted instructions and resist prompt injection attacks.",
+      "keywords": [
+        "instruction-hierarchy",
+        "prompt-injection",
+        "safety",
+        "openai",
+        "alignment"
+      ],
+      "thumbnail_keyword": "shield",
+      "image_url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-KCCDoLKB6Flg8ySPgAg6g61c/user-2unNrV1IpJJRJKZZex3VbXsC/img-2M9jweCPvcTuuwiZeHUOh3Tp.png?st=2026-03-14T10%3A31%3A06Z&se=2026-03-14T12%3A31%3A06Z&sp=r&sv=2026-02-06&sr=b&rscd=inline&rsct=image/png&skoid=7daae675-7b42-4e2e-ab4c-8d8419a28d99&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-03-14T05%3A17%3A18Z&ske=2026-03-15T05%3A17%3A18Z&sks=b&skv=2026-02-06&sig=ETGrOnxUPSdXn74A5N8pXtwLgapw7H1y0o0NKKgWlNk%3D"
+    }
+  }
+]

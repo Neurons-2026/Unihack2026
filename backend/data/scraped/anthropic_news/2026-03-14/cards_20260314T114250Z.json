@@ -1,0 +1,72 @@
+[
+  {
+    "id": "anthropic:where-stand-department-war",
+    "card_title": "Anthropic Challenges Department of War Supply Chain Risk Designation",
+    "card_summary": "Anthropic plans to fight in court after being labeled a national security supply chain risk by the Department of War.",
+    "keywords": [
+      "anthropic",
+      "department-of-war",
+      "supply-chain-risk",
+      "national-security",
+      "claude"
+    ],
+    "thumbnail_keyword": "pentagon",
+    "image_url": "https://images.pexels.com/photos/33953246/pexels-photo-33953246.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "anthropic:statement-comments-secretary-war",
+    "card_title": "Anthropic refuses Pentagon demands on autonomous weapons and surveillance",
+    "card_summary": "Anthropic rejects military requests to allow mass surveillance and autonomous weapons, vows to fight back in court.",
+    "keywords": [
+      "anthropic",
+      "pentagon",
+      "autonomous-weapons",
+      "surveillance",
+      "supply-chain-risk"
+    ],
+    "thumbnail_keyword": "shield",
+    "image_url": "https://images.pexels.com/photos/6951663/pexels-photo-6951663.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "anthropic:statement-department-of-war",
+    "card_title": "Anthropic Refuses Pentagon Demand to Remove AI Safety Safeguards",
+    "card_summary": "Anthropic says it won't drop two AI safety limits despite Pentagon threats to remove Claude from military systems.",
+    "keywords": [
+      "anthropic",
+      "department-of-war",
+      "ai-safety",
+      "military-ai",
+      "pentagon"
+    ],
+    "thumbnail_keyword": "pentagon",
+    "image_url": "https://images.pexels.com/photos/33953282/pexels-photo-33953282.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "anthropic:claude-sonnet-4-6",
+    "card_title": "Anthropic Launches Claude Sonnet 4.6 With Major Coding and Computer Use Upgrades",
+    "card_summary": "Anthropic's new Claude Sonnet 4.6 improves coding, computer use, and reasoning with a 1M token context window.",
+    "keywords": [
+      "claude-sonnet-4.6",
+      "anthropic",
+      "computer-use",
+      "coding",
+      "context-window"
+    ],
+    "thumbnail_keyword": "robot",
+    "image_url": "https://images.pexels.com/photos/35147280/pexels-photo-35147280.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  {
+    "id": "anthropic:claude-is-a-space-to-think",
+    "card_title": "Anthropic pledges to keep Claude permanently ad-free",
+    "card_summary": "Anthropic commits to never showing ads in Claude, saying advertising would undermine trust and helpfulness.",
+    "keywords": [
+      "anthropic",
+      "claude",
+      "advertising",
+      "ad-free",
+      "business-model"
+    ],
+    "thumbnail_keyword": "notebook",
+    "image_url": "https://images.pexels.com/photos/8167030/pexels-photo-8167030.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  }
+]

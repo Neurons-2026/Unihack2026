@@ -1,0 +1,20 @@
+{
+  "cards": {
+    "github-1": "https://images.pexels.com/photos/18068767/pexels-photo-18068767.png?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    "github-2": "https://images.pexels.com/photos/5829726/pexels-photo-5829726.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    "github-3": "https://images.pexels.com/photos/30869081/pexels-photo-30869081.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    "huggingface-1": "https://images.pexels.com/photos/3782235/pexels-photo-3782235.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    "huggingface-2": "https://images.pexels.com/photos/16380905/pexels-photo-16380905.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    "openai-1": "https://images.pexels.com/photos/7203695/pexels-photo-7203695.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    "openai-2": "https://images.pexels.com/photos/18498317/pexels-photo-18498317.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+    "anthropic-1": "https://images.pexels.com/photos/17483874/pexels-photo-17483874.png?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+  },
+  "briefing": {
+    "hero": "https://images.pexels.com/photos/34804018/pexels-photo-34804018.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop",
+    "signal-1": "https://images.pexels.com/photos/8438998/pexels-photo-8438998.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop",
+    "signal-2": "https://images.pexels.com/photos/18069814/pexels-photo-18069814.png?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop",
+    "signal-3": "https://images.pexels.com/photos/2061168/pexels-photo-2061168.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop",
+    "signal-4": "https://images.pexels.com/photos/17485632/pexels-photo-17485632.png?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop",
+    "inline": "https://images.pexels.com/photos/7580765/pexels-photo-7580765.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop"
+  }
+}
