@@ -4,53 +4,39 @@
   "source_type": "github_repo",
   "concepts": [
     {
-      "label": "headless browser engine",
-      "description": "A browser that runs without a graphical display, executing JavaScript and processing web APIs entirely in memory for automation purposes.",
-      "why_innovative": "Lightpanda is built from scratch (not based on Chromium/Blink/WebKit) specifically for headless use cases, achieving 11x faster execution and 9x lower memory footprint than Chrome, making large-scale AI web automation economically viable.",
+      "label": "zig-based headless browser",
+      "description": "A web browser built from scratch using the Zig programming language, designed to run without any graphical display (headless), specifically for automated tasks rather than human users.",
+      "why_innovative": "By starting from scratch instead of modifying Chrome, it achieves 9x less memory usage and 11x faster execution, making large-scale web automation dramatically cheaper and faster for AI agents and data pipelines.",
       "category": "architecture",
-      "relevance_score": 0.95
+      "relevance_score": 0.98
     },
     {
-      "label": "chrome devtools protocol (cdp) server",
-      "description": "A WebSocket-based protocol server that exposes browser internals so external tools like Puppeteer and Playwright can programmatically control the browser.",
-      "why_innovative": "Embedding a CDP server in a lightweight, non-Chromium browser enables drop-in compatibility with the entire Puppeteer/Playwright ecosystem without the overhead of Chrome, making it immediately actionable for AI agent workflows.",
+      "label": "cdp server integration",
+      "description": "A built-in communication protocol (Chrome DevTools Protocol) that lets popular automation tools like Puppeteer and Playwright control Lightpanda just as they would control a regular Chrome browser.",
+      "why_innovative": "This drop-in compatibility means developers can switch from Chrome to Lightpanda without rewriting any code, instantly getting massive performance gains at no migration cost.",
       "category": "technique",
-      "relevance_score": 0.88
+      "relevance_score": 0.93
     },
     {
-      "label": "zig system programming for browser runtime",
-      "description": "Using the Zig low-level systems language to implement a browser engine, prioritizing memory safety and performance without a garbage collector.",
-      "why_innovative": "Zig's compile-time optimizations and manual memory management enable the ultra-low footprint and instant startup critical for running thousands of parallel browser instances in AI scraping or LLM training pipelines.",
-      "category": "technique",
-      "relevance_score": 0.82
+      "label": "ai agent web scraping",
+      "description": "The ability for AI programs (agents) to autonomously browse, interact with, and extract information from modern JavaScript-heavy websites at high speed and low cost.",
+      "why_innovative": "Running thousands of concurrent AI-driven browsing sessions becomes economically feasible when each instance uses a fraction of the memory and CPU that Chrome would require.",
+      "category": "application",
+      "relevance_score": 0.92
     },
     {
       "label": "v8 snapshot embedding",
-      "description": "Pre-serializing the JavaScript engine's initialized heap state into a binary snapshot that is embedded at build time to skip re-initialization on every startup.",
-      "why_innovative": "Embedding V8 snapshots eliminates cold-start latency for JavaScript execution, contributing to the 'instant startup' characteristic that is essential for high-throughput AI agent task loops.",
+      "description": "A technique where the JavaScript engine's (V8) initial startup state is pre-saved and bundled into the browser binary, so it doesn't need to be rebuilt every time the browser starts.",
+      "why_innovative": "This enables near-instant browser startup times, which is critical when spawning hundreds of short-lived browser sessions for automation or LLM training data collection.",
       "category": "technique",
-      "relevance_score": 0.72
+      "relevance_score": 0.85
     },
     {
-      "label": "web platform tests (wpt) compliance benchmark",
-      "description": "A standardized, cross-browser test suite maintained by the W3C that validates correct implementation of web APIs and browser behaviors.",
-      "why_innovative": "Using WPT as a continuous integration benchmark for a non-Chromium browser provides objective, standards-based coverage tracking, which is critical for building trustworthy AI automation tooling on non-mainstream browser engines.",
+      "label": "web platform tests compliance",
+      "description": "Testing the browser against the official, standardized set of tests that all web browsers (Chrome, Firefox, Safari) must pass to ensure websites behave consistently.",
+      "why_innovative": "Passing standardized web tests ensures that AI agents and scrapers using Lightpanda see the same webpage behavior as real users on mainstream browsers, making collected data and interactions reliable.",
       "category": "benchmark",
-      "relevance_score": 0.6
-    },
-    {
-      "label": "ai agent web scraping infrastructure",
-      "description": "A browser runtime layer optimized for use by autonomous AI agents that need to navigate, interact with, and extract data from JavaScript-heavy websites at scale.",
-      "why_innovative": "As LLM-powered agents increasingly require real-time web access for grounding and data collection, a purpose-built, resource-efficient browser layer directly addresses the cost and latency bottleneck of current Chrome-based solutions.",
-      "category": "application",
-      "relevance_score": 0.78
-    },
-    {
-      "label": "html5ever rust html parser binding",
-      "description": "A binding to the html5ever Rust library that provides a spec-compliant, high-performance HTML5 parser integrated into the Zig browser engine.",
-      "why_innovative": "Cross-language integration of a battle-tested Rust parser into a Zig runtime demonstrates a pragmatic polyglot systems approach that maximizes correctness and performance without rewriting existing well-validated components.",
-      "category": "technique",
-      "relevance_score": 0.55
+      "relevance_score": 0.83
     }
   ]
 }

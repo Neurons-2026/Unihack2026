@@ -1,0 +1,807 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "id": "general_ai_ml.txt::transformer",
+      "label": "transformer",
+      "description": "A neural network architecture that processes all parts of the input simultaneously using attention, rather than reading it one step at a time like older models.",
+      "why_innovative": "It unlocked the ability to train massive language models by making training highly parallelizable on GPUs, replacing slow sequential processing.",
+      "impact_on_applications": "Powers virtually all modern AI assistants (ChatGPT, Claude, Gemini), machine translation, and text generation tools used by millions daily.",
+      "category": "architecture",
+      "relevance_score": 1.0,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::multi-head attention",
+      "label": "multi-head attention",
+      "description": "A mechanism that lets the model look at different parts of the input from multiple perspectives at the same time, like reading a sentence while simultaneously tracking grammar, meaning, and context.",
+      "why_innovative": "It allows models to capture multiple types of relationships in data simultaneously, making them much better at understanding complex patterns.",
+      "impact_on_applications": "Enables AI to understand nuanced queries in search engines, write coherent long-form text, and accurately translate between languages.",
+      "category": "technique",
+      "relevance_score": 0.98,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::backpropagation",
+      "label": "backpropagation",
+      "description": "The core learning algorithm that calculates how much each part of a neural network contributed to its mistakes, then adjusts those parts to reduce future errors.",
+      "why_innovative": "It made training deep neural networks practical by providing an efficient way to compute gradients through many layers.",
+      "impact_on_applications": "Underpins the training of every deep learning model, from image recognition in your phone's camera to voice assistants.",
+      "category": "technique",
+      "relevance_score": 0.95,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::gradient descent",
+      "label": "gradient descent",
+      "description": "An optimization method where the model repeatedly takes small steps in the direction that reduces its errors the most, like walking downhill to find the lowest point in a valley.",
+      "why_innovative": "It provides a simple, scalable way to optimize models with billions of parameters that would be impossible to tune by hand.",
+      "impact_on_applications": "Every AI model you interact with was trained using some form of gradient descent, from recommendation algorithms to self-driving car systems.",
+      "category": "technique",
+      "relevance_score": 0.93,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::convolutional neural network",
+      "label": "convolutional neural network",
+      "description": "A neural network designed to process images by scanning small patches of pixels at a time, detecting patterns like edges, textures, and shapes layer by layer.",
+      "why_innovative": "It dramatically reduced the number of parameters needed for image understanding by exploiting the fact that visual patterns repeat across an image.",
+      "impact_on_applications": "Powers face recognition on phones, medical image analysis, autonomous vehicle vision systems, and photo organization in apps like Google Photos.",
+      "category": "architecture",
+      "relevance_score": 0.95,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::recurrent neural network",
+      "label": "recurrent neural network",
+      "description": "A neural network that processes sequences one step at a time while maintaining a memory of previous steps, like reading a book word by word and remembering the plot.",
+      "why_innovative": "It was the first architecture to effectively handle variable-length sequential data like text and speech.",
+      "impact_on_applications": "Used in early speech recognition systems, time-series forecasting in finance, and sequential decision-making in robotics.",
+      "category": "architecture",
+      "relevance_score": 0.88,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::long short-term memory",
+      "label": "long short-term memory",
+      "description": "An improved version of recurrent networks that uses special gates to decide what information to remember and what to forget, solving the problem of losing important context over long sequences.",
+      "why_innovative": "It solved the vanishing gradient problem that prevented standard recurrent networks from learning long-range dependencies.",
+      "impact_on_applications": "Enabled early breakthroughs in machine translation, speech recognition, and handwriting recognition before transformers took over.",
+      "category": "architecture",
+      "relevance_score": 0.87,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::generative adversarial network",
+      "label": "generative adversarial network",
+      "description": "A system where two neural networks compete: one generates fake data (like images) and the other tries to detect fakes, pushing both to improve until the fakes become indistinguishable from real data.",
+      "why_innovative": "It introduced a fundamentally new way to train generative models through adversarial competition rather than direct supervision.",
+      "impact_on_applications": "Powers AI image generation, deepfake technology, data augmentation for medical imaging, and style transfer apps that turn photos into paintings.",
+      "category": "architecture",
+      "relevance_score": 0.92,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::variational autoencoder",
+      "label": "variational autoencoder",
+      "description": "A model that learns to compress data into a compact representation and then reconstruct it, while ensuring the compressed space is smooth and continuous so you can generate new data by sampling from it.",
+      "why_innovative": "It combined deep learning with probabilistic modeling, enabling both data compression and controlled generation from a learned latent space.",
+      "impact_on_applications": "Used in drug discovery to generate new molecular structures, anomaly detection in manufacturing, and creative tools for generating variations of designs.",
+      "category": "architecture",
+      "relevance_score": 0.88,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::diffusion model",
+      "label": "diffusion model",
+      "description": "A generative model that learns to create images by gradually removing noise from a random static pattern, step by step, until a clear image emerges — like watching a photo develop in reverse.",
+      "why_innovative": "It produces higher quality and more diverse images than GANs while being more stable to train, becoming the dominant approach for image generation.",
+      "impact_on_applications": "Powers tools like DALL-E, Midjourney, and Stable Diffusion that let anyone generate photorealistic images from text descriptions.",
+      "category": "technique",
+      "relevance_score": 0.96,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::reinforcement learning",
+      "label": "reinforcement learning",
+      "description": "A training approach where an AI agent learns by trial and error in an environment, receiving rewards for good actions and penalties for bad ones, like training a dog with treats.",
+      "why_innovative": "It enables AI to learn optimal strategies for complex tasks where the correct action isn't known in advance, just the goal.",
+      "impact_on_applications": "Used to train game-playing AIs (AlphaGo), optimize data center cooling at Google, improve robot control, and fine-tune language models via RLHF.",
+      "category": "technique",
+      "relevance_score": 0.95,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::transfer learning",
+      "label": "transfer learning",
+      "description": "A strategy where a model trained on one large task (like recognizing millions of images) is reused as a starting point for a different, smaller task (like identifying specific diseases in X-rays).",
+      "why_innovative": "It made high-quality AI accessible to organizations with limited data by leveraging knowledge from large pretrained models.",
+      "impact_on_applications": "Enables small companies and researchers to build accurate AI systems without needing millions of labeled examples or massive computing budgets.",
+      "category": "technique",
+      "relevance_score": 0.94,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::batch normalization",
+      "label": "batch normalization",
+      "description": "A technique that standardizes the data flowing between layers of a neural network during training, keeping values in a consistent range so the model learns faster and more reliably.",
+      "why_innovative": "It dramatically accelerated training of deep networks by reducing internal distribution shifts, allowing much higher learning rates.",
+      "impact_on_applications": "Made training deep networks practical and is a standard component in most modern vision and language models.",
+      "category": "technique",
+      "relevance_score": 0.85,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::dropout regularization",
+      "label": "dropout regularization",
+      "description": "A training trick that randomly turns off a fraction of neurons during each training step, forcing the network to not rely too heavily on any single neuron — like cross-training employees so no one person is a single point of failure.",
+      "why_innovative": "It provides a simple, effective way to prevent overfitting without the computational cost of training multiple separate models.",
+      "impact_on_applications": "Widely used in training AI models to improve generalization, making deployed models more reliable on real-world data they haven't seen before.",
+      "category": "technique",
+      "relevance_score": 0.83,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::word embedding",
+      "label": "word embedding",
+      "description": "A method that represents words as lists of numbers (vectors) arranged so that words with similar meanings are placed close together in mathematical space — 'king' is near 'queen', 'cat' is near 'dog'.",
+      "why_innovative": "It gave machines a way to understand word relationships and meanings mathematically, enabling far better natural language processing.",
+      "impact_on_applications": "The foundation for search engines understanding synonyms, sentiment analysis in social media monitoring, and spam filters in email.",
+      "category": "technique",
+      "relevance_score": 0.9,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::positional encoding",
+      "label": "positional encoding",
+      "description": "A way of injecting information about word order into a transformer model, since transformers process all words simultaneously and would otherwise have no sense of sequence.",
+      "why_innovative": "It elegantly solves the problem of encoding sequence information without sacrificing the parallelism that makes transformers fast.",
+      "impact_on_applications": "Essential for all transformer-based AI to understand that 'dog bites man' and 'man bites dog' have different meanings.",
+      "category": "technique",
+      "relevance_score": 0.88,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::rotary position embedding",
+      "label": "rotary position embedding",
+      "description": "An improved way to encode word positions that naturally captures relative distances between words by rotating their vector representations, making the model better at understanding relationships regardless of absolute position.",
+      "why_innovative": "It enables transformers to generalize to longer sequences than they were trained on, a critical limitation of earlier position encodings.",
+      "impact_on_applications": "Used in most modern LLMs (LLaMA, Mistral) to handle long documents, enabling AI to process entire books or codebases in one pass.",
+      "category": "technique",
+      "relevance_score": 0.91,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::flash attention",
+      "label": "flash attention",
+      "description": "An optimized implementation of attention that processes data in small tiles to keep it in the GPU's fast memory, rather than materializing the full attention matrix in slower memory.",
+      "why_innovative": "It reduced attention computation from quadratic memory to linear without approximation, making long-context models 2-4x faster.",
+      "impact_on_applications": "Directly reduces the cost and increases the speed of AI services, enabling longer conversations with chatbots and faster document processing.",
+      "category": "technique",
+      "relevance_score": 0.93,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::mixture of experts",
+      "label": "mixture of experts",
+      "description": "A model design where only a small subset of specialized sub-networks (experts) are activated for each input, with a router deciding which experts to use — like a hospital directing patients to the right specialist.",
+      "why_innovative": "It allows models to have massive total capacity while keeping computation per input low, enabling much larger models at manageable cost.",
+      "impact_on_applications": "Used in frontier models like GPT-4 and Mixtral to deliver high-quality AI responses while keeping inference costs reasonable for commercial deployment.",
+      "category": "architecture",
+      "relevance_score": 0.95,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::low-rank adaptation",
+      "label": "low-rank adaptation",
+      "description": "A fine-tuning method that freezes the original model weights and adds small trainable matrices to each layer, drastically reducing the number of parameters that need updating.",
+      "why_innovative": "It makes fine-tuning large language models accessible on consumer GPUs by reducing trainable parameters by 10,000x while maintaining quality.",
+      "impact_on_applications": "Enables individuals and small teams to customize powerful AI models for specific domains like medical, legal, or customer support without expensive infrastructure.",
+      "category": "technique",
+      "relevance_score": 0.94,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::knowledge distillation",
+      "label": "knowledge distillation",
+      "description": "A compression technique where a small student model is trained to mimic the outputs of a large teacher model, transferring the big model's knowledge into a compact form.",
+      "why_innovative": "It allows deploying AI capabilities on resource-constrained devices like phones and IoT sensors that can't run the full large model.",
+      "impact_on_applications": "Enables on-device AI features like real-time translation, voice recognition, and photo enhancement on smartphones without cloud connectivity.",
+      "category": "technique",
+      "relevance_score": 0.9,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::contrastive learning",
+      "label": "contrastive learning",
+      "description": "A self-supervised training method where the model learns to pull similar items close together and push different items apart in its internal representation space, without needing human labels.",
+      "why_innovative": "It enables learning powerful representations from unlabeled data, dramatically reducing the need for expensive human annotation.",
+      "impact_on_applications": "Powers image search engines, recommendation systems, and models like CLIP that can match images to text descriptions.",
+      "category": "technique",
+      "relevance_score": 0.91,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::RLHF",
+      "label": "RLHF",
+      "description": "A training method where humans rank AI outputs by quality, and those rankings are used to train a reward model that guides the AI to produce responses humans prefer.",
+      "why_innovative": "It bridges the gap between what AI optimizes for mathematically and what humans actually want, making AI assistants helpful and safe.",
+      "impact_on_applications": "The key technique that made ChatGPT and Claude conversationally useful, transforming raw language models into helpful, harmless AI assistants.",
+      "category": "technique",
+      "relevance_score": 0.96,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::retrieval augmented generation",
+      "label": "retrieval augmented generation",
+      "description": "A method where the AI first searches a knowledge base for relevant documents, then uses those documents as context when generating its answer — like looking up references before answering a question.",
+      "why_innovative": "It solves the hallucination problem by grounding AI responses in actual retrieved evidence, and allows updating knowledge without retraining.",
+      "impact_on_applications": "Used in enterprise AI chatbots, customer support systems, and internal knowledge management tools to provide accurate, source-backed answers.",
+      "category": "technique",
+      "relevance_score": 0.94,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::chain-of-thought prompting",
+      "label": "chain-of-thought prompting",
+      "description": "A prompting technique where the AI is encouraged to show its reasoning step by step before giving a final answer, rather than jumping straight to the conclusion.",
+      "why_innovative": "It dramatically improves AI performance on math, logic, and multi-step reasoning tasks by forcing the model to decompose complex problems.",
+      "impact_on_applications": "Makes AI assistants much more reliable for tasks like debugging code, solving word problems, and making complex decisions with multiple factors.",
+      "category": "technique",
+      "relevance_score": 0.92,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::vision transformer",
+      "label": "vision transformer",
+      "description": "An adaptation of the transformer architecture for images, where the image is split into small patches that are treated like words in a sentence, processed with the same attention mechanism.",
+      "why_innovative": "It showed that transformers can match or beat CNNs on vision tasks when trained at scale, unifying the architecture across modalities.",
+      "impact_on_applications": "Used in image classification, object detection, and multimodal AI systems that can understand both images and text together.",
+      "category": "architecture",
+      "relevance_score": 0.93,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::sparse attention",
+      "label": "sparse attention",
+      "description": "A modification of standard attention that only computes relationships between a subset of input elements instead of all pairs, dramatically reducing computation for long sequences.",
+      "why_innovative": "It breaks the quadratic scaling barrier of standard attention, making it feasible to process very long documents, videos, or genomic sequences.",
+      "impact_on_applications": "Enables AI to analyze entire legal contracts, long codebases, or hours of video that would be impossible with standard attention due to memory limits.",
+      "category": "technique",
+      "relevance_score": 0.91,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::KL divergence",
+      "label": "KL divergence",
+      "description": "A mathematical measure of how different two probability distributions are — it quantifies the information lost when one distribution is used to approximate another.",
+      "why_innovative": "It provides the theoretical foundation for training generative models and is the key loss function in variational inference and model compression.",
+      "impact_on_applications": "Used in training language models, anomaly detection systems, and any AI system that needs to match learned distributions to target data.",
+      "category": "theory",
+      "relevance_score": 0.87,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::self-supervised learning",
+      "label": "self-supervised learning",
+      "description": "A training paradigm where the model creates its own learning signal from unlabeled data — for example, masking words in a sentence and learning to predict them, or predicting the next video frame.",
+      "why_innovative": "It eliminates the bottleneck of manual data labeling, enabling models to learn from the vast amounts of unlabeled data available on the internet.",
+      "impact_on_applications": "Foundation of all modern LLMs and many vision models — enables training on trillions of words or billions of images without human annotation.",
+      "category": "technique",
+      "relevance_score": 0.95,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::beam search",
+      "label": "beam search",
+      "description": "A decoding algorithm that explores multiple possible next words simultaneously when generating text, keeping the top candidates at each step to find the highest-quality overall sequence.",
+      "why_innovative": "It provides a practical balance between exhaustive search (too slow) and greedy decoding (too myopic) for text generation.",
+      "impact_on_applications": "Used in machine translation, speech recognition, and text summarization to produce more fluent and accurate outputs.",
+      "category": "technique",
+      "relevance_score": 0.84,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::layer normalization",
+      "label": "layer normalization",
+      "description": "A technique that normalizes the activations across all features within a single training example, stabilizing the training of deep networks especially in transformers.",
+      "why_innovative": "Unlike batch normalization, it works identically during training and inference and doesn't depend on batch size, making it ideal for sequence models.",
+      "impact_on_applications": "A standard component in every transformer model, contributing to stable training of the AI systems used in daily applications.",
+      "category": "technique",
+      "relevance_score": 0.84,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::tokenization",
+      "label": "tokenization",
+      "description": "The process of breaking text into smaller pieces (tokens) that an AI model can process — these can be whole words, parts of words, or even individual characters.",
+      "why_innovative": "Subword tokenization (like BPE) solved the open-vocabulary problem, allowing models to handle any word including rare terms and new slang.",
+      "impact_on_applications": "Determines how efficiently AI models process text — better tokenization means faster, cheaper AI responses and better handling of multilingual content.",
+      "category": "technique",
+      "relevance_score": 0.86,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::graph neural network",
+      "label": "graph neural network",
+      "description": "A neural network designed to process data structured as graphs (networks of nodes and edges), learning patterns by passing messages between connected nodes.",
+      "why_innovative": "It extended deep learning to irregular, non-grid data structures like social networks, molecules, and knowledge graphs.",
+      "impact_on_applications": "Used in drug discovery (predicting molecular properties), social network analysis, fraud detection in financial networks, and recommendation systems.",
+      "category": "architecture",
+      "relevance_score": 0.89,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::attention mechanism",
+      "label": "attention mechanism",
+      "description": "A technique that lets a model dynamically focus on the most relevant parts of the input when processing each output element, like highlighting key sentences when summarizing a document.",
+      "why_innovative": "It replaced fixed-length representations with flexible, context-dependent ones, dramatically improving performance on tasks requiring selective focus.",
+      "impact_on_applications": "The core mechanism behind all modern AI language and vision models, enabling accurate machine translation, text summarization, and image captioning.",
+      "category": "technique",
+      "relevance_score": 0.97,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::residual connection",
+      "label": "residual connection",
+      "description": "A shortcut connection that adds the input of a layer directly to its output, allowing gradients to flow through the network without degradation and enabling much deeper architectures.",
+      "why_innovative": "It solved the degradation problem in very deep networks, enabling training of 100+ layer networks that were previously impossible to optimize.",
+      "impact_on_applications": "A fundamental building block in virtually all modern deep learning architectures, from ResNets in vision to transformers in language.",
+      "category": "technique",
+      "relevance_score": 0.92,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::Adam optimizer",
+      "label": "Adam optimizer",
+      "description": "An optimization algorithm that adapts the learning rate for each parameter individually, combining the benefits of momentum (keeping moving in a good direction) and RMSProp (scaling steps based on recent gradient sizes).",
+      "why_innovative": "It made training deep networks much less sensitive to hyperparameter choices, becoming the default optimizer that just works out of the box.",
+      "impact_on_applications": "The most widely used optimizer in deep learning — nearly every AI model you interact with was trained using Adam or one of its variants.",
+      "category": "technique",
+      "relevance_score": 0.91,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::cross-entropy loss",
+      "label": "cross-entropy loss",
+      "description": "A loss function that measures how different the model's predicted probabilities are from the actual correct answers, penalizing confident wrong predictions much more harshly.",
+      "why_innovative": "It provides a smooth, well-behaved training signal for classification tasks, making it the go-to loss function for everything from image recognition to language modeling.",
+      "impact_on_applications": "Used to train virtually every classification AI system, from spam filters to medical diagnosis models to language models predicting the next word.",
+      "category": "theory",
+      "relevance_score": 0.88,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::data augmentation",
+      "label": "data augmentation",
+      "description": "A technique that artificially expands training data by creating modified copies — like flipping, rotating, or color-shifting images — so the model sees more variation without collecting new real data.",
+      "why_innovative": "It dramatically improves model generalization at zero data collection cost, often providing as much benefit as doubling the dataset size.",
+      "impact_on_applications": "Enables training accurate medical imaging models from small hospital datasets, and improves the reliability of self-driving car vision systems in varied conditions.",
+      "category": "technique",
+      "relevance_score": 0.86,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::teacher forcing",
+      "label": "teacher forcing",
+      "description": "A training strategy for sequence models where the correct previous output is fed as input at each step, rather than the model's own (possibly wrong) prediction, speeding up learning.",
+      "why_innovative": "It prevents error accumulation during training where one wrong prediction cascades into increasingly wrong outputs, making sequence model training practical.",
+      "impact_on_applications": "Used in training all autoregressive language models and machine translation systems to learn quickly and produce coherent text.",
+      "category": "technique",
+      "relevance_score": 0.84,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::instruction tuning",
+      "label": "instruction tuning",
+      "description": "A fine-tuning approach where a pretrained language model is further trained on thousands of instruction-response pairs, teaching it to follow human commands and answer questions helpfully.",
+      "why_innovative": "It transforms a raw next-word-prediction model into a useful assistant that understands what humans want, without needing reinforcement learning.",
+      "impact_on_applications": "The key step that made models like Llama and Mistral usable as chatbots and coding assistants, enabling the open-source AI assistant ecosystem.",
+      "category": "technique",
+      "relevance_score": 0.93,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::neural architecture search",
+      "label": "neural architecture search",
+      "description": "An automated method that uses algorithms to design neural network architectures by searching through millions of possible designs and evaluating which ones perform best.",
+      "why_innovative": "It replaces human intuition in architecture design with systematic search, sometimes discovering designs that outperform hand-crafted ones.",
+      "impact_on_applications": "Used to design efficient mobile AI models like EfficientNet and MobileNet that run on phones, enabling on-device photo enhancement and real-time object detection.",
+      "category": "technique",
+      "relevance_score": 0.87,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::federated learning",
+      "label": "federated learning",
+      "description": "A training approach where multiple devices (like phones) each train a local model on their private data, then only share the learned updates (not the data) with a central server to build a global model.",
+      "why_innovative": "It enables training AI on sensitive data like medical records or personal messages without that data ever leaving the user's device, solving a major privacy barrier.",
+      "impact_on_applications": "Used by Apple and Google to improve keyboard predictions, autocorrect, and voice recognition on your phone without sending your personal typing data to the cloud.",
+      "category": "technique",
+      "relevance_score": 0.9,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::CLIP",
+      "label": "CLIP",
+      "description": "A model trained on 400 million image-text pairs that learns to match images with their text descriptions, creating a shared understanding of both visual and language concepts.",
+      "why_innovative": "It created the first truly general-purpose visual representation that works across thousands of tasks without task-specific training, using only natural language supervision.",
+      "impact_on_applications": "Powers image search engines, content moderation systems, and AI image generators like DALL-E that understand what you mean when you describe an image in words.",
+      "category": "architecture",
+      "relevance_score": 0.94,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::quantization",
+      "label": "quantization",
+      "description": "A compression technique that reduces the precision of a model's numbers (e.g., from 32-bit to 4-bit), making the model much smaller and faster while trying to preserve accuracy.",
+      "why_innovative": "It can shrink model size by 4-8x with minimal quality loss, making it possible to run large language models on laptops and phones instead of data centers.",
+      "impact_on_applications": "Enables running AI models like Llama locally on personal devices, powering offline AI assistants and reducing dependence on cloud services.",
+      "category": "technique",
+      "relevance_score": 0.91,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::speculative decoding",
+      "label": "speculative decoding",
+      "description": "A speed optimization where a small, fast draft model generates several candidate tokens at once, and the large model verifies them in parallel — accepting correct ones and fixing wrong ones.",
+      "why_innovative": "It achieves 2-3x faster text generation without any quality loss by exploiting the fact that most tokens are easy to predict and only a few need the full model's power.",
+      "impact_on_applications": "Makes AI chatbots respond noticeably faster and cheaper to run, directly improving the experience of interactive AI tools like coding assistants and search.",
+      "category": "technique",
+      "relevance_score": 0.89,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::key-value cache",
+      "label": "key-value cache",
+      "description": "An optimization that stores previously computed attention keys and values so they don't need to be recalculated when generating each new token, trading memory for speed.",
+      "why_innovative": "It reduces the computation per generated token from quadratic to linear in sequence length, making long text generation practical.",
+      "impact_on_applications": "Essential for all real-time AI chatbots and code completion tools — without it, each response would take many times longer to generate.",
+      "category": "technique",
+      "relevance_score": 0.88,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::constitutional AI",
+      "label": "constitutional AI",
+      "description": "A safety training method where the AI is given a set of principles (a 'constitution') and learns to critique and revise its own outputs to align with those principles, reducing the need for human feedback.",
+      "why_innovative": "It scales AI alignment by having the AI supervise itself against explicit rules, reducing the expensive human annotation bottleneck of RLHF.",
+      "impact_on_applications": "Used in Claude and other AI assistants to make them safer and more helpful, reducing harmful outputs while maintaining usefulness.",
+      "category": "technique",
+      "relevance_score": 0.92,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::tool use",
+      "label": "tool use",
+      "description": "The ability of an AI model to call external tools like calculators, web search, code interpreters, or APIs to accomplish tasks it cannot do with text generation alone.",
+      "why_innovative": "It breaks the limitation of AI being confined to its training data, allowing models to access real-time information and perform precise computations.",
+      "impact_on_applications": "Enables AI assistants to book flights, query databases, run code, and browse the web — transforming them from text generators into practical agents.",
+      "category": "technique",
+      "relevance_score": 0.93,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::multi-modal learning",
+      "label": "multi-modal learning",
+      "description": "Training AI models that can understand and generate multiple types of data — text, images, audio, video — within a single unified model.",
+      "why_innovative": "It mirrors how humans process the world through multiple senses simultaneously, enabling AI to reason across different types of information.",
+      "impact_on_applications": "Powers AI that can describe images, generate images from text, transcribe audio, and understand videos — like GPT-4V, Gemini, and Claude's vision capabilities.",
+      "category": "technique",
+      "relevance_score": 0.95,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::prefix tuning",
+      "label": "prefix tuning",
+      "description": "A parameter-efficient fine-tuning method that prepends learned continuous vectors (soft prompts) to the input of each transformer layer, guiding the model's behavior without modifying its weights.",
+      "why_innovative": "It achieves competitive performance to full fine-tuning while only training 0.1% of parameters, enabling quick task adaptation with minimal compute.",
+      "impact_on_applications": "Allows deploying one base model that serves multiple tasks simultaneously by swapping lightweight prefixes, reducing infrastructure costs for AI services.",
+      "category": "technique",
+      "relevance_score": 0.86,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::group query attention",
+      "label": "group query attention",
+      "description": "A compromise between standard multi-head attention and multi-query attention that groups attention heads to share key-value pairs, reducing memory usage while maintaining quality.",
+      "why_innovative": "It achieves near-original quality with significantly less memory for key-value caches, enabling longer context windows and higher throughput.",
+      "impact_on_applications": "Used in Llama 2/3 and other modern LLMs to serve more users simultaneously and process longer documents within the same hardware budget.",
+      "category": "technique",
+      "relevance_score": 0.88,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::byte-pair encoding",
+      "label": "byte-pair encoding",
+      "description": "A tokenization algorithm that starts with individual characters and iteratively merges the most frequent pairs into new tokens, building a vocabulary that balances between whole words and character-level tokens.",
+      "why_innovative": "It solved the open-vocabulary problem elegantly — the model can represent any word, including rare terms and new slang, without an impossibly large vocabulary.",
+      "impact_on_applications": "The standard tokenization method in GPT, Llama, and most modern LLMs — directly affects how much text fits in a context window and how well multilingual content is handled.",
+      "category": "technique",
+      "relevance_score": 0.87,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::activation function",
+      "label": "activation function",
+      "description": "A mathematical function applied after each neuron's computation that introduces non-linearity — without it, a neural network no matter how deep would behave like a single simple layer.",
+      "why_innovative": "Functions like ReLU, GELU, and SiLU enable deep networks to learn complex, non-linear patterns that linear models fundamentally cannot represent.",
+      "impact_on_applications": "A core building block in every neural network — the choice of activation function affects training speed, model expressiveness, and final quality of all AI systems.",
+      "category": "technique",
+      "relevance_score": 0.85,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    },
+    {
+      "id": "general_ai_ml.txt::Monte Carlo tree search",
+      "label": "Monte Carlo tree search",
+      "description": "A search algorithm that explores possible future actions by randomly simulating many game outcomes and focusing on the most promising paths, balancing exploration of new strategies with exploitation of known good ones.",
+      "why_innovative": "Combined with neural networks, it enabled AlphaGo to defeat the world Go champion — a landmark moment that showed AI could master tasks requiring deep strategic reasoning.",
+      "impact_on_applications": "Used in game-playing AI, robot planning, drug molecule design, and any domain where finding the best sequence of decisions in a huge search space is critical.",
+      "category": "technique",
+      "relevance_score": 0.88,
+      "source_file": "general_ai_ml.txt",
+      "source_title": "General Advanced AI/ML Concepts"
+    }
+  ],
+  "links": [
+    {
+      "weight": 0.6493,
+      "similarity": 0.6493,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::vision transformer"
+    },
+    {
+      "weight": 0.5438,
+      "similarity": 0.5438,
+      "source": "general_ai_ml.txt::multi-head attention",
+      "target": "general_ai_ml.txt::attention mechanism"
+    },
+    {
+      "weight": 0.4882,
+      "similarity": 0.4882,
+      "source": "general_ai_ml.txt::multi-head attention",
+      "target": "general_ai_ml.txt::group query attention"
+    },
+    {
+      "weight": 0.5561,
+      "similarity": 0.5561,
+      "source": "general_ai_ml.txt::backpropagation",
+      "target": "general_ai_ml.txt::gradient descent"
+    },
+    {
+      "weight": 0.5574,
+      "similarity": 0.5574,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::recurrent neural network"
+    },
+    {
+      "weight": 0.5013,
+      "similarity": 0.5013,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::generative adversarial network"
+    },
+    {
+      "weight": 0.4568,
+      "similarity": 0.4568,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::variational autoencoder"
+    },
+    {
+      "weight": 0.4922,
+      "similarity": 0.4922,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::graph neural network"
+    },
+    {
+      "weight": 0.4655,
+      "similarity": 0.4655,
+      "source": "general_ai_ml.txt::recurrent neural network",
+      "target": "general_ai_ml.txt::residual connection"
+    },
+    {
+      "weight": 0.5022,
+      "similarity": 0.5022,
+      "source": "general_ai_ml.txt::generative adversarial network",
+      "target": "general_ai_ml.txt::variational autoencoder"
+    },
+    {
+      "weight": 0.4824,
+      "similarity": 0.4824,
+      "source": "general_ai_ml.txt::generative adversarial network",
+      "target": "general_ai_ml.txt::retrieval augmented generation"
+    },
+    {
+      "weight": 0.4645,
+      "similarity": 0.4645,
+      "source": "general_ai_ml.txt::reinforcement learning",
+      "target": "general_ai_ml.txt::contrastive learning"
+    },
+    {
+      "weight": 0.5676,
+      "similarity": 0.5676,
+      "source": "general_ai_ml.txt::reinforcement learning",
+      "target": "general_ai_ml.txt::self-supervised learning"
+    },
+    {
+      "weight": 0.4734,
+      "similarity": 0.4734,
+      "source": "general_ai_ml.txt::reinforcement learning",
+      "target": "general_ai_ml.txt::Monte Carlo tree search"
+    },
+    {
+      "weight": 0.4553,
+      "similarity": 0.4553,
+      "source": "general_ai_ml.txt::transfer learning",
+      "target": "general_ai_ml.txt::knowledge distillation"
+    },
+    {
+      "weight": 0.4867,
+      "similarity": 0.4867,
+      "source": "general_ai_ml.txt::transfer learning",
+      "target": "general_ai_ml.txt::contrastive learning"
+    },
+    {
+      "weight": 0.4827,
+      "similarity": 0.4827,
+      "source": "general_ai_ml.txt::transfer learning",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.4919,
+      "similarity": 0.4919,
+      "source": "general_ai_ml.txt::batch normalization",
+      "target": "general_ai_ml.txt::dropout regularization"
+    },
+    {
+      "weight": 0.5524,
+      "similarity": 0.5524,
+      "source": "general_ai_ml.txt::batch normalization",
+      "target": "general_ai_ml.txt::layer normalization"
+    },
+    {
+      "weight": 0.5281,
+      "similarity": 0.5281,
+      "source": "general_ai_ml.txt::word embedding",
+      "target": "general_ai_ml.txt::positional encoding"
+    },
+    {
+      "weight": 0.5113,
+      "similarity": 0.5113,
+      "source": "general_ai_ml.txt::word embedding",
+      "target": "general_ai_ml.txt::rotary position embedding"
+    },
+    {
+      "weight": 0.5038,
+      "similarity": 0.5038,
+      "source": "general_ai_ml.txt::word embedding",
+      "target": "general_ai_ml.txt::byte-pair encoding"
+    },
+    {
+      "weight": 0.5385,
+      "similarity": 0.5385,
+      "source": "general_ai_ml.txt::positional encoding",
+      "target": "general_ai_ml.txt::rotary position embedding"
+    },
+    {
+      "weight": 0.4756,
+      "similarity": 0.4756,
+      "source": "general_ai_ml.txt::positional encoding",
+      "target": "general_ai_ml.txt::byte-pair encoding"
+    },
+    {
+      "weight": 0.4979,
+      "similarity": 0.4979,
+      "source": "general_ai_ml.txt::contrastive learning",
+      "target": "general_ai_ml.txt::self-supervised learning"
+    },
+    {
+      "weight": 0.553,
+      "similarity": 0.553,
+      "source": "general_ai_ml.txt::contrastive learning",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.5072,
+      "similarity": 0.5072,
+      "source": "general_ai_ml.txt::retrieval augmented generation",
+      "target": "general_ai_ml.txt::data augmentation"
+    },
+    {
+      "weight": 0.456,
+      "similarity": 0.456,
+      "source": "general_ai_ml.txt::KL divergence",
+      "target": "general_ai_ml.txt::cross-entropy loss"
+    },
+    {
+      "weight": 0.4872,
+      "similarity": 0.4872,
+      "source": "general_ai_ml.txt::self-supervised learning",
+      "target": "general_ai_ml.txt::federated learning"
+    },
+    {
+      "weight": 0.4751,
+      "similarity": 0.4751,
+      "source": "general_ai_ml.txt::self-supervised learning",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.4546,
+      "similarity": 0.4546,
+      "source": "general_ai_ml.txt::beam search",
+      "target": "general_ai_ml.txt::byte-pair encoding"
+    },
+    {
+      "weight": 0.4562,
+      "similarity": 0.4562,
+      "source": "general_ai_ml.txt::tokenization",
+      "target": "general_ai_ml.txt::quantization"
+    },
+    {
+      "weight": 0.59,
+      "similarity": 0.59,
+      "source": "general_ai_ml.txt::attention mechanism",
+      "target": "general_ai_ml.txt::group query attention"
+    },
+    {
+      "weight": 0.5641,
+      "similarity": 0.5641,
+      "source": "general_ai_ml.txt::instruction tuning",
+      "target": "general_ai_ml.txt::prefix tuning"
+    }
+  ]
+}
