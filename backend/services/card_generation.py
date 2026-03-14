@@ -70,7 +70,7 @@ def generate_card_fields(item: Dict[str, Any]) -> Dict[str, Any]:
     user_prompt = _build_user_prompt(item)
 
     message = client.messages.create(
-        model="claude-haiku-4-5-20251001",  # fast + cheap for metadata generation
+        model="claude-opus-4-6",
         max_tokens=256,
         messages=[{"role": "user", "content": user_prompt}],
         system=SYSTEM_PROMPT,
