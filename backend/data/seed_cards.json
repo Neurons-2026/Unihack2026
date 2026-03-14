@@ -1,20 +1,202 @@
 [
   {
-    "id": "seed-1",
-    "card_title": "New model tops long-context benchmark",
-    "card_summary": "A lightweight transformer variant improves efficiency for 32k tokens.",
-    "keywords": ["transformer", "long context", "research"],
-    "source": "huggingface",
-    "source_url": "https://huggingface.co/papers",
-    "thumbnail_keyword": "context"
+    "id": "seed-ci-001",
+    "card_title": "BitNet pushes efficient 1-bit LLM inference",
+    "card_summary": "Microsoft's BitNet framework targets faster, lower-cost LLM inference on common hardware.",
+    "keywords": ["llm", "inference", "efficiency"],
+    "source": "github",
+    "source_url": "https://github.com/microsoft/BitNet",
+    "thumbnail_keyword": "chips",
+    "trending_score": 0.98
   },
   {
-    "id": "seed-2",
-    "card_title": "GitHub trending: eval toolkit",
-    "card_summary": "Open-source harness to benchmark small LLMs quickly.",
-    "keywords": ["github", "eval", "tooling"],
+    "id": "seed-ci-002",
+    "card_title": "OpenRAG packages the RAG stack in one place",
+    "card_summary": "A unified toolkit for building retrieval-augmented apps without stitching many tools manually.",
+    "keywords": ["rag", "retrieval", "tooling"],
     "source": "github",
-    "source_url": "https://github.com/trending",
-    "thumbnail_keyword": "eval"
+    "source_url": "https://github.com/langflow-ai/openrag",
+    "thumbnail_keyword": "search",
+    "trending_score": 0.93
+  },
+  {
+    "id": "seed-ci-003",
+    "card_title": "Lightpanda targets faster browser automation",
+    "card_summary": "A headless browser project tuned for AI agents and scripted web tasks.",
+    "keywords": ["browser", "automation", "agents"],
+    "source": "github",
+    "source_url": "https://github.com/lightpanda-io/browser",
+    "thumbnail_keyword": "robot",
+    "trending_score": 0.9
+  },
+  {
+    "id": "seed-ci-004",
+    "card_title": "Superpowers offers an agentic skill framework",
+    "card_summary": "A framework aiming to make AI-assisted software workflows more repeatable.",
+    "keywords": ["agentic", "workflow", "developer-tools"],
+    "source": "github",
+    "source_url": "https://github.com/obra/superpowers",
+    "thumbnail_keyword": "playbook",
+    "trending_score": 0.86
+  },
+  {
+    "id": "seed-ci-005",
+    "card_title": "Public APIs repo stays a practical launchpad",
+    "card_summary": "A large community list of free APIs useful for hackathon and prototype builds.",
+    "keywords": ["apis", "resources", "prototyping"],
+    "source": "github",
+    "source_url": "https://github.com/public-apis/public-apis",
+    "thumbnail_keyword": "catalog",
+    "trending_score": 0.82
+  },
+  {
+    "id": "seed-ci-006",
+    "card_title": "Promptfoo emphasizes testing and red teaming",
+    "card_summary": "A toolkit for evaluating prompt, agent, and RAG behavior before production use.",
+    "keywords": ["evaluation", "safety", "rag"],
+    "source": "github",
+    "source_url": "https://github.com/promptfoo/promptfoo",
+    "thumbnail_keyword": "shield",
+    "trending_score": 0.94
+  },
+  {
+    "id": "seed-ci-007",
+    "card_title": "Spatial-TTT improves long video scene understanding",
+    "card_summary": "A new method adapts at test time to better track spatial context in long videos.",
+    "keywords": ["vision", "video", "spatial-reasoning"],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12255",
+    "thumbnail_keyword": "map",
+    "trending_score": 0.95
+  },
+  {
+    "id": "seed-ci-008",
+    "card_title": "IndexCache cuts sparse attention overhead",
+    "card_summary": "A method that reuses index selections across layers to speed up long-context LLM runs.",
+    "keywords": ["attention", "inference", "optimization"],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12201",
+    "thumbnail_keyword": "speed",
+    "trending_score": 0.93
+  },
+  {
+    "id": "seed-ci-009",
+    "card_title": "Video reward models improve agent evaluation",
+    "card_summary": "This paper scores computer-use agents from screen video, enabling scalable evaluation.",
+    "keywords": ["agents", "evaluation", "reward-models"],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.10178",
+    "thumbnail_keyword": "desktop",
+    "trending_score": 0.9
+  },
+  {
+    "id": "seed-ci-010",
+    "card_title": "FIRM improves reliability in image generation",
+    "card_summary": "A reward-modeling framework aims to reduce hallucinated edits and improve instruction following.",
+    "keywords": ["image-generation", "rl", "reward-models"],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12247",
+    "thumbnail_keyword": "camera",
+    "trending_score": 0.88
+  },
+  {
+    "id": "seed-ci-011",
+    "card_title": "MADQA tests real document reasoning in agents",
+    "card_summary": "The benchmark measures whether agents reason strategically, not just search repeatedly.",
+    "keywords": ["agents", "benchmark", "reasoning"],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12180",
+    "thumbnail_keyword": "documents",
+    "trending_score": 0.87
+  },
+  {
+    "id": "seed-ci-012",
+    "card_title": "DreamVideo-Omni improves controlled video generation",
+    "card_summary": "A new framework aims for better multi-subject identity and motion control in videos.",
+    "keywords": ["video-generation", "diffusion", "control"],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12257",
+    "thumbnail_keyword": "film",
+    "trending_score": 0.86
+  },
+  {
+    "id": "seed-ci-013",
+    "card_title": "OpenAI shares practical defenses for prompt injection",
+    "card_summary": "Guidance on limiting risky agent actions even when malicious prompts slip through.",
+    "keywords": ["security", "agents", "prompt-injection"],
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/designing-agents-to-resist-prompt-injection/",
+    "thumbnail_keyword": "lock",
+    "trending_score": 0.94
+  },
+  {
+    "id": "seed-ci-014",
+    "card_title": "OpenAI details computer-use primitives for agents",
+    "card_summary": "A new engineering post breaks down tools and patterns for task-oriented API agents.",
+    "keywords": ["api", "agents", "developer-tools"],
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/equip-responses-api-computer-environment/",
+    "thumbnail_keyword": "terminal",
+    "trending_score": 0.93
+  },
+  {
+    "id": "seed-ci-015",
+    "card_title": "Anthropic expands enterprise partner ecosystem",
+    "card_summary": "A new partner network adds funding and certification to scale Claude deployment.",
+    "keywords": ["enterprise", "partnerships", "claude"],
+    "source": "anthropic_blog",
+    "source_url": "https://www.anthropic.com/news/claude-partner-network",
+    "thumbnail_keyword": "network",
+    "trending_score": 0.9
+  },
+  {
+    "id": "seed-ci-016",
+    "card_title": "Anthropic launches institute on AI societal impact",
+    "card_summary": "A new institute will publish analysis on major social challenges from advanced AI.",
+    "keywords": ["ai-policy", "safety", "research"],
+    "source": "anthropic_blog",
+    "source_url": "https://www.anthropic.com/news/the-anthropic-institute",
+    "thumbnail_keyword": "institution",
+    "trending_score": 0.88
+  },
+  {
+    "id": "seed-ci-017",
+    "card_title": "New analysis probes LLM-as-judge reliability",
+    "card_summary": "Researchers examine judge-model behavior when post-training outcomes are hard to verify.",
+    "keywords": ["llm-evals", "post-training", "research"],
+    "source": "arxiv_cs_ai",
+    "source_url": "https://arxiv.org/abs/2603.12246",
+    "thumbnail_keyword": "gavel",
+    "trending_score": 0.86
+  },
+  {
+    "id": "seed-ci-018",
+    "card_title": "AI planning methods target sequential 3D printing",
+    "card_summary": "A strategy portfolio approach aims to improve packing and scheduling decisions.",
+    "keywords": ["planning", "optimization", "3d-printing"],
+    "source": "arxiv_cs_ai",
+    "source_url": "https://arxiv.org/abs/2603.12224",
+    "thumbnail_keyword": "printer",
+    "trending_score": 0.74
+  },
+  {
+    "id": "seed-ci-019",
+    "card_title": "DeepMind marks 10 years since AlphaGo",
+    "card_summary": "A retrospective connects AlphaGo breakthroughs to wider AI and science progress.",
+    "keywords": ["deepmind", "history", "research"],
+    "source": "deepmind_blog",
+    "source_url": "https://deepmind.google/blog/10-years-of-alphago/",
+    "thumbnail_keyword": "go-board",
+    "trending_score": 0.85
+  },
+  {
+    "id": "seed-ci-020",
+    "card_title": "Gemini 3.1 Flash-Lite targets low-cost high-volume use",
+    "card_summary": "Google's new model focuses on speed and lower cost for frequent application workloads.",
+    "keywords": ["gemini", "model-release", "cost-efficiency"],
+    "source": "deepmind_blog",
+    "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-lite/",
+    "thumbnail_keyword": "flash",
+    "trending_score": 0.89
   }
 ]
