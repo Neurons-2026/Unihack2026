@@ -17,9 +17,6 @@
         "metadata_cleaned",
         "rich_content",
         "source_authoritative",
-        "llm_summary_generated",
-        "rich_content",
-        "source_authoritative",
         "llm_summary_generated"
       ],
       "enrichment_used": false
@@ -41,16 +38,15 @@
     },
     "fetched_at": "2026-03-14T04:03:40.406824+00:00",
     "card": {
-      "card_title": "Anthropic Challenges Department of War Supply Chain Risk Designation",
-      "card_summary": "Anthropic plans to fight a federal designation calling it a national security supply chain risk while continuing to.",
+      "card_title": "Anthropic challenges US military supply chain risk designation",
+      "card_summary": "An AI company says it will sue the Department of War over a ruling that limits its sales to military contractors, while ",
       "keywords": [
         "anthropic",
-        "department-of-war",
-        "supply-chain-risk",
-        "national-security",
-        "claude"
+        "defense-policy",
+        "ai-regulation",
+        "supply-chain"
       ],
-      "thumbnail_keyword": "pentagon"
+      "thumbnail_keyword": "courtroom"
     }
   },
   {
@@ -69,9 +65,6 @@
       "quality_notes": [
         "news_page_scraped",
         "metadata_cleaned",
-        "rich_content",
-        "source_authoritative",
-        "llm_summary_generated",
         "rich_content",
         "source_authoritative",
         "llm_summary_generated"
@@ -95,16 +88,16 @@
     },
     "fetched_at": "2026-03-14T04:03:40.409136+00:00",
     "card": {
-      "card_title": "Anthropic Refuses Pentagon Demands on Surveillance and Autonomous Weapons",
-      "card_summary": "Anthropic says it will fight a Pentagon supply chain risk designation over its refusal to allow mass surveillance and.",
+      "card_title": "Anthropic Refuses to Build Surveillance AI for Military",
+      "card_summary": "AI company Anthropic refuses to let its technology be used for mass surveillance or autonomous weapons, facing penalties",
       "keywords": [
         "anthropic",
-        "pentagon",
-        "autonomous-weapons",
+        "ai-policy",
         "surveillance",
-        "supply-chain"
+        "autonomous-weapons",
+        "government"
       ],
-      "thumbnail_keyword": "shield"
+      "thumbnail_keyword": "document"
     }
   },
   {
@@ -123,9 +116,6 @@
       "quality_notes": [
         "news_page_scraped",
         "metadata_cleaned",
-        "rich_content",
-        "source_authoritative",
-        "llm_summary_generated",
         "rich_content",
         "source_authoritative",
         "llm_summary_generated"
@@ -149,16 +139,16 @@
     },
     "fetched_at": "2026-03-14T04:03:40.409661+00:00",
     "card": {
-      "card_title": "Anthropic Refuses Pentagon Demand to Remove AI Safety Guardrails",
-      "card_summary": "Anthropic says the Department of War threatened to drop Claude over two safety limits the company refuses to remove.",
+      "card_title": "Anthropic resists military pressure to remove AI safeguards",
+      "card_summary": "AI company Anthropic refuses US military demands to remove safety protections from its Claude system, risking contract l",
       "keywords": [
         "anthropic",
-        "department-of-war",
-        "ai-safety",
-        "military-ai",
-        "claude"
+        "claude",
+        "military",
+        "ai-safeguards",
+        "national-security"
       ],
-      "thumbnail_keyword": "pentagon"
+      "thumbnail_keyword": "military"
     }
   },
   {
@@ -177,9 +167,6 @@
       "quality_notes": [
         "news_page_scraped",
         "metadata_cleaned",
-        "rich_content",
-        "source_authoritative",
-        "llm_summary_generated",
         "rich_content",
         "source_authoritative",
         "llm_summary_generated"
@@ -203,14 +190,13 @@
     },
     "fetched_at": "2026-03-14T04:03:40.410100+00:00",
     "card": {
-      "card_title": "Anthropic Launches Claude Sonnet 4.6 With Stronger Coding and Computer Use",
-      "card_summary": "Anthropic releases its most capable mid-tier AI model, improving coding, computer use, and long-context reasoning.",
+      "card_title": "Anthropic releases Claude Sonnet 4.6 with improved coding and computer skills",
+      "card_summary": "Anthropic's new Claude Sonnet 4.6 model excels at coding, using computers like humans do, and processing huge documents,",
       "keywords": [
-        "claude-sonnet-4.6",
-        "anthropic",
-        "computer-use",
+        "claude sonnet 4.6",
+        "ai model",
         "coding",
-        "context-window"
+        "computer use"
       ],
       "thumbnail_keyword": "robot"
     }
@@ -231,9 +217,6 @@
       "quality_notes": [
         "news_page_scraped",
         "metadata_cleaned",
-        "rich_content",
-        "source_authoritative",
-        "llm_summary_generated",
         "rich_content",
         "source_authoritative",
         "llm_summary_generated"
@@ -257,14 +240,13 @@
     },
     "fetched_at": "2026-03-14T04:03:40.411201+00:00",
     "card": {
-      "card_title": "Anthropic pledges to keep Claude permanently free of advertising",
-      "card_summary": "Anthropic commits to never placing ads in Claude, saying they would undermine trust and helpfulness.",
+      "card_title": "Claude stays ad-free to remain a trusted thinking partner",
+      "card_summary": "Anthropic commits to keeping Claude free from advertisements to ensure the AI assistant prioritizes user interests over ",
       "keywords": [
-        "anthropic",
-        "claude",
+        "ai-assistants",
+        "business-model",
         "advertising",
-        "ad-free",
-        "business-model"
+        "trust"
       ],
       "thumbnail_keyword": "notebook"
     }

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "anthropic:where-stand-department-war",
+    "card_title": "Anthropic challenges US military supply chain risk designation",
+    "card_summary": "An AI company says it will sue the Department of War over a ruling that limits its sales to military contractors, while ",
+    "keywords": [
+      "anthropic",
+      "defense-policy",
+      "ai-regulation",
+      "supply-chain"
+    ],
+    "source": "anthropic_blog",
+    "source_url": "https://www.anthropic.com/news/where-stand-department-war",
+    "thumbnail_keyword": "courtroom"
+  },
+  {
+    "id": "anthropic:statement-comments-secretary-war",
+    "card_title": "Anthropic Refuses to Build Surveillance AI for Military",
+    "card_summary": "AI company Anthropic refuses to let its technology be used for mass surveillance or autonomous weapons, facing penalties",
+    "keywords": [
+      "anthropic",
+      "ai-policy",
+      "surveillance",
+      "autonomous-weapons",
+      "government"
+    ],
+    "source": "anthropic_blog",
+    "source_url": "https://www.anthropic.com/news/statement-comments-secretary-war",
+    "thumbnail_keyword": "document"
+  },
+  {
+    "id": "anthropic:statement-department-of-war",
+    "card_title": "Anthropic resists military pressure to remove AI safeguards",
+    "card_summary": "AI company Anthropic refuses US military demands to remove safety protections from its Claude system, risking contract l",
+    "keywords": [
+      "anthropic",
+      "claude",
+      "military",
+      "ai-safeguards",
+      "national-security"
+    ],
+    "source": "anthropic_blog",
+    "source_url": "https://www.anthropic.com/news/statement-department-of-war",
+    "thumbnail_keyword": "military"
+  },
+  {
+    "id": "anthropic:claude-sonnet-4-6",
+    "card_title": "Anthropic releases Claude Sonnet 4.6 with improved coding and computer skills",
+    "card_summary": "Anthropic's new Claude Sonnet 4.6 model excels at coding, using computers like humans do, and processing huge documents,",
+    "keywords": [
+      "claude sonnet 4.6",
+      "ai model",
+      "coding",
+      "computer use"
+    ],
+    "source": "anthropic_blog",
+    "source_url": "https://www.anthropic.com/news/claude-sonnet-4-6",
+    "thumbnail_keyword": "robot"
+  },
+  {
+    "id": "anthropic:claude-is-a-space-to-think",
+    "card_title": "Claude stays ad-free to remain a trusted thinking partner",
+    "card_summary": "Anthropic commits to keeping Claude free from advertisements to ensure the AI assistant prioritizes user interests over ",
+    "keywords": [
+      "ai-assistants",
+      "business-model",
+      "advertising",
+      "trust"
+    ],
+    "source": "anthropic_blog",
+    "source_url": "https://www.anthropic.com/news/claude-is-a-space-to-think",
+    "thumbnail_keyword": "notebook"
+  }
+]

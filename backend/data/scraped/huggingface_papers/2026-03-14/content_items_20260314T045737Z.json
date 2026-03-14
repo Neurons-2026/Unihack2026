@@ -17,21 +17,6 @@
         "keyword_enrichment_pending",
         "rich_content",
         "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
         "llm_summary_generated"
       ],
       "enrichment_used": false
@@ -78,16 +63,16 @@
     },
     "fetched_at": "2026-03-14T04:02:52.235664+00:00",
     "card": {
-      "card_title": "Spatial-TTT Brings Streaming 3D Spatial Understanding to Video AI",
-      "card_summary": "A new model adapts its parameters on the fly to track and organize 3D spatial information from long video streams.",
+      "card_title": "Spatial-TTT Learns 3D Spaces from Streaming Video Using Test-Time Training",
+      "card_summary": "A new AI model adapts its own settings while processing long videos to build and update 3D spatial understanding in real",
       "keywords": [
-        "test-time training fast weights",
-        "hybrid ttt architecture",
-        "spatial-predictive mechanism",
-        "large-chunk ttt update",
-        "parallel sliding-window attention"
+        "spatial-ttt",
+        "test-time-training",
+        "3d-spatial-understanding",
+        "video-processing",
+        "streaming"
       ],
-      "thumbnail_keyword": "space"
+      "thumbnail_keyword": "room"
     }
   },
   {
@@ -106,16 +91,6 @@
       "quality_notes": [
         "paper_metadata_extracted",
         "keyword_enrichment_pending",
-        "has_summary",
-        "llm_summary_generated",
-        "has_summary",
-        "llm_summary_generated",
-        "has_summary",
-        "llm_summary_generated",
-        "has_summary",
-        "llm_summary_generated",
-        "has_summary",
-        "llm_summary_generated",
         "has_summary",
         "llm_summary_generated"
       ],
@@ -168,14 +143,14 @@
     },
     "fetched_at": "2026-03-14T04:02:54.274310+00:00",
     "card": {
-      "card_title": "New Benchmark Reveals AI Agents Use Brute-Force Search, Not Strategy",
-      "card_summary": "A study finds AI document agents match human accuracy but rely on trial-and-error instead of planning.",
+      "card_title": "AI Agents Match Humans in Accuracy but Rely on Brute Force, Not Strategy",
+      "card_summary": "A new benchmark shows AI document agents get answers right as often as humans but use inefficient trial-and-error instea",
       "keywords": [
-        "madqa benchmark",
-        "accuracy-effort trade-off metric",
-        "classical test theory splits",
-        "sentinel pool",
-        "agentic document collection vqa"
+        "madqa",
+        "document-reasoning",
+        "multimodal-agents",
+        "benchmark",
+        "strategic-planning"
       ],
       "thumbnail_keyword": "documents"
     }
@@ -196,21 +171,6 @@
       "quality_notes": [
         "paper_metadata_extracted",
         "keyword_enrichment_pending",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
         "rich_content",
         "has_summary",
         "llm_summary_generated"
@@ -250,8 +210,8 @@
     },
     "fetched_at": "2026-03-14T04:02:54.903220+00:00",
     "card": {
-      "card_title": "IndexCache Speeds Up Sparse Attention by Reusing Data Across Layers",
-      "card_summary": "A new method cuts 75% of redundant computations in AI attention systems, nearly doubling processing speed.",
+      "card_title": "IndexCache Speeds Up Sparse Attention by Reusing Indexes Across Layers",
+      "card_summary": "A new method eliminates 75% of redundant computations in AI attention systems, nearly doubling processing speed with min",
       "keywords": [
         "indexcache",
         "sparse-attention",
@@ -278,21 +238,6 @@
       "quality_notes": [
         "paper_metadata_extracted",
         "keyword_enrichment_pending",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
         "rich_content",
         "has_summary",
         "llm_summary_generated"
@@ -333,16 +278,16 @@
     },
     "fetched_at": "2026-03-14T04:02:55.572137+00:00",
     "card": {
-      "card_title": "Video-Based Reward Model Judges If Computer-Using AI Agents Succeed",
-      "card_summary": "A new model watches screen recordings to check if AI agents completed tasks, beating GPT-5.2 and Gemini-3 Pro.",
+      "card_title": "Video-Based Reward Model Judges Whether Computer-Use Agents Complete Tasks",
+      "card_summary": "A new model watches screen recordings of AI agents to judge if they completed user tasks, beating GPT-5.2 and Gemini-3 P",
       "keywords": [
-        "reward-modeling",
         "computer-use-agents",
-        "video-understanding",
-        "evaluation",
-        "exevrm"
+        "reward-modeling",
+        "video-evaluation",
+        "exevrm",
+        "benchmark"
       ],
-      "thumbnail_keyword": "screen"
+      "thumbnail_keyword": "monitor"
     }
   },
   {
@@ -361,21 +306,6 @@
       "quality_notes": [
         "paper_metadata_extracted",
         "keyword_enrichment_pending",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
-        "rich_content",
-        "has_summary",
-        "llm_summary_generated",
         "rich_content",
         "has_summary",
         "llm_summary_generated"
@@ -423,7 +353,7 @@
     "fetched_at": "2026-03-14T04:02:56.228355+00:00",
     "card": {
       "card_title": "DreamVideo-Omni Controls Multiple Characters and Motions in AI Video",
-      "card_summary": "A new AI framework generates videos with precise control over multiple characters and their movements.",
+      "card_summary": "A new AI framework generates videos where multiple characters keep their identities while following precise motion and c",
       "keywords": [
         "dreamvideo-omni",
         "video-generation",
