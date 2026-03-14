@@ -4,39 +4,53 @@
   "source_type": "pdf",
   "concepts": [
     {
-      "label": "streaming spatial intelligence ttt",
-      "description": "The model continuously updates its understanding of a 3D space by adapting a small set of its parameters (fast weights) as it processes a live stream of video.",
-      "why_innovative": "It addresses the critical challenge of maintaining and updating spatial knowledge from unbounded visual streams, essential for real-world embodied AI applications like robotics and augmented reality.",
-      "category": "application",
-      "relevance_score": 1.0
-    },
-    {
-      "label": "hybrid ttt architecture",
-      "description": "A neural network design that interleaves Test-Time Training (TTT) layers with traditional self-attention layers to balance efficient online adaptation with preserving pretrained model capabilities.",
-      "why_innovative": "This architecture provides a practical solution for integrating TTT into large multimodal language models, enabling continuous adaptation to long video contexts without significantly degrading their existing semantic reasoning abilities.",
-      "category": "architecture",
-      "relevance_score": 0.95
-    },
-    {
-      "label": "spatial predictive mechanism",
-      "description": "A module that enhances Test-Time Training by applying lightweight 3D spatiotemporal convolutions to aggregate local neighborhood context for visual tokens, capturing geometric structure and temporal continuity.",
-      "why_innovative": "It injects crucial spatiotemporal inductive bias directly into the fast-weight update process, enabling the model to learn more coherent 3D spatial patterns and better manage dynamic scene changes.",
+      "label": "test-time training fast weights",
+      "description": "A mechanism where a subset of model parameters (fast weights) are continuously updated during inference to act as adaptive memory, encoding contextual information from streaming inputs without retraining the full model.",
+      "why_innovative": "Applying TTT to streaming spatial video understanding enables unbounded long-horizon scene memory with sublinear complexity, overcoming the quadratic cost of full attention over long video sequences.",
       "category": "technique",
-      "relevance_score": 0.9
+      "relevance_score": 0.97
     },
     {
-      "label": "dense scene description dataset",
-      "description": "A newly constructed dataset providing comprehensive 3D scene descriptions, including global context, object counts, and precise spatial relationships, for training the model.",
-      "why_innovative": "This dataset offers rich, structured supervision necessary for teaching the model's fast weights how to effectively memorize and organize global 3D spatial signals from streaming video, addressing limitations of existing sparse datasets.",
-      "category": "dataset",
+      "label": "hybrid ttt-attention architecture",
+      "description": "A decoder architecture that interleaves TTT layers with standard self-attention anchor layers at a 3:1 ratio, preserving pretrained semantic knowledge while enabling efficient long-context spatial compression.",
+      "why_innovative": "This design avoids catastrophic forgetting of pretrained cross-modal alignment while still gaining the memory efficiency benefits of TTT, making it practical to plug into existing MLLMs.",
+      "category": "architecture",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "large-chunk ttt update with sliding window attention",
+      "description": "A strategy that updates fast weights over large token chunks aligned with multiple video frames, while running sliding-window attention in parallel to maintain intra-chunk spatiotemporal continuity.",
+      "why_innovative": "Large chunks dramatically improve GPU parallelism and hardware efficiency compared to small-chunk TTT, while the parallel SWA restores causal intra-chunk interactions that large chunks would otherwise lose.",
+      "category": "technique",
       "relevance_score": 0.85
     },
     {
-      "label": "large chunk updates sliding window attention",
-      "description": "An efficient processing strategy that updates the model's adaptive parameters using large segments of video frames while simultaneously employing sliding-window attention to maintain continuous spatiotemporal context within each segment.",
-      "why_innovative": "This technique significantly improves the parallelism and hardware efficiency of TTT for long spatial videos, while ensuring that critical intra-chunk spatiotemporal continuity is preserved.",
+      "label": "depth-wise 3d spatiotemporal convolution for ttt queries/keys/values",
+      "description": "Lightweight depthwise convolutions applied to the Q, K, V projections within the TTT branch to aggregate local neighborhood context across spatial and temporal dimensions before fast-weight updates.",
+      "why_innovative": "Replacing point-wise linear projections with spatiotemporal convolutions injects geometric inductive bias into memory updates, helping fast weights capture 3D geometric correspondence and temporal continuity rather than learning spatial patterns from scratch.",
       "category": "technique",
-      "relevance_score": 0.8
+      "relevance_score": 0.82
+    },
+    {
+      "label": "muon optimizer update rule for fast weights",
+      "description": "An optimization rule that orthogonalizes gradients via Newton-Schulz iterations and normalizes weights, replacing vanilla gradient descent for updating TTT fast weights.",
+      "why_innovative": "Muon updates improve the stability and effectiveness of online fast-weight optimization during inference, addressing instability issues that arise when standard SGD is applied to rapidly-changing streaming video inputs.",
+      "category": "technique",
+      "relevance_score": 0.7
+    },
+    {
+      "label": "dense 3d scene description dataset for spatial ttt supervision",
+      "description": "A constructed dataset providing comprehensive 3D scene descriptions covering global context, object counts, and spatial relations, used to supervise fast-weight update dynamics during training.",
+      "why_innovative": "Existing spatial datasets are sparse and local, providing weak gradient signals; dense scene-level descriptions supply rich supervision that teaches the model to preserve globally structured 3D evidence across long video streams.",
+      "category": "dataset",
+      "relevance_score": 0.72
+    },
+    {
+      "label": "streaming spatial intelligence benchmark evaluation",
+      "description": "Evaluation of models on video-based spatial understanding benchmarks (e.g., VSI-Bench, VSI-Super) that test long-horizon spatial recall, object counting, relative distances, and navigation across unbounded video streams.",
+      "why_innovative": "These benchmarks expose the critical gap in current MLLMs' ability to handle streaming, long-horizon 3D spatial reasoning—a capability essential for robotics, autonomous driving, and AR applications.",
+      "category": "benchmark",
+      "relevance_score": 0.65
     }
   ]
 }

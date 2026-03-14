@@ -4,46 +4,53 @@
   "source_type": "pdf",
   "concepts": [
     {
-      "label": "indexcache framework",
-      "description": "A novel framework that accelerates sparse attention by partitioning transformer layers into 'Full' layers (which compute indices) and 'Shared' layers (which reuse indices from a preceding 'Full' layer).",
-      "why_innovative": "It addresses the O(L^2) bottleneck of sparse attention indexers in long-context LLMs by eliminating redundant computations, leading to significant speedups.",
-      "category": "architecture",
+      "label": "cross-layer index reuse",
+      "description": "A technique where most transformer layers skip computing their own token selection indices and instead reuse the indices computed by a nearby 'Full' layer, avoiding redundant computation.",
+      "why_innovative": "This exploits the empirically observed stability of top-k token selections across consecutive layers to eliminate up to 75% of indexer computations with negligible quality loss, directly addressing the quadratic scaling bottleneck in long-context inference.",
+      "category": "technique",
       "relevance_score": 1.0
     },
     {
-      "label": "cross-layer index reuse",
-      "description": "The core principle that top-k token selections are highly stable across consecutive transformer layers, enabling indexer computations to be skipped and reused.",
-      "why_innovative": "This insight extends the known cross-layer stability to sparse attention indexers, allowing for substantial computational savings without relying on a full attention mechanism.",
-      "category": "technique",
-      "relevance_score": 0.95
-    },
-    {
-      "label": "training-free indexcache",
-      "description": "An approach to configure IndexCache on existing sparse attention models without requiring any costly retraining or weight updates.",
-      "why_innovative": "It provides an immediate and practical way to enhance the efficiency of already deployed sparse attention models by adapting the indexer pattern post-training.",
-      "category": "technique",
-      "relevance_score": 0.85
+      "label": "deepseek sparse attention lightning indexer",
+      "description": "A lightweight module in DeepSeek Sparse Attention that scores all preceding tokens using a multi-head ReLU-gated dot product to select the top-k most relevant tokens before the main attention computation.",
+      "why_innovative": "It is a production-grade sparse attention mechanism that reduces core attention from O(L²) to O(Lk), but its own O(L²) cost per layer becomes the new bottleneck at long contexts, motivating IndexCache.",
+      "category": "architecture",
+      "relevance_score": 0.8
     },
     {
       "label": "greedy layer selection algorithm",
-      "description": "An algorithm used in training-free IndexCache that iteratively identifies and converts 'Full' layers to 'Shared' layers by minimizing language modeling loss on a calibration set.",
-      "why_innovative": "This data-driven approach intelligently prioritizes which indexers to retain, outperforming naive uniform reuse by adapting to the varying importance of different layers.",
-      "category": "technique",
-      "relevance_score": 0.75
-    },
-    {
-      "label": "training-aware indexcache",
-      "description": "An approach that integrates IndexCache optimization directly into the model training pipeline, either from scratch or via continued pre-training.",
-      "why_innovative": "By optimizing the indexers during training, it allows for more aggressive index reuse patterns while maintaining or even improving model quality compared to standard per-layer indexers.",
+      "description": "A search algorithm that iteratively converts indexer layers from 'Full' to 'Shared' by evaluating language modeling loss on a calibration set and committing the flip that minimizes loss at each step.",
+      "why_innovative": "It enables training-free deployment of IndexCache on any off-the-shelf DSA model without weight updates, and consistently outperforms naive uniform interleaving by discovering a data-driven, layer-importance-aware pattern.",
       "category": "technique",
       "relevance_score": 0.85
     },
     {
       "label": "multi-layer distillation loss",
-      "description": "A novel loss function for training-aware IndexCache where each retained indexer is optimized to predict top-k tokens that are jointly useful for all the subsequent layers it serves.",
-      "why_innovative": "It enables indexers to learn a 'consensus' top-k selection, providing a robust and theoretically justified method to generalize indexer capabilities across multiple layers.",
+      "description": "A training objective that distills each retained indexer layer against the averaged attention distributions of all downstream shared layers it serves, rather than only its own layer.",
+      "why_innovative": "It is mathematically proven to be equivalent to distilling against a single averaged target distribution, giving the indexer a principled 'consensus' objective that allows even simple uniform interleaving patterns to match full per-layer indexer accuracy.",
+      "category": "technique",
+      "relevance_score": 0.9
+    },
+    {
+      "label": "kl divergence distillation for sparse token selection",
+      "description": "Using KL divergence between the indexer's predicted token score distribution and the aggregated full-attention distribution as a training signal to align sparse token selection with full-attention behavior.",
+      "why_innovative": "Adapting KL distillation to multi-layer sparse indexer training enables the retained indexers to generalize across multiple layers they serve, closing the quality gap introduced by aggressive index reuse.",
       "category": "technique",
       "relevance_score": 0.75
+    },
+    {
+      "label": "top-k token selection stability across layers",
+      "description": "The empirical phenomenon where adjacent transformer layers select highly overlapping sets of the most important tokens, with 70–100% overlap observed between consecutive layers.",
+      "why_innovative": "This cross-layer redundancy is the foundational insight enabling IndexCache, and its confirmation in sparse attention (DSA) settings extends prior observations from full-attention models to a new and practically important regime.",
+      "category": "theory",
+      "relevance_score": 0.7
+    },
+    {
+      "label": "full-shared layer partitioning pattern",
+      "description": "A binary assignment of transformer layers into 'Full' layers that compute fresh token indices and 'Shared' layers that inherit indices from the nearest preceding Full layer, controlled by a pattern string.",
+      "why_innovative": "This simple two-role partitioning requires only a single conditional branch change at inference, making it highly practical and zero-overhead in memory, while enabling flexible trade-offs between compute reduction and model quality.",
+      "category": "architecture",
+      "relevance_score": 0.82
     }
   ]
 }

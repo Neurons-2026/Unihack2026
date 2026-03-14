@@ -4,46 +4,60 @@
   "source_type": "pdf",
   "concepts": [
     {
-      "label": "madqa benchmark",
-      "description": "A new, large-scale benchmark containing 2,250 human-authored questions over 800 diverse, fresh PDF documents, specifically designed to test multimodal AI agents' ability to perform complex, multi-stage information retrieval and reasoning.",
-      "why_innovative": "It addresses critical limitations of existing benchmarks by using fresh, diverse PDF documents and fully human-authored questions, explicitly requiring strategic, multi-hop, and visual reasoning capabilities from agents.",
+      "label": "agentic document collection visual question answering",
+      "description": "A task where an AI agent must iteratively retrieve, reason over, and synthesize information from a corpus of heterogeneous PDF documents to answer complex natural language questions with attributed evidence.",
+      "why_innovative": "This formalization introduces six rigorous properties (extractive, multi-hop, closed-world, grounded, agentic, visual) that collectively distinguish it from prior document QA paradigms, setting a higher bar for evaluating true strategic reasoning in multimodal agents.",
       "category": "benchmark",
-      "relevance_score": 1.0
-    },
-    {
-      "label": "agentic document qa task",
-      "description": "A formalized task where AI agents must answer questions by strategically navigating a collection of diverse documents, requiring iterative planning, retrieval, and synthesis of information, often across multiple pages or documents, using both text and visual cues.",
-      "why_innovative": "This definition moves beyond traditional single-step QA by emphasizing complex, autonomous agentic behavior, pushing the frontier of how AI interacts with and reasons over large document corpuses.",
-      "category": "theory",
       "relevance_score": 0.95
     },
     {
-      "label": "accuracy effort trade-off evaluation",
-      "description": "A novel evaluation protocol that measures an agent's accuracy in solving document-based questions in relation to the 'effort' expended, quantified by the number of discrete steps or search iterations.",
-      "why_innovative": "It provides a more nuanced assessment than raw accuracy, allowing researchers to differentiate between agents that achieve results through efficient strategic planning versus those relying on computationally expensive, brute-force search, which is crucial for real-world agent deployment.",
+      "label": "accuracy-effort trade-off metric",
+      "description": "A novel evaluation metric based on the Cumulative Difference method that measures how well an agent's accuracy scales relative to the number of search/retrieval steps it expends.",
+      "why_innovative": "It moves beyond raw accuracy to penalize brute-force search strategies, enabling principled comparison of agents that achieve similar accuracy via vastly different computational effort, which is critical for deploying agents in cost-sensitive enterprise settings.",
       "category": "technique",
       "relevance_score": 0.9
     },
     {
-      "label": "construct validity for benchmarks",
-      "description": "A rigorous methodological framework applied to benchmark design to ensure it genuinely measures the intended AI capabilities (e.g., reasoning over lexical overlap, grounding over parametric knowledge) and is robust against confounding factors.",
-      "why_innovative": "This approach enhances the scientific rigor and trustworthiness of AI benchmarks, ensuring they provide meaningful insights into model capabilities rather than being solvable by trivial strategies or data contamination.",
-      "category": "technique",
-      "relevance_score": 0.8
-    },
-    {
-      "label": "sentinel pool for benchmarks",
-      "description": "A dedicated subset of exceptionally difficult questions within a benchmark, specifically designed to be unsolvable by current state-of-the-art models, ensuring the benchmark maintains long-term relevance and headroom for future AI advancements.",
-      "why_innovative": "It addresses the common problem of benchmarks quickly becoming saturated or 'solved' by rapid AI progress, providing a persistent challenge that continues to drive innovation.",
+      "label": "classical test theory benchmark design",
+      "description": "A psychometric framework applied to benchmark construction that quantifies item difficulty and discrimination power to select questions that maximally differentiate between strong and weak models.",
+      "why_innovative": "Applying Classical Test Theory (point-biserial correlation and difficulty binning) to AI benchmark creation is a novel methodological transfer that ensures statistically principled splits and long-term benchmark relevance via a reserved 'Sentinel Pool'.",
       "category": "technique",
       "relevance_score": 0.85
     },
     {
-      "label": "human agent reasoning gap",
-      "description": "An observed discrepancy between human and AI agent reasoning strategies in complex document tasks, where agents may achieve similar accuracy but rely on brute-force methods and fail on questions solvable by humans, highlighting a fundamental difference in strategic planning.",
-      "why_innovative": "This analysis provides critical empirical evidence of current AI agents' limitations in genuine strategic reasoning compared to humans, directly informing the future development directions for more intelligent and efficient AI agents.",
-      "category": "theory",
-      "relevance_score": 0.75
+      "label": "sentinel pool",
+      "description": "A reserved subset of benchmark items (20% of the test set) consisting exclusively of questions no current model can solve, designed to preserve benchmark headroom as model capabilities improve.",
+      "why_innovative": "This mechanism directly addresses benchmark saturation, a growing problem in AI evaluation, by guaranteeing a zero-accuracy baseline subset that ensures the benchmark remains discriminative for future, more capable models.",
+      "category": "technique",
+      "relevance_score": 0.8
+    },
+    {
+      "label": "multi-hop cross-document retrieval",
+      "description": "A retrieval requirement where answering a question demands synthesizing evidence from disjoint pages across multiple separate PDF documents rather than any single document.",
+      "why_innovative": "Cross-document multi-hop reasoning over heterogeneous PDFs is significantly harder than single-document QA and reflects realistic enterprise workflows, pushing agents beyond simple RAG pipelines toward genuine planning and navigation.",
+      "category": "technique",
+      "relevance_score": 0.78
+    },
+    {
+      "label": "construct validity operationalization for benchmarks",
+      "description": "A formal verification process that measures the degree to which a benchmark actually tests its intended construct (e.g., agentic reasoning) rather than confounds like lexical overlap or parametric memorization.",
+      "why_innovative": "Explicitly operationalizing construct validity—using n-gram precision analysis, guessability tests across frontier models, and visual necessity categorization—sets a new standard for benchmark integrity in the AI evaluation community.",
+      "category": "technique",
+      "relevance_score": 0.72
+    },
+    {
+      "label": "recursive language model unconstrained search",
+      "description": "An agentic system configuration where a language model can invoke retrieval tools recursively without bounds on the number of steps, contrasted with constrained agency that limits search iterations.",
+      "why_innovative": "The empirical finding that unconstrained RLMs incur catastrophic effort overhead while constrained agents match or exceed their accuracy reveals a fundamental efficiency-reasoning trade-off that is central to designing practical agentic systems.",
+      "category": "architecture",
+      "relevance_score": 0.68
+    },
+    {
+      "label": "visual necessity taxonomy for document qa",
+      "description": "A fine-grained categorization system that labels document questions by whether answers require free text, structured layout comprehension, tabular data parsing, or visual artifacts such as charts and checkboxes.",
+      "why_innovative": "Quantifying that 58% of realistic document questions benefit from non-textual visual understanding challenges the text-only assumption of many RAG and LLM pipelines and provides a diagnostic tool for identifying model weaknesses in multimodal reasoning.",
+      "category": "benchmark",
+      "relevance_score": 0.65
     }
   ]
 }
