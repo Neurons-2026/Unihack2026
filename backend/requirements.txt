@@ -10,3 +10,4 @@ scikit-learn==1.4.2
 spacy==3.7.4
 networkx==3.3
 supabase==2.4.5
+duckduckgo-search==6.2.1
