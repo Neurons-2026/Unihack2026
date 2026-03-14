@@ -1,0 +1,97 @@
+{
+  "version": "1.0.0",
+  "generated_for": "S3 Source List + Ingestion Priority",
+  "notes": "P0 means build first for MVP reliability. P1 means add after P0 ingestion is stable.",
+  "sources": [
+    {
+      "priority_order": 1,
+      "id": "github",
+      "name": "GitHub Trending",
+      "url": "https://github.com/trending",
+      "priority": "P0",
+      "status": "active",
+      "ingestion_method": "scrape_html",
+      "reason": "High-signal, fast-updating builder ecosystem source."
+    },
+    {
+      "priority_order": 2,
+      "id": "huggingface",
+      "name": "HuggingFace Papers",
+      "url": "https://huggingface.co/papers",
+      "priority": "P0",
+      "status": "active",
+      "ingestion_method": "api_or_scrape",
+      "reason": "Research + model updates with useful summaries."
+    },
+    {
+      "priority_order": 3,
+      "id": "openai_blog",
+      "name": "OpenAI News",
+      "url": "https://openai.com/news/",
+      "priority": "P0",
+      "status": "active",
+      "ingestion_method": "rss_or_scrape",
+      "reason": "Major product and research announcements."
+    },
+    {
+      "priority_order": 4,
+      "id": "anthropic_blog",
+      "name": "Anthropic News",
+      "url": "https://www.anthropic.com/news",
+      "priority": "P0",
+      "status": "active",
+      "ingestion_method": "rss_or_scrape",
+      "reason": "Major lab updates, safety and product news."
+    },
+    {
+      "priority_order": 5,
+      "id": "arxiv_cs_ai",
+      "name": "arXiv (AI Recent Papers)",
+      "url": "https://arxiv.org/list/cs.AI/recent",
+      "priority": "P1",
+      "status": "active",
+      "ingestion_method": "rss_or_html",
+      "reason": "Broad AI paper discovery expansion after core sources."
+    },
+    {
+      "priority_order": 6,
+      "id": "arxiv_cs_lg",
+      "name": "arXiv (Machine Learning)",
+      "url": "https://arxiv.org/list/cs.LG/recent",
+      "priority": "P1",
+      "status": "active",
+      "ingestion_method": "rss_or_html",
+      "reason": "Higher-density ML signal after P0 pipeline stabilizes."
+    },
+    {
+      "priority_order": 7,
+      "id": "arxiv_cs_cl",
+      "name": "arXiv (Computational Linguistics)",
+      "url": "https://arxiv.org/list/cs.CL/recent",
+      "priority": "P1",
+      "status": "active",
+      "ingestion_method": "rss_or_html",
+      "reason": "NLP-specific coverage for LLM-relevant trends."
+    },
+    {
+      "priority_order": 8,
+      "id": "deepmind_blog",
+      "name": "Google DeepMind Blog",
+      "url": "https://deepmind.google/discover/blog/",
+      "priority": "P1",
+      "status": "active",
+      "ingestion_method": "rss_or_scrape",
+      "reason": "Important research/product updates, lower MVP urgency than P0."
+    }
+  ],
+  "fallback_plan": {
+    "use_seed_data_if": [
+      "source_rate_limited",
+      "site_layout_breaks_scraper",
+      "network_timeout",
+      "less_than_10_fresh_items_collected"
+    ],
+    "seed_dataset_path": "backend/data/seed_cards.json",
+    "minimum_demo_items": 15
+  }
+}
