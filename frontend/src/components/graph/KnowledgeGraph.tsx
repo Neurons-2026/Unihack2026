@@ -2,8 +2,80 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { GraphNode, GraphEdge } from '@/types/graph';
-import { buildSampleGraph, buildAdjMap } from '@/data/sampleGraph';
+import { GraphNode, GraphEdge, GraphData } from '@/types/graph';
+import { buildAdjMap } from '@/data/sampleGraph';
+import { getGraph, generateGraphFromCards, mergeGraph } from '@/lib/api';
+import { getSessionId } from '@/lib/session';
+import { useBasketStore } from '@/stores/useBasketStore';
+import { GraphNode as ApiGraphNode, GraphEdge as ApiGraphEdge } from '@/lib/types';
+
+function buildGraphFromAPI(
+  apiNodes: ApiGraphNode[],
+  apiEdges: ApiGraphEdge[],
+  W: number,
+  H: number,
+): GraphData {
+  const todayNodeIds = new Set(apiNodes.filter((n) => (n.is_today ?? true)).map((n) => n.id));
+  let todayIdx = 0;
+
+  const nodes: GraphNode[] = apiNodes.map((raw) => {
+    const freq = raw.frequency ?? 1;
+    const baseR = 8 + Math.min(freq, 5) * 2.5;
+    const isToday = raw.is_today ?? true;
+    const todayTx = W * 0.3 + Math.random() * W * 0.4;
+    const todayTy = H * 0.3 + Math.random() * H * 0.4;
+    const fullTx = W * 0.1 + Math.random() * W * 0.8;
+    const fullTy = H * 0.08 + Math.random() * H * 0.84;
+    const delay = isToday ? 20 + todayIdx * 12 : 0;
+    if (isToday) todayIdx++;
+    return {
+      id: raw.id,
+      label: raw.label,
+      description: raw.description || '',
+      frequency: freq,
+      isToday,
+      r: baseR,
+      x: isToday ? -20 : fullTx,
+      y: isToday ? -20 : fullTy,
+      vx: 0, vy: 0,
+      todayTx, todayTy, fullTx, fullTy,
+      tx: isToday ? todayTx : fullTx,
+      ty: isToday ? todayTy : fullTy,
+      startX: -20, startY: -20,
+      cpx: todayTx * 0.5 + Math.random() * 60,
+      cpy: -20 + todayTy * 0.3,
+      animT: isToday ? 0 : 1,
+      animating: false,
+      entered: !isToday,
+      settled: !isToday,
+      opacity: 0,
+      scale: isToday ? 0.3 : 1,
+      delay,
+      breathPhase: Math.random() * Math.PI * 2,
+      breathSpeed: 0.015 + Math.random() * 0.01,
+      labelAlpha: 0,
+      targetLabelAlpha: 0,
+      orbiters: isToday
+        ? Array.from({ length: 2 + Math.floor(Math.random() * 2) }, () => ({
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.02 + Math.random() * 0.02,
+            dist: baseR * 1.8 + Math.random() * 6,
+            size: 1.2 + Math.random(),
+          }))
+        : [],
+    };
+  });
+
+  const allEdges: GraphEdge[] = apiEdges.map((e) => ({
+    source: e.source_node_id,
+    target: e.target_node_id,
+  }));
+  const todayEdges = allEdges.filter(
+    (e) => todayNodeIds.has(e.source) && todayNodeIds.has(e.target),
+  );
+
+  return { nodes, todayEdges, fullEdges: allEdges };
+}
 
 function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);
@@ -13,6 +85,12 @@ export default function KnowledgeGraph() {
   const router = useRouter();
   const [detailNode, setDetailNode] = useState<GraphNode | null>(null);
   const [viewMode, setViewMode] = useState<'today' | 'full'>('today');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [merging, setMerging] = useState(false);
+  const apiDataRef = useRef<{ nodes: ApiGraphNode[]; edges: ApiGraphEdge[] } | null>(null);
+  const basketItems = useBasketStore((s) => s.items);
   const cvRef = useRef<HTMLCanvasElement>(null);
   const dataReady = useRef(false);
   const nodesRef = useRef<GraphNode[]>([]);
@@ -40,6 +118,19 @@ export default function KnowledgeGraph() {
   });
 
   useEffect(() => {
+    const sessionId = getSessionId();
+    const fetch = basketItems.length > 0
+      ? generateGraphFromCards(basketItems, sessionId)
+      : getGraph(sessionId);
+    fetch
+      .then((data) => { apiDataRef.current = data; setDataLoaded(true); })
+      .catch(() => setError('Failed to load graph'))
+      .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!dataLoaded || !apiDataRef.current) return;
     const cv = cvRef.current;
     if (!cv) return;
     const ctx = cv.getContext('2d');
@@ -58,7 +149,7 @@ export default function KnowledgeGraph() {
     window.addEventListener('resize', resize);
 
     if (!dataReady.current) {
-      const gd = buildSampleGraph(s.W, s.H);
+      const gd = buildGraphFromAPI(apiDataRef.current!.nodes, apiDataRef.current!.edges, s.W, s.H);
       nodesRef.current = gd.nodes;
       todayEdgesRef.current = gd.todayEdges;
       fullEdgesRef.current = gd.fullEdges;
@@ -368,7 +459,23 @@ export default function KnowledgeGraph() {
       window.removeEventListener('touchend', onUp);
       cv!.removeEventListener('mouseleave', onLeave);
     };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataLoaded]);
+
+  async function handleMerge() {
+    if (merging) return;
+    setMerging(true);
+    try {
+      const sessionId = getSessionId();
+      const data = await mergeGraph(sessionId);
+      apiDataRef.current = data;
+      dataReady.current = false;
+      setDataLoaded(false);
+      setTimeout(() => setDataLoaded(true), 50);
+    } finally {
+      setMerging(false);
+    }
+  }
 
   // Toggle handler
   function handleToggle() {
@@ -430,10 +537,13 @@ export default function KnowledgeGraph() {
           </div>
         </div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.5, marginBottom: 6 }}>
-          {viewMode === 'today'
-            ? <>Today you discovered <span style={{ color: 'rgba(100,220,220,0.8)' }}>11 new concepts</span></>
-            : <>Your AI knowledge is growing — <span style={{ color: 'rgba(100,220,220,0.8)' }}>11 new</span> connecting to <span style={{ color: 'rgba(100,210,130,0.8)' }}>4 previous</span></>
-          }
+          {loading ? 'Loading your knowledge graph…' : error ? error : (() => {
+            const todayCount = (apiDataRef.current?.nodes ?? []).filter(n => n.is_today).length;
+            const prevCount = (apiDataRef.current?.nodes ?? []).filter(n => !n.is_today).length;
+            return viewMode === 'today'
+              ? <>Today you discovered <span style={{ color: 'rgba(100,220,220,0.8)' }}>{todayCount} concept{todayCount !== 1 ? 's' : ''}</span></>
+              : <>Your AI knowledge is growing — <span style={{ color: 'rgba(100,220,220,0.8)' }}>{todayCount} new</span>{prevCount > 0 && <> connecting to <span style={{ color: 'rgba(100,210,130,0.8)' }}>{prevCount} previous</span></>}</>;
+          })()}
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -452,6 +562,42 @@ export default function KnowledgeGraph() {
       {/* CANVAS */}
       <div style={{ flex: 1, position: 'relative', minHeight: 0, overflow: 'hidden' }}>
         <canvas ref={cvRef} style={{ width: '100%', height: '100%', display: 'block', touchAction: 'none' }} />
+        {(loading || error) && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: 14, color: error ? 'rgba(248,113,113,0.7)' : 'rgba(255,255,255,0.25)' }}>
+              {error ?? 'Building graph…'}
+            </span>
+          </div>
+        )}
+
+        {/* MERGE BUTTON */}
+        <div style={{ position: 'absolute', bottom: 24, right: 20, zIndex: 5 }}>
+          <button
+            onClick={handleMerge}
+            disabled={merging}
+            style={{
+              backgroundColor: merging ? 'rgba(100,180,255,0.15)' : 'rgba(100,180,255,0.12)',
+              color: 'rgba(100,180,255,0.9)',
+              fontSize: 12,
+              fontWeight: 500,
+              padding: '10px 16px',
+              borderRadius: 30,
+              cursor: merging ? 'default' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              border: '1px solid rgba(100,180,255,0.2)',
+              outline: 'none',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+              <path d="M6 9v6M18 15a6 6 0 00-6-6H9"/>
+            </svg>
+            {merging ? 'Merging…' : 'Merge Graph'}
+          </button>
+        </div>
 
         {/* TOGGLE BUTTON — white bg, grey on hover */}
         <div style={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 5 }}>

@@ -8,8 +8,9 @@ class Card(BaseModel):
     card_summary: str
     keywords: List[str]
     source: str
-    source_url: HttpUrl
+    source_url: Optional[HttpUrl] = None
     thumbnail_keyword: Optional[str] = None
+    image_url: Optional[str] = None
     trending_score: Optional[float] = None
     image_url: Optional[str] = None
 

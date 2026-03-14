@@ -1,0 +1,162 @@
+[
+  {
+    "id": "github:volcengine/OpenViking",
+    "card_title": "OpenViking Offers File-System-Style Context Database for AI Agents",
+    "card_summary": "Open-source database organizes AI agent memory, resources, and skills like files for better context management.",
+    "keywords": [
+      "filesystem paradigm context management",
+      "tiered context loading",
+      "directory recursive retrieval",
+      "visualized retrieval trajectory",
+      "automatic session memory extraction"
+    ],
+    "thumbnail_keyword": "filesystem",
+    "source": "github",
+    "source_url": "https://github.com/volcengine/OpenViking",
+    "trending_score": 1.0
+  },
+  {
+    "id": "github:anthropics/claude-plugins-official",
+    "card_title": "Anthropic Launches Official Plugin Directory for Claude Code",
+    "card_summary": "Anthropic opens a curated marketplace where developers can find and install plugins that extend Claude Code.",
+    "keywords": [
+      "claude code plugin system",
+      "mcp server integration",
+      "slash command plugins",
+      "agent definitions",
+      "plugin marketplace curation"
+    ],
+    "thumbnail_keyword": "plugin",
+    "source": "github",
+    "source_url": "https://github.com/anthropics/claude-plugins-official",
+    "trending_score": 0.9
+  },
+  {
+    "id": "github:dimensionalOS/dimos",
+    "card_title": "DimOS Offers a Python-Based Operating System for Any Robot",
+    "card_summary": "A new open-source SDK lets developers control humanoids, drones, and quadrupeds in Python with no ROS needed.",
+    "keywords": [
+      "agentive robotics os",
+      "spatio-temporal rag",
+      "mcp robot skill interface",
+      "stream-based module architecture",
+      "hardware-agnostic robot blueprint"
+    ],
+    "thumbnail_keyword": "robot",
+    "source": "github",
+    "source_url": "https://github.com/dimensionalOS/dimos",
+    "trending_score": 0.8
+  },
+  {
+    "id": "github:p-e-w/heretic",
+    "card_title": "Heretic Automates Censorship Removal From Language Models",
+    "card_summary": "An open-source tool automatically removes safety filters from AI models while preserving their intelligence.",
+    "keywords": [
+      "directional ablation",
+      "tpe-based ablation optimizer",
+      "kl divergence minimization",
+      "interpolated refusal direction",
+      "ablation weight kernel"
+    ],
+    "thumbnail_keyword": "lock",
+    "source": "github",
+    "source_url": "https://github.com/p-e-w/heretic",
+    "trending_score": 0.7
+  },
+  {
+    "id": "github:langflow-ai/openrag",
+    "card_title": "OpenRAG Offers Pre-Packaged Agentic RAG for Document Search",
+    "card_summary": "OpenRAG lets users upload documents and chat with them using AI-powered search and multi-agent workflows.",
+    "keywords": [
+      "agentic rag workflow",
+      "retrieval-augmented generation",
+      "semantic search",
+      "model context protocol",
+      "visual workflow builder"
+    ],
+    "thumbnail_keyword": "document",
+    "source": "github",
+    "source_url": "https://github.com/langflow-ai/openrag",
+    "trending_score": 0.6
+  },
+  {
+    "id": "github:lightpanda-io/browser",
+    "card_title": "Lightpanda Offers Open-Source Headless Browser 11x Faster Than Chrome",
+    "card_summary": "A new open-source browser built for automation uses 9x less memory and runs 11x faster than Chrome.",
+    "keywords": [
+      "headless browser engine",
+      "zig system-level runtime",
+      "cdp server compatibility",
+      "v8 javascript engine integration",
+      "web platform tests conformance"
+    ],
+    "thumbnail_keyword": "browser",
+    "source": "github",
+    "source_url": "https://github.com/lightpanda-io/browser",
+    "trending_score": 0.5
+  },
+  {
+    "id": "github:msitarzewski/agency-agents",
+    "card_title": "Open-Source AI Agency Offers Dozens of Specialized Agent Personas",
+    "card_summary": "A GitHub project provides ready-made AI agent personalities for coding, marketing, sales, and more.",
+    "keywords": [
+      "specialized ai agent personas",
+      "multi-agent orchestration",
+      "cross-tool agent portability",
+      "deliverable-focused agent prompting",
+      "agentic identity and trust"
+    ],
+    "thumbnail_keyword": "team",
+    "source": "github",
+    "source_url": "https://github.com/msitarzewski/agency-agents",
+    "trending_score": 0.4
+  },
+  {
+    "id": "github:fishaudio/fish-speech",
+    "card_title": "Fish Audio S2 Delivers Top-Tier Text-to-Speech with Dual-AR Architecture",
+    "card_summary": "Fish Audio's open-source S2 model generates realistic speech in 50+ languages using reinforcement learning.",
+    "keywords": [
+      "dual-autoregressive architecture",
+      "grpo reinforcement learning alignment",
+      "inline natural language prosody control",
+      "rvq-based audio codec",
+      "rapid voice cloning"
+    ],
+    "thumbnail_keyword": "speaker",
+    "source": "github",
+    "source_url": "https://github.com/fishaudio/fish-speech",
+    "trending_score": 0.3
+  },
+  {
+    "id": "github:InsForge/InsForge",
+    "card_title": "InsForge Gives AI Coding Agents a Semantic Backend Layer",
+    "card_summary": "InsForge lets AI agents directly manage databases, auth, storage, and functions through a unified layer.",
+    "keywords": [
+      "semantic backend layer",
+      "backend context engineering",
+      "mcp server integration",
+      "model gateway",
+      "agentic backend primitives"
+    ],
+    "thumbnail_keyword": "server",
+    "source": "github",
+    "source_url": "https://github.com/InsForge/InsForge",
+    "trending_score": 0.2
+  },
+  {
+    "id": "github:obra/superpowers",
+    "card_title": "Superpowers Gives Coding Agents a Full Development Workflow",
+    "card_summary": "An open-source toolkit adds structured planning, testing, and review skills to AI coding agents.",
+    "keywords": [
+      "subagent-driven development",
+      "composable agent skills",
+      "two-stage agent review",
+      "socratic spec refinement",
+      "mandatory tdd enforcement"
+    ],
+    "thumbnail_keyword": "blueprint",
+    "source": "github",
+    "source_url": "https://github.com/obra/superpowers",
+    "trending_score": 0.1
+  }
+]

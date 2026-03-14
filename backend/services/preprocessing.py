@@ -6,7 +6,11 @@ This module does not extract keywords. It consumes keywords provided by Harry's 
 from __future__ import annotations
 
 import re
+import unicodedata
 from typing import Any, Dict, List
+
+from bs4 import BeautifulSoup
+from readability import Document
 
 from models.schemas import Card
 
@@ -145,6 +149,34 @@ def scraped_item_to_card(item: dict, keywords: list[str], source: str) -> dict:
 
 
 # =========================================================================
+# HTML extraction
+# =========================================================================
+
+def extract_plaintext(html: str) -> str:
+    """Strip boilerplate/ads from raw HTML and return clean plaintext."""
+    doc = Document(html)
+    cleaned_html = doc.summary(html_partial=True)
+
+    soup = BeautifulSoup(cleaned_html, "html.parser")
+    for tag in soup(["script", "style", "noscript", "iframe", "form"]):
+        tag.decompose()
+
+    text = soup.get_text(separator="\n")
+    text = unicodedata.normalize("NFKC", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = re.sub(r"[ \t]+", " ", text)
+    return text.strip()
+
+
+def clean_card_summary(summary: str) -> str:
+    """Light clean for summaries that arrive as plain text (not full HTML)."""
+    soup = BeautifulSoup(summary, "html.parser")
+    text = soup.get_text(separator=" ")
+    text = unicodedata.normalize("NFKC", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+# =========================================================================
 # Source-specific cleaners (Sunny — preprocessing owner)
 # =========================================================================
 
@@ -260,9 +292,9 @@ def score_content_item(item: Dict[str, Any]) -> tuple[float, list[str]]:
     Score a preprocessed content_item 0-1.
 
     Breakdown (max 1.0):
-      Content length  0-0.50  (word count, saturates at 400)
+      Content length   0-0.50  (word count, saturates at 400)
       Source authority 0-0.30  (tier-based)
-      Completeness    0-0.20  (presence of key fields)
+      Completeness     0-0.20  (presence of key fields)
     """
     notes: list[str] = []
     cleaned_text = item.get("preprocessing", {}).get("cleaned_text", "")
@@ -289,7 +321,7 @@ def score_content_item(item: Dict[str, Any]) -> tuple[float, list[str]]:
     if item.get("raw_summary", "").strip():
         completeness_score += 0.05
         notes.append("has_summary")
-    if item.get("published_at", ""):
+    if item.get("published_at", "").strip():
         completeness_score += 0.05
         notes.append("has_publish_date")
     if item.get("metadata"):
@@ -334,10 +366,37 @@ def preprocess_item(item: Dict[str, Any]) -> Dict[str, Any]:
     return item
 
 
-# =========================================================================
-# Legacy / backwards-compatible functions
-# =========================================================================
+def preprocess_content_item(item: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Take a content_item dict (S2 schema) with raw_content HTML,
+    strip boilerplate, and populate item['preprocessing'].
+
+    Returns the same dict with 'preprocessing' filled in.
+    """
+    raw_content = item.get("raw_content", "")
+
+    if raw_content.strip().startswith("<"):
+        cleaned_text = extract_plaintext(raw_content)
+    else:
+        cleaned_text = clean_card_summary(raw_content)
+
+    item["preprocessing"] = {
+        "cleaned_text": cleaned_text,
+        "quality_score": 0.0,
+        "quality_notes": [],
+        "enrichment_used": False,
+    }
+
+    score, notes = score_content_item(item)
+    item["preprocessing"]["quality_score"] = score
+    item["preprocessing"]["quality_notes"] = notes
+    return item
+
 
 async def preprocess_cards(raw_cards: List[Card]) -> List[Card]:
-    # Backwards-compatible pass-through for existing Card objects.
-    return raw_cards
+    """Clean card summaries using HTML-aware cleaning."""
+    cleaned = []
+    for card in raw_cards:
+        cleaned_summary = clean_card_summary(card.card_summary)
+        cleaned.append(card.copy(update={"card_summary": cleaned_summary}))
+    return cleaned

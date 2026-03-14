@@ -1,0 +1,47 @@
+{
+  "source_file": "github:lightpanda-io/browser",
+  "source_title": "Lightpanda Browser – Open-Source Headless Browser for AI Agents and Web Automation",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "headless browser engine",
+      "description": "A web browser that runs entirely in the background without any visible screen or graphical interface, built from scratch specifically for automated tasks rather than human use.",
+      "why_innovative": "By designing a browser purely for headless (invisible) use from the ground up — not adapting an existing desktop browser — it eliminates massive amounts of unnecessary overhead, achieving 9x less memory use and 11x faster speed than Chrome.",
+      "impact_on_applications": "Companies running thousands of automated web tasks (like price comparison, AI data collection, or automated testing) could slash their cloud computing bills dramatically. AI agents that browse the web to gather information could do so far faster and at much larger scale than today.",
+      "category": "architecture",
+      "relevance_score": 0.98
+    },
+    {
+      "label": "zig system-level runtime",
+      "description": "The browser is written in Zig, a low-level programming language similar to C that gives precise control over how a computer uses memory and processing power, enabling very tight performance optimizations.",
+      "why_innovative": "Choosing a low-level, performance-first language instead of building on top of existing browser codebases (like Chromium) allows the team to eliminate all the hidden costs of a general-purpose browser, producing a fundamentally leaner tool.",
+      "impact_on_applications": "This means automated web tools — like those used by AI research pipelines, SEO auditors, or e-commerce scrapers — can run on much cheaper, smaller servers, reducing costs for businesses and enabling faster iteration for developers.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "cdp server compatibility",
+      "description": "Lightpanda speaks the same control language (Chrome DevTools Protocol) that popular browser automation tools like Puppeteer and Playwright already use, so existing scripts work without modification.",
+      "why_innovative": "Developers can drop in Lightpanda as a direct replacement for Chrome in their automation pipelines without rewriting any code, making adoption of a far more efficient engine essentially frictionless.",
+      "impact_on_applications": "Teams already using Puppeteer or Playwright for automated website testing, web scraping, or AI data gathering can instantly switch to a much faster, lighter engine — cutting infrastructure costs without changing their existing workflows.",
+      "category": "tool",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "v8 javascript engine integration",
+      "description": "Lightpanda embeds Google's V8 engine (the same JavaScript processor used inside Chrome) so it can correctly run the JavaScript code that modern websites depend on, without needing the rest of Chrome.",
+      "why_innovative": "This allows the browser to faithfully execute dynamic, JavaScript-heavy websites (single-page apps, infinite scroll, AJAX calls) while still keeping the overall tool dramatically lighter than a full Chrome instance.",
+      "impact_on_applications": "AI agents or data pipelines that need to interact with modern websites — such as reading live product prices, filling forms, or navigating social feeds — can do so accurately and quickly without the cost of running full Chrome instances.",
+      "category": "technique",
+      "relevance_score": 0.9
+    },
+    {
+      "label": "web platform tests conformance",
+      "description": "Lightpanda validates its behavior against the official, standardized test suite (WPT) that all major browsers use to prove they correctly implement web standards.",
+      "why_innovative": "Running against the same universal standards tests as Chrome and Firefox gives users confidence that Lightpanda will behave predictably on real websites, not just simple demo pages — a critical requirement for production AI and automation use cases.",
+      "impact_on_applications": "Businesses using automated browsers for legal compliance checking, accessibility auditing, or AI training data collection can trust that results from Lightpanda reflect how real users would experience those sites.",
+      "category": "benchmark",
+      "relevance_score": 0.83
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find e:UniHackUnihack2026 -type f -name *trending* -o -name *paper1* -o -name *paper2* -o -name *concepts.json)",
+      "Bash(find \"/e/UniHack/Unihack2026/test_graph_building/output\"* -name \"knowledge_graph.json\" -type f)",
+      "Bash(python -m test_graph_building.run_graph_incremental)",
+      "Bash(python -c \"import readability; print\\(''ok''\\)\")",
+      "Bash(python -m pip install readability-lxml duckduckgo-search)",
+      "Bash(python -m scripts.run_pipeline --sources github --no-cards --no-concepts --no-db)",
+      "Bash(python -c \":*)",
+      "Bash(python -c \"from services.pipeline import run_pipeline; print\\(''OK''\\)\")",
+      "Bash(python -m scripts.run_pipeline --sources github --no-cards --no-db)",
+      "Bash(python -m scripts.run_pipeline --sources github)"
+    ]
+  }
+}

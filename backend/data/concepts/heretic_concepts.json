@@ -1,0 +1,55 @@
+{
+  "source_file": "github:p-e-w/heretic",
+  "source_title": "Heretic: Fully automatic censorship removal for language models",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "directional ablation",
+      "description": "A technique that identifies the specific internal 'direction' inside an AI model that causes it to refuse requests, then mathematically removes that direction from the model's weight matrices so refusals no longer occur.",
+      "why_innovative": "It allows safety restrictions to be removed from AI models without any expensive retraining, making it fast and accessible to anyone with modest hardware.",
+      "impact_on_applications": "This could allow researchers, hobbyists, and developers to run locally uncensored versions of publicly available AI models for legitimate use cases like fiction writing, security research, or studying model behavior — without needing millions of dollars of compute.",
+      "category": "technique",
+      "relevance_score": 0.97
+    },
+    {
+      "label": "tpe-based ablation optimizer",
+      "description": "An automatic tuning system (powered by a library called Optuna) that tries many different combinations of settings for the censorship-removal process and picks the best one — like a smart trial-and-error search — so no human expert needs to manually tune the process.",
+      "why_innovative": "It fully automates what previously required manual expert knowledge, meaning anyone can produce high-quality decensored models without understanding the technical internals.",
+      "impact_on_applications": "This democratizes advanced model modification, enabling developers and researchers without deep AI expertise to produce quality results that previously required specialized knowledge, dramatically lowering the barrier to model customization.",
+      "category": "technique",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "kl divergence minimization",
+      "description": "A mathematical measure of how different two probability distributions are — here used to check how much the decensored model's outputs differ from the original model's outputs, so that the removal of restrictions causes as little collateral damage to the model's intelligence as possible.",
+      "why_innovative": "By co-optimizing both refusal suppression and minimal capability damage simultaneously, it solves the key tradeoff that plagued earlier approaches where removing censorship also degraded overall model quality.",
+      "impact_on_applications": "Users get models that behave freely on restricted topics while remaining just as smart and coherent for everyday tasks — a key practical improvement over earlier decensored models that often felt 'broken' or less capable.",
+      "category": "technique",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "interpolated refusal direction",
+      "description": "Instead of using only whole-number indices to pick a refusal-removal vector (a specific mathematical direction inside the model), Heretic uses fractional values to smoothly blend between two neighboring directions, creating a much larger space of possible removal targets.",
+      "why_innovative": "This unlocks a continuous spectrum of possible refusal directions beyond those directly computed from data, allowing the optimizer to find better removal targets than any single pre-computed direction.",
+      "impact_on_applications": "The result is more precise, surgical removal of refusal behavior with less damage to the model's general abilities — meaning end users get more useful and coherent responses from modified models.",
+      "category": "technique",
+      "relevance_score": 0.91
+    },
+    {
+      "label": "ablation weight kernel",
+      "description": "A flexible shape (like a curve or ramp) that controls how strongly the censorship-removal operation is applied to each layer of the neural network — some layers get treated more aggressively, others more gently.",
+      "why_innovative": "Previous approaches applied uniform or simple weight profiles across layers; a flexible, automatically optimized kernel allows much finer control, improving the balance between freedom and preserved capability.",
+      "impact_on_applications": "Models modified this way retain more of their original writing quality and reasoning ability while still being uncensored, making them more practical for real creative, research, or productivity applications.",
+      "category": "technique",
+      "relevance_score": 0.89
+    },
+    {
+      "label": "pacmap residual projection",
+      "description": "A visualization technique that compresses the high-dimensional internal states (hidden numbers) of each transformer layer down to 2D scatter plots, making it possible to visually see how 'harmful' and 'harmless' prompts are processed differently inside the model.",
+      "why_innovative": "It provides an interpretability tool for understanding where and how refusal behavior emerges inside transformer models, giving researchers a new window into model internals.",
+      "impact_on_applications": "This could help AI safety researchers and developers better understand how censorship and bias are encoded inside large language models, leading to more targeted and transparent model editing techniques in the future.",
+      "category": "technique",
+      "relevance_score": 0.83
+    }
+  ]
+}

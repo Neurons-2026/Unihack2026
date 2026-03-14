@@ -54,3 +54,22 @@ Frontend API base overrides: set NEXT_PUBLIC_API_URL in frontend/.env.local if n
 
 - Agent guidance prefers local dev; Docker files remain for convenience but are optional. Ports: frontend 3001 (compose), API 8000, Postgres 55432 when using docker-compose.
 - Keep features inside scope: swipe cards, basket cap, recommendation, briefing generation, knowledge graph; no auth.
+
+## Docker (env required)
+
+Before running compose, create:
+
+- [backend/.env](backend/.env) from [backend/.env.example](backend/.env.example)
+- [.env](.env) from [.env.example](.env.example)
+
+Required values for cards flow:
+
+- `SUPABASE_URL`
+- `SUPABASE_KEY`
+- `NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1`
+
+Then run:
+
+```sh
+docker compose up --build
+```

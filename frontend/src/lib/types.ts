@@ -7,6 +7,7 @@ export interface Card {
   source: string;
   source_url: string;
   thumbnail_keyword?: string;
+  image_url?: string;
   published_at?: string;
   metadata?: {
     stars?: number;
@@ -41,7 +42,9 @@ export interface Briefing {
 export interface GraphNode {
   id: string;
   label: string;
+  description?: string;
   frequency?: number;
+  is_today?: boolean;
 }
 
 export interface GraphEdge {

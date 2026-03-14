@@ -1,59 +1,68 @@
 'use client';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { sampleCards } from '@/data/sampleCards';
-import { CardData } from '@/types/card';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { unlockAudio, playSaveSound, playSkipSound } from '@/lib/sounds';
+import { getCards, postInteraction, addToBasket } from '@/lib/api';
+import { getSessionId } from '@/lib/session';
+import { Card } from '@/lib/types';
+import { CardData } from '@/types/card';
 import CardItem from './CardItem';
 import EmptyState from './EmptyState';
 import SwipeBackground from './SwipeBackground';
 import SwipeIndicator from './SwipeIndicator';
 import GravityCard from './GravityCard';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const KNOWN_SOURCES: CardData['source'][] = ['github', 'huggingface', 'openai_blog', 'anthropic_blog'];
+
+function mapCard(c: Card): CardData {
+  const source: CardData['source'] = KNOWN_SOURCES.includes(c.source as CardData['source'])
+    ? (c.source as CardData['source'])
+    : 'github';
+  return {
+    id: c.id,
+    source,
+    title: c.card_title,
+    description: c.card_summary,
+    keywords: c.keywords,
+    sourceUrl: c.source_url ?? '',
+    publishedDate: c.published_at ?? '',
+    imageUrl: c.image_url ?? `https://picsum.photos/seed/${c.id}/800/600`,
+    metadata: c.metadata ?? {},
+  };
+}
 
 type RevealState = { dir: 'left' | 'right'; fading: boolean } | null;
 
 export default function CardDeck({ activeTopic }: { activeTopic: string }) {
-  const [cards, setCards] = useState<CardData[]>([]);
+  const [allCards, setAllCards] = useState<CardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [dismissedCardIds, setDismissedCardIds] = useState<string[]>([]);
   const [swipeDir, setSwipeDir] = useState<'left' | 'right' | null>(null);
   const [swipeIntensity, setSwipeIntensity] = useState(0);
   const [reveal, setReveal] = useState<RevealState>(null);
-  const [confirmAction, setConfirmAction] = useState<'save' | 'skip' | null>(null);
+  const [iconHold, setIconHold] = useState<{ action: 'save' | 'skip'; fading: boolean } | null>(null);
   const revealTimer = useRef<ReturnType<typeof setTimeout>>();
-  const confirmTimer = useRef<ReturnType<typeof setTimeout>>();
+  const iconTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const addItem = useBasketStore((s) => s.addItem);
   const logInteraction = useBasketStore((s) => s.logInteraction);
   const pendingDir = useRef<'left' | 'right' | null>(null);
 
-  // Fetch cards from backend API on mount (limit to 8 for swipe UX)
   useEffect(() => {
-    fetch(`${API_BASE}/api/v1/cards/feed`)
-      .then((res) => res.json())
-      .then((data: CardData[]) => {
-        if (data && data.length > 0) {
-          const validCards = data.filter((c) => c.imageUrl && c.title);
-          setCards(validCards.slice(0, 8));
-        } else {
-          setCards(sampleCards);
-        }
-      })
-      .catch(() => {
-        setCards(sampleCards);
-      })
+    const sessionId = getSessionId();
+    getCards(sessionId)
+      .then((cards) => setAllCards(cards.map(mapCard)))
+      .catch(() => setAllCards([]))
       .finally(() => setLoading(false));
   }, []);
 
   const filteredCards = useMemo(
     () =>
       activeTopic === 'All'
-        ? cards
-        : cards.filter((c) =>
+        ? allCards
+        : allCards.filter((c) =>
             c.keywords.some((k) => k.toLowerCase().includes(activeTopic.toLowerCase())),
           ),
-    [activeTopic, cards],
+    [activeTopic, allCards],
   );
 
   const dismissedLookup = useMemo(() => new Set(dismissedCardIds), [dismissedCardIds]);
@@ -84,6 +93,9 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       const t = Math.min(absX / 600, 1);
       const intensity = t * (2 - t);
       setReveal(null);
+      setIconHold(null);
+      iconTimers.current.forEach(clearTimeout);
+      iconTimers.current = [];
       setSwipeDir(offsetX > 0 ? 'right' : 'left');
       setSwipeIntensity(intensity);
     } else {
@@ -110,13 +122,17 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     const dir = pendingDir.current;
     const resolvedDir: 'left' | 'right' = dir ?? 'left';
     const action: 'save' | 'skip' = resolvedDir === 'right' ? 'save' : 'skip';
+    const sessionId = getSessionId();
 
     if (resolvedDir === 'right') {
-      addItem(currentCard.id);
-      logInteraction(currentCard.id, 'save');
+      addItem(currentCard);
+      addToBasket(sessionId, currentCard.id).catch(() => {});
+      postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_right' }).catch(() => {});
     } else {
-      logInteraction(currentCard.id, 'skip');
+      postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_left' }).catch(() => {});
     }
+
+    logInteraction(currentCard.id, action);
 
     setReveal({ dir: resolvedDir, fading: false });
     setSwipeDir(null);
@@ -131,9 +147,11 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     clearTimeout(revealTimer.current);
     revealTimer.current = setTimeout(() => setReveal(null), 800);
 
-    setConfirmAction(action);
-    clearTimeout(confirmTimer.current);
-    confirmTimer.current = setTimeout(() => setConfirmAction(null), 2000);
+    setIconHold({ action, fading: false });
+    iconTimers.current.forEach(clearTimeout);
+    iconTimers.current = [];
+    iconTimers.current.push(setTimeout(() => setIconHold({ action, fading: true }), 900));
+    iconTimers.current.push(setTimeout(() => setIconHold(null), 1600));
 
     pendingDir.current = null;
     setDismissedCardIds((prev) =>
@@ -153,7 +171,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   if (loading) {
     return (
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 14 }}>Loading...</div>
+        <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 14 }}>Loading cards…</div>
       </div>
     );
   }
@@ -218,31 +236,32 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
         </div>
       </GravityCard>
 
-      <ConfirmStamp action={confirmAction} />
+      <ActionIcon swipeDir={swipeDir} swipeIntensity={swipeIntensity} hold={iconHold} />
     </div>
   );
 }
 
-function ConfirmStamp({ action }: { action: 'save' | 'skip' | null }) {
-  const [fading, setFading] = useState(false);
-  const [current, setCurrent] = useState<'save' | 'skip' | null>(null);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+function ActionIcon({
+  swipeDir,
+  swipeIntensity,
+  hold,
+}: {
+  swipeDir: 'left' | 'right' | null;
+  swipeIntensity: number;
+  hold: { action: 'save' | 'skip'; fading: boolean } | null;
+}) {
+  const dragActive = swipeDir !== null && swipeIntensity > 0.35;
+  const holdActive = hold !== null && !hold.fading;
+  const fading = hold?.fading ?? false;
+  const visible = dragActive || holdActive;
 
-  useEffect(() => {
-    if (action) {
-      timers.current.forEach(clearTimeout);
-      timers.current = [];
-      setCurrent(action);
-      setFading(false);
-      timers.current.push(setTimeout(() => setFading(true), 1100));
-      timers.current.push(setTimeout(() => setCurrent(null), 1800));
-    }
-    return () => timers.current.forEach(clearTimeout);
-  }, [action]);
+  const action: 'save' | 'skip' | null = dragActive
+    ? (swipeDir === 'right' ? 'save' : 'skip')
+    : hold?.action ?? null;
 
-  if (!current) return null;
+  if (!visible && !fading) return null;
 
-  const isSave = current === 'save';
+  const isSave = action === 'save';
 
   return (
     <div
@@ -254,9 +273,11 @@ function ConfirmStamp({ action }: { action: 'save' | 'skip' | null }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        opacity: fading ? 0 : 1,
+        opacity: fading ? 0 : visible ? 1 : 0,
         transform: fading ? 'scale(1.15)' : 'scale(1)',
-        transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+        transition: fading
+          ? 'opacity 0.6s ease-out, transform 0.6s ease-out'
+          : 'none',
       }}
     >
       <div
