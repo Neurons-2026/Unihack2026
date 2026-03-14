@@ -1,0 +1,98 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "id": "openai:gpt-5-2-codex",
+    "source": "openai",
+    "source_url": "https://openai.com/index/gpt-5-2-codex/",
+    "title": "Gpt 5 2 codex",
+    "raw_summary": "Gpt 5 2 codex",
+    "raw_content": "Gpt 5 2 codex",
+    "pipeline_state": "raw_scraped",
+    "preprocessing": {
+      "cleaned_text": "Gpt 5 2 codex",
+      "quality_notes": [
+        "article_body_extracted"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 1.0,
+      "trending_score": 1.0
+    },
+    "metadata": {
+      "published_at": "",
+      "rank": 1,
+      "freshness_basis": "listing_order_freshness"
+    },
+    "provenance": {
+      "collector": "openai_news_scraper",
+      "collector_version": "0.2.0",
+      "dedupe_key": "openai:gpt-5-2-codex"
+    },
+    "fetched_at": "2026-03-14T03:09:08.758172+00:00"
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "openai:openai-grove",
+    "source": "openai",
+    "source_url": "https://openai.com/index/openai-grove/",
+    "title": "Openai grove",
+    "raw_summary": "Openai grove",
+    "raw_content": "Openai grove",
+    "pipeline_state": "raw_scraped",
+    "preprocessing": {
+      "cleaned_text": "Openai grove",
+      "quality_notes": [
+        "article_body_extracted"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.6666666666666666,
+      "trending_score": 0.6666666666666666
+    },
+    "metadata": {
+      "published_at": "",
+      "rank": 2,
+      "freshness_basis": "listing_order_freshness"
+    },
+    "provenance": {
+      "collector": "openai_news_scraper",
+      "collector_version": "0.2.0",
+      "dedupe_key": "openai:openai-grove"
+    },
+    "fetched_at": "2026-03-14T03:09:08.816241+00:00"
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "openai:introducing-superalignment",
+    "source": "openai",
+    "source_url": "https://openai.com/index/introducing-superalignment/",
+    "title": "Introducing superalignment",
+    "raw_summary": "Introducing superalignment",
+    "raw_content": "Introducing superalignment",
+    "pipeline_state": "raw_scraped",
+    "preprocessing": {
+      "cleaned_text": "Introducing superalignment",
+      "quality_notes": [
+        "article_body_extracted"
+      ],
+      "enrichment_used": false
+    },
+    "ranking": {
+      "source_rank_score": 0.3333333333333333,
+      "trending_score": 0.3333333333333333
+    },
+    "metadata": {
+      "published_at": "",
+      "rank": 3,
+      "freshness_basis": "listing_order_freshness"
+    },
+    "provenance": {
+      "collector": "openai_news_scraper",
+      "collector_version": "0.2.0",
+      "dedupe_key": "openai:introducing-superalignment"
+    },
+    "fetched_at": "2026-03-14T03:09:08.920323+00:00"
+  }
+]
