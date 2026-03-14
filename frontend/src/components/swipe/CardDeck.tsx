@@ -4,20 +4,15 @@ import TinderCard from 'react-tinder-card';
 import { sampleCards } from '@/data/sampleCards';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { unlockAudio, playSaveSound, playSkipSound } from '@/lib/sounds';
-import { emitRipples } from '@/lib/rippleCanvas';
 import CardItem from './CardItem';
 import EmptyState from './EmptyState';
-import RippleCanvas from './RippleCanvas';
 import SwipeBackground from './SwipeBackground';
-import SwipeToast from './SwipeToast';
 
 export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const [dismissedCardIds, setDismissedCardIds] = useState<string[]>([]);
   const [swipeDir, setSwipeDir] = useState<'left' | 'right' | null>(null);
   const [swipeIntensity, setSwipeIntensity] = useState(0);
-  const [toastAction, setToastAction] = useState<'save' | 'skip' | null>(null);
-  const [toastTrigger, setToastTrigger] = useState(0);
-  const pendingSwipeByCardId = useRef<Record<string, 'left' | 'right'>>({});
+  const pendingSwipeByCardId = useRef<Record<string, 'left' | 'right'>>({})
   const addItem = useBasketStore((s) => s.addItem);
   const logInteraction = useBasketStore((s) => s.logInteraction);
 
@@ -59,9 +54,6 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
 
       // Play sound
       if (saved) playSaveSound(); else playSkipSound();
-
-      // Trigger ripple
-      emitRipples(saved);
     },
     []
   );
@@ -71,8 +63,6 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       const dir = pendingSwipeByCardId.current[cardId];
       if (dir) {
         const saved = dir === 'right';
-        setToastAction(saved ? 'save' : 'skip');
-        setToastTrigger((prev) => prev + 1);
         setSwipeDir(null);
         setSwipeIntensity(0);
 
@@ -124,9 +114,6 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       {/* Swipe background color feedback */}
       <SwipeBackground direction={swipeDir} intensity={swipeIntensity} />
 
-      {/* Ripple animation canvas */}
-      <RippleCanvas />
-
       {/* Next card rendered underneath with the same layout as active card */}
       {nextCard && (
         <div className="absolute inset-0 z-[2] w-full h-full" style={{ pointerEvents: 'none' }}>
@@ -148,9 +135,6 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
           <CardItem card={currentCard} />
         </div>
       </TinderCard>
-
-      {/* Swipe feedback toast */}
-      <SwipeToast action={toastAction} trigger={toastTrigger} />
     </div>
   );
 }
