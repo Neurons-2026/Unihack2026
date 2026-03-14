@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 << 'EOF'\nimport json\nimport sys\n\nwith open\\(r\"C:\\\\Users\\\\yunka\\\\OneDrive\\\\Desktop\\\\Hackathon\\\\PRD.ipynb\", \"r\", encoding=\"utf-8\"\\) as f:\n    notebook = json.load\\(f\\)\n\n# Extract all markdown cells\nfor i, cell in enumerate\\(notebook.get\\(\"cells\", []\\)\\):\n    if cell.get\\(\"cell_type\"\\) == \"markdown\":\n        text = \"\".join\\(cell.get\\(\"source\", []\\)\\)\n        # Look for Team Task Breakdowns and 3-Day Execution Plan sections\n        if \"Team Task Breakdowns\" in text or \"3-Day Execution Plan\" in text:\n            print\\(f\"\\\\n===== CELL {i} =====\"\\)\n            print\\(text\\)\n            print\\(\"\\\\n\"\\)\nEOF)"
+    ]
+  }
+}
