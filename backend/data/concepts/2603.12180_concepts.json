@@ -1,0 +1,55 @@
+{
+  "source_file": "2603.12180.pdf",
+  "source_title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "madqa benchmark",
+      "description": "A large-scale test (2,250 questions over 800 real PDF documents) designed to measure how well AI systems and humans can find and combine information scattered across many complex documents.",
+      "why_innovative": "It is the first benchmark that combines fresh, fully human-written questions with visually rich, multi-domain PDFs and requires multi-step reasoning — closing critical gaps left by all prior document question-answering benchmarks.",
+      "impact_on_applications": "This benchmark can drive the development of AI tools that actually work on real office documents — like automatically answering questions from legal filings, financial reports, or HR manuals — bringing enterprise document automation much closer to reality.",
+      "category": "benchmark",
+      "relevance_score": 0.98
+    },
+    {
+      "label": "accuracy-effort trade-off metric",
+      "description": "A new way of scoring AI agents that rewards not just getting the right answer, but getting it efficiently — penalizing systems that burn through many search steps just to stumble upon a correct answer.",
+      "why_innovative": "It distinguishes between agents that plan smartly and those that succeed only through brute-force repetition, revealing a hidden inefficiency gap that raw accuracy scores completely miss.",
+      "impact_on_applications": "This could push AI assistant tools — like those used in legal research or financial analysis — to become dramatically faster and cheaper to run, since they would be optimized to find answers in fewer steps rather than exhaustively searching everything.",
+      "category": "technique",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "classical test theory splits",
+      "description": "A principled method borrowed from educational testing to decide which questions go into the evaluation set — choosing questions that best separate strong AI systems from weak ones, rather than picking randomly.",
+      "why_innovative": "It maximizes the informational value of every question in a benchmark, ensuring the test stays meaningful and challenging even as AI models keep improving over time.",
+      "impact_on_applications": "This approach helps AI researchers build more reliable leaderboards and evaluations, so that claims about AI capabilities in real-world document tasks are actually trustworthy — benefiting anyone who depends on such rankings to choose AI tools.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "sentinel pool",
+      "description": "A reserved subset of the hardest benchmark questions — ones no current AI model can solve — intentionally kept to ensure the benchmark remains challenging and useful far into the future.",
+      "why_innovative": "It solves a common problem where AI benchmarks become obsolete quickly once models start scoring near 100%, guaranteeing long-term headroom for measuring genuine progress.",
+      "impact_on_applications": "This design ensures that future, more powerful AI systems still have a meaningful bar to clear, helping the research community track real progress in AI document understanding over many years.",
+      "category": "technique",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "agentic document collection vqa",
+      "description": "A formal definition of the task where an AI must search through a collection of complex PDF documents, follow visual clues like tables and charts, and combine information from multiple pages or files to answer a question.",
+      "why_innovative": "It is the first rigorous formalization of this multi-step, visually grounded, cross-document reasoning task, providing a clear and reproducible framework that the research community lacked.",
+      "impact_on_applications": "Formalizing this task accelerates the building of AI systems that can autonomously handle document-heavy workflows — such as reviewing contracts, auditing financial filings, or researching regulatory documents — tasks that currently consume enormous human time.",
+      "category": "theory",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "human vs. agent competency analysis",
+      "description": "A direct side-by-side comparison of how human researchers and AI agents search through document collections, revealing that they succeed on completely different types of questions despite achieving similar overall scores.",
+      "why_innovative": "It uncovers that current AI agents rely on brute-force search rather than intelligent planning, identifying a concrete gap in strategic reasoning that simple accuracy numbers hide.",
+      "impact_on_applications": "Understanding exactly where AI agents fail compared to humans helps developers build smarter document AI tools that complement human workers rather than just mimicking them poorly — leading to more effective human-AI collaboration in knowledge-intensive jobs.",
+      "category": "application",
+      "relevance_score": 0.9
+    }
+  ]
+}

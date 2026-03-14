@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m test_extraction.run_concept_extraction)",
+      "Bash(pip list:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m test_graph_building.run_graph_building)",
+      "Bash(python -m backend.scripts.extract_concepts)",
+      "Bash(python -c \":*)"
+    ]
+  }
+}

@@ -1,0 +1,112 @@
+[
+  {
+    "source_file": "trendingPaper1.txt",
+    "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training",
+    "source_type": "pdf",
+    "concepts": [
+      {
+        "label": "test-time training fast weights",
+        "description": "A method where a small portion of an AI model's internal settings (called 'fast weights') are continuously updated while the model is actively processing new video frames, rather than being fixed after training.",
+        "why_innovative": "This allows the AI to build up and refine a mental map of a 3D space in real time from an ongoing video stream, something fixed models fundamentally cannot do without re-processing everything from scratch.",
+        "impact_on_applications": "This could enable robots and autonomous vehicles to continuously update their understanding of their surroundings as they move, making navigation far more reliable in complex, changing environments. AR/VR headsets could also use this to maintain accurate spatial awareness as users move through a room.",
+        "category": "technique",
+        "relevance_score": 0.98
+      },
+      {
+        "label": "hybrid ttt architecture",
+        "description": "A design that mixes two types of AI processing layers — memory-updating layers (TTT) and traditional full-attention layers — in a 3-to-1 ratio, so the model can both compress long video history efficiently and still reason with full context when needed.",
+        "why_innovative": "It preserves the existing knowledge of a powerful pretrained AI while adding the ability to handle unbounded video streams, avoiding the costly need to retrain the entire model from scratch.",
+        "impact_on_applications": "This makes it practical to upgrade existing AI assistants to understand long videos without discarding their existing language and reasoning abilities, which could improve tools like video search, surveillance analysis, or home robot assistants.",
+        "category": "architecture",
+        "relevance_score": 0.95
+      },
+      {
+        "label": "spatial-predictive mechanism",
+        "description": "A lightweight add-on that uses 3D convolutions (a mathematical operation that looks at nearby pixels across space and time simultaneously) to make the AI's memory updates spatially aware, so it understands how objects relate geometrically rather than treating each video token in isolation.",
+        "why_innovative": "By giving the memory system a sense of local geometry, the AI learns to compress 3D scene structure more accurately, which directly improves its ability to answer questions like 'how far is the chair from the door?'",
+        "impact_on_applications": "This could improve spatial reasoning in applications like assistive devices for the visually impaired that narrate a room's layout, or in warehouse robots that need to track distances between objects as they move.",
+        "category": "technique",
+        "relevance_score": 0.93
+      },
+      {
+        "label": "large-chunk sliding-window attention",
+        "description": "A strategy that processes many video frames together in large batches (chunks) while using a sliding window (a moving view of nearby frames) to maintain smooth connections between frames, enabling fast parallel computation on GPU hardware.",
+        "why_innovative": "Small chunk sizes in prior methods wasted GPU power and broke up the natural spatial structure of video; large chunks with parallel sliding-window attention solve both problems at once, making the approach practical for real-world long videos.",
+        "impact_on_applications": "This efficiency gain means spatial AI could run on consumer-grade hardware or in real time on devices like drones, smart cameras, or self-driving cars without requiring massive data centers.",
+        "category": "technique",
+        "relevance_score": 0.9
+      },
+      {
+        "label": "dense 3d scene description dataset",
+        "description": "A specially constructed training dataset where every video scene is annotated with rich, detailed descriptions of 3D spatial relationships — such as object counts, sizes, directions, and distances — rather than sparse or partial labels.",
+        "why_innovative": "Existing spatial datasets provide only weak, patchy supervision, which gives the AI model very little to learn from; dense scene descriptions provide strong, structured signals that teach the model exactly what spatial information to remember as it watches a video.",
+        "impact_on_applications": "Better training data means AI models can answer nuanced spatial questions more accurately, which could improve tools like interior design apps that suggest furniture arrangements or assistive robots that help elderly users navigate their homes.",
+        "category": "dataset",
+        "relevance_score": 0.87
+      },
+      {
+        "label": "muon optimizer for fast weights",
+        "description": "A specialized update rule that adjusts the AI's memory weights using mathematically orthogonalized gradients (directions of improvement that are kept perpendicular to each other), making the learning process more stable and efficient.",
+        "why_innovative": "Standard gradient updates can cause the fast weights to drift or become redundant; Muon's orthogonalization ensures each weight update carries unique, non-overlapping information, leading to more stable and expressive spatial memory.",
+        "impact_on_applications": "More stable memory updates reduce errors in spatial reasoning over long videos, which matters for safety-critical applications like autonomous driving or surgical robots that must reliably track spatial context over extended periods.",
+        "category": "technique",
+        "relevance_score": 0.85
+      }
+    ]
+  },
+  {
+    "source_file": "trendingPaper2.txt",
+    "source_title": "IndexCache: Accelerating Sparse Attention via Cross-Layer Index Reuse",
+    "source_type": "pdf",
+    "concepts": [
+      {
+        "label": "cross-layer index reuse",
+        "description": "Instead of running a costly 'which tokens matter?' computation at every single layer of an AI model, IndexCache runs it only at a few key layers and shares those results with the surrounding layers.",
+        "why_innovative": "It exploits the newly discovered fact that adjacent layers in a transformer almost always pick the same important tokens, turning a redundant O(NL²) computation into a much cheaper one — without retraining the model.",
+        "impact_on_applications": "AI assistants and document summarizers that work with very long texts (like legal documents or entire codebases) could respond significantly faster and at lower cost, making these services more affordable and accessible.",
+        "category": "technique",
+        "relevance_score": 1.0
+      },
+      {
+        "label": "greedy layer selection",
+        "description": "A smart search algorithm that figures out — without any extra model training — which layers can safely skip the expensive token-selection step by testing small data samples and keeping only the most necessary computations.",
+        "why_innovative": "It allows any existing deployed sparse-attention model to immediately gain speed benefits without retraining, making optimization plug-and-play for production systems.",
+        "impact_on_applications": "Companies running large AI models today can apply this method to their existing systems with minimal effort to cut inference costs and response times — directly lowering the price of AI-powered services like chatbots or search.",
+        "category": "technique",
+        "relevance_score": 0.92
+      },
+      {
+        "label": "multi-layer distillation loss",
+        "description": "A training objective that teaches a single 'which tokens matter?' module to simultaneously serve multiple layers at once, by learning a consensus view of what's important across all those layers.",
+        "why_innovative": "It reframes model training so that a shared indexer is explicitly optimized to be useful for a group of layers rather than just one, closing the quality gap that naive index reuse would otherwise introduce.",
+        "impact_on_applications": "When building new AI models from scratch with this method, developers get both high accuracy and high speed together — leading to more capable AI assistants that don't sacrifice quality for efficiency.",
+        "category": "technique",
+        "relevance_score": 0.93
+      },
+      {
+        "label": "full-shared layer partitioning",
+        "description": "A design pattern that divides a model's layers into two types: 'Full' layers that do the full token-selection computation, and 'Shared' layers that simply borrow the result from the nearest Full layer above them.",
+        "why_innovative": "It introduces a minimal, hardware-friendly architectural change (just one conditional branch in code) that achieves up to 75% reduction in indexer computations with negligible accuracy loss.",
+        "impact_on_applications": "This simple structural change can be dropped into existing AI inference pipelines with very little engineering work, meaning faster and cheaper AI responses in production products almost immediately.",
+        "category": "architecture",
+        "relevance_score": 0.95
+      },
+      {
+        "label": "deepseek sparse attention",
+        "description": "A production-ready method where each layer of an AI model uses a lightweight 'scout' module (the lightning indexer) to pre-select the most relevant pieces of text before doing the main, expensive attention computation.",
+        "why_innovative": "It reduces the core attention cost from quadratic to near-linear in sequence length while maintaining model quality, making long-context inference practical at scale.",
+        "impact_on_applications": "Applications like legal document analysis, long-form code generation, and multi-step AI agents that need to process hundreds of thousands of words become feasible and cost-effective in real products.",
+        "category": "architecture",
+        "relevance_score": 0.85
+      },
+      {
+        "label": "cross-layer token selection stability",
+        "description": "An empirical finding that neighboring layers in a large language model almost always agree on which parts of the input text are most important — their 'top-k' token selections overlap by 70–100%.",
+        "why_innovative": "Proving this property specifically for sparse-attention indexers (not just full attention) is the key insight that justifies and enables the entire IndexCache approach.",
+        "impact_on_applications": "This insight opens a new optimization frontier for any current or future sparse-attention model, potentially leading to a wave of faster, cheaper AI systems across the industry.",
+        "category": "theory",
+        "relevance_score": 0.88
+      }
+    ]
+  }
+]

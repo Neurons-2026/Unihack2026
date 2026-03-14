@@ -1,0 +1,56 @@
+{
+  "source_file": "trendingPaper3.txt",
+  "source_title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "madqa benchmark",
+      "description": "A collection of 2,250 human-written questions based on 800 real PDF documents, designed to test whether AI agents can intelligently search and reason across multiple documents — like a complex research task.",
+      "why_innovative": "It is the first benchmark specifically designed to distinguish whether AI agents are genuinely planning their search or just randomly trying things, filling a critical gap that existing benchmarks missed.",
+      "category": "benchmark",
+      "relevance_score": 1.0
+    },
+    {
+      "label": "accuracy-effort trade-off metric",
+      "description": "A new measurement approach that tracks not just whether an AI gets the right answer, but how much work (number of search steps) it took to get there — rewarding efficient, targeted reasoning over brute-force trying.",
+      "why_innovative": "This enables a fairer comparison between agents and humans by exposing that some AI systems waste enormous effort getting the same score as a human who searches much more efficiently.",
+      "category": "technique",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "agentic document collection vqa",
+      "description": "A formal task definition where an AI must search across a collection of multi-page PDF documents, combining visual and text understanding, to answer questions that require visiting multiple documents and pages.",
+      "why_innovative": "It formalizes a realistic enterprise workflow — researching across document archives — that prior AI tasks ignored, creating a standard foundation for measuring genuinely complex AI document reasoning.",
+      "category": "technique",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "classical test theory splits",
+      "description": "A principled method borrowed from educational testing to select which questions go into the evaluation set, prioritizing questions that best separate strong AI systems from weak ones.",
+      "why_innovative": "It ensures the benchmark stays useful as AI improves over time by reserving the hardest questions in a 'Sentinel Pool,' preventing top models from saturating the benchmark too quickly.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "sentinel pool",
+      "description": "A reserved subset of the hardest benchmark questions that no current AI model can answer, intentionally kept separate to guarantee the benchmark remains challenging as AI capabilities improve.",
+      "why_innovative": "This design prevents AI leaderboards from becoming obsolete overnight — by baking in future headroom, it ensures the benchmark remains a meaningful challenge for next-generation models.",
+      "category": "benchmark",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "construct validity framework",
+      "description": "A rigorous quality-checking process that verifies the benchmark actually tests what it claims to test — for example, confirming that questions genuinely require multi-step reasoning and not just keyword matching.",
+      "why_innovative": "Most AI benchmarks skip this validation step, leading to inflated scores; applying it here ensures that high performance on MADQA truly reflects intelligent reasoning, not shortcuts.",
+      "category": "technique",
+      "relevance_score": 0.83
+    },
+    {
+      "label": "multi-hop cross-document retrieval",
+      "description": "Questions that can only be answered by combining information found in separate, unconnected pages or entirely different documents — like adding up figures that appear in two different annual reports.",
+      "why_innovative": "This directly tests the hardest real-world research skill — synthesizing scattered evidence — exposing that current AI agents fail at this while humans handle it naturally.",
+      "category": "technique",
+      "relevance_score": 0.82
+    }
+  ]
+}

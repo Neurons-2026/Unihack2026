@@ -1,0 +1,1110 @@
+SOURCE_TYPE: pdf
+SOURCE_FILE: trendingPaper4.pdf
+CHAR_COUNT: 89670
+---
+
+1
+DreamVideo-Omni: Omni-Motion Controlled
+Multi-Subject Video Customization with Latent
+Identity Reinforcement Learning
+Yujie Wei∗ , Xinyu Liu∗ , Shiwei Zhang† , Hangjie Yuan , Jinbo Xing , Zhekai Chen , Xiang Wang ,
+Haonan Qiu , Rui Zhao , Yutong Feng , Ruihang Chu , Yingya Zhang, Yike Guo , Fellow, IEEE,
+Xihui Liu , Member, IEEE and Hongming Shan (cid:66) , Senior Member, IEEE
+Abstract-While large-scale diffusion models have revolu- textual descriptions, the demand for real-world applications
+tionized video synthesis, achieving precise control over both necessitates more granular control. Specifically, users often
+multi-subject identity and multi-granularity motion remains a
+require the generation of videos that simultaneously preserve
+significant challenge. Recent attempts to bridge this gap often
+the identities of multiple subjects while adhering to compresuffer from limited motion granularity, control ambiguity, and
+identity degradation, leading to suboptimal performance on hensive motion control, including global object motion, local
+identitypreservationandmotioncontrol.Inthiswork,wepresent limb motion, and camera movements.
+DreamVideo-Omni, a unified framework enabling harmonious Despite the remarkable advances in controllable video genmulti-subject customization with omni-motion control via a
+eration,achievingthisdualobjective-robustmulti-subjectID
+progressive two-stage training paradigm. In the first stage, we
+preservation and precise, multi-granularity motion controlintegratecomprehensivecontrolsignalsforjointtraining,encompassing subject appearances, global motion, local dynamics, and remains an open challenge. Existing approaches typically
+cameramovements.Toensurerobustandprecisecontrollability, divergeintotwoindependentresearchdirections.Ononehand,
+we introduce a condition-aware 3D rotary positional embedding subject-driven methods [10], [11], [12] utilize adapters or
+tocoordinateheterogeneousinputsandahierarchicalmotionintuning-free mechanisms to inject appearance, yet they often
+jectionstrategytoenhanceglobalmotionguidance.Furthermore,
+lackthecapacityforprecisespatialcontrol,resultinginvideos
+to resolve multi-subject ambiguity, we introduce group and role
+embeddings to explicitly anchor motion signals to specific iden- where subjects drift uncontrollably or remain static. On the
+tities, effectively disentangling complex scenes into independent other hand, motion-controlled methods [13], [14], [15], [16]
+controllable instances. In the second stage, to mitigate identity excel at guiding movement via bounding boxes or trajectories
+degradation,wedesignalatentidentityrewardfeedbacklearning
+but fail to achieve omni-motion control and customize userparadigmbytrainingalatentidentityrewardmodeluponaprespecified subjects, limiting their practical applicability.
+trained video diffusion backbone. This provides motion-aware
+identity rewards in the latent space, prioritizing identity preser- Recentworksattempttointegratethesecapabilitieswithina
+vationalignedwithhumanpreferences.Supportedbyourcurated unified framework, aiming to synthesize videos that faithfully
+large-scaledatasetandthecomprehensiveDreamOmniBenchfor preserve subject identities while adhering to specified motion
+multi-subject and omni-motion control evaluation, DreamVideopatterns [17], [18], [19], [20]. However, these methods ofOmni demonstrates superior performance in generating highten yield suboptimal performance due to the intrinsic tradequality videos with precise controllability. Our project webpage:
+https://dreamvideo-omni.github.io. off between subject preservation and motion control. This
+limitation manifests primarily in three aspects: 1) Limited
+Index Terms-Video Diffusion Models, Video Customization,
+Motion Control Granularity. Most existing methods rely on
+Motion Control, Reinforcement Learning
+a single type of motion signal, such as bounding boxes [17],
+depth maps [18], [19], or sparse trajectories [20], to guide
+I. INTRODUCTION generation. This restricted conditioning fails to support the
+simultaneous control of global object placement, fine-grained
+The landscape of video generation has been revolutionized
+local dynamics, and camera movement, thereby limiting the
+by the advent of diffusion models [1], [2], [3], [4], [5],
+flexibility and realism of the generated videos. 2) Ambiguity
+[6], [7], [8], [9]. While these foundation models demonstrate
+in Motion Control. Current approaches typically inject all
+impressivecapabilityinsynthesizinghigh-fidelityvideosfrom
+conditioning signals indiscriminately without explicit binding
+∗EqualContribution †ProjectLeader (cid:66)CorrespondingAuthor mechanisms [18], [19]. In multi-subject scenarios, this leads
+Email: Yujie Wei yjwei22@m.fudan.edu.cn and Xinyu Liu to severe ambiguity, as the model struggles to discern which
+xliugd@connect.ust.hk motionpatterncorrespondstowhichspecificreferencesubject.
+YujieWeiandHongmingShanarewithFudanUniversity.XinyuLiuand
+This confusion is further exacerbated when integrating multiYike Guo are with The Hong Kong University of Science and Technology.
+ShiweiZhang,JinboXing,XiangWang,YutongFeng,RuihangChu,Yingya granularmotioncontrols.3)IdentityDegradation.Compared
+Zhangare withTongyiLab, AlibabaGroup. HangjieYuanis withZhejiang toindependentsubjectcustomization,introducingmotionconUniversity.ZhekaiChenandXihuiLiuarewithMMLab,TheUniversityof
+trol often compromises identity fidelity. This stems from the
+HongKong.HaonanQiuiswithNanyangTechnologicalUniversity.RuiZhao
+iswithShowLab,NationalUniversityofSingapore. divergent nature of the objectives: identity preservation en6202
+raM
+]VC.sc[
+1v75221.3062:viXra
+A man engaging in a pleasant conversation with another man. They are smiling and
+Multi-Subject occasionally gesturing with their hands, … Their mouths move naturally, vividly simulating a
+Customization real-life exchange. The entire scene is illuminated by meticulously crafted cinematic lighting,
+creating a warm and intimate atmosphere. The soft light gently falls upon both of them …
+Half body view of a foreign white manand womantaking selfie outdoors. Male wearing a light shirt, a
+MotionControl+
+black hat, holding a camera, female wearing a brown top, carrying a bag, two smiling, the background is
+CameraMovement
+a cityscape, including bridges and buildings, the lens moves, and the video is shot in a head-up lens.
+A little boy playing soccer on a green grass field. The
+Subject Customization
+boy is wearing a yellow sports uniform and is
++ Omni-MotionControl
+intently chasingafter a soccer ball. …
+A … little girl interacting with a puppyin the park. The
+Multi-Subject
+little girl, wearing an orange jacket and black pants, is
+Customization +
+sittingon the grass …The puppy … stands up and
+Omni-MotionControl
+stretches out its front paws, waiting for the food …
+Fig. 1. Zero-shot multi-subject customization and omni-motion control achieved by DreamVideo-Omni. Our method enables seamless multi-subject
+customization,precisemotionandcameracontrol,andsimultaneoussingle/multi-subjectcustomizationwithomni-motioncontrol.
+couragespixel-levelconsistencywithastaticreferenceimage, should prioritize perceptual alignment with human experience
+whereas motion control necessitates dynamic pixel variation rather than relying solely on low-level reconstruction metrics.
+and temporal evolution to render movement. Standard difBased on these insights, we propose DreamVideo-Omni,
+fusion reconstruction losses are insufficient to reconcile this
+a unified framework enabling harmonious multi-subject cusconflict,leadingtodegradationoffine-grainedidentitydetails,
+tomization and omni-motion control through a progressive
+particularly when synthesizing large-amplitude motions.
+two-stage training paradigm illustrated in Fig. 1. In the first
+To address these issues, we posit that it is pivotal to simul- stage, referred to as omni-motion and identity supervised finetaneously enhance motion controllability and identity preser- tuning,weintegratecomprehensivecontrolsignals,formulated
+vation. First, motion control signals must be explicitly bound asstructuredtripletsof⟨ReferenceSubject,GlobalBox,Local
+totheircorrespondingreferencesubjectstoresolveambiguity, Trajectory⟩, into a single DiT architecture. To effectively prothereby facilitating precise, multi-granular control. Second, to cess these heterogeneous inputs, we design a condition-aware
+furtherreinforceidentityfidelity,thelearningobjectiveshould 3D Rotary Positional Embedding (RoPE) that assigns distinct
+be aligned with human preferences. We recognize that subject spatiotemporal indices to diverse conditions, facilitating faster
+customization is inherently subjective and distinct from rigid convergenceandenhancedtrainingstability.Toguaranteeprepixel-wise correspondence, as a subject's visual appearance cise global motion control, we employ a hierarchical motion
+naturally varies with viewpoints and poses, yet their identity injection strategy, infusing bounding box conditions into each
+remains consistent. Consequently, the optimization process transformer block to reinforce spatial guidance. Furthermore,
+to resolve control ambiguity in multi-subject scenarios, we paradigm.WetrainaVDM-basedlatentidentityrewardmodel
+introducelearnablegroupandroleembeddingsthatdistinguish to evaluate motion-aware identity preservation, effectively
+distinct control units and specify signal modalities, explicitly mitigating identity degradation under large motion. 4) We
+anchoring motion signals to their corresponding identities. establish DreamOmni Bench, a new benchmark consisting
+Collectively, these architectural designs establish a foundation of over 1K curated videos with comprehensive annotations,
+for integrating subject customization with controllable motion designed to simultaneously quantify multi-subject consistency
+generation within a unified framework. andmotioncontrolprecision.Wealsodesignacomprehensive
+In the second stage, referred to as latent identity reward data processing pipeline for multi-subject customization and
+feedback learning, we move beyond standard diffusion losses omni-motion control tasks. 5) Extensive experimental results
+and employ a reward feedback strategy within the latent demonstrate our framework's superiority over state-of-the-art
+space to mitigate identity degradation during dynamic motion methods in both identity preservation and motion control.
+generation. Specifically, we train a specialized Latent Identity
+Reward Model (LIRM) to provide rewards. Departing from
+II. RELATEDWORK
+previous methods that rely on static image encoders (e.g.,
+CLIP [21] or DINO [22]) as reward models, which overlook Customized video generation. Customized image generatemporal dynamics, our LIRM is constructed upon a pre- tion has garnered growing attention [23], [24], [25], [26],
+trained Video Diffusion Model (VDM), yielding two advan- [27], [28], [29], [30], [31], [32], [33], [34]. Recently, many
+tages: 1) Motion-Aware Identity Assessment: By leveraging works explore customized video generation using a few subthe VDM's inherent spatiotemporal priors, the reward model ject or facial images [35], [36], [37], [38], [39], [40], [41],
+evaluates video-level identity consistency that integrates mo- [42], [43], [44], [45], [46], while several works study the
+tion dynamics, penalizing static "copy-paste" artifacts while challenging multi-subject video customization task [47], [48],
+encouraging robust identity preservation under large motion. [49], [50]. For example, ConsisID [45] leverages frequency
+2) Computationally Efficient Training: Computing rewards decompositiontodecouplefacialcontoursanddetailsinvideo
+in the latent space bypasses expensive VAE decoding. This DiT for consistent identity across frames. For multi-subject
+enables direct gradient backpropagation from reward models customization, VideoMage [51] and Video Alchemist [49]
+to the video generation model, fully leveraging the potential extend single-subject methods to open-set personalization,
+of reward feedback learning. improvingmulti-subject identityconsistency withouttest-time
+Remarkably, this progressive two-stage training paradigm tuning. However, these methods focus on independent subject
+enables the seamless composition of multiple tasks while nat- customization and often struggle with "copy-paste" artifacts
+urally facilitating the emergence of novel generative abilities. and limited controllability, restricting their applicability in
+Despite being built upon a text-to-video base model, our real-world scenarios. Considering that spatial content and
+framework spontaneously unlocks zero-shot image-to-video temporal dynamics are two essential components of videos,
+generation and first-frame-conditioned trajectory control. DreamVideo [11] customizes both subject and motion by
+Finally, to support the training of our unified framework, training two adapters and combining them at inference, while
+we curate a large-scale dataset for multi-subject customiza- MotionBooth [52] fine-tunes a model to learn subjects and
+tion and omni-motion control, which comprises 2M video edits attention maps to control motion during inference. More
+clips, enriched with multi-subject reference images, bounding recently, Tora2 [20] integrates trajectory control into subboxes, and trajectory conditions. Beyond training resources, ject customization by introducing a decoupled personalization
+we also address the critical lack of comprehensive evaluation extractor and a gated self-attention mechanism. However,
+protocols. Existing benchmarks either isolate customization thesemethodsrelypredominantlyonstandarddiffusionlosses
+fromcontrollablegeneration[11],[10]orfocusexclusivelyon and suffer from the trade-off between motion control and
+simplepointtrajectories[16].Tobridgethisgap,weconstruct identity preservation, often resulting in identity degradation
+the DreamOmni Bench, a holistic evaluation suite composed underlarge-amplitudemotions.Incontrast,DreamVideo-Omni
+of 1,027 high-quality, real-world videos. This benchmark effectivelyresolvesthisdilemmabyaligningidentitypreservaexplicitly categorizes single- and multi-subject scenarios and tion with human preferences. By introducing a latent identity
+is equipped with dense annotations, enabling the first unified reward feedback learning paradigm and training a specialized
+evaluation of identity preservation and complex motion con- latent reward model, our approach ensures harmonious multitrollability in zero-shot settings. subject customization with omni-motion control.
+In summary, our contributions are five-fold: 1) We present Motion control in video generation. Recent advancements
+DreamVideo-Omni, the first unified framework that har- invideogenerationfocusonenhancingmotiondynamicsusing
+moniously integrates multi-subject customization with omni- extra control signals [53], [54], [55], [56], [57], [58], [59],
+motioncontrolwithinasingleDiTarchitecture.2)Wepropose [60], [61], [62], [63], [64], [65]. Many motion customization
+specializedarchitecturalcomponentstoensureprecisecontrol- methods learn motions from reference videos [66], [67],
+lability. Specifically, we introduce group and role embeddings [68], [69], [70], but require complicated fine-tuning during
+to resolve multi-subject ambiguity, condition-aware 3D RoPE inference.Toalleviatethis,sometraining-freeapproaches[71],
+to coordinate heterogeneous inputs for stable training, and [72], [73], [74], [75] employ attention manipulation or guidhierarchicalmotioninjectiontoenhanceglobalmotioncontrol. ance to achieve zero-shot control. However, these methods
+3) We design a latent identity reward feedback learning often sacrifice motion precision and temporal consistency in
+complex scenarios. In contrast, several works use trajectories onmulti-subjectappearances,globalandlocalobjectmotions,
+or coordinates as additional conditions to train a motion andcameramovements,enablingflexiblecompositionalvideo
+control module [76], [13], [14], [77], [16], [78], [79], [15]. generation without test-time fine-tuning. The overall pipeline
+For example, Motion Prompting [57] conditions generation is shown in Fig. 2, which follows a progressive two-stage
+on spatio-temporal trajectories for camera control and motion training paradigm. In the first omni-motion and identity sutransfer,withpromptexpansionforcomplexinputs.MagicMo- pervisedfine-tuningstage,wetrainanall-in-onevideoDiTto
+tion[80]usesobjectmasksandboundingboxestocontrolmo- integrate heterogeneous control signals via hierarchical injection, trained on a pretrained image-to-video diffusion model. tion, condition-aware 3D RoPE, and group/role embeddings,
+Wan-Move[16]usesdensepointtrajectoriesprojectedintola- effectively resolving multi-subject ambiguity and enabling
+tentspacetopropagatefeatures,enablingmotioncontrolbased fine-grained motion control. In the second latent identity
+onthefirstframeinimage-to-videomodels.Nonetheless,they reinforcementlearningstage,weemploylatentidentityreward
+areincapableofdeliveringcomprehensivefine-grainedmotion feedback learning, where a specialized latent identity reward
+control, such as the simultaneous control of global motion, model provides direct identity supervision on intermediate
+localdynamics,andcameramovements.Moreover,theyfailto noisylatents,efficientlybypassingthecomputationallyexpenincorporate user-specified subject appearances, which restricts sive VAE decoding. In the following sections, we detail this
+their real-world applicability. In contrast, our DreamVideo- two-stageparadigminSecs.III-AandIII-B.Subsequently,we
+Omni unifies user-specified subject customization and multi- describe the dataset construction in Sec. III-C and introduce
+granularmotioncontrolintoasingleframework,incorporating our newly constructed DreamOmni Bench in Sec. III-D.
+a binding mechanism to explicitly resolve motion ambiguity
+and ensure precise control.
+A. Omni-Motion and Identity Supervised Fine-Tuning
+Identity-based reinforcement learning. To ensure identity
+This subsection will dive into the key designs of
+consistency in customized video generation, recent research
+DreamVideo-Omni, including model architecture, task design,
+has increasingly integrated reinforcement learning into optiand details of the designed components.
+mizationframeworks[81],[82],[83],[84].Forinstance,MagicID [81] employs DPO [85] to enhance text-to-video identity 1) Model Architecture and Task Design: As illustrated in
+stability, though it still necessitates costly per-identity LoRA Fig. 2, we instantiate an all-in-one framework by adapting a
+adaptation and test-time fine-tuning. More recently, Identity- pre-trained text-to-video DiT [8]. Our model is jointly trained
+GRPO [83] leverages human preference-driven GRPO [86] to on a comprehensive set of tasks, including single- and multipreserve stable facial features during complex interactions by subject customization, global and local object motion control,
+constructingmulti-characterrewardmodels.IPRO[82]adopts and camera movement control. To enable precise and flexible
+theRewardFeedbackLearning(ReFL)[87]paradigm.Itback- composition of these tasks, we carefully craft four compact,
+propagates gradients from similarity-based rewards directly interaction-friendly conditioning signals.
+into the diffusion model, bypassing explicit reward model 1) Subject appearance. We use one reference image per
+training or identity-specific tuning. However, both Identity- subject and segment it to obtain the image with a blank
+GRPO and IPRO require decoding latents into pixel space for background, preserving distinct identity features while
+rewardcalculation,whichincursheavyGPUoverheadandre- reducing background interference.
+strictsfeedbacktothefinaldenoisingsteps,resultinginlimited 2) Global object motion. We employ scene-anchored
+performance improvements. In contrast, we conduct identity- bounding boxes to indicate global object motion. These
+driven reinforcement learning directly within the latent space, boxes serve as an intuitive proxy for scene-level spatial
+significantlyreducingcomputationaloverhead.Whilethevery attributes, effectively capturing object position, scale,
+recent general video generation method PRFL [88] also intro- aspect ratio, and relative depth. In practice, users can
+duces latent-space reward modeling to mitigate computational simply specify start and end boxes with optional intercosts, it primarily focuses on optimizing general motion qual- mediateboxestoachieveflexibleglobalmotioncontrol.
+ity, lacking the capacity to distinguish and preserve intricate 3) Local object motion. We represent local object motion
+subject identities. Unlike PRFL, we process the generated usingsparsepoint-wisetrajectories.Comparedtoglobal
+video and the reference image in parallel under varying noise motion, local object motion targets finer-grained, comlevels, explicitly leveraging the clean reference latents as plexin-placedynamics(e.g.,limbraises,headturns)that
+queries to attend to the noisy video latents for computing enrich per-object motion details. This point-based conidentity rewards. This design substantially enhances identity trol flexibly captures complex non-rigid deformations.
+customization capabilities by incorporating identity informa- 4) Camera movement. We also use point-wise trajectotionacrossthefullrangeoftimesteps,therebyfullyunleashing ries to achieve camera movement control. Prior works
+the potential of ReFL in customization tasks. typically rely on explicit 3D camera parameters and
+auxiliary datasets for training [13], [19]. While effective, these approaches increase training cost and hinder
+III. OURMEHTOD:DREAMVIDEO-OMNI
+usability. In contrast, we observe that camera moveGiven a set of reference images and motion signals (i.e., ment can be effectively induced by applying pointbounding boxes and trajectories), our DreamVideo-Omni em- wisetrajectoriestobackgroundpixels.Thisallowsusto
+ploysaunifiedvideodiffusiontransformertojointlycondition unify camera and local motion control under the same
+Stage 1: Omni-Motion and Identity Supervised Fine-Tuning
+A heartwarming scene
+of two girls interac2ng
+with a golden retriever
+in a parking lot. …
+Prompt Video BoundingBoxes Subject Reference Images Trajectories
+T5 Encoder VAE Encoder VAE Encoder VAE Encoder Embedder
+padding
++ + + + +
+Add Noise Control🔥 Group 1 2 3🔥 Object🔥 Object🔥 Object🔥 Control 🔥
++ ZeroConvLayers🔥 Group 1🔥 Group 2🔥 Group 3🔥 Group 1 2 3🔥
+Input Tokens
+Pos Embed 1 2 3 4 1 2 3 4
+DreamVideo-Omni 🔥
+1 Position Embedding
+Pos Embed for Ref Img Reweighted
+DiffusionLoss
+Pos Embed for Pad Token
+Stage 2: Latent Identity Reinforcement Learning
+Latent ID Reward Model
+Add
+Noise 🔥
+🔥 🔥
+T R M r e a w o i d n a i e r n d l g Posi8ve/Nega8veVideo En V c A od E er 𝒛!,𝒕 D M i V ff i o u d d s e i e o o l n Spa F ti e o a t t e u m re p s oral At C te ro n s ti s o n Head Re 𝒓 w 𝒕 ard
+𝓛𝐋𝐈𝐑𝐌
+𝒛)*+ Query
+Reference Image ID Feature Preference
+Labels
+Prompt & Timestep
+🔥
+DreamVideo- Latent ID Reward
+… 𝓛
+Omni Reward Model 𝒓 𝐋𝐈𝐑𝐞𝐅𝐋
+𝒕!
+𝒛 𝑻 𝒛 𝒕!"# 𝒛 𝒕! Faster training& lower memory Reward
+Feedback
+Reference Image VAE Reward
+Decoder Model Learning
+Fig. 2. Overview of DreamVideo-Omni. In Stage 1, the framework introduces an all-in-one video DiT that incorporates reference images, bboxes, and
+trajectoriesformulti-subjectcustomizationandomni-motioncontrol.Stage2furtherenhancesidentityfidelityviatheproposedlatentidentityrewardfeedback
+learningmechanism,whichutilizesalatentidentityrewardmodeltodirectlyevaluateintermediatelatents,completelybypassingtheexpensiveVAEdecoder
+forfastertraining.
+trajectory conditioning mechanism, reducing training sequences into the DiT, we first filter out clips exhibiting
+overhead while improving interactivity. abrupt object fluctuations by detecting adjacent-frame bound2) Conditioning Signal Injection: Beyond the task formu- ing box IoU to ensure training stability. The valid sequences
+lation, the effective injection of conditioning signals is pivotal are then rendered as RGB videos on a white background,
+for achieving precise control. whereeachobjectisassignedauniquerandomcolorandpixel1) Subject appearance. To enable robust multi-subject cus- wise averaging is applied in overlapping regions to resolve
+tomization while mitigating "copy-paste" artifacts, reference ambiguity. These rendered videos are projected into the latent
+imagesareextractedfromframestemporallydisjointfromthe space via a 3D VAE. To enable efficient and effective control
+currenttrainingclipandundergoextensivedataaugmentation, signalinjection,weimplementahierarchicalmotioninjection
+detailed in Sec. III-A3. These processed images are then strategy: bounding box latents are added to both the noisy
+encoded via a 3D VAE, and their latent representations are input latents and the output of each DiT block via learnable,
+concatenatedtoformtheconditioninginputforthevideoDiT.
+2) Global object motion. Before inputting bounding box
+layer-specific zero-convolutions, formulated as: By integrating these specific indices into the 3D RoPE,
+we enable the unified DiT architecture to effectively process
+h =z +Z (z ), h =Block (h )+Z (z ), (1)
+0 t in box l+1 l l l box heterogeneous inputs, including both reference images and
+where z and z are the input noisy video latents and diverse motion control signals.
+t box
+boundingboxlatents,respectively.Z andZ denotethezero- Groupandroleembeddings. Tomitigatecontrolambiguity
+in l
+convolutions at the input stage and the l-th DiT block. h is in multi-subject generation and distinguish the functional
+l
+the input hidden state to the l-th block. This dense injection roles of heterogeneous inputs, we introduce two types of
+mechanism enhances the precision of global motion control learnable embeddings: group embeddings and role embedwithout increasing the token sequence length. dings. First, we formulate the fundamental control unit as
+3) Local object motion and camera movement. Since we atripletof⟨Reference Subject,Global Box,Local Trajectory⟩,
+employpointtrajectoriestocontrolbothlocalobjectdynamics and assign a unique group embedding to each unit. Given
+and camera movements, the sampled points must compre- that a reference image captures a single subject, its correhensively cover both foreground subjects and background sponding group embedding is added to all latent tokens of
+regions. While uniform sampling is an intuitive solution, it the image. In contrast, for the bounding box and trajectory
+often struggles with the fine-grained motion control due to latents, this same group embedding is injected exclusively
+insufficientsamplingdensityonobjectboundaries.Toaddress into the spatial regions and track points corresponding to
+this, we devise a hybrid sampling strategy that stochastically the subject. This explicit binding mechanism ensures that
+alternates between two modes: (i) random grid sampling, each subject is correctly associated with its corresponding
+whichensuresbroadcoverageofwholescenedynamics(back- bounding box and trajectories, effectively preventing control
+ground and objects); and (ii) object-aware sampling, which confusion.Second,weintroduceroleembeddings,comprising
+samples strictly within foreground masks to focus on intricate object and control embeddings, to differentiate input signals'
+localdynamics.Toimproverobustnessontrajectorydensities, functionalities. Specifically, an object embedding is added
+a subset of trajectories is randomly dropped during training. to all reference image tokens to designate them as visual
+Following Motion Prompting [57], we construct trajectory appearance assets, whereas a control embedding is applied to
+tokens by generating unique sinusoidal positional encodings allboundingboxandtrajectorytokenstomarkthemasmotion
+and scattering them into blank feature maps according to controlguidance.Thisfunctionaldistinctionenablesthemodel
+their discretized spatiotemporal coordinates. These tokens are to effectively process heterogeneous conditions.
+subsequently concatenated with the noisy video and reference Dataaugmentationforsubjectcustomization. Tomitigate
+image latents to condition the DiT training. "copy-paste" artifacts caused by directly training on reference
+3) Specialized Architectural Components : Condition- subjects,weapplyarobustaugmentationpipelinetothereferaware 3D RoPE. To process heterogeneous inputs, includ- enceimages.Specifically,westochasticallyemploygeometric
+ing video latents, multi-subject reference images, and motion transformations (e.g., flipping, rotation, affine shearing, and
+control signals, within a unified DiT architecture, we con- cropping) and visual degradations (e.g., blur, color jitter) to
+catenate all latent tokens along the temporal dimension and preventoverfitting.Theseperturbationseffectivelyenhancethe
+design a condition-aware 3D Rotary Positional Embedding robustness of identity preservation.
+(RoPE). While our condition-aware 3D RoPE maintains stan- Training loss. Following DreamVideo-2 [17], we use a
+dard indexing for spatial dimensions to preserve geometric reweighted diffusion loss that differentiates the contributions
+structure, it employs a specialized temporal indexing strategy ofregionsinsideandoutsidetheboundingboxes.Specifically,
+to distinguish input types: we amplify the contributions within bounding boxes to en-
+(i) Video frame tokens: We assign sequential temporal hance subject learning while preserving the original diffusion
+indices t ∈ [0,T − 1] to these tokens to ensure temporal lossforregionsoutsidetheseboxes.Thetraininglossofstage
+consistency. Note that bounding box latents are element-wise 1 is defined as:
+a p d o d si e t d ion to al th em es b e e f d r d a i m ng e s s . , thereby naturally inheriting the same L sft =E z,ϵ,C,t (cid:104) (1+λ 1 M)· (cid:13) (cid:13)ϵ−ϵ θ (z t ,C,t) (cid:13) (cid:13) 2 2 (cid:105) , (2)
+(ii) Reference image tokens: We assign a shared, distinct
+where C = {c ,z ,z ,z } is the comprehensive contxt ref box traj
+timeindext toallvalidreferenceimagetokens.Thisdesign
+ref ditioning set. c is the text prompt, z is the latent codes
+txt ref
+explicitly decouples reference subjects from the video tokens,
+of reference images I , and z is the constructed trajectory
+ref traj
+instructing the model to treat these tokens as static visual
+featuremap.Mdenotesthebinaryboundingboxmasks(1for
+conditions rather than sequential frames.
+foreground, 0 otherwise), and λ >0 is the balancing factor.
+(iii) Padding tokens: To handle varying numbers of referϵ∼N(0,I) and ϵ denotes the denoising DiT network.
+θ
+encesubjectsacrossvideos,wepadthereferenceimagetokens
+toafixedcapacityN withinthebatch.Thesepaddedtokens
+max
+B. Latent Identity Reinforcement Learning
+are assigned a distinct "invalid" time index t , allowing the
+pad
+model to identify and ignore these non-informative tokens. While the omni-motion and identity SFT stage establishes
+(iv)Trajectorytokens:Toprovideprecisepixel-levelmotion unified controllability, relying solely on low-level reconstruccontrol, trajectory tokens inherit the same temporal indices tion losses is insufficient for preserving fine-grained appeart ∈ [0,T − 1] as the video frame tokens, ensuring strict ance details. To further enhance identity fidelity by aligning
+spatiotemporal alignment with the corresponding video. with human preferences, we introduce the latent identity
+reinforcement learning stage, which trains a latent identity 2) Latent Identity Reward Feedback Learning: Benefiting
+rewardmodelforrewardfeedbacklearning,asshowninFig.2. from the architectural efficiency of our LIRM, we perform
+1) Latent Identity Reward Model: To provide fine-grained, Reward Feedback Learning (ReFL) within the latent space to
+identity-consistentfeedbackduringreinforcementlearning,we further enhance identity preservation by aligning with human
+introduce the Latent Identity Reward Model (LIRM). Unlike preferences. Standard ReFL faces severe computational botconventional reward models (e.g., CLIP or VLMs) that evalu- tlenecks in video generation, as it necessitates expensive VAE
+atevideosinRGBspace,ourLIRMoperatesdirectlyinlatent decoding for pixel-level evaluation. Furthermore, it typically
+space, mitigating computational overhead and facilitating the restricts reward feedback to the final denoised result, thereby
+subsequent reward feedback learning. neglecting structural information established in the early difArchitecture. Fig. 2 shows that LIRM comprises three key fusion stages. In contrast, by bypassing the VAE decoder,
+modules: a video diffusion model (VDM) backbone, an iden- our Latent Identity Reward Feedback Learning (LIReFL)
+titycross-attentionlayer,andarewardpredictionhead.Specif- significantly mitigates memory overhead. This design enables
+ically, given a video pair V ∈ {V ,V } and a reference direct gradient backpropagation to the video generator and
+pos neg
+image I , we first project them into a shared latent space via denserewardfeedbackatarbitrarydiffusiontimesteps,thereby
+ref
+a3DVAEencoder,yieldinglatentrepresentationsz andz . fully leveraging the potential of ReFL.
+V ref
+Weperturbz withgaussiannoiseattimestepttoyieldz , Specifically, we initialize the latents from Gaussian noise
+V V,t
+while maintaining z ref in its clean state. We then leverage the and sample a target intermediate timestep t m ∼U(0,T −1).
+pretrainedVDMbackboneΦtoextractspatiotemporalfeatures Wefirstperformstandardgradient-freedenoisingfromstepT
+f V =Φ(z V,t ,t,c txt )fromthenoisyvideoandidentityfeatures downtot m+1 toconservememory.Uponreachingstept m+1 ,
+f =Φ(z ,t ,c )fromthereferenceimage.Subsequently, we execute a single gradient-enabled denoising step to derive
+ref ref 0 txt
+the identity features serve as the query Q in a cross-attention the predicted latent z tm , which is formulated as:
+layer to attend to the video's spatiotemporal features acting
+z =µ (z ,t ,c ,z ), (6)
+as key K and value V, measuring the alignment between the
+tm θ tm+1 m+1 txt ref
+subject's identity and the generated video content: where µ θ denotes the single-step solver function (e.g.,
+UniPC[89]step)parameterizedbythevideogeneratorϵ .The
+θ
+(cid:18) QK⊤(cid:19)
+resultingz isimmediatelyevaluatedbythefrozenLIRMto
+h =Attention(Q,K,V)=Softmax √ V, (3) tm
+attn d predict the identity reward r tm = LIRM(z tm ,t m ,c txt ,z ref ).
+The reinforcement loss is then formulated to maximize this
+whereQ=f ref W Q ,andK,V=f V W K ,f V W V .Finally,a expected identity fidelity:
+residual connection fuses the aligned features with the query,
+L =−E [r ]. (7)
+andtheresultingrepresentationispassedthroughalightweight LIReFL tm,ctxt,zref tm
+MLP head H to predict the scalar reward r :
+t To prevent "reward hacking", where the model overoptimizes for identity scores at the expense of visual quality
+r =H(h +Q). (4)
+t attn ordiversity,weincorporatethesupervisedSFTobjectivefrom
+the first stage as a regularizer. The final training objective is
+Unlike prior works [83], [82] that rely on static image-based
+a weighted combination:
+encoders as reward models, our LIRM leverages the inherent
+spatiotemporal priors of the VDM. This facilitates motion- L=L sft +λ 2 L LIReFL , (8)
+aware identity assessment by evaluating identity consistency
+where λ controls the strength of the reward feedback. This
+integrated with motion dynamics, penalizing "copy-paste" ar- 2
+balanced strategy ensures the model aligns with human identifacts while ensuring robust preservation under large motion.
+tity preferences while preserving precise motion control and
+Latentidentitypreferenceoptimization. Wecurateahighgenerative diversity established during the SFT stage.
+qualitypreferencedatasetD ={(V,I ,c ,y) }N from
+LIRM ref txt i i=1
+our in-house data, comprising ∼27,500 training videos and
+C. Dataset Construction Pipeline
+500 testing videos. Each sample consists of video win-lose
+pairs coupled with corresponding single- or multi-subject To facilitate the SFT stage of DreamVideo-Omni, which
+reference images. Each video is assigned a human-annotated demands precise alignment across subject identity, global and
+label y ∈ {0,1} to indicate whether the video V aligns local motion, and camera movement, we construct a largewith the identity defined by I . Leveraging this dataset, we scale, densely annotated, high-quality video dataset. Fig. 3
+ref
+optimizetheLIRMparametersviaabinarycross-entropyloss: illustrates our automated pipeline with four sequential stages:
+1) Motion-based filtering. Robust motion control learning
+L =−E (cid:2) ylogσ(r )+(1−y)log(1−σ(r )) (cid:3) , (5) necessitates training samples with significant temporal dyLIRM DLIRM t t
+namics. We estimate dense optical flow using RAFT [90]
+where σ(·) is the sigmoid activation. To mitigate computa- and compute the average motion magnitude across frames.
+tional overhead, we utilize the first eight blocks of the VDM Videos with small motion magnitude are discarded, ensuring
+as the backbone, following [88]. During training, the VDM the dataset focuses on meaningful motion patterns.
+backbone,identitycross-attentionlayer,andrewardprediction 2) Subject discovery and captioning. To identify movhead are jointly updated. ing subjects and generate dense descriptions, we first utilize
+Motion RAFT
+Amplitude
+Videos Optical Flow Filtered Videos
+(1)FilterVideos by Motion Amplitude
+["girl",
+["girl", "dog", Is Moving
+RAM++ Qwen3 Max "dog", Subjects "car", "tree"] Subjects? "car"]
+A heartwarming scene of two girls interacting with a golden
+retriever in a parking lot. …The girls are dressed casually; one
+Qwen3-VL Caption wears …, and the other … . The parking lot is surrounded by
+Videos cars … in the background.
+(2)Tag Subjects and Get Caption
+["girl", "dog", "car"] Bounding
+Boxes SubjectTags
+Subject
+Masks
+BoundingBoxes
+Videos
+(3)Extract Subject Bounding Boxes, Masks, and Trajectories
+(4)Extract Subject ReferenceImages
+Subject
+Filtering
+TABLEI
+COMPARISONWITHDATASETSFORVIDEOCUSTOMIZATIONAND
+CONTROLLABLEGENERATION.OURDATASETUNIQUELYSUPPORTS
+MULTI-SUBJECTCUSTOMIZATIONWITHCOMPREHENSIVEMOTION
+CONTROLANNOTATIONS.
+No.of Reference Multi- All-FrameAll-FrameAll-Frame Videos Images Subject Mask Box Trajectory
+WebVid-10M[97] ∼10M ✗ ✗ ✗ ✗ ✗
+UCF-101[98] 13,320 ✗ ✗ ✗ ✗ ✗
+DAVIS[99] 50 ✗ ✗ ✓ ✓ ✗
+GOT-10k[100] 9,695 ✗ ✗ ✗ ✓ ✗
+VideoBooth[10] 48,724 ✓ ✗ ✗ ✗ ✗
+DreamVideo-2[17] 230,160 ✓ ✗ ✓ ✓ ✗
+Grounding VideoAlchemist[49]∼37.8M ✓ ✓ ✗ ✗ ✗
+DINO Phantom[12] ∼1M ✓ ✓ ✗ ✗ ✗
+Wan-Move[16] ∼1.98M ✗ ✗ ✗ ✗ ✓
+OurDataset ∼2.12M ✓ ✓ ✓ ✓ ✓
+SAM2
+GT Video
+Camera
+Trajectories
+CoTracker3
+Object
+Trajectories
+ComprehensiveAnnotations
+Detailed Caption
+Threeyoga practitionersperforming yogain an indooryoga studio. They are dressed in
+Random casual sportswear, executing a series of yoga poses on blue and pink yoga mats. The video
+Frame x Reference is filmed from a fixed perspective, capturing their fluid transitions from one pose to
+(Outside Data Images another. The background features a minimalist interior with wooden floors and white walls.
+Clip) Augment BoundingBoxes Trajectories Subject Masks
+Videos Subject ation
+Masks
+Fig.3. Pipelineofdatasetconstruction.
+ReferenceImages
+RAM++ [91] to extract semantic tags from the video. These
+tags are subsequently refined by Qwen3 Max [92] to retain
+only significant moving subjects. Finally, we employ Qwen3VL [93] to generate detailed captions for each video.
+3) Spatiotemporal annotation extraction. This stage extracts core structural conditions, including global bounding
+boxes, subject masks, and motion trajectories. Guided by
+Fig. 4. Visualization of a test sample from DreamOmni Bench. Our
+the filtered tags, we first employ Grounding DINO [94] to
+benchmark supports fine-grained evaluation through comprehensive annotadetectsubjectboundingboxes,whichserveasinputsforSAM tions,includingmultiplereferenceimagesforeachsubject,detailedcaptions,
+2 [95] to yield precise binary segmentation masks of subjects. and precise spatial-temporal ground truths such as bounding boxes, motion
+trajectories,andsubjectmasks.
+Then,weutilizeCoTracker3[96]fordensepointtrackingand
+classify the resulting trajectories based on the subject masks:
+points falling within subject regions are labeled as object
+lishes a solid foundation for both video customization and
+trajectories, while those in the background are designated as
+motion control tasks.
+camera trajectories.
+4) Reference image construction. To facilitate zero-shot
+D. DreamOmni Bench
+customization and mitigate trivial copy-paste solutions, we
+samplereferenceimagesfromframestemporallydisjointfrom Existing benchmarks typically isolate video customization
+the training clip. The subjects are then isolated via their from controllable generation, rendering them inadequate for
+corresponding segmentation masks and applied to extensive evaluating the holistic capabilities of DreamVideo-Omni. On
+data augmentation to yield final reference images. the one hand, current personalization benchmarks [11], [17],
+Table I shows that distinct from previous video customiza- [10] are predominantly confined to single-subject scenarios,
+tion and controllable generation datasets, our dataset uniquely lacking the capacity to assess multi-subject consistency and
+supports multi-subject customization with comprehensive mo- quantify motion controllability. On the other hand, recent
+tion annotations, including segmentation masks, bounding motion control benchmarks, such as Wan-Move [16], focus
+boxes, and trajectories. This richly annotated corpus estab- exclusively on point trajectory precision. These protocols
+are neither comprehensive nor capable of measuring identity Baselines. Due to the absence of open-source methods capreservation. Consequently, there is a critical absence of a pable of simultaneously supporting multi-subject customizaunifiedbenchmarkthatsimultaneouslyevaluatesmulti-subject tion and comprehensive motion control, we benchmark
+customization and comprehensive motion control, including DreamVideo-Omni against prior methods from three distinct
+bounding boxes and dense point trajectories. categories on both the DreamOmni Bench and MSRVTTTo bridge this gap, we construct the DreamOmni Bench, Personalization Bench [49]. On the DreamOmni Bench, we
+composed of high-quality real-world videos sourced inde- compare with: (1) DreamVideo-2 [17], representing singlependently of our training dataset to ensure zero-shot evalu- subject customization with motion control; (2) VACE [103]
+ation. We perform manual filtering to retain high-resolution and Phantom [12], focusing on single and multi-subject cusvideos that exhibit meaningful subject motion and camera tomization; and (3) Wan-Move [16], specializing in trajectory
+movement, explicitly excluding static videos and frames with control.Additionally,ontheMSRVTT-PersonalizationBench,
+text overlays or watermarks. After filtering, we leverage the we compare with the recent state-of-the-art methods Video
+automated pipeline detailed in Sec. III-C to generate dense Alchemist [49] and Tora2 [20]. Since their codes are not
+captions and comprehensive annotations (including subject publiclyavailable,wecitethequantitativeresultsdirectlyfrom
+masks, bounding boxes, and trajectories) for each video. their original papers.
+The resulting benchmark comprises a total of 1,027 videos, Evaluation metrics. We quantitatively evaluate our method
+explicitly categorized into 436 single-subject and 591 multi- using 6 metrics across three comprehensive dimensions: 1)
+subjectsamples,featuringdiversecategoriesspanninghumans, Overall Consistency. To assess the semantic alignment begeneral objects, animals, and faces. tween generated videos and text prompts, we employ the
+Our DreamOmni Bench facilitates a unified evaluation CLIP-Text similarity (CLIP-T) using the CLIP ViT-B/32 [21].
+of both identity preservation (covering both generic objects 2)SubjectandFaceFidelity.Whole-imagesimilaritymetrics
+and human faces) and motion control precision (measuring areinadequateformulti-subjectcustomization,asbackground
+bounding box and trajectory accuracy). Specific quantitative noise and other subjects interfere with accurate identity exmetrics are detailed in Sec. IV-A, while visual samples from traction. To address this, we adopt region-based metrics to
+the benchmark are provided in Fig. 4. evaluate both subject and face identity preservation, specificallyRegionCLIP-Imagesimilarity(R-CLIP),RegionDINOImagesimilarity(R-DINO),andFaceSimilarity(Face-S).For
+IV. EXPERIMENT
+R-CLIP and R-DINO, we utilize GroundingDINO [94] to
+A. Experimental Setup
+detect and crop subject regions in generated frames based
+Implementation details. We utilize Wan2.1-1.3B T2V as on their textual tags. We then compute the cosine similarity
+our foundational model. Across all training stages, we em- betweenthecroppedregionsandreferenceimagesusingCLIP
+ploy the AdamW optimizer [101] to process video clips at ViT-B/32 and DINO-ViT-S/16 [22], respectively. For Facea resolution of 480 × 832 with 49 frames. 1) In the first S, we employ the InsightFace library with ArcFace [104]
+omni-motion and identity SFT stage, the model is fine-tuned for identity verification. To handle multi-person scenarios,
+for 40,000 iterations on 64 NVIDIA A100 GPUs with total we detect all faces in the generated frames and extract their
+batch size 64, using a learning rate of 5×10−5 and weight embeddings; subsequently, we compute the cosine similarity
+decay of 1×10−3. To enhance robustness, we randomly drop between each detected face and the reference face, matching
+bounding box and trajectory conditions with a probability of the generated face with the highest similarity to the ground
+p = 0.5, and apply data augmentation to reference images truthforevaluation.3)MotionControlPrecision.Weemploy
+with the same probability (p=0.5). The reweighted diffusion Mean Intersection over Union (mIoU) and End Point Error
+loss weight λ is set to 2. 2) The second latent identity (EPE)tomeasuretheaccuracyofspatiallayoutandtrajectory
+reinforcement learning stage comprises two sub-steps: Latent control. For mIoU, we detect subjects in the generated videos
+Identity Reward Model (LIRM) training and Latent Identity using GroundingDINO and calculate the overlap between the
+Reward Feedback Learning (LIReFL). Both are conducted on detected bounding boxes and the ground-truth control boxes.
+16 A100 GPUs with a batch size of 16 and a weight decay of For fine-grained trajectory evaluation (EPE), we initialize
+1×10−2.ForLIRMtraining,weinitializethebackboneusing query points using the ground-truth coordinates from the first
+the first 8 layers of Wan2.1-1.3B and train for ∼4,000 steps. frame. These points are tracked in the generated video using
+We use differential learning rates: 1×10−5 for the prediction CoTracker3 [96], and EPE is computed as the average Euheadandattentionlayer,and1×10−6 fortheVDMbackbone. clideandistancebetweentrackedandground-truthtrajectories.
+Duringtraining,wefreezethetextandpatchembeddinglayers
+of the pretrained VDM. For LIReFL, we fine-tune the DiT
+B. Main Results
+from the SFT stage for 3,400 steps while keeping the reward
+modelfrozen.WeincorporateanSFTlossasaregularizerwith Subjectcustomizationwithomni-motioncontrol. Toevala weight of λ = 0.1, and set the learning rate to 5×10−6. uate the capability of our framework in joint subject cusThe condition dropping and reference augmentation strategies tomization and motion control, we benchmark DreamVideofollow the same protocol as the SFT stage. During inference, Omni against DreamVideo-2 [17], a representative baseline
+we employ the UniPC scheduler [89] with 50 steps and a in this domain. It is worth noting that while recent works like
+classifier-free guidance scale [102] of 5.0. Tora2[20]explorethistask,theircoderemainsclosed-source,
+A cute little dog happily runningon A person wearing a black top
+a sunlit grassy field. Its ears stand manipulating a transparent crystal
+up and its tongue out, looking very ballwith both hands by the seaside.
+excited and lively. … ...
+DreamVideo-2 DreamVideo-2
+Ours Ours
+Fig.5. Qualitativecomparisonofjointsubjectcustomizationandmotioncontrol.Previousmethodsstruggletobalanceidentitypreservationwithaccurate
+motioncontrol.Incontrast,ourmethoddelivershigh-fidelitysubjectcustomizationthatstrictlyfollowscomplexspatialtrajectories.
+TABLEII
+QUANTITATIVECOMPARISONONDREAMOMNIBENCH.
+Method R-CLIP↑ R-DINO↑ Face-S↑ mIoU↑ EPE↓ CLIP-T↑
+DreamVideo-2[17] 0.731 0.429 0.157 0.212 24.05 0.297
+DreamVideo-Omni(Ours) 0.739 0.499 0.301 0.558 9.31 0.308
+TABLEIII
+QUANTITATIVECOMPARISONONMSRVTT-PERSONALIZATIONBENCH.WEFOLLOWTHEEXPERIMENTALSETTINGSANDEVALUATIONPROTOCOLS
+OFTORA2[20]ANDVIDEOALCHEMIST[49],REPORTINGRESULTSFROMTHEIRORIGINALPAPERS.
+SubjectMode FaceMode
+Method
+CLIP-T↑ R-DINO↑ EPE↓ CLIP-T↑ Face-S↑ EPE↓
+Tora+Flux.1[79] 0.254 0.587 19.72 0.265 0.363 17.41
+VideoAlchemist[49] 0.268 0.626 - 0.272 0.411 -
+Tora2[20] 0.273 0.615 17.43 0.274 0.419 13.52
+DreamVideo-Omni(Ours) 0.273 0.628 11.21 0.273 0.417 8.50
+precluding direct comparison. Furthermore, DreamVideo-2 is from identity degradation under large motion. Conversely, for
+inherently limited to single-subject customization with coarse complex trajectories shown on the right, DreamVideo-2 often
+bounding box control. In contrast, our DreamVideo-Omni exhibits trajectory drift or static motion, failing to achieve
+supports a more versatile setting, enabling multi-subject cus- precisemotioncontrol,whileourmethodpreciselyalignswith
+tomization with omni-motion control (combining boxes and the bounding boxes and trajectories. These results reveal that
+trajectories). For a fair comparison, we restrict our evaluation DreamVideo-2 struggles to balance identity preservation and
+to single-subject scenarios compatible with the baselines. motioncontrol.Incontrast,ourframeworkeffectivelyresolves
+Tables II and III present the quantitative results on this conflict, simultaneously achieving precise motion control
+DreamOmniBenchandMSRVTT-PersonalizationBench[49], and high-fidelity subject customization.
+respectively. As observed, DreamVideo-Omni significantly Subject customization. We evaluate the pure subject
+outperforms DreamVideo-2 across all metrics on DreamOmni customization capability of DreamVideo-Omni on the
+Bench, demonstrating our superior subject customization and DreamOmniBench,comparingitagainststate-of-the-artmethprecise motion control capabilities. Results on MSRVTT- ods including VACE [103] and Phantom [12] across both
+Personalization further validate our robustness: in Subject single-subject and multi-subject scenarios.
+Mode, we achieve the highest R-DINO and best EPE scores. Table IV shows that our method achieves state-of-theForFaceMode,whileourFace-SscoreiscomparabletoTora2 art performance on single-subject customization. Specifically,
+duetothelimitedvideoqualityandresolutionoftheMSRVTT DreamVideo-Omni yields the highest R-DINO and R-CLIP
+dataset,westillachievesignificantlybetterEPE.Theseconsis- scores, indicating superior identity preservation. In the more
+tent improvements across diverse benchmarks underscore the challenging multi-subject setting, our method consistently
+generalizationofDreamVideo-Omniindeliveringhigh-fidelity surpasses baselines in R-DINO, Face-S, and CLIP-T scores.
+subject customization and precise motion control. Thisdemonstratesthatourdesigneffectivelypreventsidentity
+Fig. 5 demonstrates the robustness of DreamVideo-Omni mixing and leakage while achieving superior text alignment.
+across diverse scenarios. Fig. 5 (left) shows that while our Fig. 6 (left) illustrates the results in a single-subject scemethod maintains high identity fidelity, DreamVideo-2 suffers nario where the subject reveals her face from behind a leaf.
+A manand a womaninteracting in a modern kitchen.
+A womanin front of a yellow background, wearing a white turtleneck
+The woman, …, is focused on chopping vegetables,
+sweater and a pink rabbit ears headband. Her expression changes from
+while the man, …, is busy around the kitchen. … The
+surprise to confusion, and finally back to surprise. Throughout the video,
+kitchen is …, featuring white cabinets and decorative
+the camera angle remains unchanged, focusing on the woman's face …
+tiles on the walls. …
+VACE VACE
+Phantom Phantom
+Ours Ours
+Fig. 6. Qualitative comparison of subject customization. DreamVideo-Omni generates videos with accurate subject appearance and enhanced motion
+dynamics,aligningwithprovidedprompts.
+TABLEIV TABLEV
+QUANTITATIVECOMPARISONOFSUBJECTCUSTOMIZATIONON QUANTITATIVECOMPARISONOFMOTIONCONTROLCAPABILITYON
+DREAMOMNIBENCH.WEREPORTRESULTSSEPARATELYFOR DREAMOMNIBENCH.WEREPORTRESULTSSEPARATELYFOR
+SINGLE-SUBJECTANDMULTI-SUBJECTSCENARIOS.ALLMODELSHAVE SINGLE-SUBJECTANDMULTI-SUBJECTSCENARIOS.
+1.3BPARAMETERS.
+Method mIoU↑ EPE↓ CLIP-T↑
+Method R-CLIP↑ R-DINO↑ Face-S↑ CLIP-T↑
+Single-SubjectMode
+S0ing l7e-S u3bj1ectMode
+Tora[79](T2V,1.1B) 0.163 31.74 0.307
+VACE[103] 0.732 0.480 0.174 0.293 Wan-Move[16](I2V,14B) 0.507 14.43 0.305
+Phantom[12] 0.738 0.485 0.299 0.296 DreamVideo-Omni(T2V,1.3B) 0.558 9.31 0.308
+DreamVideo-Omni 0.739 0.499 0.301 0.308
+Multi-SubjectMode
+Multi-SubjectMode
+Tora[79](T2V,1.1B) 0.162 32.84 0.306
+VACE[103] 0.719 0.497 0.275 0.293 Wan-Move[16](I2V,14B) 0.541 9.02 0.303
+Phantom[12] 0.722 0.517 0.305 0.293 DreamVideo-Omni(T2V,1.3B) 0.570 6.08 0.306
+DreamVideo-Omni 0.720 0.524 0.329 0.306
+a 1.3B parameter model, DreamVideo-Omni surpasses the
+VACE exhibits suboptimal facial preservation and unnatural 14B parameter Wan-Move across all metrics in both settings,
+motion, while Phantom generates unexpected multiple faces. demonstratingthesignificantparameterefficiencyandsuperior
+In contrast, our method generates a natural transition with controllability of our method.
+the face faithfully preserved. In the multi-subject scenario Fig. 7 further highlights these differences. Tora struggles
+involvingacomplexinteractionbetweenamanandawoman, with trajectory adherence, failing to maintain effective control
+both baselines fail to preserve identity fidelity, exhibiting in multi-subject settings. While Wan-Move generates highdiscrepanciesinskintone,hairstyle,facialdetails,andclothing qualityvisualcontent,ittendstodeviatefromcomplextrajeccolor compared to the reference. Conversely, DreamVideo- tories, as evidenced by the inaccurate path of the soccer ball
+Omni successfully disentangles the two identities, rendering andtheloosealignmentbetweenthepuppyandthegirl'shand
+distinct, correct appearances with coherent interactions. This movements. In contrast, DreamVideo-Omni precisely follows
+validates the effectiveness of our approach in maintaining complex motion trajectories. In the single-subject case, the
+high-fidelity identity, even in challenging scenarios. man's interaction with the soccer ball strictly adheres to the
+Motion control. To validate the effectiveness of our motion intricate looping trajectory. In the multi-subject scenario, our
+control capabilities, we compare DreamVideo-Omni against model accurately coordinates the distinct movements of the
+state-of-the-art models, including the Tora [79] (T2V, 1.1B) girl and the puppy, verifying our robust control capabilities.
+and the large-scale Wan-Move [16] (I2V, 14B). User study. To further evaluate the perceptual quality of
+Table V shows that DreamVideo-Omni consistently outper- generated videos, we conduct a comprehensive user study
+forms baselines across both single-subject and multi-subject focusingonthreedistinctcapabilities:jointsubjectcustomizascenarios. Compared to Tora, our method achieves a substan- tionwithmotioncontrol,puresubjectcustomization,andpure
+tialimprovementinmotionprecision,withmIoUincreasingby motion control. We invite 18 evaluators to rate 270 groups of
+0.395andEPEreducingbynearly70%.Notably,despitebeing videos generated by different methods. Each evaluation group
+A man wearing a white T-shirt interacting with a soccer ball in front A heartwarming scene of a little girl interacting with a puppy in
+of an orange background. At the beginning of the video, the man the park. The little girl, wearing an orange jacket and black pants,
+has his eyes closed, seemingly in deep thought or feeling. Then, he is sitting on the grass, holding some food in her hands. The puppy
+opens his eyes, smiling, and starts to play with the soccer ball. He looks very excited; it stands up and stretches out its front paws,
+gently tosses the ball up and catches it, and … seemingly waiting for the food from the little girl. …
+Tora Tora
+Wan-Move Wan-Move
+Ours Ours
+Fig.7. Qualitativecomparisonofmotioncontrol.OurDreamVideo-Omniachievesprecisemotiontrajectorycontrol.
+TABLEVI TABLEVII
+HUMANEVALUATION.WEREPORTTHEPERCENTAGEOFUSERVOTES QUANTITATIVEABLATIONSTUDIESONEACHCOMPONENTIN
+FOREACHMETHODACROSSDIFFERENTSETTINGS. DREAMVIDEO-OMNI.WEREPORTRESULTSSEPARATELYFOR
+SINGLE-SUBJECTANDMULTI-SUBJECTSCENARIOSTOANALYZETHE
+Subject Motion Text Overall IMPACTOFEACHMODULE.
+Setting Method
+Fidelity Consistency Alignment Quality
+15 22 48
+JointID& DreamVideo-28[17 ]2122 .44%0 18.3% 21.5% 10.8% Method R-CLIP↑R-DINO↑Face-S↑mIoU↑EPE↓CLIP-T↑
+Motion Ours 77.6% 81.7% 78.5% 89.2%
+Single-SubjectMode
+VACE[103] 16.3% - 15.6% 19.5%
+PureSubject w/oCond-Aware3DRoPE 0.625 0.139 0.039 0.274 30.22 0.216
+Phantom[12] 19.5% - 16.8% 20.2%
+Customization w/oGroup&RoleEmb. 0.738 0.486 0.254 0.524 26.24 0.309
+Ours 64.2% - 67.6% 60.3%
+w/oHierarchicalBBoxInjection 0.733 0.508 0.257 0.400 31.84 0.307
+Tora[79] - 9.5% 16.5% 13.4% Ours(Stage1) 0.733 0.483 0.251 0.556 10.53 0.306
+PureMotion
+Wan-Move[16] - 20.2% 20.4% 26.4%
+Control Ours - 70.3% 63.1% 60.2% w/oLIReFL(Stage2SFTonly) 0.735 0.487 0.266 0.561 10.01 0.307
+Ours(Full) 0.739 0.499 0.301 0.558 9.31 0.308
+Multi-SubjectMode
+w/oCond-Aware3DRoPE 0.647 0.157 0.047 0.278 20.71 0.224
+consists of reference subject images, a target textual prompt, w/oGroup&RoleEmb. 0.708 0.503 0.289 0.459 20.69 0.308
+w/oHierarchicalBBoxInjection 0.714 0.510 0.269 0.289 25.56 0.305
+corresponding motion conditions (i.e., bounding boxes or
+Ours(Stage1) 0.713 0.506 0.287 0.532 6.80 0.305
+trajectories), and the videos generated by competing methods. w/oLIReFL(Stage2SFTonly) 0.715 0.512 0.316 0.556 6.29 0.306
+Evaluators are asked to select the best video based on four Ours(Full) 0.720 0.524 0.329 0.570 6.08 0.306
+criteria:SubjectFidelity,MotionConsistency,TextAlignment,
+andOverallQuality.TableVIshowsthatourmethodachieves
+D. Ablation Studies
+the highest user preference across diverse settings.
+Effects of each component in DreamVideo-Omni. To
+investigate the contribution of individual components, we
+C. Emergent Capabilities
+conductanablationstudyunderbothsingle-subjectandmultiBenefiting from the robust multi-subject customization and subject settings on the DreamOmni Bench.
+omni-motion control capabilities of DreamVideo-Omni, our Table VII reveals the critical role of each component. (i)
+multi-task training paradigm facilitates the emergence of Removing the condition-aware 3D RoPE leads to a catasnovelgenerativeabilities:Image-to-Video(I2V)generation trophic performance drop across all metrics in both scenarios,
+and first-frame-conditioned trajectory control, despite our confirming its fundamental role in handling multi-condition
+baseDiTbeingatext-to-video(T2V)model,asillustratedin heterogeneous inputs within the unified DiT framework. (ii)
+Fig. 8. In fact, I2V generation can be considered as a special- Ablating the group and role embeddings degrades motion
+izedformofcustomization,wheretheentirefirstframeserves control precision, resulting in inferior mIoU and EPE metrics,
+as the comprehensive reference identity. Furthermore, our particularly in multi-subject modes. (iii) Omitting hierarchical
+versatile omni-motion mechanism seamlessly extends to this BBox injection, where bounding box latents are added solely
+setting, enabling precise spatial trajectory guidance directly to the input noisy latents, leads to a significant collapse
+conditioned on the provided initial frame. These emergent in motion performance, with mIoU dropping to 0.289 in
+properties demonstrate the strong generalization and unified multi-subject mode. This underscores that simple input-level
+control capacity of our framework without requiring task- fusion is insufficient and hierarchical injection is critical for
+specific fine-tuning. effectivemotioncontrol.(iv)Regardingthetrainingparadigm,
+Close-up of two people exchanging flowers in front of a white background. They
+were wearing white clothes, the person on the left had dark skin and the person on
+the right had yellow skin. They held the red flowers in their hands and then
+exchanged the flowers in their hands.
+Panoramic view of a cartoon character climbing the stairs. In the flat shot, he was
+wearing a white shirt and green pants, a pair of red shoes and a brown backpack. His
+hair is brown and he wears glasses. The background is a simple white wall with a
+green door frame on it.
+Fig.8. EmergentgenerativecapabilitiesofDreamVideo-Omni.Despitebeingbuiltonatext-to-video(T2V)basemodel,ourframeworknaturallyenables
+zero-shotImage-to-Video(I2V)generationandfirst-frame-conditionedtrajectorycontrolwithouttask-specificfine-tuning.
+A group of divers exploring a coral reef in clear TABLEVIII
+seawater. Wearing professional diving gear, the diver ABLATIONSTUDIESONTHELATENTIDENTITYREWARDMODEL.THE
+move slowly over the reef, observing the marine life
+around them. Fishswim among the corals, adding lively COLUMNSDENOTEFIVEINTERVALSOFNORMALIZEDDIFFUSION
+movement to the scene. The video is shot from a fixed TIMESTEPSt∈[0,1].THEFIRSTROWREPRESENTSOURDEFAULT
+a
+b
+n
+e
+g
+tw
+le
+e
+,
+e
+a
+n
+ll o
+th
+w
+e
+in
+d
+g
+i v
+v
+e
+ie
+rs
+w
+a
+e
+n
+rs
+d
+t
+t
+o
+h e
+c l
+fi
+e
+s
+a
+h
+rl y
+in
+s
+t
+e
+h
+e
+e
+t
+ir
+h e
+n a
+in
+tu
+te
+ra
+ra
+l
+cDon SETTING(BCELOSS,REF.IMAGEASQ,FROZENTEXT&PATCH
+environment. EMBED.),WHILESUBSEQUENTROWSILLUSTRATETHEIMPACTOF
+ALTERINGSPECIFICCOMPONENTS.
+w/o Cond-Aware
+3D RoPE Method [0,0.2] (0.2,0.4] (0.4,0.6] (0.6,0.8] (0.8,1.0] Avg
+Ours(Default) 0.702 0.722 0.709 0.724 0.743 0.720
+OptimizationObjective
+w/o Group & w/BTLoss[105] 0.491 0.657 0.681 0.706 0.743 0.656
+Role Embed ImageInjectionStrategy
+w/Ref.ImageasKV 0.451 0.555 0.415 0.445 0.408 0.455
+ParameterTuningScope
+w/o Hierarchical Tuningtext&patchembed. 0.680 0.718 0.709 0.716 0.752 0.715
+BBox Injection
+TABLEIX
+ABLATIONSTUDYONTHERANGEOFTIMESTEPtmINLIREFL.
+w/o LIReFL
+Rangeoftm R-CLIP↑ R-DINO↑ Face-S↑ mIoU↑ EPE↓ CLIP-T↑
+Single-SubjectMode
+Last3timesteps 0.737 0.494 0.293 0.543 9.98 0.307
+Ours
+Alltimesteps(Ours) 0.739 0.499 0.301 0.558 9.31 0.308
+Multi-SubjectMode
+Last3timesteps 0.717 0.518 0.324 0.573 6.30 0.307
+Alltimesteps(Ours) 0.720 0.524 0.329 0.570 6.08 0.306
+Fig.9. AblationstudyofeachcomponentinDreamVideo-Omni.
+The absence of group and role embeddings leads to control
+although Stage 1 establishes a solid baseline, subsequent fine- ambiguity, where the model struggles to disentangle multiple
+tuningviastandardSFT(w/oLIReFL)offerslimitedgains.In subjects or bind specific motions to the correct identities. (iii)
+contrast, our full model equipped with LIReFL achieves the Removing hierarchical BBox injection causes subjects to fail
+best performance across most metrics, particularly in multi- in adhering to bounding boxes or trajectories, demonstrating
+subject scenarios, effectively boosting subject customization that hierarchical motion injection is essential for achieving
+while maintaining precise motion control. effective motion control. (iv) Compared to the standard SFT
+Fig. 9 further corroborates these findings. (i) Without (w/o LIReFL), the integration of LIReFL effectively refines
+condition-aware3DRoPE,thegenerationsuffersfromtraining identity details, delivering the harmonious balance between
+collapse,resultinginsevereartifactsormeaninglessnoise.(ii) subject fidelity and motion control.
+TABLEX tioncoherence.Thissuggeststhatexcessivelystrongfeedback
+ABLATIONSTUDYONLOSSWEIGHTλ2OFLIREFL. disruptsthegenerativeprocess,aphenomenonalsoobservedin
+previousreinforcementlearningstudies[106],[88].Balancing
+λ R-CLIP↑ R-DINO↑ Face-S↑ mIoU↑ EPE↓ CLIP-T↑
+2 robust identity preservation with motion control, we adopt
+Single-Subject Mode λ =0.10 as the optimal configuration for our final model.
+0.01 0.737 0.505 0.279 0.560 9.85 0.307
+0.10 (Ours) 0.739 0.499 0.301 0.558 9.31 0.308
+V. CONCLUSION
+0.25 0.735 0.492 0.272 0.555 9.65 0.307
+0.50 0.718 0.482 0.223 0.541 9.75 0.306 In this work, we present DreamVideo-Omni, a unified
+1.00 0.674 0.350 0.120 0.350 25.00 0.280
+framework that achieves harmonious multi-subject customizaMulti-Subject Mode tionwithomni-motioncontrol,encompassingglobalandlocal
+0.01 0.718 0.518 0.322 0.557 6.70 0.306 object motion as well as camera movement. By introducing
+0.10 (Ours) 0.720 0.524 0.329 0.570 6.08 0.306 a progressive two-stage training paradigm, we effectively
+0.25 0.714 0.515 0.331 0.538 5.95 0.306
+resolvetheconflictbetweenidentitypreservationandcomplex
+0.50 0.710 0.504 0.295 0.530 6.73 0.305
+motion control. Specifically, to ensure robust and precise
+1.00 0.692 0.380 0.287 0.380 15.06 0.280
+controllability, we incorporate a condition-aware 3D RoPE to
+coordinate heterogeneous inputs and a hierarchical motion injectionstrategytoenhanceglobalmotionguidance.Tofurther
+Design choices for latent identity reward model. We ineliminatecontrolambiguityinmulti-subjectscenarios,weprovestigatetheimpactofdifferentdesignchoicesonthepairwise
+posegroupandroleembeddingstoexplicitlybindmotionsigclassification accuracy of the latent identity reward model in
+nalstotheircorrespondingidentities.Furthermore,wedesigna
+Table VIII. The accuracy is measured on the test set of winlatentidentityrewardfeedbacklearningparadigm,leveraginga
+lose pairs, where a prediction is correct if the reward score of
+VDM-based latent identity reward model to prioritize motionthewinnervideoishigherthanthatoftheloser.(i)Regarding
+aware identity preservation aligned with human preferences.
+the optimization objective, our default Binary Cross-Entropy
+To advance the field, we design a comprehensive automated
+(BCE)lossyieldssuperiorperformance(Avg0.720)compared
+data construction pipeline and establish the DreamOmni
+to the Bradley-Terry (BT) model [105] (Avg 0.656). Notably,
+Bench, a holistic benchmark for evaluating multi-subject and
+the BT loss exhibits significant instability at early timesteps
+omni-motion control. Extensive experiments demonstrate that
+(t∈[0,0.2]). (ii) For the image injection strategy, employing
+DreamVideo-Omni significantly outperforms state-of-the-art
+the reference image as the Query is critical. Treating it as
+methods in generating high-quality, customizable videos with
+Key/Value (KV) results in a catastrophic accuracy drop (to
+precise and flexible motion control.
+0.455),indicatingthatthereferenceimagemustactivelyattend
+tothenoisylatentstoeffectivelydiscernidentityfeatures.(iii)
+Regarding the parameter tuning scope, freezing the text and REFERENCES
+patch embeddings outperforms fine-tuning them, suggesting [1] J.Ho,T.Salimans,A.Gritsenko,W.Chan,M.Norouzi,andD.J.Fleet,
+that preserving pre-trained priors prevents overfitting and is "Videodiffusionmodels,"arXivpreprintarXiv:2204.03458,2022.
+[2] Y. He, T. Yang, Y. Zhang, Y. Shan, and Q. Chen, "Latent video difsufficient for effective reward modeling.
+fusionmodelsforhigh-fidelitylongvideogeneration,"arXivpreprint
+Effect of the range of timestep t m in LIReFL. Table IX arXiv:2211.13221,2022.
+investigates the influence of the range of timestep t on [3] J. Wang, H. Yuan, D. Chen, Y. Zhang, X. Wang, and S. Zhang,
+m
+"Modelscope text-to-video technical report," arXiv preprint
+model performance. We compare sparse feedback on the last
+arXiv:2308.06571,2023.
+3 steps against dense feedback across all timesteps. In single- [4] H.Chen,M.Xia,Y.He,Y.Zhang,X.Cun,S.Yang,J.Xing,Y.Liu,
+subject mode, this full-range strategy yields comprehensive Q. Chen, X. Wang et al., "Videocrafter1: Open diffusion models for
+high-qualityvideogeneration,"arXivpreprintarXiv:2310.19512,2023.
+improvements across all metrics. In multi-subject scenarios,
+[5] Y. Wang, X. Chen, X. Ma, S. Zhou, Z. Huang, Y. Wang, C. Yang,
+it further enhances identity metrics while maintaining precise Y.He,J.Yu,P.Yangetal.,"Lavie:High-qualityvideogenerationwith
+motion control. These findings indicate that providing reward cascaded latent diffusion models," arXiv preprint arXiv:2309.15103,
+2023.
+feedbackatarbitrarytimestepsisessentialtofullyleveragethe
+[6] W.Hong,M.Ding,W.Zheng,X.Liu,andJ.Tang,"Cogvideo:LargepotentialofLIReFL,enhancingidentityfidelitythroughoutthe scale pretraining for text-to-video generation via transformers," arXiv
+generation process. preprintarXiv:2205.15868,2022.
+[7] Z. Yang, J. Teng, W. Zheng, M. Ding, S. Huang, J. Xu,
+Effect of loss weight λ in LIReFL. Table X illustrates
+2 Y. Yang, W. Hong, X. Zhang, G. Feng et al., "Cogvideox: Text-tothe impact of varying the feedback learning strength λ 2 . We video diffusion models with an expert transformer," arXiv preprint
+observethatvalueswithintherangeof[0.01,0.25]yieldrobust arXiv:2408.06072,2024.
+[8] T.Wan,A.Wang,B.Ai,B.Wen,C.Mao,C.-W.Xie,D.Chen,F.Yu,
+overall performance. Notably, identity fidelity metrics, such
+H. Zhao, J. Yang et al., "Wan: Open and advanced large-scale video
+as R-DINO and Face-S, consistently surpass those of the generativemodels,"arXivpreprintarXiv:2503.20314,2025.
+SFT-only model (see Table VII), indicating that identity re- [9] Y. Wei, S. Zhang, H. Yuan, Y. Han, Z. Chen, J. Wang, D. Zou,
+X. Liu, Y. Zhang, Y. Liu et al., "Routing matters in moe: Scaling
+ward feedback effectively enhances customization and refines
+diffusion transformers with explicit routing guidance," arXiv preprint
+appearance details. However, performance begins to decline arXiv:2510.24711,2025.
+when λ increases to 0.50. Furthermore, at λ = 1.00, the [10] Y.Jiang,T.Wu,S.Yang,C.Si,D.Lin,Y.Qiao,C.C.Loy,andZ.Liu,
+2 2
+"Videobooth: Diffusion-based video generation with image prompts,"
+modelsuffersfromrewardhacking,whereitfindsshortcutsto
+inProceedingsoftheIEEE/CVFConferenceonComputerVisionand
+maximizetherewardattheexpenseofvisualrealismandmo- PatternRecognition,2024,pp.6689-6700.
+[11] Y. Wei, S. Zhang, Z. Qing, H. Yuan, Z. Liu, Y. Liu, Y. Zhang, [31] N.Kumari,B.Zhang,R.Zhang,E.Shechtman,andJ.-Y.Zhu,"MultiJ. Zhou, and H. Shan, "Dreamvideo: Composing your dream videos conceptcustomizationoftext-to-imagediffusion,"inProceedingsofthe
+withcustomizedsubjectandmotion,"inProceedingsoftheIEEE/CVF IEEE/CVF Conference on Computer Vision and Pattern Recognition,
+Conference on Computer Vision and Pattern Recognition, 2024, pp. 2023,pp.1931-1941.
+6537-6549. [32] Y.Zhou,D.Zhou,M.-M.Cheng,J.Feng,andQ.Hou,"Storydiffusion:
+[12] L. Liu, T. Ma, B. Li, Z. Chen, J. Liu, G. Li, S. Zhou, Q. He, and Consistent self-attention for long-range image and video generation,"
+X.Wu,"Phantom:Subject-consistentvideogenerationviacross-modal arXivpreprintarXiv:2405.01434,2024.
+alignment,"arXivpreprintarXiv:2502.11079,2025. [33] Z. Li, M. Cao, X. Wang, Z. Qi, M.-M. Cheng, and Y. Shan, "Pho-
+[13] Z. Wang, Z. Yuan, X. Wang, Y. Li, T. Chen, M. Xia, P. Luo, and tomaker: Customizing realistic human photos via stacked id embedY.Shan,"Motionctrl:Aunifiedandflexiblemotioncontrollerforvideo ding,"inProceedingsoftheIEEE/CVFConferenceonComputerVision
+generation," in ACM SIGGRAPH 2024 Conference Papers, 2024, pp. andPatternRecognition,2024,pp.8640-8650.
+1-11. [34] M. Huang, Z. Mao, M. Liu, Q. He, and Y. Zhang, "Realcustom:
+[14] J.Wang,Y.Zhang,J.Zou,Y.Zeng,G.Wei,L.Yuan,andH.Li,"Box- narrowingrealtextwordforreal-timeopen-domaintext-to-imagecusimator:Generatingrichandcontrollablemotionsforvideosynthesis," tomization,"inProceedingsoftheIEEE/CVFConferenceonComputer
+arXivpreprintarXiv:2402.01566,2024. VisionandPatternRecognition,2024,pp.7476-7485.
+[15] J. Xing, L. Mai, C. Ham, J. Huang, A. Mahapatra, C.-W. Fu, T.-
+[35] E.Molad,E.Horwitz,D.Valevski,A.R.Acha,Y.Matias,Y.Pritch,
+T. Wong, and F. Liu, "Motioncanvas: Cinematic shot design with
+Y. Leviathan, and Y. Hoshen, "Dreamix: Video diffusion models are
+controllableimage-to-videogeneration,"inProceedingsoftheSpecial
+generalvideoeditors,"arXivpreprintarXiv:2302.01329,2023.
+Interest Group on Computer Graphics and Interactive Techniques
+[36] H.Chefer,S.Zada,R.Paiss,A.Ephrat,O.Tov,M.Rubinstein,L.Wolf,
+ConferenceConferencePapers,2025,pp.1-11.
+T. Dekel, T. Michaeli, and I. Mosseri, "Still-moving: Customized
+[16] R. Chu, Y. He, Z. Chen, S. Zhang, X. Xu, B. Xia, D. Wang, H. Yi,
+video generation without customized video data," arXiv preprint
+X.Liu,H.Zhaoetal.,"Wan-move:Motion-controllablevideogenerarXiv:2407.08674,2024.
+ationvialatenttrajectoryguidance,"arXivpreprintarXiv:2512.08765,
+[37] Z. Ma, D. Zhou, C.-H. Yeh, X.-S. Wang, X. Li, H. Yang, Z. Dong,
+2025.
+K.Keutzer,andJ.Feng,"Magic-me:Identity-specificvideocustomized
+[17] Y. Wei, S. Zhang, H. Yuan, X. Wang, H. Qiu, R. Zhao, Y. Feng,
+diffusion,"arXivpreprintarXiv:2402.09368,2024.
+F. Liu, Z. Huang, J. Ye et al., "Dreamvideo-2: Zero-shot subjectdrivenvideocustomizationwithprecisemotioncontrol,"arXivpreprint [38] X. He, Q. Liu, S. Qian, X. Wang, T. Hu, K. Cao, K. Yan, M. Zhou,
+arXiv:2410.13830,2024. andJ.Zhang,"Id-animator:Zero-shotidentity-preservinghumanvideo
+[18] X.Ju,W.Ye,Q.Liu,Q.Wang,X.Wang,P.Wan,D.Zhang,K.Gai, generation,"arXivpreprintarXiv:2404.15275,2024.
+andQ.Xu,"Fulldit:Multi-taskvideogenerativefoundationmodelwith [39] Y.Zhou,R.Zhang,J.Gu,N.Zhao,J.Shi,andT.Sun,"Sugar:Subjectfullattention,"arXivpreprintarXiv:2503.19907,2025. driven video customization in a zero-shot manner," arXiv preprint
+[19] Y. Cai, H. Zhang, X. Chen, J. Xing, Y. Hu, Y. Zhou, K. Zhang, arXiv:2412.10533,2024.
+Z.Zhang,S.Y.Kim,T.Wangetal.,"Omnivcus:Feedforwardsubject- [40] T. Wu, Y. Zhang, X. Cun, Z. Qi, J. Pu, H. Dou, G. Zheng, Y. Shan,
+drivenvideocustomizationwithmultimodalcontrolconditions,"arXiv and X. Li, "Videomaker: Zero-shot customized video generation
+preprintarXiv:2506.23361,2025. with the inherent force of video diffusion models," arXiv preprint
+[20] Z. Zhang, J. Liao, X. Meng, L. Qin, and W. Wang, "Tora2: Motion arXiv:2412.19645,2024.
+andappearancecustomizeddiffusiontransformerformulti-entityvideo [41] Y.Huang,W.Xiong,H.Zhang,C.Chen,J.Liu,M.Yan,andS.Chen,
+generation,"inProceedingsofthe33rdACMInternationalConference "Dive: Taming dino for subject-driven video editing," arXiv preprint
+onMultimedia,2025,pp.9434-9443. arXiv:2412.03347,2024.
+[21] A.Radford,J.W.Kim,C.Hallacy,A.Ramesh,G.Goh,S.Agarwal, [42] D.She,M.Liu,J.Pang,J.Wang,Z.Yang,W.He,G.Zhang,Y.Wang,
+G.Sastry,A.Askell,P.Mishkin,J.Clarketal.,"Learningtransferable Q. Huang, H. Tang et al., "Customvideox: 3d reference attention
+visual models from natural language supervision," in International driven dynamic adaptation for zero-shot customized video diffusion
+conferenceonmachinelearning,2021,pp.8748-8763. transformers,"arXivpreprintarXiv:2502.06527,2025.
+[22] M.Caron,H.Touvron,I.Misra,H.Je´gou,J.Mairal,P.Bojanowski,and [43] T. Wu, Y. Zhang, X. Wang, X. Zhou, G. Zheng, Z. Qi, Y. Shan,
+A.Joulin,"Emergingpropertiesinself-supervisedvisiontransformers," and X. Li, "Customcrafter: Customized video generation with preinProceedingsoftheIEEE/CVFinternationalconferenceoncomputer serving motion and concept composition abilities," arXiv preprint
+vision,2021,pp.9650-9660. arXiv:2408.13239,2024.
+[23] H.Chen,Y.Zhang,S.Wu,X.Wang,X.Duan,Y.Zhou,andW.Zhu, [44] Y.Zhang,Q.Wang,F.Jiang,Y.Fan,M.Xu,andY.Qi,"Fantasyid:Face
+"Disenbooth:Identity-preservingdisentangledtuningforsubject-driven knowledge enhanced id-preserving video generation," arXiv preprint
+text-to-imagegeneration,"arXivpreprintarXiv:2305.03374,2023. arXiv:2502.13995,2025.
+[24] Y.Wei,Y.Zhang,Z.Ji,J.Bai,L.Zhang,andW.Zuo,"Elite:Encoding
+[45] S. Yuan, J. Huang, X. He, Y. Ge, Y. Shi, L. Chen, J. Luo, and
+visualconceptsintotextualembeddingsforcustomizedtext-to-image
+L. Yuan, "Identity-preserving text-to-video generation by frequency
+generation,"inProceedingsoftheIEEE/CVFInternationalConference
+decomposition," in Proceedings of the Computer Vision and Pattern
+onComputerVision,2023,pp.15943-15953.
+RecognitionConference,2025,pp.12978-12988.
+[25] J.Shi,W.Xiong,Z.Lin,andH.J.Jung,"Instantbooth:Personalized
+[46] Y. Wei, S. Zhang, H. Yuan, B. Gong, L. Tang, X. Wang, H. Qiu,
+text-to-imagegenerationwithouttest-timefinetuning,"inProceedings
+H. Li, S. Tan, Y. Zhang et al., "Dreamrelation: Relation-centric
+oftheIEEE/CVFConferenceonComputerVisionandPatternRecogvideo customization," in Proceedings of the IEEE/CVF International
+nition,2024,pp.8543-8552.
+ConferenceonComputerVision,2025,pp.12381-12393.
+[26] N. Ruiz, Y. Li, V. Jampani, W. Wei, T. Hou, Y. Pritch, N. Wadhwa,
+[47] Z. Wang, A. Li, E. Xie, L. Zhu, Y. Guo, Q. Dou, and Z. Li,
+M. Rubinstein, and K. Aberman, "Hyperdreambooth: Hypernetworks
+"Customvideo: Customizing text-to-video generation with multiple
+forfastpersonalizationoftext-to-imagemodels,"inProceedingsofthe
+subjects,"arXivpreprintarXiv:2401.09962,2024.
+IEEE/CVF Conference on Computer Vision and Pattern Recognition,
+2024,pp.6527-6536. [48] H.Chen,X.Wang,Y.Zhang,Y.Zhou,Z.Zhang,S.Tang,andW.Zhu,
+[27] M. Hua, J. Liu, F. Ding, W. Liu, J. Wu, and Q. He, "Dreamtuner: "Disenstudio: Customized multi-subject text-to-video generation with
+Singleimageisenoughforsubject-drivengeneration,"arXivpreprint disentangledspatialcontrol,"arXivpreprintarXiv:2405.12796,2024.
+arXiv:2312.13691,2023. [49] T.-S. Chen, A. Siarohin, W. Menapace, Y. Fang, K. S. Lee, I. Sko-
+[28] Y.Han,J.Zhu,K.He,X.Chen,Y.Ge,W.Li,X.Li,J.Zhang,C.Wang, rokhodov, K. Aberman, J.-Y. Zhu, M.-H. Yang, and S. Tulyakov,
+and Y. Liu, "Face adapter for pre-trained diffusion models with fine- "Multi-subject open-set personalization in video generation," arXiv
+grained id and attribute control," arXiv preprint arXiv:2405.12970, preprintarXiv:2501.06187,2025.
+2024. [50] Y. Huang, Z. Yuan, Q. Liu, Q. Wang, X. Wang, R. Zhang, P. Wan,
+[29] Y. Gu, X. Wang, J. Z. Wu, Y. Shi, Y. Chen, Z. Fan, W. Xiao, D. Zhang, and K. Gai, "Conceptmaster: Multi-concept video cusR. Zhao, S. Chang, W. Wu et al., "Mix-of-show: Decentralized low- tomizationondiffusiontransformermodelswithouttest-timetuning,"
+rankadaptationformulti-conceptcustomizationofdiffusionmodels," arXivpreprintarXiv:2501.04698,2025.
+AdvancesinNeuralInformationProcessingSystems,vol.36,2024. [51] C.-P.Huang,Y.-S.Wu,H.-K.Chung,K.-P.Chang,F.-E.Yang,andY.-
+[30] G.Xiao,T.Yin,W.T.Freeman,F.Durand,andS.Han,"Fastcomposer: C. F. Wang, "Videomage: Multi-subject and motion customization of
+Tuning-free multi-subject image generation with localized attention," text-to-videodiffusionmodels,"inProceedingsoftheComputerVision
+arXivpreprintarXiv:2305.10431,2023. andPatternRecognitionConference,2025,pp.17603-17612.
+[52] J.Wu,X.Li,Y.Zeng,J.Zhang,Q.Zhou,Y.Li,Y.Tong,andK.Chen, [73] W.-D. K. Ma, J. P. Lewis, and W. B. Kleijn, "Trailblazer: Tra-
+"Motionbooth: Motion-aware customized text-to-video generation," jectory control for diffusion-based video generation," arXiv preprint
+arXivpreprintarXiv:2406.17758,2024. arXiv:2401.00896,2023.
+[53] X. Shi, Z. Huang, F.-Y. Wang, W. Bian, D. Li, Y. Zhang, M. Zhang, [74] C.Chen,J.Shu,L.Chen,G.He,C.Wang,andY.Li,"Motion-zero:
+K. C. Cheung, S. See, H. Qin et al., "Motion-i2v: Consistent and Zero-shotmovingobjectcontrolframeworkfordiffusion-basedvideo
+controllableimage-to-videogenerationwithexplicitmotionmodeling," generation,"arXivpreprintarXiv:2401.10150,2024.
+inACMSIGGRAPH2024ConferencePapers,2024,pp.1-11. [75] Y.Huang,Y.Chen,L.Ding,X.Zhang,W.Dai,J.Zou,H.Xiong,and
+[54] W.Wu,Z.Li,Y.Gu,R.Zhao,Y.He,D.J.Zhang,M.Z.Shou,Y.Li, Q.Tian,"Im-zero:Instance-levelmotioncontrollablevideogeneration
+T. Gao, and D. Zhang, "Draganything: Motion control for anything in a zero-shot manner," in Proceedings of the Computer Vision and
+using entity representation," in European Conference on Computer PatternRecognitionConference,2025,pp.7265-7275.
+Vision. Springer,2025,pp.331-348. [76] S. Yin, C. Wu, J. Liang, J. Shi, H. Li, G. Ming, and N. Duan,
+[55] S. Bahmani, X. Liu, W. Yifan, I. Skorokhodov, V. Rong, Z. Liu, "Dragnuwa: Fine-grained control in video generation by integrating
+X.Liu,J.J.Park,S.Tulyakov,G.Wetzsteinetal.,"Tc4d:Trajectory- text,image,andtrajectory,"arXivpreprintarXiv:2308.08089,2023.
+conditioned text-to-4d generation," in European Conference on Com- [77] Y. Li, X. Wang, Z. Zhang, Z. Wang, Z. Yuan, L. Xie, Y. Zou, and
+puterVision. Springer,2025,pp.53-72. Y. Shan, "Image conductor: Precision control for interactive video
+[56] K. Namekata, S. Bahmani, Z. Wu, Y. Kant, I. Gilitschenski, and synthesis,"arXivpreprintarXiv:2406.15339,2024.
+D.B.Lindell,"Sg-i2v:Self-guidedtrajectorycontrolinimage-to-video [78] Z. Zhang, F. Long, Z. Qiu, Y. Pan, W. Liu, T. Yao, and T. Mei,
+generation,"arXivpreprintarXiv:2411.04989,2024. "Motionpro: A precise motion controller for image-to-video genera-
+[57] D.Geng,C.Herrmann,J.Hur,F.Cole,S.Zhang,T.Pfaff,T.Lopez- tion,"inProceedingsoftheComputerVisionandPatternRecognition
+Guevara, Y. Aytar, M. Rubinstein, C. Sun et al., "Motion prompting: Conference,2025,pp.27957-27967.
+Controllingvideogenerationwithmotiontrajectories,"inProceedings [79] Z.Zhang,J.Liao,M.Li,Z.Dai,B.Qiu,S.Zhu,L.Qin,andW.Wang,
+oftheComputerVisionandPatternRecognitionConference,2025,pp. "Tora:Trajectory-orienteddiffusiontransformerforvideogeneration,"
+1-12. inProceedingsoftheComputerVisionandPatternRecognitionCon-
+[58] G. Zheng, T. Li, R. Jiang, Y. Lu, T. Wu, and X. Li, "Cami2v: ference,2025,pp.2063-2073.
+Camera-controlled image-to-video diffusion model," arXiv preprint
+[80] Q. Li, Z. Xing, R. Wang, H. Zhang, Q. Dai, and Z. Wu, "MagicarXiv:2410.15957,2024.
+motion: Controllable video generation with dense-to-sparse trajectory
+[59] T. Hu, J. Zhang, R. Yi, Y. Wang, J. Weng, H. Huang, Y. Wang, guidance,"arXivpreprintarXiv:2503.16421,2025.
+andL.Ma,"Comd:Training-freevideomotiontransferwithcamera-
+[81] H.Li,L.Jiang,X.Xiao,T.Wang,H.Yi,B.Wu,andD.Cai,"Magiobject motion disentanglement," in Proceedings of the 32nd ACM
+cid: Hybrid preference optimization for id-consistent and dynamicInternationalConferenceonMultimedia,2024,pp.3459-3468.
+preserved video customization," arXiv preprint arXiv:2503.12689,
+[60] H.Yesiltepe,T.H.S.Meral,C.Dunlop,andP.Yanardag,"Motionshop:
+2025.
+Zero-shot motion transfer in video diffusion models with mixture of
+[82] L.Shen,W.Jiang,Y.Zhu,J.Li,T.Ge,Z.Cao,andB.Zheng,"Identityscoreguidance,"arXivpreprintarXiv:2412.05355,2024.
+preservingimage-to-videogenerationviareward-guidedoptimization,"
+[61] M. Niu, X. Cun, X. Wang, Y. Zhang, Y. Shan, and Y. Zheng,
+arXivpreprintarXiv:2510.14255,2025.
+"Mofa-video:Controllableimageanimationviagenerativemotionfield
+[83] X.Meng,Z.Zhang,Z.Zhang,J.Liao,L.Qin,andW.Wang,"Identityadaptions in frozen image-to-video diffusion model," in European
+grpo:Optimizingmulti-humanidentity-preservingvideogenerationvia
+ConferenceonComputerVision. Springer,2025,pp.111-128.
+reinforcementlearning,"arXivpreprintarXiv:2510.14256,2025.
+[62] H.Jeong,J.Chang,G.Y.Park,andJ.C.Ye,"Dreammotion:Space-
+[84] B. Zhu, Y. Jiang, B. Xu, S. Yang, M. Yin, Y. Wu, H. Sun, and
+time self-similar score distillation for zero-shot video editing," in
+Z.Wu,"Aligninganimevideogenerationwithhumanfeedback,"arXiv
+EuropeanConferenceonComputerVision. Springer,2024,pp.358preprintarXiv:2504.10044,2025.
+376.
+[85] R. Rafailov, A. Sharma, E. Mitchell, C. D. Manning, S. Ermon, and
+[63] X. Li, X. Jia, Q. Wang, H. Diao, M. Ge, P. Li, Y. He, and H. Lu,
+C. Finn, "Direct preference optimization: Your language model is
+"Motrans:Customizedmotiontransferwithtext-drivenvideodiffusion
+secretly a reward model," Advances in neural information processing
+models,"inProceedingsofthe32ndACMInternationalConferenceon
+systems,vol.36,pp.53728-53741,2023.
+Multimedia,2024,pp.3421-3430.
+[86] Z.Shao,P.Wang,Q.Zhu,R.Xu,J.Song,X.Bi,H.Zhang,M.Zhang,
+[64] W. Feng, T. Qi, J. Liu, M. Sun, P. Tu, T. Ma, F. Dai, S. Zhao,
+Y.Li,Y.Wuetal.,"Deepseekmath:Pushingthelimitsofmathematical
+S. Zhou, and Q. He, "I2vcontrol: Disentangled and unified video
+motionsynthesiscontrol,"arXivpreprintarXiv:2411.17765,2024.
+reasoninginopenlanguagemodels,"arXivpreprintarXiv:2402.03300,
+2024.
+[65] G. Y. Park, H. Jeong, S. W. Lee, and J. C. Ye, "Spectral motion
+alignment for video motion transfer using diffusion models," arXiv [87] J.Xu,X.Liu,Y.Wu,Y.Tong,Q.Li,M.Ding,J.Tang,andY.Dong,
+preprintarXiv:2403.15249,2024. "Imagereward: Learning and evaluating human preferences for text-
+[66] H.Jeong,G.Y.Park,andJ.C.Ye,"Vmc:Videomotioncustomization to-image generation," Advances in Neural Information Processing
+usingtemporalattentionadaptionfortext-to-videodiffusionmodels," Systems,vol.36,pp.15903-15935,2023.
+inProceedingsoftheIEEE/CVFConferenceonComputerVisionand [88] X. Mi, W. Yu, J. Lian, S. Jie, R. Zhong, Z. Liu, G. Zhang, Z. Zhou,
+PatternRecognition,2024,pp.9212-9221. Z.Xu,Y.Zhouetal.,"Videogenerationmodelsaregoodlatentreward
+[67] Y. Ren, Y. Zhou, J. Yang, J. Shi, D. Liu, F. Liu, M. Kwon, and models,"arXivpreprintarXiv:2511.21541,2025.
+A. Shrivastava, "Customize-a-video: One-shot motion customization [89] W. Zhao, L. Bai, Y. Rao, J. Zhou, and J. Lu, "Unipc: A unified
+of text-to-video diffusion models," arXiv preprint arXiv:2402.14780, predictor-correctorframeworkforfastsamplingofdiffusionmodels,"
+2024. Advances in Neural Information Processing Systems, vol. 36, pp.
+[68] D. Yatim, R. Fridman, O. Bar-Tal, Y. Kasten, and T. Dekel, "Space- 49842-49869,2023.
+time diffusion features for zero-shot text-driven motion transfer," in [90] Z. Teed and J. Deng, "Raft: Recurrent all-pairs field transforms for
+Proceedings of the IEEE/CVF Conference on Computer Vision and opticalflow,"inEuropeanconferenceoncomputervision. Springer,
+PatternRecognition,2024,pp.8466-8476. 2020,pp.402-419.
+[69] L. Wang, G. Shen, Y. Liang, X. Tao, P. Wan, D. Zhang, Y. Li, and [91] Y.Zhang,X.Huang,J.Ma,Z.Li,Z.Luo,Y.Xie,Y.Qin,T.Luo,Y.Li,
+Y. Chen, "Motion inversion for video customization," arXiv preprint S.Liuetal.,"Recognizeanything:Astrongimagetaggingmodel,"in
+arXiv:2403.20193,2024. Proceedings of the IEEE/CVF Conference on Computer Vision and
+[70] R.Wu,L.Chen,T.Yang,C.Guo,C.Li,andX.Zhang,"Lamp:Learn PatternRecognition,2024,pp.1724-1732.
+amotionpatternforfew-shot-basedvideogeneration,"arXivpreprint [92] A.Yang,A.Li,B.Yang,B.Zhang,B.Hui,B.Zheng,B.Yu,C.Gao,
+arXiv:2310.10769,2023. C. Huang, C. Lv et al., "Qwen3 technical report," arXiv preprint
+[71] Y.Jain,A.Nasery,V.Vineet,andH.Behl,"Peekaboo:Interactivevideo arXiv:2505.09388,2025.
+generation via masked-diffusion," in Proceedings of the IEEE/CVF [93] S.Bai,Y.Cai,R.Chen,K.Chen,X.Chen,Z.Cheng,L.Deng,W.Ding,
+Conference on Computer Vision and Pattern Recognition, 2024, pp. C.Gao,C.Ge,W.Ge,Z.Guo,Q.Huang,J.Huang,F.Huang,B.Hui,
+8079-8088. S.Jiang,Z.Li,M.Li,M.Li,K.Li,Z.Lin,J.Lin,X.Liu,J.Liu,C.Liu,
+[72] S. Yang, L. Hou, H. Huang, C. Ma, P. Wan, D. Zhang, X. Chen, Y.Liu,D.Liu,S.Liu,D.Lu,R.Luo,C.Lv,R.Men,L.Meng,X.Ren,
+and J.Liao, "Direct-a-video:Customized videogeneration withuser- X. Ren, S. Song, Y. Sun, J. Tang, J. Tu, J. Wan, P. Wang, P. Wang,
+directed camera movement and object motion," in ACM SIGGRAPH Q. Wang, Y. Wang, T. Xie, Y. Xu, H. Xu, J. Xu, Z. Yang, M. Yang,
+2024ConferencePapers,2024,pp.1-12. J. Yang, A. Yang, B. Yu, F. Zhang, H. Zhang, X. Zhang, B. Zheng,
+H.Zhong,J.Zhou,F.Zhou,J.Zhou,Y.Zhu,andK.Zhu,"Qwen3-vl
+technicalreport,"arXivpreprintarXiv:2511.21631,2025.
+[94] S. Liu, Z. Zeng, T. Ren, F. Li, H. Zhang, J. Yang, Q. Jiang, C. Li,
+J.Yang,H.Suetal.,"Groundingdino:Marryingdinowithgrounded
+pre-trainingforopen-setobjectdetection,"inEuropeanconferenceon
+computervision. Springer,2024,pp.38-55.
+[95] N. Ravi, V. Gabeur, Y.-T. Hu, R. Hu, C. Ryali, T. Ma, H. Khedr,
+R.Ra¨dle,C.Rolland,L.Gustafsonetal.,"Sam2:Segmentanything
+inimagesandvideos,"arXivpreprintarXiv:2408.00714,2024.
+[96] N.Karaev,Y.Makarov,J.Wang,N.Neverova,A.Vedaldi,andC.Rupprecht, "Cotracker3: Simpler and better point tracking by pseudolabelling real videos," in Proceedings of the IEEE/CVF International
+ConferenceonComputerVision,2025,pp.6013-6022.
+[97] M.Bain,A.Nagrani,G.Varol,andA.Zisserman,"Frozenintime:A
+jointvideoandimageencoderforend-to-endretrieval,"inProceedings
+of the IEEE/CVF international conference on computer vision, 2021,
+pp.1728-1738.
+[98] K. Soomro, A. R. Zamir, and M. Shah, "Ucf101: A dataset of
+101 human actions classes from videos in the wild," arXiv preprint
+arXiv:1212.0402,2012.
+[99] J.Pont-Tuset,F.Perazzi,S.Caelles,P.Arbela´ez,A.Sorkine-Hornung,
+andL.VanGool,"The2017davischallengeonvideoobjectsegmentation,"arXivpreprintarXiv:1704.00675,2017.
+[100] L. Huang, X. Zhao, and K. Huang, "Got-10k: A large high-diversity
+benchmarkforgenericobjecttrackinginthewild,"IEEEtransactions
+onpatternanalysisandmachineintelligence,vol.43,no.5,pp.15621577,2019.
+[101] I.Loshchilov,"Decoupledweightdecayregularization,"arXivpreprint
+arXiv:1711.05101,2017.
+[102] J. Ho and T. Salimans, "Classifier-free diffusion guidance," arXiv
+preprintarXiv:2207.12598,2022.
+[103] Z. Jiang, Z. Han, C. Mao, J. Zhang, Y. Pan, and Y. Liu, "Vace: Allin-one video creation and editing," arXiv preprint arXiv:2503.07598,
+2025.
+[104] J.Deng,J.Guo,N.Xue,andS.Zafeiriou,"Arcface:Additiveangular
+marginlossfordeepfacerecognition,"inProceedingsoftheIEEE/CVF
+conference on computer vision and pattern recognition, 2019, pp.
+4690-4699.
+[105] R. A. Bradley and M. E. Terry, "Rank analysis of incomplete block
+designs:I.themethodofpairedcomparisons,"Biometrika,vol.39,no.
+3/4,pp.324-345,1952.
+[106] J. Skalse, N. Howe, D. Krasheninnikov, and D. Krueger, "Defining
+andcharacterizingrewardgaming,"inAdvancesinNeuralInformation
+ProcessingSystems,S.Koyejo,S.Mohamed,A.Agarwal,D.Belgrave,
+K.Cho,andA.Oh,Eds.,vol.35. CurranAssociates,Inc.,2022,pp.
+9460-9471.
