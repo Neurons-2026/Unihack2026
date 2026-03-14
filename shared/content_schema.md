@@ -31,6 +31,9 @@ Allowed `source` values:
 4. Recommendation owner (Liam): consume `card.keywords`, write `ranking.*`.
 5. Briefing + graph owners (Sunny/Harry): consume `preprocessing.cleaned_text`, `card.*`, metadata.
 
+Pipeline handoff marker:
+- `pipeline_state` in (`raw_scraped`, `keywords_enriched`, `preprocessed`, `card_ready`)
+
 ## Required fields at ingestion completion
 
 - `schema_version` (`"1.0.0"`)
@@ -45,6 +48,7 @@ Allowed `source` values:
 Recommended at ingestion time (if available):
 - `raw_summary`
 - `published_at`
+- `pipeline_state` = `raw_scraped`
 - `provenance.collector`
 - `provenance.collector_version`
 - `provenance.dedupe_key`
@@ -60,7 +64,8 @@ Recommended for better quality:
 - `preprocessing.cleaned_text`
 - `preprocessing.quality_score`
 - `card.thumbnail_keyword`
-- `ranking.trending_score`
+- `ranking.source_rank_score`
+- `ranking.trending_score` (temporary backward-compatible alias)
 
 ## Mapping to database tables
 
