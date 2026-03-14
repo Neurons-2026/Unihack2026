@@ -12,6 +12,7 @@ function easeOutCubic(t: number): number {
 export default function KnowledgeGraph() {
   const router = useRouter();
   const [detailNode, setDetailNode] = useState<GraphNode | null>(null);
+  const [copiedNode, setCopiedNode] = useState(false);
   const [viewMode, setViewMode] = useState<'today' | 'full'>('today');
   const cvRef = useRef<HTMLCanvasElement>(null);
   const dataReady = useRef(false);
@@ -317,7 +318,7 @@ export default function KnowledgeGraph() {
       e.preventDefault(); const p = getXY(e); s.moved = false;
       const hit = hitTest(p);
       if (hit) { s.dragging = hit; const wp = screenToWorld(p.x, p.y); s.dragOff = { x: hit.x - wp.x, y: hit.y - wp.y }; hit.vx = 0; hit.vy = 0; }
-      else { s.selectedNodeIds.clear(); setDetailNode(null); }
+      else { s.selectedNodeIds.clear(); setDetailNode(null); setCopiedNode(false); }
     }
     function onMove(e: MouseEvent | TouchEvent) {
       const p = getXY(e); s.mouseX = p.x; s.mouseY = p.y;
@@ -512,14 +513,75 @@ export default function KnowledgeGraph() {
                   }} />
                   <span style={{ fontSize: 16, fontWeight: 500, color: '#fff' }}>{detailNode.label}</span>
                 </div>
-                <span onClick={() => setDetailNode(null)} style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', cursor: 'pointer', padding: '4px 8px' }}>Close</span>
+                <button
+                  onClick={() => setDetailNode(null)}
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 500,
+                    color: 'rgba(255,255,255,0.45)',
+                    cursor: 'pointer',
+                    padding: '5px 14px',
+                    borderRadius: 20,
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    background: 'rgba(255,255,255,0.06)',
+                    transition: 'background 0.15s ease, color 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.12)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.7)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.45)'; }}
+                >Close</button>
               </div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginBottom: 8 }}>
                 {detailNode.isToday ? 'Added today' : 'Previous session'} · Seen {detailNode.frequency}x · {(adj[detailNode.id] || []).length} connections
               </div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.55 }}>{detailNode.description}</div>
               <div style={{ marginTop: 12 }}>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginBottom: 6, letterSpacing: 0.5 }}>CONNECTED TO</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', letterSpacing: 0.5 }}>CONNECTED TO</div>
+                  <button
+                    onClick={async () => {
+                      const text = `${detailNode.label}: ${detailNode.description}`;
+                      const connections = (adj[detailNode.id] || [])
+                        .map((id: string) => graphNodes.find((n: GraphNode) => n.id === id)?.label)
+                        .filter(Boolean)
+                        .join(', ');
+                      const full = `${text}\nConnected to: ${connections}`;
+                      if (navigator.share) {
+                        try { await navigator.share({ title: detailNode.label, text: full }); } catch {}
+                      } else {
+                        await navigator.clipboard.writeText(full);
+                        setCopiedNode(true);
+                        setTimeout(() => setCopiedNode(false), 1500);
+                      }
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 5,
+                      padding: '4px 10px',
+                      borderRadius: 20,
+                      border: 'none',
+                      background: 'rgba(255,255,255,0.06)',
+                      color: copiedNode ? 'rgba(100,220,220,0.8)' : 'rgba(255,255,255,0.3)',
+                      fontSize: 11,
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      transition: 'color 0.2s ease',
+                    }}
+                  >
+                    {copiedNode ? (
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    ) : (
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+                        <polyline points="16 6 12 2 8 6" />
+                        <line x1="12" y1="2" x2="12" y2="15" />
+                      </svg>
+                    )}
+                    {copiedNode ? 'Copied' : 'Share'}
+                  </button>
+                </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                   {(adj[detailNode.id] || []).map((connId: string) => {
                     const cn = graphNodes.find((nd: GraphNode) => nd.id === connId);
