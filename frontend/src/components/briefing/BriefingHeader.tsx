@@ -42,23 +42,36 @@ export default function BriefingHeader({
           marginBottom: 12,
         }}
       >
-        <div
+        <button
           onClick={() => router.push('/')}
-          style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 7,
+            padding: '6px 14px 6px 10px',
+            borderRadius: 20,
+            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(255,255,255,0.06)',
+            color: 'rgba(255,255,255,0.5)',
+            cursor: 'pointer',
+            transition: 'background 0.15s ease, color 0.15s ease',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
         >
           <svg
-            width="20"
-            height="20"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="rgba(255,255,255,0.5)"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
           >
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>Back</span>
-        </div>
+          <span style={{ fontSize: 12, fontWeight: 500 }}>Back</span>
+        </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
             {readingTimeMin} min read

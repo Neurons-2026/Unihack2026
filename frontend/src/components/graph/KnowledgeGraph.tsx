@@ -425,10 +425,27 @@ export default function KnowledgeGraph() {
       {/* HEADER */}
       <div style={{ padding: '48px 20px 0', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
-          <div onClick={() => router.push('/briefing')} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-            <span style={{ fontSize: 15, fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>Your knowledge</span>
-          </div>
+          <button
+            onClick={() => router.push('/briefing')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 7,
+              padding: '6px 14px 6px 10px',
+              borderRadius: 20,
+              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.06)',
+              color: 'rgba(255,255,255,0.5)',
+              cursor: 'pointer',
+              transition: 'background 0.15s ease, color 0.15s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+            <span style={{ fontSize: 12, fontWeight: 500 }}>Back</span>
+          </button>
+          <span style={{ fontSize: 15, fontWeight: 500, color: 'rgba(255,255,255,0.9)', marginLeft: 10 }}>Your knowledge</span>
         </div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.5, marginBottom: 6 }}>
           {viewMode === 'today'
