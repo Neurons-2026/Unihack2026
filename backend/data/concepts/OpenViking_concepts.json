@@ -5,43 +5,43 @@
   "concepts": [
     {
       "label": "filesystem paradigm context management",
-      "description": "Instead of storing AI memory as scattered, unorganized text chunks, OpenViking organizes everything — memories, skills, documents — into a structured virtual folder system (like files on your computer) accessible via a special 'viking://' address.",
-      "why_innovative": "This replaces the fragmented, hard-to-debug 'flat storage' approach of traditional AI retrieval systems with an intuitive, navigable hierarchy, making AI context as manageable as files on a hard drive.",
-      "impact_on_applications": "AI assistants and coding tools could reliably remember your preferences, past projects, and learned skills across sessions — much like how a new employee would have a well-organized folder of notes about your work rather than scattered sticky notes. This directly reduces errors and wasted effort in AI-powered developer tools and enterprise assistants.",
+      "description": "Instead of storing AI memory as scattered, disconnected chunks of text, OpenViking organizes all AI knowledge — memories, documents, skills — into a virtual folder-and-file structure you can browse like files on your computer.",
+      "why_innovative": "This replaces the fragmented, hard-to-debug 'flat storage' approach of traditional AI retrieval systems with an organized, navigable structure that developers can inspect and control directly.",
+      "impact_on_applications": "AI assistants and coding tools could maintain much more organized, reliable long-term memory, making them less likely to forget important context or confuse unrelated information. Developers building AI agents could debug and audit exactly what information the AI is using, just like browsing folders on a computer.",
       "category": "architecture",
       "relevance_score": 0.97
     },
     {
       "label": "tiered context loading",
-      "description": "Information is automatically stored at three levels of detail — a one-sentence summary (L0), a structured overview (L1), and the full content (L2) — and only the level needed at any given moment is loaded, rather than dumping everything at once.",
-      "why_innovative": "This dramatically cuts the cost and complexity of AI tasks by avoiding the need to feed massive amounts of text to the AI model every time, which is both expensive and can overwhelm the model's attention capacity.",
-      "impact_on_applications": "AI-powered tools like coding assistants or document analyzers could handle much larger projects at a fraction of the current cost — making advanced AI assistance affordable for individuals and small businesses, not just large enterprises. The benchmark results showed a 91% reduction in input token costs compared to a baseline approach.",
+      "description": "Information is automatically stored at three levels of detail — a one-sentence summary (L0), a short overview (L1), and the full content (L2) — so the AI only loads as much detail as it actually needs for each task.",
+      "why_innovative": "This dramatically cuts the cost and processing time of AI tasks by avoiding the common practice of cramming all available information into every AI request, which wastes money and can confuse the model.",
+      "impact_on_applications": "AI-powered apps like coding assistants or customer support bots could handle much longer, more complex tasks at a fraction of the current cost — the benchmark shows up to 96% reduction in input data processed. This makes advanced AI features affordable for smaller companies and individual developers.",
       "category": "technique",
       "relevance_score": 0.95
     },
     {
       "label": "directory recursive retrieval",
-      "description": "When searching for relevant information, the system first identifies the most promising high-level folder, then drills down recursively into sub-folders — combining broad semantic (meaning-based) search with precise, structured navigation.",
-      "why_innovative": "Traditional AI retrieval treats all stored information as equally flat and distant, missing the broader context around a piece of information; this recursive drill-down approach understands both the specific answer and its surrounding context, dramatically improving relevance.",
-      "impact_on_applications": "Search features in AI tools — like 'find everything relevant to my authentication bug' — would return far more accurate and complete answers because the system understands document structure, not just keyword similarity. This could make AI coding assistants, legal document tools, and research platforms significantly more reliable.",
+      "description": "When searching for relevant information, the system first finds the most promising folder, then digs deeper into that folder recursively — like narrowing from a library section down to a specific shelf and then a specific book — rather than searching everything at once.",
+      "why_innovative": "Traditional AI search treats all stored information as equally relevant and searches everything at once, missing the broader context around any given piece of information; this strategy understands the neighborhood of information, not just isolated snippets.",
+      "impact_on_applications": "AI research assistants and document Q&A tools could give much more accurate, contextually complete answers by understanding how pieces of information relate to each other within a larger document or knowledge base, reducing misleading or incomplete responses.",
       "category": "technique",
       "relevance_score": 0.93
     },
     {
       "label": "visualized retrieval trajectory",
-      "description": "Every time the AI searches for information, the exact path it took through the folder structure is recorded and displayed, so developers can see step-by-step why the AI found (or failed to find) something.",
-      "why_innovative": "Traditional AI retrieval is a 'black box' — you get an answer but have no idea why, making debugging nearly impossible; this makes the entire retrieval process transparent and inspectable for the first time.",
-      "impact_on_applications": "Developers building AI products could quickly identify and fix retrieval errors instead of spending days guessing what went wrong, leading to faster product development cycles and more reliable AI-powered services like customer support bots or document search tools.",
+      "description": "Every time the AI searches for information, the full path it took — which folders it looked in, which files it found — is recorded and made visible, turning the previously invisible search process into something you can watch and trace.",
+      "why_innovative": "Traditional AI retrieval is a 'black box' where you can see the answer but not how the AI found it, making errors nearly impossible to diagnose; full trajectory visibility transforms debugging from guesswork into a clear audit trail.",
+      "impact_on_applications": "Teams building AI agents for high-stakes domains like legal research or medical documentation could actually verify and trust why the AI gave a particular answer, and quickly fix retrieval mistakes — making AI tools safer and more trustworthy in professional settings.",
       "category": "technique",
-      "relevance_score": 0.88
+      "relevance_score": 0.89
     },
     {
       "label": "automatic session memory extraction",
-      "description": "At the end of each conversation or task, the system automatically analyzes what happened, extracts useful lessons and preferences, and saves them back into the AI's memory — so it genuinely learns from every interaction.",
-      "why_innovative": "Current AI agents simply log raw conversation history without synthesizing it into reusable knowledge; this self-iteration loop enables agents to genuinely improve their understanding of a user's preferences and refine their skills over time.",
-      "impact_on_applications": "AI personal assistants and productivity tools could become progressively more useful the more you use them — learning your writing style, your coding habits, or your workflow preferences — similar to how a human assistant becomes more effective over time, without requiring manual configuration.",
+      "description": "At the end of each conversation or task, the system automatically analyzes what happened, pulls out useful lessons and preferences, and saves them back into the AI's memory — so the AI genuinely learns and improves from every interaction.",
+      "why_innovative": "Current AI memory systems mostly just log conversation history without extracting meaningful insights; this creates a true self-improvement loop where the AI gets measurably smarter and more personalized with each use.",
+      "impact_on_applications": "Personal AI assistants and productivity tools could become genuinely personalized over time — remembering your working style, preferred formats, and past decisions — rather than starting fresh or relying on you to repeat yourself, similar to how a human colleague learns your preferences over months of working together.",
       "category": "technique",
-      "relevance_score": 0.9
+      "relevance_score": 0.91
     }
   ]
 }

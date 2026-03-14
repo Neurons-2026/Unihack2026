@@ -5,57 +5,57 @@
   "concepts": [
     {
       "label": "dual-autoregressive architecture",
-      "description": "A two-stage system where one part handles the overall rhythm and meaning of speech over time, while a second, smaller part fills in the fine acoustic details at each moment — like one conductor setting the tempo and another adding instrumental nuance.",
-      "why_innovative": "This split design lets a massive model produce high-quality, natural-sounding audio without the full computational cost at every step, achieving both fidelity and speed in a way single-stage models cannot.",
-      "impact_on_applications": "Voice assistants, audiobook narrators, and video dubbing tools could generate human-quality speech in near real-time, even on limited hardware — making lifelike AI voices accessible in everyday consumer apps.",
+      "description": "A two-stage speech generation system where one part handles the overall flow of speech over time, and a second faster part fills in the fine acoustic details at each moment — like a conductor and an orchestra working together.",
+      "why_innovative": "By splitting the heavy work across two specialized components (4B and 400M parameters), it keeps voice generation fast and cheap without sacrificing sound quality — something previous single-stage systems struggled to balance.",
+      "impact_on_applications": "This could make real-time voice assistants, audiobook narrators, and dubbing tools far more responsive and natural-sounding on standard hardware, reducing the cost of deploying high-quality speech AI in consumer products.",
       "category": "architecture",
       "relevance_score": 0.97
     },
     {
       "label": "grpo reinforcement learning alignment",
-      "description": "A training technique where the speech model is rewarded or penalized based on how natural, accurate, and emotionally appropriate its output sounds — similar to how you'd coach a speaker by giving feedback after each attempt.",
-      "why_innovative": "By reusing the same quality-checking models from data preparation as live reward judges, it removes the mismatch between what the model learned during training and what it's optimized for afterward, leading to consistently better and more controllable speech.",
-      "impact_on_applications": "Customer service voice bots and e-learning narration tools could reliably follow complex emotional and tonal instructions, producing speech that feels genuinely human rather than robotic or flat.",
+      "description": "A training technique where the same AI models used to check and label the original training data are then reused as 'judges' during a second round of training — teaching the speech model to score well on quality, accuracy, and voice similarity.",
+      "why_innovative": "Reusing the same models as reward judges eliminates the mismatch between what the model learned during initial training and what it's being graded on later, leading to more consistent and reliable speech quality improvements.",
+      "impact_on_applications": "Products like navigation apps, e-learning platforms, and customer service bots could generate speech that more reliably matches the right tone, emotion, and accuracy, reducing frustrating or robotic-sounding outputs.",
       "category": "technique",
       "relevance_score": 0.93
     },
     {
-      "label": "inline natural-language prosody control",
-      "description": "A method that lets users embed plain-English instructions like [whisper] or [super happy] directly inside the text being spoken, so the AI adjusts tone, emotion, and style at exactly that word or phrase.",
-      "why_innovative": "Unlike systems limited to a fixed menu of voice styles, this allows open-ended, word-level expressive control using everyday language, making fine-grained emotional speech generation accessible without any technical expertise.",
-      "impact_on_applications": "Podcast production tools, video game character voices, and accessibility readers could let creators dial in precise emotional delivery with simple text tags — no audio engineering skills required.",
+      "label": "inline natural language prosody control",
+      "description": "A way to insert plain English instructions like [whisper] or [super happy] directly inside the text being spoken, so the AI adjusts its voice style at exactly that word or phrase — like stage directions embedded in a script.",
+      "why_innovative": "Unlike older systems that required rigid, predefined commands or separate audio style settings, this lets anyone describe any vocal nuance in their own words, making expressive speech generation accessible without technical expertise.",
+      "impact_on_applications": "Audiobook creators, game developers, and video producers could generate emotionally rich narration or character voices simply by writing natural descriptions, dramatically cutting production time and cost.",
       "category": "technique",
       "relevance_score": 0.95
     },
     {
       "label": "rvq-based audio codec",
-      "description": "A compression system that encodes audio into multiple layers of compact numerical codes (like a series of increasingly detailed sketches), which the AI generates step by step to reconstruct high-quality sound.",
-      "why_innovative": "Using 10 layered codebooks at ~21 Hz allows the model to represent rich acoustic detail efficiently, bridging language model architectures with audio generation without sacrificing quality.",
-      "impact_on_applications": "Streaming audio services and real-time translation apps could deliver studio-quality synthesized voices over low-bandwidth connections, improving accessibility in regions with limited internet.",
+      "description": "A compression system that encodes audio into multiple layers of compact digital codes (like 10 nested zip files for sound), allowing the AI to reconstruct high-fidelity audio from these compact representations.",
+      "why_innovative": "Using 10 residual codebooks at ~21 Hz enables the model to capture both the broad shape of speech and its fine acoustic texture, achieving near-human audio quality while keeping data sizes manageable.",
+      "impact_on_applications": "Streaming services, video conferencing tools, and podcast platforms could deliver studio-quality synthesized voices over low-bandwidth connections, improving accessibility in regions with limited internet speed.",
       "category": "technique",
       "relevance_score": 0.88
     },
     {
-      "label": "zero-shot voice cloning",
-      "description": "The ability to copy someone's unique voice characteristics from just a short 10–30 second audio sample, without any additional training or technical setup.",
-      "why_innovative": "Eliminating the need for fine-tuning means anyone can clone a voice instantly, democratizing personalized voice generation and making it practical at scale for real products.",
-      "impact_on_applications": "Personalized navigation apps, audiobook services, or accessibility tools could let users hear content in a loved one's voice or their own voice — instantly and without expensive recording sessions.",
+      "label": "rapid voice cloning",
+      "description": "A feature that lets the AI copy someone's voice — including their tone, speaking style, and emotional tendencies — from just a 10–30 second audio sample, with no additional retraining required.",
+      "why_innovative": "Achieving accurate voice cloning from such a short sample without fine-tuning removes a major barrier (cost and time of data collection) that previously limited personalized voice AI to well-funded applications.",
+      "impact_on_applications": "Accessibility tools could restore speech for people who have lost their voice due to illness, and personalized virtual assistants could speak in a user's own voice, making technology feel far more personal and human.",
       "category": "application",
       "relevance_score": 0.9
     },
     {
       "label": "sglang streaming inference",
-      "description": "A production serving system borrowed from large language model infrastructure that lets the speech model generate audio continuously and efficiently, delivering the first sound in about 100 milliseconds.",
-      "why_innovative": "By inheriting battle-tested LLM serving optimizations (like smart memory caching and batching), it achieves real-time speech generation speeds that were previously only possible with specialized, purpose-built systems.",
-      "impact_on_applications": "Live customer support voice agents and real-time translation earbuds could respond with natural speech almost instantly, making AI-powered conversations feel as immediate as talking to a real person.",
+      "description": "A production serving system that treats the speech model exactly like a standard text AI (large language model), inheriting all the speed tricks developed for text generation — like smart memory reuse and batching multiple requests together.",
+      "why_innovative": "Achieving a real-time factor of 0.195 (meaning the audio is generated nearly 5x faster than it plays) with under 100ms startup time on a single GPU makes real-time interactive voice applications genuinely practical at scale.",
+      "impact_on_applications": "Live customer service phone bots, real-time language translation with voice output, and interactive voice games could all respond instantly and handle thousands of simultaneous users without expensive infrastructure.",
       "category": "tool",
       "relevance_score": 0.85
     },
     {
-      "label": "native multi-speaker generation",
-      "description": "A built-in ability to handle multiple distinct voices within a single generation run, using special speaker tokens to switch between different people's voices seamlessly in one pass.",
-      "why_innovative": "Rather than running separate voice synthesis jobs for each speaker, this handles conversations and multi-character scenes in one unified process, dramatically simplifying production pipelines.",
-      "impact_on_applications": "Podcast automation tools, interactive story apps, and dubbed film production could generate full multi-character dialogues in one step — cutting production time and costs significantly.",
+      "label": "multi-speaker token generation",
+      "description": "A mechanism that assigns each speaker in a conversation a unique tag (like a name badge) so the AI can juggle multiple distinct voices within a single generation pass, rather than making separate requests for each speaker.",
+      "why_innovative": "Handling multiple speakers natively in one pass eliminates the awkward stitching-together of separately generated voice clips, producing more natural-sounding multi-person dialogues with consistent identity across speakers.",
+      "impact_on_applications": "Podcast automation tools, interactive story apps, and video game dialogue engines could generate entire multi-character scenes in one step, making high-quality multi-voice content creation fast and affordable for independent creators.",
       "category": "technique",
       "relevance_score": 0.83
     }

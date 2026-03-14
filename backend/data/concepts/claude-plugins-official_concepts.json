@@ -4,44 +4,44 @@
   "source_type": "pdf",
   "concepts": [
     {
-      "label": "mcp server integration",
-      "description": "A standardized way for AI coding assistants to connect with external tools and services through a common communication protocol (a set of rules for how software talks to each other).",
-      "why_innovative": "It allows AI assistants like Claude to plug into virtually any external tool or data source without needing to be rebuilt each time, making the AI far more extensible and powerful.",
-      "impact_on_applications": "Developers could connect their AI coding assistant directly to databases, APIs, or internal company tools, enabling Claude to write code that is already tailored to their specific environment. This could dramatically speed up software development workflows in real companies.",
-      "category": "architecture",
+      "label": "claude code plugin system",
+      "description": "A structured marketplace where developers can build and share add-ons that extend the capabilities of Claude Code, Anthropic's AI coding assistant.",
+      "why_innovative": "It creates an open ecosystem around an AI coding tool, allowing third-party developers to customize and extend AI behavior in a standardized, discoverable way — similar to how browser extensions transformed web browsers.",
+      "impact_on_applications": "Developers could install specialized plugins to make their AI coding assistant work with specific tools, languages, or workflows, dramatically reducing setup time and enabling highly tailored AI-assisted coding environments.",
+      "category": "tool",
       "relevance_score": 0.95
     },
     {
-      "label": "plugin marketplace directory",
-      "description": "A curated, searchable catalog where users can discover, install, and share modular add-ons (plugins) that extend what an AI coding tool can do.",
-      "why_innovative": "It creates an open ecosystem around an AI coding assistant, enabling a community of developers to continuously expand the tool's capabilities beyond what the original creators built — similar to how app stores transformed smartphones.",
-      "impact_on_applications": "Software developers and teams could browse and install plugins tailored to their stack (e.g., a plugin for their cloud provider or testing framework), making their AI assistant more useful without waiting for official updates from Anthropic.",
-      "category": "tool",
-      "relevance_score": 0.93
+      "label": "mcp server integration",
+      "description": "A configuration layer (using a format called MCP — Model Context Protocol) that lets plugins connect Claude to external tools, databases, or services so the AI can take real actions beyond just generating text.",
+      "why_innovative": "This bridges the gap between an AI assistant and real-world systems, allowing the AI to actually read files, call APIs, or interact with developer tools rather than just describing how to do so.",
+      "impact_on_applications": "This could allow AI coding assistants to directly push code to GitHub, query databases, or run tests automatically — turning the AI from an advisor into an active participant in software development workflows.",
+      "category": "architecture",
+      "relevance_score": 0.92
     },
     {
       "label": "slash command plugins",
-      "description": "Custom shortcut commands (typed with a '/' prefix) that users can add to their AI coding assistant to trigger specific, predefined workflows or actions.",
-      "why_innovative": "It lets teams and individuals teach the AI assistant new repeatable tasks specific to their workflow, turning a general-purpose tool into a personalized productivity system.",
-      "impact_on_applications": "A development team could create a '/deploy-check' command that automatically reviews code for deployment readiness, saving time on repetitive pre-release checks and reducing human error.",
+      "description": "Custom shortcut commands (like '/deploy' or '/review') that users can trigger inside Claude Code to execute predefined, plugin-specific actions instantly.",
+      "why_innovative": "It gives non-technical users and power users alike a simple, consistent way to invoke complex AI-powered workflows with a single word, lowering the barrier to using advanced AI capabilities.",
+      "impact_on_applications": "Teams could create company-specific commands (e.g., '/submit-pr' or '/run-tests') that automate repetitive coding tasks, saving hours of manual work and reducing human error in software development pipelines.",
       "category": "technique",
-      "relevance_score": 0.88
-    },
-    {
-      "label": "agent definitions",
-      "description": "Pre-configured AI 'roles' or 'personas' bundled inside a plugin that tell the AI how to behave, what goals to pursue, and what tools to use for a specific type of task.",
-      "why_innovative": "It enables packaging of specialized AI behavior into reusable, shareable units, so expert workflows (like a security auditing agent) can be distributed and adopted by anyone without requiring deep AI expertise to set up.",
-      "impact_on_applications": "A cybersecurity firm could distribute a security-review agent plugin that any developer installs in minutes, instantly giving their coding assistant the ability to proactively flag vulnerabilities — something previously requiring dedicated expert tools.",
-      "category": "architecture",
       "relevance_score": 0.85
     },
     {
-      "label": "plugin trust verification",
-      "description": "A safety process that warns users to verify the source and content of a plugin before installing it, since the AI provider cannot guarantee what third-party plugins will do.",
-      "why_innovative": "It introduces a human-in-the-loop safety layer for AI tool ecosystems, acknowledging that open plugin marketplaces carry supply-chain risks (where malicious code hides inside seemingly useful add-ons) and pushing responsibility to informed consent.",
-      "impact_on_applications": "This matters for enterprises and individual developers who need assurance that installing a plugin won't expose their codebase or systems to malicious actors — similar to how app store security reviews protect smartphone users from harmful apps.",
-      "category": "technique",
-      "relevance_score": 0.82
+      "label": "agent definitions",
+      "description": "Pre-configured AI 'personas' or specialized sub-agents bundled inside a plugin, each designed to handle a specific type of task (e.g., a security review agent or a documentation agent).",
+      "why_innovative": "It enables modular, role-specific AI behavior that can be packaged, shared, and reused — moving AI assistants from one-size-fits-all tools to specialized expert systems that can be swapped in as needed.",
+      "impact_on_applications": "A software company could deploy a 'security audit agent' plugin so every developer automatically gets AI-powered security checks built into their coding workflow, making apps safer without requiring security expertise from every developer.",
+      "category": "architecture",
+      "relevance_score": 0.87
+    },
+    {
+      "label": "plugin marketplace curation",
+      "description": "A quality and security review process where third-party plugins are checked before being listed in the official directory, similar to how app stores vet apps before publishing them.",
+      "why_innovative": "It addresses one of the biggest risks in AI tool ecosystems — malicious or poorly built extensions — by establishing a trust layer that makes it safer for organizations to adopt community-built AI tools.",
+      "impact_on_applications": "Businesses can confidently allow employees to use community-built AI plugins without fear of data leaks or security breaches, accelerating enterprise adoption of AI coding assistants.",
+      "category": "application",
+      "relevance_score": 0.83
     }
   ]
 }

@@ -95,8 +95,14 @@ def generate_card_fields(
 
     Populates item['card'] and returns the updated dict.
     """
+    import os
     settings = get_settings()
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    api_key = (
+        settings.anthropic_api_key
+        or os.environ.get("ANTHROPIC_API_KEY")
+        or os.environ.get("ANTHTROPIC_API")
+    )
+    client = anthropic.Anthropic(api_key=api_key)
 
     user_prompt = _build_user_prompt(item, concept_labels)
 
