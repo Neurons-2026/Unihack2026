@@ -1,0 +1,248 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "id": "2603.12180.pdf::madqa benchmark",
+      "label": "madqa benchmark",
+      "description": "A large-scale test (2,250 questions over 800 real PDF documents) designed to measure how well AI systems and humans can find and combine information scattered across many complex documents.",
+      "why_innovative": "It is the first benchmark that combines fresh, fully human-written questions with visually rich, multi-domain PDFs and requires multi-step reasoning — closing critical gaps left by all prior document question-answering benchmarks.",
+      "impact_on_applications": "This benchmark can drive the development of AI tools that actually work on real office documents — like automatically answering questions from legal filings, financial reports, or HR manuals — bringing enterprise document automation much closer to reality.",
+      "category": "benchmark",
+      "relevance_score": 0.98,
+      "source_file": "2603.12180.pdf",
+      "source_title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections"
+    },
+    {
+      "id": "2603.12180.pdf::accuracy-effort trade-off metric",
+      "label": "accuracy-effort trade-off metric",
+      "description": "A new way of scoring AI agents that rewards not just getting the right answer, but getting it efficiently — penalizing systems that burn through many search steps just to stumble upon a correct answer.",
+      "why_innovative": "It distinguishes between agents that plan smartly and those that succeed only through brute-force repetition, revealing a hidden inefficiency gap that raw accuracy scores completely miss.",
+      "impact_on_applications": "This could push AI assistant tools — like those used in legal research or financial analysis — to become dramatically faster and cheaper to run, since they would be optimized to find answers in fewer steps rather than exhaustively searching everything.",
+      "category": "technique",
+      "relevance_score": 0.95,
+      "source_file": "2603.12180.pdf",
+      "source_title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections"
+    },
+    {
+      "id": "2603.12180.pdf::classical test theory splits",
+      "label": "classical test theory splits",
+      "description": "A principled method borrowed from educational testing to decide which questions go into the evaluation set — choosing questions that best separate strong AI systems from weak ones, rather than picking randomly.",
+      "why_innovative": "It maximizes the informational value of every question in a benchmark, ensuring the test stays meaningful and challenging even as AI models keep improving over time.",
+      "impact_on_applications": "This approach helps AI researchers build more reliable leaderboards and evaluations, so that claims about AI capabilities in real-world document tasks are actually trustworthy — benefiting anyone who depends on such rankings to choose AI tools.",
+      "category": "technique",
+      "relevance_score": 0.88,
+      "source_file": "2603.12180.pdf",
+      "source_title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections"
+    },
+    {
+      "id": "2603.12180.pdf::sentinel pool",
+      "label": "sentinel pool",
+      "description": "A reserved subset of the hardest benchmark questions — ones no current AI model can solve — intentionally kept to ensure the benchmark remains challenging and useful far into the future.",
+      "why_innovative": "It solves a common problem where AI benchmarks become obsolete quickly once models start scoring near 100%, guaranteeing long-term headroom for measuring genuine progress.",
+      "impact_on_applications": "This design ensures that future, more powerful AI systems still have a meaningful bar to clear, helping the research community track real progress in AI document understanding over many years.",
+      "category": "technique",
+      "relevance_score": 0.85,
+      "source_file": "2603.12180.pdf",
+      "source_title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections"
+    },
+    {
+      "id": "2603.12180.pdf::agentic document collection vqa",
+      "label": "agentic document collection vqa",
+      "description": "A formal definition of the task where an AI must search through a collection of complex PDF documents, follow visual clues like tables and charts, and combine information from multiple pages or files to answer a question.",
+      "why_innovative": "It is the first rigorous formalization of this multi-step, visually grounded, cross-document reasoning task, providing a clear and reproducible framework that the research community lacked.",
+      "impact_on_applications": "Formalizing this task accelerates the building of AI systems that can autonomously handle document-heavy workflows — such as reviewing contracts, auditing financial filings, or researching regulatory documents — tasks that currently consume enormous human time.",
+      "category": "theory",
+      "relevance_score": 0.92,
+      "source_file": "2603.12180.pdf",
+      "source_title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections"
+    },
+    {
+      "id": "2603.12180.pdf::human vs. agent competency analysis",
+      "label": "human vs. agent competency analysis",
+      "description": "A direct side-by-side comparison of how human researchers and AI agents search through document collections, revealing that they succeed on completely different types of questions despite achieving similar overall scores.",
+      "why_innovative": "It uncovers that current AI agents rely on brute-force search rather than intelligent planning, identifying a concrete gap in strategic reasoning that simple accuracy numbers hide.",
+      "impact_on_applications": "Understanding exactly where AI agents fail compared to humans helps developers build smarter document AI tools that complement human workers rather than just mimicking them poorly — leading to more effective human-AI collaboration in knowledge-intensive jobs.",
+      "category": "application",
+      "relevance_score": 0.9,
+      "source_file": "2603.12180.pdf",
+      "source_title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections"
+    },
+    {
+      "id": "2603.12255.pdf::test-time training fast weights",
+      "label": "test-time training fast weights",
+      "description": "Instead of keeping an AI model's settings frozen after training, this approach lets the model continuously update a small portion of its internal settings (called 'fast weights') while watching a video, so it can actively remember and organize what it sees in real time.",
+      "why_innovative": "This lets AI systems process infinitely long video streams without running out of memory, because spatial information is compressed into adaptive weights rather than stored as raw data — something fixed-parameter models fundamentally cannot do.",
+      "impact_on_applications": "This could enable robots and autonomous vehicles to navigate complex, ever-changing environments by continuously building a mental map from live camera feeds. It could also improve AR/VR headsets that need to understand the 3D layout of any room you walk into.",
+      "category": "technique",
+      "relevance_score": 0.98,
+      "source_file": "2603.12255.pdf",
+      "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training"
+    },
+    {
+      "id": "2603.12255.pdf::hybrid ttt architecture",
+      "label": "hybrid ttt architecture",
+      "description": "A design that mixes two types of processing layers — standard 'full-attention' layers (which look at everything at once) and 'TTT' layers (which compress and memorize over time) — in a 1:3 ratio, so the model keeps its original language and vision skills while gaining the ability to handle long video streams.",
+      "why_innovative": "This hybrid approach lets developers upgrade existing powerful AI models (like large vision-language models) to handle streaming video without having to retrain them from scratch, preserving years of learned knowledge while adding new streaming capabilities.",
+      "impact_on_applications": "This could allow existing AI assistants — like those used in smart glasses or home robots — to be upgraded to understand long video sequences without expensive retraining, making spatial AI upgrades faster and cheaper to deploy.",
+      "category": "architecture",
+      "relevance_score": 0.95,
+      "source_file": "2603.12255.pdf",
+      "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training"
+    },
+    {
+      "id": "2603.12255.pdf::spatial-predictive mechanism",
+      "label": "spatial-predictive mechanism",
+      "description": "A method that uses small 3D 'sliding filters' (borrowed from video processing) on the AI's internal attention signals, so that when the model decides what to remember, it considers neighboring pixels and nearby video frames together rather than each pixel in isolation.",
+      "why_innovative": "By baking geometric and temporal neighborhood awareness directly into the memory-update process, the model learns to remember spatially coherent 3D structures rather than disconnected snippets — a key step toward true scene understanding.",
+      "impact_on_applications": "This could dramatically improve how robots understand the physical layout of a room from a moving camera, and could help augmented reality apps more accurately overlay digital objects onto real-world surfaces even as you move around.",
+      "category": "technique",
+      "relevance_score": 0.93,
+      "source_file": "2603.12255.pdf",
+      "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training"
+    },
+    {
+      "id": "2603.12255.pdf::large-chunk ttt update",
+      "label": "large-chunk ttt update",
+      "description": "Instead of updating the model's memory after every few video frames (which is slow), this approach batches many frames together into large chunks and updates memory all at once in parallel, like processing a paragraph at a time instead of word by word.",
+      "why_innovative": "This makes the streaming memory-update process dramatically faster and more practical on real hardware (GPUs), solving a key efficiency bottleneck that previously prevented test-time training from working on long videos.",
+      "impact_on_applications": "This efficiency gain means spatial AI could run in real time on devices like self-driving cars or drones, processing continuous video feeds without lag — something that was previously too slow to be practical.",
+      "category": "technique",
+      "relevance_score": 0.91,
+      "source_file": "2603.12255.pdf",
+      "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training"
+    },
+    {
+      "id": "2603.12255.pdf::parallel sliding-window attention",
+      "label": "parallel sliding-window attention",
+      "description": "A technique that runs a 'local memory' attention process (only looking at a nearby window of frames) in parallel alongside the main memory-update process, ensuring that details within each video chunk are not lost due to processing boundaries.",
+      "why_innovative": "This elegantly solves the problem that large-chunk processing can break the natural continuity within a scene, maintaining fine-grained spatial detail without adding significant computational cost.",
+      "impact_on_applications": "For applications like surgical robots or industrial inspection cameras, this means the AI won't miss important spatial details that fall across chunk boundaries, improving reliability in safety-critical settings.",
+      "category": "technique",
+      "relevance_score": 0.88,
+      "source_file": "2603.12255.pdf",
+      "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training"
+    },
+    {
+      "id": "2603.12255.pdf::dense 3d scene description dataset",
+      "label": "dense 3d scene description dataset",
+      "description": "A specially constructed training dataset where each video scene is paired with rich, comprehensive text descriptions covering object counts, sizes, positions, and spatial relationships — much more detailed than typical image-caption datasets.",
+      "why_innovative": "Existing spatial datasets were too sparse and local to teach a model how to build a complete mental map of a scene; this dense supervision provides the rich 'ground truth' needed to teach the model what spatial information is worth remembering across a long video.",
+      "impact_on_applications": "Better training data means AI systems can more accurately answer questions like 'how far is the chair from the door?' or 'how many objects are on the left side?' — capabilities useful for assistive technologies for the visually impaired or for home automation.",
+      "category": "dataset",
+      "relevance_score": 0.85,
+      "source_file": "2603.12255.pdf",
+      "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training"
+    },
+    {
+      "id": "2603.12255.pdf::muon optimizer for fast weights",
+      "label": "muon optimizer for fast weights",
+      "description": "A special mathematical update rule used to adjust the model's fast weights during video processing, which keeps the weight updates 'orthogonal' (well-spread and non-redundant) to prevent the memory from becoming unstable or collapsing over long streams.",
+      "why_innovative": "Standard gradient updates can cause fast weights to drift or become poorly conditioned over long sequences; this optimizer keeps memory updates stable and well-structured, which is critical for reliable spatial reasoning over hundreds of video frames.",
+      "impact_on_applications": "More stable memory updates mean AI systems can reliably track spatial context over very long videos — for example, remembering where an object was placed 10 minutes ago in a home monitoring or elder-care application.",
+      "category": "technique",
+      "relevance_score": 0.82,
+      "source_file": "2603.12255.pdf",
+      "source_title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training"
+    }
+  ],
+  "links": [
+    {
+      "weight": 0.4803,
+      "similarity": 0.4803,
+      "source": "2603.12180.pdf::madqa benchmark",
+      "target": "2603.12180.pdf::sentinel pool"
+    },
+    {
+      "weight": 0.5419,
+      "similarity": 0.5419,
+      "source": "2603.12180.pdf::madqa benchmark",
+      "target": "2603.12180.pdf::agentic document collection vqa"
+    },
+    {
+      "weight": 0.4755,
+      "similarity": 0.4755,
+      "source": "2603.12180.pdf::madqa benchmark",
+      "target": "2603.12180.pdf::human vs. agent competency analysis"
+    },
+    {
+      "weight": 0.4812,
+      "similarity": 0.4812,
+      "source": "2603.12180.pdf::accuracy-effort trade-off metric",
+      "target": "2603.12180.pdf::human vs. agent competency analysis"
+    },
+    {
+      "weight": 0.5539,
+      "similarity": 0.5539,
+      "source": "2603.12180.pdf::agentic document collection vqa",
+      "target": "2603.12180.pdf::human vs. agent competency analysis"
+    },
+    {
+      "weight": 0.4852,
+      "similarity": 0.4852,
+      "source": "2603.12255.pdf::test-time training fast weights",
+      "target": "2603.12255.pdf::hybrid ttt architecture"
+    },
+    {
+      "weight": 0.4955,
+      "similarity": 0.4955,
+      "source": "2603.12255.pdf::test-time training fast weights",
+      "target": "2603.12255.pdf::spatial-predictive mechanism"
+    },
+    {
+      "weight": 0.529,
+      "similarity": 0.529,
+      "source": "2603.12255.pdf::test-time training fast weights",
+      "target": "2603.12255.pdf::large-chunk ttt update"
+    },
+    {
+      "weight": 0.4331,
+      "similarity": 0.4331,
+      "source": "2603.12255.pdf::test-time training fast weights",
+      "target": "2603.12255.pdf::parallel sliding-window attention"
+    },
+    {
+      "weight": 0.5838,
+      "similarity": 0.5838,
+      "source": "2603.12255.pdf::test-time training fast weights",
+      "target": "2603.12255.pdf::muon optimizer for fast weights"
+    },
+    {
+      "weight": 0.4517,
+      "similarity": 0.4517,
+      "source": "2603.12255.pdf::hybrid ttt architecture",
+      "target": "2603.12255.pdf::spatial-predictive mechanism"
+    },
+    {
+      "weight": 0.5623,
+      "similarity": 0.5623,
+      "source": "2603.12255.pdf::hybrid ttt architecture",
+      "target": "2603.12255.pdf::large-chunk ttt update"
+    },
+    {
+      "weight": 0.45,
+      "similarity": 0.45,
+      "source": "2603.12255.pdf::hybrid ttt architecture",
+      "target": "2603.12255.pdf::parallel sliding-window attention"
+    },
+    {
+      "weight": 0.6036,
+      "similarity": 0.6036,
+      "source": "2603.12255.pdf::spatial-predictive mechanism",
+      "target": "2603.12255.pdf::parallel sliding-window attention"
+    },
+    {
+      "weight": 0.5146,
+      "similarity": 0.5146,
+      "source": "2603.12255.pdf::large-chunk ttt update",
+      "target": "2603.12255.pdf::parallel sliding-window attention"
+    },
+    {
+      "weight": 0.4267,
+      "similarity": 0.4267,
+      "source": "2603.12255.pdf::large-chunk ttt update",
+      "target": "2603.12255.pdf::muon optimizer for fast weights"
+    }
+  ]
+}

@@ -600,208 +600,904 @@
   ],
   "links": [
     {
-      "weight": 0.6493,
-      "similarity": 0.6493,
+      "weight": 0.5594,
+      "similarity": 0.5594,
       "source": "general_ai_ml.txt::transformer",
-      "target": "general_ai_ml.txt::vision transformer"
+      "target": "general_ai_ml.txt::multi-head attention"
     },
     {
-      "weight": 0.5438,
-      "similarity": 0.5438,
-      "source": "general_ai_ml.txt::multi-head attention",
-      "target": "general_ai_ml.txt::attention mechanism"
-    },
-    {
-      "weight": 0.4882,
-      "similarity": 0.4882,
-      "source": "general_ai_ml.txt::multi-head attention",
-      "target": "general_ai_ml.txt::group query attention"
-    },
-    {
-      "weight": 0.5561,
-      "similarity": 0.5561,
-      "source": "general_ai_ml.txt::backpropagation",
-      "target": "general_ai_ml.txt::gradient descent"
-    },
-    {
-      "weight": 0.5574,
-      "similarity": 0.5574,
-      "source": "general_ai_ml.txt::convolutional neural network",
-      "target": "general_ai_ml.txt::recurrent neural network"
-    },
-    {
-      "weight": 0.5013,
-      "similarity": 0.5013,
-      "source": "general_ai_ml.txt::convolutional neural network",
-      "target": "general_ai_ml.txt::generative adversarial network"
-    },
-    {
-      "weight": 0.4568,
-      "similarity": 0.4568,
-      "source": "general_ai_ml.txt::convolutional neural network",
-      "target": "general_ai_ml.txt::variational autoencoder"
-    },
-    {
-      "weight": 0.4922,
-      "similarity": 0.4922,
-      "source": "general_ai_ml.txt::convolutional neural network",
-      "target": "general_ai_ml.txt::graph neural network"
-    },
-    {
-      "weight": 0.4655,
-      "similarity": 0.4655,
-      "source": "general_ai_ml.txt::recurrent neural network",
-      "target": "general_ai_ml.txt::residual connection"
-    },
-    {
-      "weight": 0.5022,
-      "similarity": 0.5022,
-      "source": "general_ai_ml.txt::generative adversarial network",
-      "target": "general_ai_ml.txt::variational autoencoder"
+      "weight": 0.4594,
+      "similarity": 0.4594,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::convolutional neural network"
     },
     {
       "weight": 0.4824,
       "similarity": 0.4824,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::recurrent neural network"
+    },
+    {
+      "weight": 0.4762,
+      "similarity": 0.4762,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::positional encoding"
+    },
+    {
+      "weight": 0.4459,
+      "similarity": 0.4459,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::flash attention"
+    },
+    {
+      "weight": 0.6537,
+      "similarity": 0.6537,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::vision transformer"
+    },
+    {
+      "weight": 0.4322,
+      "similarity": 0.4322,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::sparse attention"
+    },
+    {
+      "weight": 0.5092,
+      "similarity": 0.5092,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::layer normalization"
+    },
+    {
+      "weight": 0.5414,
+      "similarity": 0.5414,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::attention mechanism"
+    },
+    {
+      "weight": 0.4063,
+      "similarity": 0.4063,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.4134,
+      "similarity": 0.4134,
+      "source": "general_ai_ml.txt::transformer",
+      "target": "general_ai_ml.txt::activation function"
+    },
+    {
+      "weight": 0.4598,
+      "similarity": 0.4598,
+      "source": "general_ai_ml.txt::multi-head attention",
+      "target": "general_ai_ml.txt::flash attention"
+    },
+    {
+      "weight": 0.4314,
+      "similarity": 0.4314,
+      "source": "general_ai_ml.txt::multi-head attention",
+      "target": "general_ai_ml.txt::vision transformer"
+    },
+    {
+      "weight": 0.501,
+      "similarity": 0.501,
+      "source": "general_ai_ml.txt::multi-head attention",
+      "target": "general_ai_ml.txt::sparse attention"
+    },
+    {
+      "weight": 0.6728,
+      "similarity": 0.6728,
+      "source": "general_ai_ml.txt::multi-head attention",
+      "target": "general_ai_ml.txt::attention mechanism"
+    },
+    {
+      "weight": 0.4373,
+      "similarity": 0.4373,
+      "source": "general_ai_ml.txt::multi-head attention",
+      "target": "general_ai_ml.txt::key-value cache"
+    },
+    {
+      "weight": 0.4603,
+      "similarity": 0.4603,
+      "source": "general_ai_ml.txt::multi-head attention",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.5801,
+      "similarity": 0.5801,
+      "source": "general_ai_ml.txt::multi-head attention",
+      "target": "general_ai_ml.txt::group query attention"
+    },
+    {
+      "weight": 0.4798,
+      "similarity": 0.4798,
+      "source": "general_ai_ml.txt::backpropagation",
+      "target": "general_ai_ml.txt::gradient descent"
+    },
+    {
+      "weight": 0.4066,
+      "similarity": 0.4066,
+      "source": "general_ai_ml.txt::backpropagation",
+      "target": "general_ai_ml.txt::reinforcement learning"
+    },
+    {
+      "weight": 0.4469,
+      "similarity": 0.4469,
+      "source": "general_ai_ml.txt::backpropagation",
+      "target": "general_ai_ml.txt::batch normalization"
+    },
+    {
+      "weight": 0.4348,
+      "similarity": 0.4348,
+      "source": "general_ai_ml.txt::backpropagation",
+      "target": "general_ai_ml.txt::dropout regularization"
+    },
+    {
+      "weight": 0.408,
+      "similarity": 0.408,
+      "source": "general_ai_ml.txt::backpropagation",
+      "target": "general_ai_ml.txt::Adam optimizer"
+    },
+    {
+      "weight": 0.4247,
+      "similarity": 0.4247,
+      "source": "general_ai_ml.txt::backpropagation",
+      "target": "general_ai_ml.txt::activation function"
+    },
+    {
+      "weight": 0.4211,
+      "similarity": 0.4211,
+      "source": "general_ai_ml.txt::gradient descent",
+      "target": "general_ai_ml.txt::diffusion model"
+    },
+    {
+      "weight": 0.492,
+      "similarity": 0.492,
+      "source": "general_ai_ml.txt::gradient descent",
+      "target": "general_ai_ml.txt::Adam optimizer"
+    },
+    {
+      "weight": 0.5049,
+      "similarity": 0.5049,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::recurrent neural network"
+    },
+    {
+      "weight": 0.4464,
+      "similarity": 0.4464,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::generative adversarial network"
+    },
+    {
+      "weight": 0.4296,
+      "similarity": 0.4296,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::batch normalization"
+    },
+    {
+      "weight": 0.5215,
+      "similarity": 0.5215,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::vision transformer"
+    },
+    {
+      "weight": 0.5391,
+      "similarity": 0.5391,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::graph neural network"
+    },
+    {
+      "weight": 0.4128,
+      "similarity": 0.4128,
+      "source": "general_ai_ml.txt::convolutional neural network",
+      "target": "general_ai_ml.txt::activation function"
+    },
+    {
+      "weight": 0.5371,
+      "similarity": 0.5371,
+      "source": "general_ai_ml.txt::recurrent neural network",
+      "target": "general_ai_ml.txt::long short-term memory"
+    },
+    {
+      "weight": 0.4684,
+      "similarity": 0.4684,
+      "source": "general_ai_ml.txt::recurrent neural network",
+      "target": "general_ai_ml.txt::graph neural network"
+    },
+    {
+      "weight": 0.4262,
+      "similarity": 0.4262,
+      "source": "general_ai_ml.txt::recurrent neural network",
+      "target": "general_ai_ml.txt::residual connection"
+    },
+    {
+      "weight": 0.4418,
+      "similarity": 0.4418,
+      "source": "general_ai_ml.txt::long short-term memory",
+      "target": "general_ai_ml.txt::residual connection"
+    },
+    {
+      "weight": 0.4604,
+      "similarity": 0.4604,
+      "source": "general_ai_ml.txt::generative adversarial network",
+      "target": "general_ai_ml.txt::variational autoencoder"
+    },
+    {
+      "weight": 0.4801,
+      "similarity": 0.4801,
+      "source": "general_ai_ml.txt::generative adversarial network",
+      "target": "general_ai_ml.txt::diffusion model"
+    },
+    {
+      "weight": 0.4047,
+      "similarity": 0.4047,
+      "source": "general_ai_ml.txt::generative adversarial network",
+      "target": "general_ai_ml.txt::batch normalization"
+    },
+    {
+      "weight": 0.4339,
+      "similarity": 0.4339,
       "source": "general_ai_ml.txt::generative adversarial network",
       "target": "general_ai_ml.txt::retrieval augmented generation"
+    },
+    {
+      "weight": 0.4877,
+      "similarity": 0.4877,
+      "source": "general_ai_ml.txt::generative adversarial network",
+      "target": "general_ai_ml.txt::graph neural network"
+    },
+    {
+      "weight": 0.4646,
+      "similarity": 0.4646,
+      "source": "general_ai_ml.txt::generative adversarial network",
+      "target": "general_ai_ml.txt::data augmentation"
+    },
+    {
+      "weight": 0.4171,
+      "similarity": 0.4171,
+      "source": "general_ai_ml.txt::variational autoencoder",
+      "target": "general_ai_ml.txt::diffusion model"
+    },
+    {
+      "weight": 0.4065,
+      "similarity": 0.4065,
+      "source": "general_ai_ml.txt::variational autoencoder",
+      "target": "general_ai_ml.txt::data augmentation"
+    },
+    {
+      "weight": 0.4099,
+      "similarity": 0.4099,
+      "source": "general_ai_ml.txt::variational autoencoder",
+      "target": "general_ai_ml.txt::quantization"
+    },
+    {
+      "weight": 0.4111,
+      "similarity": 0.4111,
+      "source": "general_ai_ml.txt::variational autoencoder",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.4025,
+      "similarity": 0.4025,
+      "source": "general_ai_ml.txt::diffusion model",
+      "target": "general_ai_ml.txt::dropout regularization"
+    },
+    {
+      "weight": 0.4082,
+      "similarity": 0.4082,
+      "source": "general_ai_ml.txt::diffusion model",
+      "target": "general_ai_ml.txt::data augmentation"
+    },
+    {
+      "weight": 0.426,
+      "similarity": 0.426,
+      "source": "general_ai_ml.txt::diffusion model",
+      "target": "general_ai_ml.txt::CLIP"
+    },
+    {
+      "weight": 0.4231,
+      "similarity": 0.4231,
+      "source": "general_ai_ml.txt::diffusion model",
+      "target": "general_ai_ml.txt::speculative decoding"
+    },
+    {
+      "weight": 0.4325,
+      "similarity": 0.4325,
+      "source": "general_ai_ml.txt::diffusion model",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.4364,
+      "similarity": 0.4364,
+      "source": "general_ai_ml.txt::reinforcement learning",
+      "target": "general_ai_ml.txt::contrastive learning"
+    },
+    {
+      "weight": 0.5204,
+      "similarity": 0.5204,
+      "source": "general_ai_ml.txt::reinforcement learning",
+      "target": "general_ai_ml.txt::RLHF"
     },
     {
       "weight": 0.4645,
       "similarity": 0.4645,
       "source": "general_ai_ml.txt::reinforcement learning",
-      "target": "general_ai_ml.txt::contrastive learning"
-    },
-    {
-      "weight": 0.5676,
-      "similarity": 0.5676,
-      "source": "general_ai_ml.txt::reinforcement learning",
       "target": "general_ai_ml.txt::self-supervised learning"
     },
     {
-      "weight": 0.4734,
-      "similarity": 0.4734,
+      "weight": 0.4648,
+      "similarity": 0.4648,
       "source": "general_ai_ml.txt::reinforcement learning",
-      "target": "general_ai_ml.txt::Monte Carlo tree search"
+      "target": "general_ai_ml.txt::constitutional AI"
     },
     {
-      "weight": 0.4553,
-      "similarity": 0.4553,
+      "weight": 0.4031,
+      "similarity": 0.4031,
+      "source": "general_ai_ml.txt::reinforcement learning",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.4225,
+      "similarity": 0.4225,
+      "source": "general_ai_ml.txt::transfer learning",
+      "target": "general_ai_ml.txt::low-rank adaptation"
+    },
+    {
+      "weight": 0.4652,
+      "similarity": 0.4652,
       "source": "general_ai_ml.txt::transfer learning",
       "target": "general_ai_ml.txt::knowledge distillation"
     },
     {
-      "weight": 0.4867,
-      "similarity": 0.4867,
+      "weight": 0.4058,
+      "similarity": 0.4058,
       "source": "general_ai_ml.txt::transfer learning",
       "target": "general_ai_ml.txt::contrastive learning"
     },
     {
-      "weight": 0.4827,
-      "similarity": 0.4827,
+      "weight": 0.4377,
+      "similarity": 0.4377,
+      "source": "general_ai_ml.txt::transfer learning",
+      "target": "general_ai_ml.txt::vision transformer"
+    },
+    {
+      "weight": 0.4354,
+      "similarity": 0.4354,
+      "source": "general_ai_ml.txt::transfer learning",
+      "target": "general_ai_ml.txt::teacher forcing"
+    },
+    {
+      "weight": 0.423,
+      "similarity": 0.423,
+      "source": "general_ai_ml.txt::transfer learning",
+      "target": "general_ai_ml.txt::instruction tuning"
+    },
+    {
+      "weight": 0.4221,
+      "similarity": 0.4221,
+      "source": "general_ai_ml.txt::transfer learning",
+      "target": "general_ai_ml.txt::federated learning"
+    },
+    {
+      "weight": 0.4059,
+      "similarity": 0.4059,
+      "source": "general_ai_ml.txt::transfer learning",
+      "target": "general_ai_ml.txt::CLIP"
+    },
+    {
+      "weight": 0.4187,
+      "similarity": 0.4187,
       "source": "general_ai_ml.txt::transfer learning",
       "target": "general_ai_ml.txt::multi-modal learning"
     },
     {
-      "weight": 0.4919,
-      "similarity": 0.4919,
+      "weight": 0.5536,
+      "similarity": 0.5536,
       "source": "general_ai_ml.txt::batch normalization",
       "target": "general_ai_ml.txt::dropout regularization"
     },
     {
-      "weight": 0.5524,
-      "similarity": 0.5524,
+      "weight": 0.4441,
+      "similarity": 0.4441,
+      "source": "general_ai_ml.txt::batch normalization",
+      "target": "general_ai_ml.txt::low-rank adaptation"
+    },
+    {
+      "weight": 0.4091,
+      "similarity": 0.4091,
+      "source": "general_ai_ml.txt::batch normalization",
+      "target": "general_ai_ml.txt::knowledge distillation"
+    },
+    {
+      "weight": 0.6846,
+      "similarity": 0.6846,
       "source": "general_ai_ml.txt::batch normalization",
       "target": "general_ai_ml.txt::layer normalization"
     },
     {
-      "weight": 0.5281,
-      "similarity": 0.5281,
+      "weight": 0.4826,
+      "similarity": 0.4826,
+      "source": "general_ai_ml.txt::batch normalization",
+      "target": "general_ai_ml.txt::data augmentation"
+    },
+    {
+      "weight": 0.4465,
+      "similarity": 0.4465,
+      "source": "general_ai_ml.txt::batch normalization",
+      "target": "general_ai_ml.txt::quantization"
+    },
+    {
+      "weight": 0.4486,
+      "similarity": 0.4486,
+      "source": "general_ai_ml.txt::batch normalization",
+      "target": "general_ai_ml.txt::activation function"
+    },
+    {
+      "weight": 0.4957,
+      "similarity": 0.4957,
+      "source": "general_ai_ml.txt::dropout regularization",
+      "target": "general_ai_ml.txt::low-rank adaptation"
+    },
+    {
+      "weight": 0.4774,
+      "similarity": 0.4774,
+      "source": "general_ai_ml.txt::dropout regularization",
+      "target": "general_ai_ml.txt::layer normalization"
+    },
+    {
+      "weight": 0.4442,
+      "similarity": 0.4442,
+      "source": "general_ai_ml.txt::dropout regularization",
+      "target": "general_ai_ml.txt::residual connection"
+    },
+    {
+      "weight": 0.4791,
+      "similarity": 0.4791,
+      "source": "general_ai_ml.txt::dropout regularization",
+      "target": "general_ai_ml.txt::data augmentation"
+    },
+    {
+      "weight": 0.4155,
+      "similarity": 0.4155,
+      "source": "general_ai_ml.txt::dropout regularization",
+      "target": "general_ai_ml.txt::teacher forcing"
+    },
+    {
+      "weight": 0.404,
+      "similarity": 0.404,
+      "source": "general_ai_ml.txt::dropout regularization",
+      "target": "general_ai_ml.txt::federated learning"
+    },
+    {
+      "weight": 0.4453,
+      "similarity": 0.4453,
+      "source": "general_ai_ml.txt::dropout regularization",
+      "target": "general_ai_ml.txt::activation function"
+    },
+    {
+      "weight": 0.4862,
+      "similarity": 0.4862,
       "source": "general_ai_ml.txt::word embedding",
       "target": "general_ai_ml.txt::positional encoding"
     },
     {
-      "weight": 0.5113,
-      "similarity": 0.5113,
+      "weight": 0.5395,
+      "similarity": 0.5395,
       "source": "general_ai_ml.txt::word embedding",
       "target": "general_ai_ml.txt::rotary position embedding"
     },
     {
-      "weight": 0.5038,
-      "similarity": 0.5038,
-      "source": "general_ai_ml.txt::word embedding",
-      "target": "general_ai_ml.txt::byte-pair encoding"
-    },
-    {
-      "weight": 0.5385,
-      "similarity": 0.5385,
+      "weight": 0.6035,
+      "similarity": 0.6035,
       "source": "general_ai_ml.txt::positional encoding",
       "target": "general_ai_ml.txt::rotary position embedding"
     },
     {
-      "weight": 0.4756,
-      "similarity": 0.4756,
+      "weight": 0.4221,
+      "similarity": 0.4221,
+      "source": "general_ai_ml.txt::positional encoding",
+      "target": "general_ai_ml.txt::layer normalization"
+    },
+    {
+      "weight": 0.4201,
+      "similarity": 0.4201,
+      "source": "general_ai_ml.txt::positional encoding",
+      "target": "general_ai_ml.txt::teacher forcing"
+    },
+    {
+      "weight": 0.4183,
+      "similarity": 0.4183,
+      "source": "general_ai_ml.txt::positional encoding",
+      "target": "general_ai_ml.txt::speculative decoding"
+    },
+    {
+      "weight": 0.4989,
+      "similarity": 0.4989,
+      "source": "general_ai_ml.txt::positional encoding",
+      "target": "general_ai_ml.txt::prefix tuning"
+    },
+    {
+      "weight": 0.4424,
+      "similarity": 0.4424,
       "source": "general_ai_ml.txt::positional encoding",
       "target": "general_ai_ml.txt::byte-pair encoding"
     },
     {
-      "weight": 0.4979,
-      "similarity": 0.4979,
+      "weight": 0.454,
+      "similarity": 0.454,
+      "source": "general_ai_ml.txt::flash attention",
+      "target": "general_ai_ml.txt::vision transformer"
+    },
+    {
+      "weight": 0.5319,
+      "similarity": 0.5319,
+      "source": "general_ai_ml.txt::flash attention",
+      "target": "general_ai_ml.txt::sparse attention"
+    },
+    {
+      "weight": 0.4986,
+      "similarity": 0.4986,
+      "source": "general_ai_ml.txt::flash attention",
+      "target": "general_ai_ml.txt::attention mechanism"
+    },
+    {
+      "weight": 0.5096,
+      "similarity": 0.5096,
+      "source": "general_ai_ml.txt::flash attention",
+      "target": "general_ai_ml.txt::key-value cache"
+    },
+    {
+      "weight": 0.4336,
+      "similarity": 0.4336,
+      "source": "general_ai_ml.txt::flash attention",
+      "target": "general_ai_ml.txt::group query attention"
+    },
+    {
+      "weight": 0.4026,
+      "similarity": 0.4026,
+      "source": "general_ai_ml.txt::low-rank adaptation",
+      "target": "general_ai_ml.txt::RLHF"
+    },
+    {
+      "weight": 0.4223,
+      "similarity": 0.4223,
+      "source": "general_ai_ml.txt::low-rank adaptation",
+      "target": "general_ai_ml.txt::sparse attention"
+    },
+    {
+      "weight": 0.4873,
+      "similarity": 0.4873,
+      "source": "general_ai_ml.txt::low-rank adaptation",
+      "target": "general_ai_ml.txt::layer normalization"
+    },
+    {
+      "weight": 0.5159,
+      "similarity": 0.5159,
+      "source": "general_ai_ml.txt::low-rank adaptation",
+      "target": "general_ai_ml.txt::Adam optimizer"
+    },
+    {
+      "weight": 0.4019,
+      "similarity": 0.4019,
+      "source": "general_ai_ml.txt::low-rank adaptation",
+      "target": "general_ai_ml.txt::instruction tuning"
+    },
+    {
+      "weight": 0.403,
+      "similarity": 0.403,
+      "source": "general_ai_ml.txt::low-rank adaptation",
+      "target": "general_ai_ml.txt::quantization"
+    },
+    {
+      "weight": 0.5079,
+      "similarity": 0.5079,
+      "source": "general_ai_ml.txt::low-rank adaptation",
+      "target": "general_ai_ml.txt::prefix tuning"
+    },
+    {
+      "weight": 0.4492,
+      "similarity": 0.4492,
+      "source": "general_ai_ml.txt::knowledge distillation",
+      "target": "general_ai_ml.txt::teacher forcing"
+    },
+    {
+      "weight": 0.4281,
+      "similarity": 0.4281,
+      "source": "general_ai_ml.txt::knowledge distillation",
+      "target": "general_ai_ml.txt::instruction tuning"
+    },
+    {
+      "weight": 0.493,
+      "similarity": 0.493,
+      "source": "general_ai_ml.txt::knowledge distillation",
+      "target": "general_ai_ml.txt::quantization"
+    },
+    {
+      "weight": 0.6149,
+      "similarity": 0.6149,
       "source": "general_ai_ml.txt::contrastive learning",
       "target": "general_ai_ml.txt::self-supervised learning"
     },
     {
-      "weight": 0.553,
-      "similarity": 0.553,
+      "weight": 0.4148,
+      "similarity": 0.4148,
+      "source": "general_ai_ml.txt::contrastive learning",
+      "target": "general_ai_ml.txt::teacher forcing"
+    },
+    {
+      "weight": 0.4409,
+      "similarity": 0.4409,
+      "source": "general_ai_ml.txt::contrastive learning",
+      "target": "general_ai_ml.txt::CLIP"
+    },
+    {
+      "weight": 0.4314,
+      "similarity": 0.4314,
       "source": "general_ai_ml.txt::contrastive learning",
       "target": "general_ai_ml.txt::multi-modal learning"
     },
     {
-      "weight": 0.5072,
-      "similarity": 0.5072,
+      "weight": 0.4065,
+      "similarity": 0.4065,
+      "source": "general_ai_ml.txt::RLHF",
+      "target": "general_ai_ml.txt::teacher forcing"
+    },
+    {
+      "weight": 0.4294,
+      "similarity": 0.4294,
+      "source": "general_ai_ml.txt::RLHF",
+      "target": "general_ai_ml.txt::instruction tuning"
+    },
+    {
+      "weight": 0.427,
+      "similarity": 0.427,
+      "source": "general_ai_ml.txt::RLHF",
+      "target": "general_ai_ml.txt::constitutional AI"
+    },
+    {
+      "weight": 0.4294,
+      "similarity": 0.4294,
       "source": "general_ai_ml.txt::retrieval augmented generation",
       "target": "general_ai_ml.txt::data augmentation"
     },
     {
-      "weight": 0.456,
-      "similarity": 0.456,
+      "weight": 0.4143,
+      "similarity": 0.4143,
+      "source": "general_ai_ml.txt::retrieval augmented generation",
+      "target": "general_ai_ml.txt::tool use"
+    },
+    {
+      "weight": 0.4384,
+      "similarity": 0.4384,
+      "source": "general_ai_ml.txt::chain-of-thought prompting",
+      "target": "general_ai_ml.txt::teacher forcing"
+    },
+    {
+      "weight": 0.4032,
+      "similarity": 0.4032,
+      "source": "general_ai_ml.txt::chain-of-thought prompting",
+      "target": "general_ai_ml.txt::constitutional AI"
+    },
+    {
+      "weight": 0.4548,
+      "similarity": 0.4548,
+      "source": "general_ai_ml.txt::vision transformer",
+      "target": "general_ai_ml.txt::layer normalization"
+    },
+    {
+      "weight": 0.4294,
+      "similarity": 0.4294,
+      "source": "general_ai_ml.txt::vision transformer",
+      "target": "general_ai_ml.txt::attention mechanism"
+    },
+    {
+      "weight": 0.4348,
+      "similarity": 0.4348,
+      "source": "general_ai_ml.txt::vision transformer",
+      "target": "general_ai_ml.txt::CLIP"
+    },
+    {
+      "weight": 0.5552,
+      "similarity": 0.5552,
+      "source": "general_ai_ml.txt::sparse attention",
+      "target": "general_ai_ml.txt::attention mechanism"
+    },
+    {
+      "weight": 0.4161,
+      "similarity": 0.4161,
+      "source": "general_ai_ml.txt::sparse attention",
+      "target": "general_ai_ml.txt::speculative decoding"
+    },
+    {
+      "weight": 0.4823,
+      "similarity": 0.4823,
+      "source": "general_ai_ml.txt::sparse attention",
+      "target": "general_ai_ml.txt::key-value cache"
+    },
+    {
+      "weight": 0.4842,
+      "similarity": 0.4842,
+      "source": "general_ai_ml.txt::sparse attention",
+      "target": "general_ai_ml.txt::group query attention"
+    },
+    {
+      "weight": 0.4043,
+      "similarity": 0.4043,
       "source": "general_ai_ml.txt::KL divergence",
       "target": "general_ai_ml.txt::cross-entropy loss"
     },
     {
-      "weight": 0.4872,
-      "similarity": 0.4872,
+      "weight": 0.4487,
+      "similarity": 0.4487,
       "source": "general_ai_ml.txt::self-supervised learning",
-      "target": "general_ai_ml.txt::federated learning"
+      "target": "general_ai_ml.txt::teacher forcing"
     },
     {
-      "weight": 0.4751,
-      "similarity": 0.4751,
+      "weight": 0.4869,
+      "similarity": 0.4869,
       "source": "general_ai_ml.txt::self-supervised learning",
       "target": "general_ai_ml.txt::multi-modal learning"
     },
     {
-      "weight": 0.4546,
-      "similarity": 0.4546,
+      "weight": 0.5416,
+      "similarity": 0.5416,
+      "source": "general_ai_ml.txt::beam search",
+      "target": "general_ai_ml.txt::speculative decoding"
+    },
+    {
+      "weight": 0.5168,
+      "similarity": 0.5168,
       "source": "general_ai_ml.txt::beam search",
       "target": "general_ai_ml.txt::byte-pair encoding"
     },
     {
-      "weight": 0.4562,
-      "similarity": 0.4562,
+      "weight": 0.4038,
+      "similarity": 0.4038,
+      "source": "general_ai_ml.txt::layer normalization",
+      "target": "general_ai_ml.txt::attention mechanism"
+    },
+    {
+      "weight": 0.4223,
+      "similarity": 0.4223,
+      "source": "general_ai_ml.txt::layer normalization",
+      "target": "general_ai_ml.txt::prefix tuning"
+    },
+    {
+      "weight": 0.5075,
+      "similarity": 0.5075,
+      "source": "general_ai_ml.txt::layer normalization",
+      "target": "general_ai_ml.txt::activation function"
+    },
+    {
+      "weight": 0.4486,
+      "similarity": 0.4486,
       "source": "general_ai_ml.txt::tokenization",
       "target": "general_ai_ml.txt::quantization"
     },
     {
-      "weight": 0.59,
-      "similarity": 0.59,
+      "weight": 0.4077,
+      "similarity": 0.4077,
+      "source": "general_ai_ml.txt::tokenization",
+      "target": "general_ai_ml.txt::speculative decoding"
+    },
+    {
+      "weight": 0.4988,
+      "similarity": 0.4988,
+      "source": "general_ai_ml.txt::tokenization",
+      "target": "general_ai_ml.txt::byte-pair encoding"
+    },
+    {
+      "weight": 0.4066,
+      "similarity": 0.4066,
+      "source": "general_ai_ml.txt::graph neural network",
+      "target": "general_ai_ml.txt::neural architecture search"
+    },
+    {
+      "weight": 0.4583,
+      "similarity": 0.4583,
+      "source": "general_ai_ml.txt::attention mechanism",
+      "target": "general_ai_ml.txt::key-value cache"
+    },
+    {
+      "weight": 0.4441,
+      "similarity": 0.4441,
       "source": "general_ai_ml.txt::attention mechanism",
       "target": "general_ai_ml.txt::group query attention"
     },
     {
-      "weight": 0.5641,
-      "similarity": 0.5641,
+      "weight": 0.4112,
+      "similarity": 0.4112,
+      "source": "general_ai_ml.txt::data augmentation",
+      "target": "general_ai_ml.txt::quantization"
+    },
+    {
+      "weight": 0.4391,
+      "similarity": 0.4391,
+      "source": "general_ai_ml.txt::data augmentation",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.4733,
+      "similarity": 0.4733,
+      "source": "general_ai_ml.txt::teacher forcing",
+      "target": "general_ai_ml.txt::instruction tuning"
+    },
+    {
+      "weight": 0.4307,
+      "similarity": 0.4307,
+      "source": "general_ai_ml.txt::teacher forcing",
+      "target": "general_ai_ml.txt::speculative decoding"
+    },
+    {
+      "weight": 0.4917,
+      "similarity": 0.4917,
+      "source": "general_ai_ml.txt::teacher forcing",
+      "target": "general_ai_ml.txt::prefix tuning"
+    },
+    {
+      "weight": 0.4418,
+      "similarity": 0.4418,
+      "source": "general_ai_ml.txt::instruction tuning",
+      "target": "general_ai_ml.txt::CLIP"
+    },
+    {
+      "weight": 0.4049,
+      "similarity": 0.4049,
+      "source": "general_ai_ml.txt::instruction tuning",
+      "target": "general_ai_ml.txt::tool use"
+    },
+    {
+      "weight": 0.4098,
+      "similarity": 0.4098,
+      "source": "general_ai_ml.txt::instruction tuning",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.5503,
+      "similarity": 0.5503,
       "source": "general_ai_ml.txt::instruction tuning",
       "target": "general_ai_ml.txt::prefix tuning"
+    },
+    {
+      "weight": 0.4417,
+      "similarity": 0.4417,
+      "source": "general_ai_ml.txt::federated learning",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.525,
+      "similarity": 0.525,
+      "source": "general_ai_ml.txt::CLIP",
+      "target": "general_ai_ml.txt::multi-modal learning"
+    },
+    {
+      "weight": 0.4437,
+      "similarity": 0.4437,
+      "source": "general_ai_ml.txt::speculative decoding",
+      "target": "general_ai_ml.txt::key-value cache"
+    },
+    {
+      "weight": 0.4001,
+      "similarity": 0.4001,
+      "source": "general_ai_ml.txt::speculative decoding",
+      "target": "general_ai_ml.txt::prefix tuning"
+    },
+    {
+      "weight": 0.4361,
+      "similarity": 0.4361,
+      "source": "general_ai_ml.txt::speculative decoding",
+      "target": "general_ai_ml.txt::byte-pair encoding"
+    },
+    {
+      "weight": 0.4615,
+      "similarity": 0.4615,
+      "source": "general_ai_ml.txt::key-value cache",
+      "target": "general_ai_ml.txt::group query attention"
+    },
+    {
+      "weight": 0.4677,
+      "similarity": 0.4677,
+      "source": "general_ai_ml.txt::tool use",
+      "target": "general_ai_ml.txt::multi-modal learning"
     }
   ]
 }
