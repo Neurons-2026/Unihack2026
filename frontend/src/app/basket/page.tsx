@@ -26,14 +26,21 @@ export default function BasketPage() {
           <Link
             href="/"
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: 6,
-              color: 'rgba(255,255,255,0.6)',
+              gap: 7,
+              padding: '6px 14px 6px 10px',
+              borderRadius: 20,
+              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.06)',
+              color: 'rgba(255,255,255,0.5)',
               textDecoration: 'none',
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: 500,
+              transition: 'background 0.15s ease, color 0.15s ease',
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6" />
