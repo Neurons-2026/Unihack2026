@@ -3,12 +3,11 @@ Runner script for concept extraction pipeline.
 Processes all text files in resource/processed_test/ and outputs
 structured concept JSON to resource/processed_test/concepts/.
 
-Batches GitHub repo files into a single request to minimize API calls.
-Total: 4 paper requests + 1 batched repo request = 5 API calls.
+Each file is processed individually with its own API call.
 
 Usage:
     python -m test_extraction.run_concept_extraction
-    python -m test_extraction.run_concept_extraction --model gemini-2.5-flash-preview-05-20
+    python -m test_extraction.run_concept_extraction --model claude-sonnet-4-6
     python -m test_extraction.run_concept_extraction --file trendingPaper1.txt
 """
 
@@ -17,7 +16,6 @@ import json
 import logging
 import os
 import sys
-import time
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -28,7 +26,6 @@ from dotenv import load_dotenv
 
 from test_extraction.concept_extractor import (
     extract_concepts_from_file,
-    extract_concepts_batch,
     result_to_dict,
 )
 
@@ -45,9 +42,6 @@ logger = logging.getLogger(__name__)
 PROCESSED_DIR = PROJECT_ROOT / "resource" / "processed_test"
 CONCEPTS_OUTPUT_DIR = PROCESSED_DIR / "concepts"
 
-# Delay between API calls to avoid rate limits (seconds)
-REQUEST_DELAY = 5
-
 
 def save_result(result_dict: dict, output_dir: Path) -> None:
     """Save a single extraction result to JSON."""
@@ -61,8 +55,8 @@ def main():
     parser = argparse.ArgumentParser(description="Extract concepts from processed text")
     parser.add_argument(
         "--model",
-        default="gemini-2.5-flash-preview-05-20",
-        help="Gemini model to use (default: gemini-2.5-flash-preview-05-20)",
+        default="claude-sonnet-4-6",
+        help="Claude model to use (default: claude-sonnet-4-6)",
     )
     parser.add_argument(
         "--file",
@@ -72,18 +66,18 @@ def main():
     parser.add_argument(
         "--api-key",
         default=None,
-        help="Google AI API key (or set GEMINI_API_KEY / GOOGLE_API env var)",
+        help="Anthropic API key (or set ANTHROPIC_API_KEY / ANTHTROPIC_API env var)",
     )
     args = parser.parse_args()
 
     api_key = (
         args.api_key
-        or os.environ.get("GEMINI_API_KEY")
-        or os.environ.get("GOOGLE_API")
+        or os.environ.get("ANTHROPIC_API_KEY")
+        or os.environ.get("ANTHTROPIC_API")
     )
     if not api_key:
         logger.error(
-            "No API key provided. Set GEMINI_API_KEY or GOOGLE_API in .env, or use --api-key."
+            "No API key provided. Set ANTHROPIC_API_KEY or ANTHTROPIC_API in .env, or use --api-key."
         )
         sys.exit(1)
 
@@ -111,65 +105,23 @@ def main():
             logger.error(f"  FAIL: {target.name}: {e}")
         return
 
-    # Full batch mode: separate papers and repo links
+    # Process all text files individually
     all_txt = sorted(f for f in PROCESSED_DIR.glob("*.txt") if f.is_file())
-    paper_files = [f for f in all_txt if f.name.startswith("trendingPaper")]
-    repo_files = [f for f in all_txt if f.name.startswith("trendingRepoLink")]
 
-    total_requests = len(paper_files) + (1 if repo_files else 0)
-    logger.info(
-        f"\nPlan: {len(paper_files)} paper(s) individually + "
-        f"{len(repo_files)} repo(s) batched = {total_requests} API call(s)\n"
-    )
+    logger.info(f"\nProcessing {len(all_txt)} file(s) individually\n")
 
     all_results = []
-    request_count = 0
 
-    # Process each paper individually
-    for paper_file in paper_files:
-        if request_count > 0:
-            logger.info(f"  Waiting {REQUEST_DELAY}s between requests...")
-            time.sleep(REQUEST_DELAY)
-
-        logger.info(f"[{request_count + 1}/{total_requests}] {paper_file.name}")
+    for i, txt_file in enumerate(all_txt, 1):
+        logger.info(f"[{i}/{len(all_txt)}] {txt_file.name}")
         try:
-            result = extract_concepts_from_file(str(paper_file), args.model, api_key)
+            result = extract_concepts_from_file(str(txt_file), args.model, api_key)
             result_dict = result_to_dict(result)
             save_result(result_dict, CONCEPTS_OUTPUT_DIR)
             logger.info(f"  Concepts: {[c['label'] for c in result_dict['concepts']]}")
             all_results.append(result_dict)
         except Exception as e:
-            logger.error(f"  FAIL: {paper_file.name}: {e}")
-        request_count += 1
-
-    # Batch all repo links into a single request
-    if repo_files:
-        if request_count > 0:
-            logger.info(f"  Waiting {REQUEST_DELAY}s between requests...")
-            time.sleep(REQUEST_DELAY)
-
-        logger.info(
-            f"[{request_count + 1}/{total_requests}] "
-            f"Batch: {[f.name for f in repo_files]}"
-        )
-        try:
-            file_texts = []
-            for rf in repo_files:
-                with open(rf, "r", encoding="utf-8") as f:
-                    file_texts.append((rf.name, f.read()))
-
-            batch_results = extract_concepts_batch(file_texts, args.model, api_key)
-            for result in batch_results:
-                result_dict = result_to_dict(result)
-                save_result(result_dict, CONCEPTS_OUTPUT_DIR)
-                logger.info(
-                    f"  Concepts ({result.source_file}): "
-                    f"{[c['label'] for c in result_dict['concepts']]}"
-                )
-                all_results.append(result_dict)
-        except Exception as e:
-            logger.error(f"  FAIL (batch): {e}")
-        request_count += 1
+            logger.error(f"  FAIL: {txt_file.name}: {e}")
 
     # Write combined summary
     if all_results:
@@ -180,7 +132,6 @@ def main():
     # Print summary
     logger.info("\n" + "=" * 60)
     logger.info("Extraction complete!")
-    logger.info(f"  API calls made: {request_count}")
     logger.info(f"  Files processed: {len(all_results)} / {len(all_txt)}")
 
     total_concepts = sum(len(r["concepts"]) for r in all_results)

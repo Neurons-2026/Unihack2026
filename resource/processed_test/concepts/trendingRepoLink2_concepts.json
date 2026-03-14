@@ -1,49 +1,63 @@
 {
   "source_file": "trendingRepoLink2.txt",
-  "source_title": "OpenRAG",
+  "source_title": "OpenRAG - Intelligent Agent-powered document search",
   "source_type": "github_repo",
   "concepts": [
     {
-      "label": "comprehensive rag platform",
-      "description": "An all-in-one software solution that integrates document ingestion, semantic search, and large language models to provide intelligent, AI-powered document search and conversation.",
-      "why_innovative": "It simplifies the deployment and management of complex Retrieval-Augmented Generation (RAG) systems by packaging multiple components into a single, ready-to-run solution.",
-      "category": "application",
+      "label": "retrieval-augmented generation pipeline",
+      "description": "A system that combines document retrieval with large language model generation to answer questions grounded in a user-provided knowledge base.",
+      "why_innovative": "RAG is the dominant production pattern for grounding LLMs in private or up-to-date data, and OpenRAG packages the full pipeline as a ready-to-run platform, drastically lowering deployment friction.",
+      "category": "architecture",
       "relevance_score": 1.0
     },
     {
-      "label": "agentic rag workflows",
-      "description": "Advanced retrieval-augmented generation processes that incorporate sophisticated orchestration, re-ranking of retrieved information, and coordination among multiple AI agents.",
-      "why_innovative": "This moves beyond basic RAG by implementing more intelligent and dynamic strategies for information retrieval and generation, leading to more accurate and nuanced AI responses.",
+      "label": "agentic rag workflow",
+      "description": "An orchestration pattern where autonomous AI agents decide how to retrieve, re-rank, and synthesize information across multiple steps rather than following a fixed pipeline.",
+      "why_innovative": "Multi-agent RAG with re-ranking moves beyond single-shot retrieval, improving answer quality on complex queries and representing the current frontier of production RAG systems.",
       "category": "technique",
-      "relevance_score": 0.95
+      "relevance_score": 0.92
     },
     {
-      "label": "visual workflow builder (langflow)",
-      "description": "A drag-and-drop graphical interface for designing and customizing RAG workflows, powered by the Langflow engine.",
-      "why_innovative": "It lowers the barrier to entry for developing and iterating on complex RAG applications, allowing users to visually construct and modify AI pipelines without extensive coding.",
+      "label": "model context protocol (mcp) server",
+      "description": "A standardized server interface that lets AI assistants like Claude Desktop or Cursor connect to and query an external knowledge base using a defined protocol.",
+      "why_innovative": "MCP is an emerging open standard (popularized by Anthropic) for tool-use integration, and exposing RAG capabilities via MCP makes OpenRAG natively composable with a new class of AI-native IDEs and assistants.",
       "category": "tool",
       "relevance_score": 0.85
     },
     {
-      "label": "model context protocol (mcp)",
-      "description": "A protocol that enables external AI assistants, such as Cursor and Claude Desktop, to connect directly to the OpenRAG knowledge base for enhanced chat and semantic search.",
-      "why_innovative": "It facilitates seamless integration of third-party AI applications with a specialized knowledge base, significantly expanding the utility and reach of RAG beyond its native interface.",
-      "category": "tool",
+      "label": "semantic search with opensearch",
+      "description": "Vector-based document search that finds results by meaning rather than keyword matching, powered by the OpenSearch engine at enterprise scale.",
+      "why_innovative": "Pairing dense vector semantic search with a production-grade, horizontally scalable search engine enables RAG retrieval that handles real-world document volumes without accuracy degradation.",
+      "category": "technique",
       "relevance_score": 0.8
     },
     {
-      "label": "intelligent document parsing",
-      "description": "The ability to process and extract meaningful information from diverse and often unstructured 'messy' real-world document formats during the ingestion phase.",
-      "why_innovative": "This feature is crucial for real-world RAG systems, as it ensures that disparate document types can be effectively transformed into a usable knowledge source for AI models.",
+      "label": "document ingestion with docling",
+      "description": "Automated parsing and structuring of complex, real-world documents (PDFs, tables, images) into machine-readable chunks suitable for embedding and retrieval.",
+      "why_innovative": "Docling's ability to handle messy, layout-heavy documents (e.g., scanned PDFs, multi-column text) solves a longstanding bottleneck in RAG pipelines where poor parsing directly degrades retrieval quality.",
       "category": "technique",
-      "relevance_score": 0.75
+      "relevance_score": 0.78
     },
     {
-      "label": "enterprise search with opensearch",
-      "description": "Utilizing OpenSearch as the robust backend for document indexing and retrieval, providing production-grade performance and scalability for large-scale knowledge bases.",
-      "why_innovative": "It ensures that the RAG platform can handle the vast amounts of documents and concurrent queries typical of enterprise environments, guaranteeing reliability and speed.",
-      "category": "architecture",
+      "label": "visual rag workflow builder",
+      "description": "A drag-and-drop graphical interface (powered by Langflow) that lets users compose and modify retrieval and agent pipelines without writing code.",
+      "why_innovative": "Low-code workflow builders for LLM orchestration dramatically accelerate experimentation and are a key differentiator for democratizing advanced RAG configurations in enterprise settings.",
+      "category": "tool",
       "relevance_score": 0.7
+    },
+    {
+      "label": "knowledge filter and metadata faceting",
+      "description": "A mechanism that lets users scope retrieval queries to specific subsets of the knowledge base using structured metadata filters before semantic search is performed.",
+      "why_innovative": "Combining metadata pre-filtering with semantic search reduces retrieval noise in large, heterogeneous document collections — a critical requirement for enterprise deployments with diverse data sources.",
+      "category": "technique",
+      "relevance_score": 0.62
+    },
+    {
+      "label": "multimodal document connector",
+      "description": "Integration components that ingest documents from cloud sources (OneDrive, SharePoint, Google Drive) and support multimodal content including images alongside text.",
+      "why_innovative": "Extending RAG to multimodal inputs and cloud-native data sources reflects the industry shift toward systems that can reason over heterogeneous enterprise data beyond plain text.",
+      "category": "application",
+      "relevance_score": 0.58
     }
   ]
 }
