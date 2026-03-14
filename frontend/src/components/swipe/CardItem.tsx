@@ -33,6 +33,8 @@ export default function CardItem({ card }: { card: CardData }) {
           <img
             src={card.imageUrl}
             alt=""
+            fetchPriority="high"
+            decoding="async"
             style={{
               position: 'absolute',
               inset: 0,

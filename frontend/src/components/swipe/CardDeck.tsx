@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import TinderCard from 'react-tinder-card';
 import { sampleCards } from '@/data/sampleCards';
 import { useBasketStore } from '@/stores/useBasketStore';
@@ -38,6 +38,8 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
 
   const currentCard = filteredCards[currentIndex];
 
+  const nextCard = filteredCards[currentIndex + 1];
+
   if (!currentCard) {
     return (
       <div style={{ flex: 1, display: 'flex', padding: '10px 10px 16px' }}>
@@ -57,34 +59,14 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
         minHeight: 0,
       }}
     >
-      {/* Peek card — back */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 14,
-          left: 14,
-          right: 14,
-          bottom: 20,
-          background: '#1c1c1e',
-          borderRadius: 18,
-          transform: 'scale(0.96)',
-          opacity: 0.35,
-        }}
-      />
-      {/* Peek card — middle */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 12,
-          left: 12,
-          right: 12,
-          bottom: 18,
-          background: '#1c1c1e',
-          borderRadius: 18,
-          transform: 'scale(0.98)',
-          opacity: 0.55,
-        }}
-      />
+      {/* Next card rendered underneath with the same layout as active card */}
+      {nextCard && (
+        <div className="absolute inset-0 z-0" style={{ pointerEvents: 'none' }}>
+          <div style={{ width: '100%', height: '100%', padding: '10px 10px 16px' }}>
+            <CardItem card={nextCard} />
+          </div>
+        </div>
+      )}
 
       {/* Active swipeable card */}
       <TinderCard
