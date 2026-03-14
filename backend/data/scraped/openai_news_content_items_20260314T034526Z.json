@@ -32,7 +32,7 @@
       "collector_version": "0.2.0",
       "dedupe_key": "openai:rakuten"
     },
-    "fetched_at": "2026-03-14T03:52:07.114862+00:00"
+    "fetched_at": "2026-03-14T03:45:26.886278+00:00"
   },
   {
     "schema_version": "1.0.0",
@@ -53,8 +53,8 @@
       "enrichment_used": false
     },
     "ranking": {
-      "source_rank_score": 0.8,
-      "trending_score": 0.8
+      "source_rank_score": 0.6666666666666666,
+      "trending_score": 0.6666666666666666
     },
     "metadata": {
       "published_date": "Wed, 11 Mar 2026 11:30:00 GMT",
@@ -67,7 +67,7 @@
       "collector_version": "0.2.0",
       "dedupe_key": "openai:designing-agents-to-resist-prompt-injection"
     },
-    "fetched_at": "2026-03-14T03:52:07.115983+00:00"
+    "fetched_at": "2026-03-14T03:45:26.888130+00:00"
   },
   {
     "schema_version": "1.0.0",
@@ -88,8 +88,8 @@
       "enrichment_used": false
     },
     "ranking": {
-      "source_rank_score": 0.6,
-      "trending_score": 0.6
+      "source_rank_score": 0.3333333333333333,
+      "trending_score": 0.3333333333333333
     },
     "metadata": {
       "published_date": "Wed, 11 Mar 2026 11:00:00 GMT",
@@ -102,76 +102,6 @@
       "collector_version": "0.2.0",
       "dedupe_key": "openai:wayfair"
     },
-    "fetched_at": "2026-03-14T03:52:07.116021+00:00"
-  },
-  {
-    "schema_version": "1.0.0",
-    "id": "openai:equip-responses-api-computer-environment",
-    "source": "openai_blog",
-    "source_url": "https://openai.com/index/equip-responses-api-computer-environment",
-    "title": "From model to agent: Equipping the Responses API with a computer environment",
-    "raw_summary": "",
-    "raw_content": "How OpenAI built an agent runtime using the Responses API, shell tool, and hosted containers to run secure, scalable agents with files, tools, and state.",
-    "pipeline_state": "raw_scraped",
-    "preprocessing": {
-      "cleaned_text": "How OpenAI built an agent runtime using the Responses API, shell tool, and hosted containers to run secure, scalable agents with files, tools, and state.",
-      "preview_text": "How OpenAI built an agent runtime using the Responses API, shell tool, and hosted containers to run secure, scalable agents with files, tools, and state.",
-      "quality_notes": [
-        "rss_scraped",
-        "metadata_cleaned"
-      ],
-      "enrichment_used": false
-    },
-    "ranking": {
-      "source_rank_score": 0.4,
-      "trending_score": 0.4
-    },
-    "metadata": {
-      "published_date": "Wed, 11 Mar 2026 11:00:00 GMT",
-      "rank": 4,
-      "keywords": [],
-      "freshness_basis": "news_listing_order"
-    },
-    "provenance": {
-      "collector": "openai_news_scraper",
-      "collector_version": "0.2.0",
-      "dedupe_key": "openai:equip-responses-api-computer-environment"
-    },
-    "fetched_at": "2026-03-14T03:52:07.116054+00:00"
-  },
-  {
-    "schema_version": "1.0.0",
-    "id": "openai:instruction-hierarchy-challenge",
-    "source": "openai_blog",
-    "source_url": "https://openai.com/index/instruction-hierarchy-challenge",
-    "title": "Improving instruction hierarchy in frontier LLMs",
-    "raw_summary": "",
-    "raw_content": "IH-Challenge trains models to prioritize trusted instructions, improving instruction hierarchy, safety steerability, and resistance to prompt injection attacks.",
-    "pipeline_state": "raw_scraped",
-    "preprocessing": {
-      "cleaned_text": "IH-Challenge trains models to prioritize trusted instructions, improving instruction hierarchy, safety steerability, and resistance to prompt injection attacks.",
-      "preview_text": "IH-Challenge trains models to prioritize trusted instructions, improving instruction hierarchy, safety steerability, and resistance to prompt injection attacks.",
-      "quality_notes": [
-        "rss_scraped",
-        "metadata_cleaned"
-      ],
-      "enrichment_used": false
-    },
-    "ranking": {
-      "source_rank_score": 0.2,
-      "trending_score": 0.2
-    },
-    "metadata": {
-      "published_date": "Tue, 10 Mar 2026 11:00:00 GMT",
-      "rank": 5,
-      "keywords": [],
-      "freshness_basis": "news_listing_order"
-    },
-    "provenance": {
-      "collector": "openai_news_scraper",
-      "collector_version": "0.2.0",
-      "dedupe_key": "openai:instruction-hierarchy-challenge"
-    },
-    "fetched_at": "2026-03-14T03:52:07.116089+00:00"
+    "fetched_at": "2026-03-14T03:45:26.888178+00:00"
   }
 ]

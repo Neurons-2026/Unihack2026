@@ -62,6 +62,7 @@ Recommended at ingestion time (if available):
 
 Recommended for better quality:
 - `preprocessing.cleaned_text`
+- `preprocessing.preview_text`
 - `preprocessing.quality_score`
 - `card.thumbnail_keyword`
 - `ranking.source_rank_score`
@@ -78,6 +79,7 @@ Recommended for better quality:
 - `card.keywords` -> `keywords`
 - `card.thumbnail_keyword` -> `thumbnail_keyword`
 - `preprocessing.cleaned_text` -> `cleaned_text`
+- `preprocessing.preview_text` -> card-prep text view (not DB-required)
 - `preprocessing.quality_score` -> `quality_score`
 - `ranking.trending_score` -> `trending_score`
 
@@ -100,6 +102,7 @@ Recommended for better quality:
   "published_at": "2026-03-13T22:00:00Z",
   "preprocessing": {
     "cleaned_text": "Cleaned and boilerplate-removed text ...",
+    "preview_text": "Short card-ready preview text ...",
     "quality_score": 0.91,
     "quality_notes": ["complete_summary", "source_authoritative"],
     "enrichment_used": false
