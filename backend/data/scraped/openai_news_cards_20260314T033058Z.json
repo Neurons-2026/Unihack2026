@@ -1,0 +1,29 @@
+[
+  {
+    "id": "openai_blog:rakuten",
+    "card_title": "Rakuten uses Codex, the coding agent from OpenAI, to ship software faster...",
+    "card_summary": "Rakuten uses Codex, the coding agent from OpenAI, to ship software faster and safer, reducing MTTR 50%, automating...",
+    "keywords": [],
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/rakuten",
+    "thumbnail_keyword": "openai_blog"
+  },
+  {
+    "id": "openai_blog:designing-agents-to-resist-prompt-injection",
+    "card_title": "March 11, 2026 What social engineering teaches us about securing AI agents",
+    "card_summary": "March 11, 2026 What social engineering teaches us about securing AI agents.",
+    "keywords": [],
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/designing-agents-to-resist-prompt-injection",
+    "thumbnail_keyword": "openai_blog"
+  },
+  {
+    "id": "openai_blog:wayfair",
+    "card_title": "Wayfair uses OpenAI models to improve ecommerce support and product catalog...",
+    "card_summary": "Wayfair uses OpenAI models to improve ecommerce support and product catalog accuracy, automating ticket triage and...",
+    "keywords": [],
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/wayfair",
+    "thumbnail_keyword": "openai_blog"
+  }
+]

@@ -72,6 +72,9 @@
         "cleaned_text": {
           "type": "string"
         },
+        "preview_text": {
+          "type": "string"
+        },
         "quality_score": {
           "type": "number",
           "minimum": 0,

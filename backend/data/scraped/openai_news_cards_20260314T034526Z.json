@@ -25,23 +25,5 @@
     "source": "openai_blog",
     "source_url": "https://openai.com/index/wayfair",
     "thumbnail_keyword": "openai_blog"
-  },
-  {
-    "id": "openai_blog:equip-responses-api-computer-environment",
-    "card_title": "How OpenAI built an agent runtime using the Responses API, shell tool, and...",
-    "card_summary": "How OpenAI built an agent runtime using the Responses API, shell tool, and hosted containers to run secure, scalable...",
-    "keywords": [],
-    "source": "openai_blog",
-    "source_url": "https://openai.com/index/equip-responses-api-computer-environment",
-    "thumbnail_keyword": "openai_blog"
-  },
-  {
-    "id": "openai_blog:instruction-hierarchy-challenge",
-    "card_title": "IH-Challenge trains models to prioritize trusted instructions, improving...",
-    "card_summary": "IH-Challenge trains models to prioritize trusted instructions, improving instruction hierarchy, safety steerability...",
-    "keywords": [],
-    "source": "openai_blog",
-    "source_url": "https://openai.com/index/instruction-hierarchy-challenge",
-    "thumbnail_keyword": "openai_blog"
   }
 ]
