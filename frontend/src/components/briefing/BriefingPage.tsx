@@ -1,20 +1,109 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
-import { sampleBriefing } from '@/data/sampleBriefing';
-import { getTagStyle } from '@/lib/tagColors';
+import { useState, useEffect, useRef, ReactNode } from 'react';
+import { useBasketStore } from '@/stores/useBasketStore';
+import { generateBriefing } from '@/lib/api';
+import { getSessionId } from '@/lib/session';
+import { Briefing } from '@/lib/types';
 import BriefingHeader from './BriefingHeader';
-import HeroImage from './HeroImage';
-import SectionBar from './SectionBar';
-import SignalCard from './SignalCard';
-import InlineVisual from './InlineVisual';
-import TrendItem from './TrendItem';
-import TakeawayItem from './TakeawayItem';
 import GraphButton from './GraphButton';
 
+// Minimal markdown renderer — handles the backend's output format
+function renderMarkdown(md: string): ReactNode[] {
+  const lines = md.split('\n');
+  const nodes: ReactNode[] = [];
+  let key = 0;
+
+  function renderInline(text: string): ReactNode {
+    const parts: ReactNode[] = [];
+    const regex = /\*\*(.*?)\*\*|\*(.*?)\*|\[([^\]]+)\]\(([^)]+)\)/g;
+    let last = 0;
+    let m: RegExpExecArray | null;
+    while ((m = regex.exec(text)) !== null) {
+      if (m.index > last) parts.push(text.slice(last, m.index));
+      if (m[1] !== undefined) {
+        parts.push(<strong key={key++}>{m[1]}</strong>);
+      } else if (m[2] !== undefined) {
+        parts.push(<em key={key++}>{m[2]}</em>);
+      } else if (m[3] !== undefined) {
+        parts.push(
+          <a key={key++} href={m[4]} target="_blank" rel="noopener noreferrer"
+            style={{ color: 'rgba(130,210,160,0.9)', textDecoration: 'none' }}>
+            {m[3]}
+          </a>
+        );
+      }
+      last = regex.lastIndex;
+    }
+    if (last < text.length) parts.push(text.slice(last));
+    return parts.length === 1 ? parts[0] : parts;
+  }
+
+  for (const line of lines) {
+    if (line.startsWith('# ')) {
+      nodes.push(
+        <h1 key={key++} style={{ fontSize: 22, fontWeight: 500, color: '#fff', lineHeight: 1.25,
+          letterSpacing: -0.6, margin: '24px 0 6px', fontFamily: 'Georgia, serif' }}>
+          {renderInline(line.slice(2))}
+        </h1>
+      );
+    } else if (line.startsWith('## ')) {
+      nodes.push(
+        <h2 key={key++} style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.5)',
+          letterSpacing: 0.6, margin: '28px 0 10px', textTransform: 'uppercase' }}>
+          {renderInline(line.slice(3))}
+        </h2>
+      );
+    } else if (line.startsWith('### ')) {
+      nodes.push(
+        <h3 key={key++} style={{ fontSize: 17, fontWeight: 600, color: '#fff',
+          margin: '20px 0 4px', letterSpacing: -0.3 }}>
+          {renderInline(line.slice(4))}
+        </h3>
+      );
+    } else if (line.startsWith('---')) {
+      nodes.push(
+        <hr key={key++} style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)',
+          margin: '24px 0' }} />
+      );
+    } else if (line.startsWith('- ') || line.startsWith('* ')) {
+      nodes.push(
+        <p key={key++} style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.65,
+          margin: '4px 0', paddingLeft: 14, position: 'relative' }}>
+          <span style={{ position: 'absolute', left: 0, color: 'rgba(130,210,160,0.7)' }}>•</span>
+          {renderInline(line.slice(2))}
+        </p>
+      );
+    } else if (line.trim() === '') {
+      nodes.push(<div key={key++} style={{ height: 8 }} />);
+    } else {
+      nodes.push(
+        <p key={key++} style={{ fontSize: 14, color: 'rgba(255,255,255,0.58)', lineHeight: 1.75,
+          margin: '4px 0' }}>
+          {renderInline(line)}
+        </p>
+      );
+    }
+  }
+
+  return nodes;
+}
+
 export default function BriefingPage() {
+  const [briefing, setBriefing] = useState<Briefing | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const b = sampleBriefing;
+  const items = useBasketStore((s) => s.items);
+
+  useEffect(() => {
+    const sessionId = getSessionId();
+    generateBriefing(sessionId, items)
+      .then(setBriefing)
+      .catch(() => setError('Failed to generate briefing. Please try again.'))
+      .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -28,6 +117,8 @@ export default function BriefingPage() {
     return () => el.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const readingTimeMin = briefing?.reading_time_min ?? 10;
+
   return (
     <div
       style={{
@@ -40,135 +131,42 @@ export default function BriefingPage() {
         flexDirection: 'column',
       }}
     >
-      <BriefingHeader readingTimeMin={b.readingTimeMin} scrollProgress={scrollProgress} />
+      <BriefingHeader readingTimeMin={readingTimeMin} scrollProgress={scrollProgress} />
 
       <div
         ref={scrollRef}
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '0 20px 40px',
-        }}
+        style={{ flex: 1, overflowY: 'auto', padding: '0 20px 40px' }}
         className="hide-scrollbar"
       >
-        {/* Topic tags */}
-        <div style={{ marginBottom: 8, display: 'flex', gap: 6 }}>
-          {b.topicTags.map((tag) => {
-            const s = getTagStyle(tag);
-            return (
-              <span
-                key={tag}
-                style={{
-                  fontSize: 11,
-                  padding: '3px 8px',
-                  borderRadius: 20,
-                  backgroundColor: s.bg,
-                  color: s.text,
-                }}
-              >
-                {tag}
-              </span>
-            );
-          })}
-        </div>
+        {loading && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
+            justifyContent: 'center', height: '60%', gap: 12 }}>
+            <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 14 }}>
+              Generating your briefing…
+            </div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.18)' }}>
+              This may take a moment
+            </div>
+          </div>
+        )}
 
-        {/* Headline — serif font for editorial feel */}
-        <h1
-          style={{
-            fontSize: 26,
-            fontWeight: 500,
-            color: '#fff',
-            lineHeight: 1.2,
-            letterSpacing: -0.8,
-            margin: '0 0 8px',
-            fontFamily: 'Georgia, serif',
-          }}
-        >
-          {b.headlineTitle}
-        </h1>
-        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', margin: '0 0 20px' }}>
-          {b.generatedAt} · {b.signals.length} signals
-        </p>
+        {error && (
+          <div style={{ color: 'rgba(248,113,113,0.8)', fontSize: 14, marginTop: 40,
+            textAlign: 'center' }}>
+            {error}
+          </div>
+        )}
 
-        {/* Hero image */}
-        <HeroImage imageUrl={b.heroImageUrl} />
-
-        {/* Overview paragraph */}
-        <div style={{ marginBottom: 28 }}>
-          <p
-            style={{
-              fontSize: 15,
-              color: 'rgba(255,255,255,0.62)',
-              lineHeight: 1.75,
-              margin: 0,
-            }}
-          >
-            {b.overview}
-          </p>
-        </div>
-
-        {/* WHAT HAPPENED — signal cards with images */}
-        <div style={{ marginBottom: 28 }}>
-          <SectionBar label="WHAT HAPPENED" color="#3fb950" />
-          {b.signals.map((signal) => (
-            <SignalCard key={signal.id} signal={signal} />
-          ))}
-        </div>
-
-        {/* WHY IT MATTERS — with inline visual */}
-        <div style={{ marginBottom: 28 }}>
-          <SectionBar label="WHY IT MATTERS" color="rgba(234,179,8,0.8)" />
-          <p
-            style={{
-              fontSize: 15,
-              color: 'rgba(255,255,255,0.58)',
-              lineHeight: 1.75,
-              margin: 0,
-            }}
-          >
-            {b.whyItMatters}
-          </p>
-          {b.inlineVisualUrl && (
-            <InlineVisual imageUrl={b.inlineVisualUrl} caption={b.inlineVisualCaption} />
-          )}
-        </div>
-
-        {/* TRENDS TO WATCH */}
-        <div style={{ marginBottom: 28 }}>
-          <SectionBar label="TRENDS TO WATCH" color="rgba(168,85,247,0.8)" />
-          {b.trends.map((trend, i) => (
-            <TrendItem key={i} index={i + 1} text={trend} />
-          ))}
-        </div>
-
-        {/* KEY TAKEAWAYS */}
-        <div
-          style={{
-            background: '#1c1c1e',
-            borderRadius: 14,
-            padding: 16,
-            marginBottom: 28,
-          }}
-        >
-          <span
-            style={{
-              fontSize: 12,
-              fontWeight: 500,
-              color: 'rgba(255,255,255,0.4)',
-              letterSpacing: 0.5,
-              display: 'block',
-              marginBottom: 12,
-            }}
-          >
-            KEY TAKEAWAYS
-          </span>
-          {b.takeaways.map((t, i) => (
-            <TakeawayItem key={i} text={t} />
-          ))}
-        </div>
-
-        {/* Knowledge graph button */}
-        <GraphButton />
+        {briefing && (
+          <>
+            <div style={{ paddingTop: 8 }}>
+              {renderMarkdown(briefing.content)}
+            </div>
+            <div style={{ marginTop: 32 }}>
+              <GraphButton />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

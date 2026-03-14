@@ -3,7 +3,7 @@ import { sourceThemes, SourceType } from '@/lib/sourceThemes';
 import LogoIcon from './LogoIcon';
 
 export default function SourceOverlay({ source, date }: { source: SourceType; date: string }) {
-  const theme = sourceThemes[source];
+  const theme = sourceThemes[source] ?? { dotColor: '#888888', label: source, fallbackBg: '#1c1c1e' };
   return (
     <div
       style={{
