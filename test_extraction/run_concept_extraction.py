@@ -105,8 +105,9 @@ def main():
             logger.error(f"  FAIL: {target.name}: {e}")
         return
 
-    # Process all text files individually
-    all_txt = sorted(f for f in PROCESSED_DIR.glob("*.txt") if f.is_file())
+    # Process only specific test files
+    test_files = ["trendingPaper1.txt", "trendingPaper2.txt"]
+    all_txt = [PROCESSED_DIR / f for f in test_files if (PROCESSED_DIR / f).exists()]
 
     logger.info(f"\nProcessing {len(all_txt)} file(s) individually\n")
 

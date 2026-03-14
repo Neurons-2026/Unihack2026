@@ -29,8 +29,9 @@ For each concept, provide:
 1. **label**: A short, precise technical concept name (2-5 words max). It should name a concrete structure, method, formula, or mechanism — e.g., "KL divergence", "rotary position embedding", "mixture of experts", "flash attention", "low-rank adaptation". Keep it short: just the core concept name, do NOT append qualifiers like "for X" or "with Y".
 2. **description**: A one-sentence explanation in simple, everyday language that someone with NO AI background can understand. Avoid jargon — if you must use a technical term, briefly explain it in parentheses.
 3. **why_innovative**: One sentence in plain, accessible language explaining why this concept matters and what real-world impact it has. Focus on the "so what?" — what does this enable that wasn't possible before?
-4. **category**: Classify into one of: "technique", "architecture", "application", "dataset", "tool", "benchmark", "theory".
-5. **relevance_score**: A float from 0.0 to 1.0 indicating how central this concept is to the source's innovation (1.0 = the core contribution). Only include concepts you would rate above 0.8.
+4. **impact_on_applications**: One or two sentences in plain, non-technical language explaining how this concept could change or improve real-world products, services, or everyday tools that people already use. Think about concrete examples — e.g., "This could make voice assistants on your phone respond faster and more accurately" or "This could help doctors spot diseases in medical scans that are easy to miss."
+5. **category**: Classify into one of: "technique", "architecture", "application", "dataset", "tool", "benchmark", "theory".
+6. **relevance_score**: A float from 0.0 to 1.0 indicating how central this concept is to the source's innovation (1.0 = the core contribution). Only include concepts you would rate above 0.8.
 
 Rules:
 - Extract at least 3 and at most 8 concepts per source, but ONLY those with relevance_score > 0.8.
@@ -48,6 +49,7 @@ Respond ONLY with a valid JSON object in this exact format:
       "label": "concept name",
       "description": "Simple, jargon-free explanation.",
       "why_innovative": "Why this matters in plain language.",
+      "impact_on_applications": "How this could improve real-world products or services people use.",
       "category": "technique",
       "relevance_score": 0.95
     }
@@ -62,8 +64,9 @@ For each concept, provide:
 1. **label**: A short, precise technical concept name (2-5 words max). It should name a concrete structure, method, formula, or mechanism — e.g., "KL divergence", "rotary position embedding", "mixture of experts". Keep it short: just the core concept name, do NOT append qualifiers like "for X" or "with Y".
 2. **description**: A one-sentence explanation in simple, everyday language that someone with NO AI background can understand. Avoid jargon — if you must use a technical term, briefly explain it in parentheses.
 3. **why_innovative**: One sentence in plain, accessible language explaining why this concept matters and what real-world impact it has.
-4. **category**: Classify into one of: "technique", "architecture", "application", "dataset", "tool", "benchmark", "theory".
-5. **relevance_score**: A float from 0.0 to 1.0 indicating how central this concept is to the source's innovation (1.0 = the core contribution). Only include concepts you would rate above 0.8.
+4. **impact_on_applications**: One or two sentences in plain, non-technical language explaining how this concept could change or improve real-world products, services, or everyday tools that people already use.
+5. **category**: Classify into one of: "technique", "architecture", "application", "dataset", "tool", "benchmark", "theory".
+6. **relevance_score**: A float from 0.0 to 1.0 indicating how central this concept is to the source's innovation (1.0 = the core contribution). Only include concepts you would rate above 0.8.
 
 Rules:
 - Extract at least 3 and at most 8 concepts PER source, but ONLY those with relevance_score > 0.8.
@@ -82,6 +85,7 @@ Respond ONLY with a valid JSON object in this exact format:
           "label": "concept name",
           "description": "Simple, jargon-free explanation.",
           "why_innovative": "Why this matters in plain language.",
+          "impact_on_applications": "How this could improve real-world products or services people use.",
           "category": "technique",
           "relevance_score": 0.95
         }
@@ -97,6 +101,7 @@ class ExtractedConcept:
     label: str
     description: str
     why_innovative: str
+    impact_on_applications: str
     category: str
     relevance_score: float
 
@@ -188,6 +193,7 @@ def _parse_concepts(concepts_raw: list[dict], min_relevance: float = 0.8) -> lis
                 label=c["label"].lower().strip(),
                 description=c["description"],
                 why_innovative=c["why_innovative"],
+                impact_on_applications=c.get("impact_on_applications", ""),
                 category=c["category"],
                 relevance_score=score,
             )
