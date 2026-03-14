@@ -1,11 +1,17 @@
+"""Briefing generation service.
+
+SU6: Fetches cards + cleaned_text from Supabase, calls Claude with streaming.
+SU7: Source attribution — every section links back to original source URL.
+"""
+
 from datetime import datetime, timezone
-from typing import List
+from pathlib import Path
+from typing import AsyncGenerator, List, Optional
 
 import anthropic
 
 from config import get_settings
-from models.schemas import BriefingResponse, Card
-from services.ingestion import fetch_trending_cards
+from models.schemas import BriefingResponse
 
 SYSTEM_PROMPT = """You are the writer for "10min AI Daily" — a daily AI news briefing for smart, curious people who are not AI experts. Your job is to turn a set of saved news signals into a single, well-written digest that takes exactly 10 minutes to read.
 
@@ -28,7 +34,7 @@ Produce the digest in Markdown. Follow this exact structure — do not add, remo
 3. "## Today at a Glance" — bullet list, one sentence per card (15–20 words each), present tense, no jargon
 4. Horizontal rule
 5. One section per card, in the order provided, each containing:
-   - "### {card_title}" followed by "*Source: {source_name}*"
+   - "### {card_title}" followed by "*Source: [{source_name}]({source_url})*"
    - "**What Happened**" — one paragraph, ~80 words, plain summary of the news
    - "**Why It Matters**" — one paragraph, ~100 words, the real-world "so what"
    - "**What to Know**" — one paragraph, ~80 words, key context or caveats
@@ -45,10 +51,48 @@ Produce the digest in Markdown. Follow this exact structure — do not add, remo
 - Do not introduce facts, links, or sources not present in the input
 - Do not add a conclusion, disclaimer, or any section not listed above
 - Do not truncate or skip any card — write a full section for every card provided
+- Every card section MUST include the clickable source link "[Read the full article →]({source_url})"
 - Output language: English only"""
 
 
-def _build_user_prompt(cards: List[Card], date_str: str, timestamp_str: str) -> str:
+def _fetch_cards_from_supabase(card_ids: List[str]) -> list[dict]:
+    """Fetch cards + content_items from Supabase by IDs."""
+    from dotenv import load_dotenv
+    from pathlib import Path
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+    from models.database import get_supabase
+
+    db = get_supabase()
+
+    # Fetch cards (has cleaned_text, card_title, card_summary, keywords, thumbnail_keyword)
+    result = db.table("cards").select("*").in_("id", card_ids).execute()
+    cards_by_id = {c["id"]: c for c in result.data}
+
+    # Fetch content_items (has source, source_url, title, raw_content)
+    result2 = db.table("content_items").select("*").in_("id", card_ids).execute()
+    items_by_id = {i["id"]: i for i in result2.data}
+
+    # Merge: combine card data with content_item data
+    merged = []
+    for cid in card_ids:
+        card = cards_by_id.get(cid, {})
+        item = items_by_id.get(cid, {})
+        if not card and not item:
+            continue
+        merged.append({
+            "id": cid,
+            "card_title": card.get("card_title", item.get("title", "")),
+            "card_summary": card.get("card_summary", ""),
+            "cleaned_text": card.get("cleaned_text", ""),
+            "keywords": card.get("keywords", []),
+            "source": item.get("source", ""),
+            "source_url": item.get("source_url", ""),
+        })
+
+    return merged
+
+
+def _build_user_prompt(cards: list[dict], date_str: str, timestamp_str: str) -> str:
     n = len(cards)
     lines = [
         f"Here are the {n} signals the user saved today. Write the full digest following the system instructions exactly.",
@@ -59,14 +103,22 @@ def _build_user_prompt(cards: List[Card], date_str: str, timestamp_str: str) -> 
         "---",
     ]
     for i, card in enumerate(cards, start=1):
+        # Use cleaned_text (full article) if available, fall back to card_summary
+        content = card.get("cleaned_text") or card.get("card_summary", "")
+        # Truncate to ~2000 words per card to stay within token budget
+        words = content.split()
+        if len(words) > 2000:
+            content = " ".join(words[:2000]) + " [truncated]"
+
         lines += [
             "",
             f"CARD {i}",
-            f"Title: {card.card_title}",
-            f"Source: {card.source}",
-            f"URL: {card.source_url}",
+            f"Title: {card['card_title']}",
+            f"Source: {card.get('source', '')}",
+            f"URL: {card.get('source_url', '')}",
+            f"Keywords: {', '.join(card.get('keywords', []))}",
             "Content:",
-            card.card_summary,
+            content,
             "",
             "---",
         ]
@@ -75,40 +127,119 @@ def _build_user_prompt(cards: List[Card], date_str: str, timestamp_str: str) -> 
     return "\n".join(lines)
 
 
+def _check_fallback(card_ids: List[str]) -> Optional[BriefingResponse]:
+    """Check if a pre-generated fallback briefing matches the requested card IDs."""
+    fallback_path = Path(__file__).resolve().parent.parent / "data" / "fallback_briefings.json"
+    if not fallback_path.exists():
+        return None
+    import json
+    fallbacks = json.load(open(fallback_path, encoding="utf-8"))
+    for fb in fallbacks:
+        if set(fb["card_ids"]) == set(card_ids):
+            return BriefingResponse(
+                id=f"briefing-{fb['id']}",
+                content=fb["content"],
+                reading_time_min=fb.get("reading_time_min"),
+            )
+    return None
+
+
 def _reading_time(text: str) -> float:
     word_count = len(text.split())
     return round(word_count / 200, 1)  # 200 wpm
 
 
 async def generate_briefing(session_id: str, card_ids: List[str]) -> BriefingResponse:
+    """Generate a full briefing from card IDs (non-streaming)."""
+    # Check for pre-generated fallback first
+    fallback = _check_fallback(card_ids)
+    if fallback:
+        return fallback
+
     settings = get_settings()
 
-    # Fetch all available cards and filter to the requested IDs (preserving order)
-    all_cards = await fetch_trending_cards(session_id)
-    card_map = {c.id: c for c in all_cards}
-    cards = [card_map[cid] for cid in card_ids if cid in card_map]
+    # Fetch cards from Supabase
+    cards = _fetch_cards_from_supabase(card_ids)
 
-    # Fall back to all cards if none of the requested IDs matched (demo safety)
     if not cards:
-        cards = all_cards
+        return BriefingResponse(
+            id=f"briefing-{session_id}",
+            content="No cards found for the given IDs.",
+            reading_time_min=0,
+        )
 
     now = datetime.now(timezone.utc)
-    date_str = now.strftime("%A, %d %B %Y")       # e.g. "Saturday, 14 March 2026"
+    date_str = now.strftime("%A, %d %B %Y")
     timestamp_str = now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     user_prompt = _build_user_prompt(cards, date_str, timestamp_str)
 
     client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
     message = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-opus-4-6",
         max_tokens=4096,
         messages=[{"role": "user", "content": user_prompt}],
         system=SYSTEM_PROMPT,
     )
 
     content = message.content[0].text
+
+    # Save to Supabase
+    try:
+        from models.database import get_supabase
+        db = get_supabase()
+        db.table("briefings").insert({
+            "session_id": session_id,
+            "content": content,
+            "reading_time_min": _reading_time(content),
+        }).execute()
+    except Exception:
+        pass  # Non-critical
+
     return BriefingResponse(
         id=f"briefing-{session_id}",
         content=content,
         reading_time_min=_reading_time(content),
     )
+
+
+async def generate_briefing_stream(session_id: str, card_ids: List[str]) -> AsyncGenerator[str, None]:
+    """Generate a briefing with streaming — yields text chunks."""
+    settings = get_settings()
+
+    cards = _fetch_cards_from_supabase(card_ids)
+
+    if not cards:
+        yield "No cards found for the given IDs."
+        return
+
+    now = datetime.now(timezone.utc)
+    date_str = now.strftime("%A, %d %B %Y")
+    timestamp_str = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    user_prompt = _build_user_prompt(cards, date_str, timestamp_str)
+
+    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+
+    full_content = ""
+    with client.messages.stream(
+        model="claude-opus-4-6",
+        max_tokens=4096,
+        messages=[{"role": "user", "content": user_prompt}],
+        system=SYSTEM_PROMPT,
+    ) as stream:
+        for text in stream.text_stream:
+            full_content += text
+            yield text
+
+    # Save completed briefing to Supabase
+    try:
+        from models.database import get_supabase
+        db = get_supabase()
+        db.table("briefings").insert({
+            "session_id": session_id,
+            "content": full_content,
+            "reading_time_min": _reading_time(full_content),
+        }).execute()
+    except Exception:
+        pass
