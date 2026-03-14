@@ -1,16 +1,12 @@
 'use client';
 import Link from 'next/link';
 import { useBasketStore } from '@/stores/useBasketStore';
-import { sampleCards } from '@/data/sampleCards';
-import { sourceThemes } from '@/lib/sourceThemes';
+import { sourceThemes, SourceType } from '@/lib/sourceThemes';
 
 export default function BasketPage() {
   const items = useBasketStore((s) => s.items);
+  const savedCards = useBasketStore((s) => s.cards);
   const removeItem = useBasketStore((s) => s.removeItem);
-
-  const savedCards = items
-    .map((id) => sampleCards.find((c) => c.id === id))
-    .filter(Boolean);
 
   return (
     <div
@@ -95,7 +91,7 @@ export default function BasketPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {savedCards.map((card) => {
               if (!card) return null;
-              const theme = sourceThemes[card.source];
+              const theme = sourceThemes[card.source as SourceType];
               return (
                 <div
                   key={card.id}

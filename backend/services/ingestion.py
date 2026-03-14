@@ -37,7 +37,7 @@ def _load_cards_from_supabase(limit: int = 50) -> List[Card]:
     db = get_supabase()
     result = (
         db.table("cards")
-        .select("id,card_title,card_summary,keywords,source,source_url,thumbnail_keyword,trending_score")
+        .select("id,card_title,card_summary,keywords,source,source_url,thumbnail_keyword,image_url,trending_score")
         .order("trending_score", desc=True)
         .limit(limit)
         .execute()

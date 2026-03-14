@@ -7,6 +7,7 @@ export interface Card {
   source: string;
   source_url: string;
   thumbnail_keyword?: string;
+  image_url?: string;
   published_at?: string;
   metadata?: {
     stars?: number;
