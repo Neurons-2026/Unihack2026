@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 from config import get_settings
 from routers import basket, briefing, cards, concepts, graph, interactions
@@ -8,9 +9,16 @@ settings = get_settings()
 
 app = FastAPI(title="10min AI Daily API", version="0.2.0")
 
+cors_origins = []
+if settings.cors_origins:
+    try:
+        cors_origins = json.loads(settings.cors_origins)
+    except:
+        cors_origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[str(origin) for origin in settings.cors_origins] if settings.cors_origins else ["*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
