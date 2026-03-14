@@ -1,9 +1,12 @@
 'use client';
+import { useRouter } from 'next/navigation';
 
 export default function GraphButton() {
+  const router = useRouter();
+
   return (
     <button
-      onClick={() => console.log('navigate to knowledge graph')}
+      onClick={() => router.push('/graph')}
       style={{
         width: '100%',
         padding: 14,
