@@ -16,8 +16,8 @@ SYSTEM_PROMPT = """You generate structured metadata for AI news cards. You will 
 }
 
 Rules:
-- card_title: max 80 chars, no clickbait, plain English, present tense
-- card_summary: max 120 chars — if a technical term is unavoidable, explain it in plain English inline
+- card_title: MUST be under 80 characters. No clickbait, plain English, present tense
+- card_summary: MUST be a COMPLETE sentence that ends naturally with a period. HARD LIMIT: 110 characters. Count your characters carefully before responding. If over 110 characters, rewrite shorter. No jargon — if a technical term is unavoidable, explain it in plain English inline
 - keywords: 3 to 5 items, lowercase, single words or short hyphenated phrases, most specific first
 - thumbnail_keyword: one word, concrete and visual
 - Output valid JSON only — no prose, no markdown fences, no explanation"""
@@ -34,14 +34,22 @@ def _build_user_prompt(item: Dict[str, Any]) -> str:
     return f"Title: {title}\nSource: {source}\n\nContent:\n{cleaned_text}"
 
 
+def _truncate_clean(text: str, max_len: int) -> str:
+    """Truncate to max_len at a word boundary, ending with a period."""
+    if len(text) <= max_len:
+        return text
+    shortened = text[: max_len - 1].rsplit(" ", 1)[0].rstrip(".,;:!? ")
+    return shortened + "."
+
+
 def _parse_card_fields(raw: str) -> Dict[str, Any]:
     """Extract the JSON object from Claude's response."""
     # Strip markdown fences if present
     raw = re.sub(r"```(?:json)?", "", raw).strip()
     data = json.loads(raw)
 
-    card_title = str(data.get("card_title", "")).strip()[:80]
-    card_summary = str(data.get("card_summary", "")).strip()[:120]
+    card_title = _truncate_clean(str(data.get("card_title", "")).strip(), 80)
+    card_summary = _truncate_clean(str(data.get("card_summary", "")).strip(), 120)
 
     keywords: List[str] = [str(k).lower().strip() for k in data.get("keywords", [])]
     keywords = keywords[:5]  # cap at 5
@@ -78,6 +86,11 @@ def generate_card_fields(item: Dict[str, Any]) -> Dict[str, Any]:
 
     raw_response = message.content[0].text
     card_fields = _parse_card_fields(raw_response)
+
+    # If Harry's keywords exist in metadata, use those instead of LLM-generated ones
+    harry_keywords = item.get("metadata", {}).get("keywords", [])
+    if harry_keywords:
+        card_fields["keywords"] = [str(k).lower().strip() for k in harry_keywords[:5]]
 
     item["card"] = card_fields
     return item

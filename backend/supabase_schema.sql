@@ -17,6 +17,49 @@ create table if not exists cards (
   created_at       timestamptz not null default now()
 );
 
+-- Content items (preprocessing output — cleaned data)
+create table if not exists content_items (
+  id                text        primary key,
+  source            text        not null,
+  source_url        text        not null,
+  title             text        not null,
+  raw_content       text,
+  cleaned_text      text,
+  preview_text      text,
+  quality_score     float,
+  quality_notes     text[]      default '{}',
+  enrichment_used   boolean     default false,
+  keywords          text[]      default '{}',
+  pipeline_state    text        not null default 'raw_scraped'
+                    check (pipeline_state in ('raw_scraped','keywords_enriched','preprocessed','card_ready')),
+  fetched_at        timestamptz,
+  created_at        timestamptz not null default now()
+);
+
+-- Original PDFs (e.g. HuggingFace papers)
+create table if not exists paper_pdfs (
+  id                text        primary key,
+  content_item_id   text        references content_items(id) on delete cascade,
+  filename          text        not null,
+  pdf_data          bytea       not null,
+  page_count        int,
+  uploaded_at       timestamptz not null default now()
+);
+
+-- Extracted concepts (Harry's concept extraction output)
+create table if not exists concepts (
+  id                uuid        primary key default gen_random_uuid(),
+  content_item_id   text        not null references content_items(id) on delete cascade,
+  label             text        not null,
+  description       text,
+  why_innovative    text,
+  impact_on_applications text,
+  category          text        check (category in ('technique','architecture','application','dataset','tool','benchmark','theory')),
+  relevance_score   float,
+  created_at        timestamptz not null default now()
+);
+create index if not exists concepts_content_item_idx on concepts(content_item_id);
+
 -- User swipe interactions
 create table if not exists interactions (
   id            uuid        primary key default gen_random_uuid(),
