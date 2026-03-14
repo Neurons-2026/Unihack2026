@@ -41,6 +41,9 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     (dir: string, cardId: string) => {
       const saved = dir === 'right';
 
+      // Increment index immediately for instant next card rendering
+      setCurrentIndex((prev) => prev + 1);
+
       // Play sound
       if (saved) playSaveSound(); else playSkipSound();
 
@@ -67,7 +70,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   );
 
   const handleCardLeftScreen = useCallback(() => {
-    setCurrentIndex((prev) => prev + 1);
+    // Index is already incremented in handleSwipe
   }, []);
 
   const currentCard = filteredCards[currentIndex];

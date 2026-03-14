@@ -12,7 +12,7 @@ export default function SwipeToast({ action, trigger }: Props) {
   useEffect(() => {
     if (trigger === 0) return;
     setVisible(true);
-    const timer = setTimeout(() => setVisible(false), 1500);
+    const timer = setTimeout(() => setVisible(false), 700);
     return () => clearTimeout(timer);
   }, [trigger]);
 
@@ -24,31 +24,34 @@ export default function SwipeToast({ action, trigger }: Props) {
     <div
       style={{
         position: 'absolute',
-        bottom: 20,
+        top: '50%',
         left: '50%',
         transform: visible
-          ? 'translateX(-50%) translateY(0)'
-          : 'translateX(-50%) translateY(20px)',
-        padding: '9px 24px',
-        borderRadius: 30,
-        fontSize: 13,
-        fontWeight: 500,
-        letterSpacing: 0.5,
+          ? 'translateX(-50%) translateY(-50%) scale(1)'
+          : 'translateX(-50%) translateY(-50%) scale(0.8)',
+        padding: '16px 32px',
+        borderRadius: 12,
+        fontSize: 18,
+        fontWeight: 600,
+        letterSpacing: 0.3,
         whiteSpace: 'nowrap',
         pointerEvents: 'none',
-        zIndex: 30,
+        zIndex: 35,
         opacity: visible ? 1 : 0,
-        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        background: isSave ? 'rgba(160,210,175,0.1)' : 'rgba(210,160,160,0.08)',
-        color: isSave ? 'rgba(160,210,175,0.8)' : 'rgba(210,160,160,0.6)',
+        transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        background: isSave ? 'rgba(160,210,175,0.15)' : 'rgba(210,160,160,0.12)',
+        color: isSave ? 'rgba(160,210,175,1)' : 'rgba(210,160,160,0.9)',
         border: isSave
-          ? '0.5px solid rgba(160,210,175,0.12)'
-          : '0.5px solid rgba(210,160,160,0.08)',
+          ? '1px solid rgba(160,210,175,0.2)'
+          : '1px solid rgba(210,160,160,0.15)',
+        boxShadow: isSave
+          ? '0 8px 32px rgba(160,210,175,0.08)'
+          : '0 8px 32px rgba(210,160,160,0.08)',
       }}
     >
-      {isSave ? 'Saved' : 'Skipped'}
+      {isSave ? '✓ Saved' : '✕ Skipped'}
     </div>
   );
 }

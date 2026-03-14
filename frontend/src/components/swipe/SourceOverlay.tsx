@@ -1,5 +1,6 @@
 'use client';
 import { sourceThemes, SourceType } from '@/lib/sourceThemes';
+import LogoIcon from './LogoIcon';
 
 export default function SourceOverlay({ source, date }: { source: SourceType; date: string }) {
   const theme = sourceThemes[source];
@@ -28,9 +29,7 @@ export default function SourceOverlay({ source, date }: { source: SourceType; da
             backgroundColor: theme.dotColor,
           }}
         />
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="1.8" strokeLinecap="round">
-          <path d={theme.iconPath} />
-        </svg>
+        <LogoIcon source={source} size={16} />
         <span style={{ fontSize: 12, fontWeight: 500, color: 'rgba(255,255,255,0.8)' }}>
           {theme.label}
         </span>
