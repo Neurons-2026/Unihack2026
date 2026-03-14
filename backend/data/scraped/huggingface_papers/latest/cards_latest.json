@@ -1,0 +1,62 @@
+[
+  {
+    "id": "huggingface:2603.12255",
+    "card_title": "HF paper: Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training",
+    "card_summary": "Humans perceive and understand real-world spaces through a stream of visual observations. Therefore, the ability to s...",
+    "keywords": [
+      "research"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12255",
+    "thumbnail_keyword": "paper",
+    "trending_score": 1.0
+  },
+  {
+    "id": "huggingface:2603.12180",
+    "card_title": "HF paper: Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections",
+    "card_summary": "Multimodal agents offer a promising path to automating complex document-intensive workflows. Yet, a critical question...",
+    "keywords": [
+      "research"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12180",
+    "thumbnail_keyword": "paper",
+    "trending_score": 0.8
+  },
+  {
+    "id": "huggingface:2603.12201",
+    "card_title": "HF paper: IndexCache: Accelerating Sparse Attention via Cross-Layer Index Reuse",
+    "card_summary": "Long-context agentic workflows have emerged as a defining use case for large language models, making attention effici...",
+    "keywords": [
+      "research"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12201",
+    "thumbnail_keyword": "paper",
+    "trending_score": 0.6
+  },
+  {
+    "id": "huggingface:2603.10178",
+    "card_title": "HF paper: Video-Based Reward Modeling for Computer-Use Agents",
+    "card_summary": "Computer-using agents (CUAs) are becoming increasingly capable; however, it remains difficult to scale evaluation of...",
+    "keywords": [
+      "research"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.10178",
+    "thumbnail_keyword": "paper",
+    "trending_score": 0.4
+  },
+  {
+    "id": "huggingface:2603.12257",
+    "card_title": "HF paper: DreamVideo-Omni: Omni-Motion Controlled Multi-Subject Video Customization with Latent Identity Reinforcement Learning",
+    "card_summary": "While large-scale diffusion models have revolutionized video synthesis, achieving precise control over both multi-sub...",
+    "keywords": [
+      "research"
+    ],
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12257",
+    "thumbnail_keyword": "paper",
+    "trending_score": 0.2
+  }
+]

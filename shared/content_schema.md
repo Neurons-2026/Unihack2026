@@ -31,6 +31,9 @@ Allowed `source` values:
 4. Recommendation owner (Liam): consume `card.keywords`, write `ranking.*`.
 5. Briefing + graph owners (Sunny/Harry): consume `preprocessing.cleaned_text`, `card.*`, metadata.
 
+Pipeline handoff marker:
+- `pipeline_state` in (`raw_scraped`, `keywords_enriched`, `preprocessed`, `card_ready`)
+
 ## Required fields at ingestion completion
 
 - `schema_version` (`"1.0.0"`)
@@ -45,6 +48,7 @@ Allowed `source` values:
 Recommended at ingestion time (if available):
 - `raw_summary`
 - `published_at`
+- `pipeline_state` = `raw_scraped`
 - `provenance.collector`
 - `provenance.collector_version`
 - `provenance.dedupe_key`
@@ -58,9 +62,11 @@ Recommended at ingestion time (if available):
 
 Recommended for better quality:
 - `preprocessing.cleaned_text`
+- `preprocessing.preview_text`
 - `preprocessing.quality_score`
 - `card.thumbnail_keyword`
-- `ranking.trending_score`
+- `ranking.source_rank_score`
+- `ranking.trending_score` (temporary backward-compatible alias)
 
 ## Mapping to database tables
 
@@ -73,6 +79,7 @@ Recommended for better quality:
 - `card.keywords` -> `keywords`
 - `card.thumbnail_keyword` -> `thumbnail_keyword`
 - `preprocessing.cleaned_text` -> `cleaned_text`
+- `preprocessing.preview_text` -> card-prep text view (not DB-required)
 - `preprocessing.quality_score` -> `quality_score`
 - `ranking.trending_score` -> `trending_score`
 
@@ -95,6 +102,7 @@ Recommended for better quality:
   "published_at": "2026-03-13T22:00:00Z",
   "preprocessing": {
     "cleaned_text": "Cleaned and boilerplate-removed text ...",
+    "preview_text": "Short card-ready preview text ...",
     "quality_score": 0.91,
     "quality_notes": ["complete_summary", "source_authoritative"],
     "enrichment_used": false
