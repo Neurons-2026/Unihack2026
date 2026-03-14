@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find e:UniHackUnihack2026 -type f -name *trending* -o -name *paper1* -o -name *paper2* -o -name *concepts.json)",
+      "Bash(find \"/e/UniHack/Unihack2026/test_graph_building/output\"* -name \"knowledge_graph.json\" -type f)",
+      "Bash(python -m test_graph_building.run_graph_incremental)"
+    ]
+  }
+}
