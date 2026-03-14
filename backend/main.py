@@ -1,9 +1,13 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import json
 
 from config import get_settings
-from routers import basket, briefing, cards, concepts, graph, interactions
+from routers import basket, briefing, cards, graph, interactions
+
+logger = logging.getLogger(__name__)
 
 settings = get_settings()
 
@@ -29,7 +33,13 @@ app.include_router(interactions.router, prefix="/api/v1", tags=["interactions"])
 app.include_router(basket.router, prefix="/api/v1", tags=["basket"])
 app.include_router(briefing.router, prefix="/api/v1", tags=["briefing"])
 app.include_router(graph.router, prefix="/api/v1", tags=["graph"])
-app.include_router(concepts.router, prefix="/api/v1", tags=["concepts"])
+
+try:
+    from routers import concepts
+
+    app.include_router(concepts.router, prefix="/api/v1", tags=["concepts"])
+except Exception as exc:
+    logger.warning("Concepts router disabled: %s", exc)
 
 
 @app.get("/health")

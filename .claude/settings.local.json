@@ -6,7 +6,10 @@
       "Bash(pip install:*)",
       "Bash(python -m test_graph_building.run_graph_building)",
       "Bash(python -m backend.scripts.extract_concepts)",
-      "Bash(python -c \":*)"
+      "Bash(python -c \":*)",
+      "Bash(python -m test_graph_building.run_graph_description)",
+      "Bash(python -m test_graph_building.generate_viz test_graph_building/output_general/knowledge_graph.json)",
+      "Bash(python -m test_graph_building.run_graph_llm)"
     ]
   }
 }
