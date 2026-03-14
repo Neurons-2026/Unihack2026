@@ -1,40 +1,50 @@
 'use client';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import TinderCard from 'react-tinder-card';
 import { sampleCards } from '@/data/sampleCards';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { unlockAudio, playSaveSound, playSkipSound } from '@/lib/sounds';
 import CardItem from './CardItem';
 import EmptyState from './EmptyState';
 import SwipeBackground from './SwipeBackground';
+import SwipeIndicator from './SwipeIndicator';
+import GravityCard from './GravityCard';
+
+type RevealState = { dir: 'left' | 'right'; fading: boolean } | null;
 
 export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const [dismissedCardIds, setDismissedCardIds] = useState<string[]>([]);
   const [swipeDir, setSwipeDir] = useState<'left' | 'right' | null>(null);
   const [swipeIntensity, setSwipeIntensity] = useState(0);
-  const pendingSwipeByCardId = useRef<Record<string, 'left' | 'right'>>({})
+  const [reveal, setReveal] = useState<RevealState>(null);
+  const [confirmAction, setConfirmAction] = useState<'save' | 'skip' | null>(null);
+  const revealTimer = useRef<ReturnType<typeof setTimeout>>();
+  const confirmTimer = useRef<ReturnType<typeof setTimeout>>();
   const addItem = useBasketStore((s) => s.addItem);
   const logInteraction = useBasketStore((s) => s.logInteraction);
+  const pendingDir = useRef<'left' | 'right' | null>(null);
 
   const filteredCards = useMemo(
     () =>
       activeTopic === 'All'
         ? sampleCards
-        : sampleCards.filter((c) => c.keywords.some((k) => k.toLowerCase().includes(activeTopic.toLowerCase()))),
-    [activeTopic]
+        : sampleCards.filter((c) =>
+            c.keywords.some((k) => k.toLowerCase().includes(activeTopic.toLowerCase())),
+          ),
+    [activeTopic],
   );
 
   const dismissedLookup = useMemo(() => new Set(dismissedCardIds), [dismissedCardIds]);
 
   const visibleCards = useMemo(
     () => filteredCards.filter((card) => !dismissedLookup.has(card.id)),
-    [filteredCards, dismissedLookup]
+    [filteredCards, dismissedLookup],
   );
 
   useEffect(() => {
     setDismissedCardIds([]);
     setSwipeDir(null);
     setSwipeIntensity(0);
+    setReveal(null);
   }, [activeTopic]);
 
   const audioUnlocked = useRef(false);
@@ -45,43 +55,69 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     }
   }, []);
 
-  const handleSwipe = useCallback(
-    (dir: string, cardId: string) => {
-      if (dir !== 'left' && dir !== 'right') return;
-      pendingSwipeByCardId.current[cardId] = dir;
-
-      const saved = dir === 'right';
-
-      // Play sound
-      if (saved) playSaveSound(); else playSkipSound();
-    },
-    []
-  );
-
-  const handleCardLeftScreen = useCallback(
-    (cardId: string) => {
-      const dir = pendingSwipeByCardId.current[cardId];
-      if (dir) {
-        const saved = dir === 'right';
-        setSwipeDir(null);
-        setSwipeIntensity(0);
-
-        if (saved) {
-          addItem(cardId);
-          logInteraction(cardId, 'save');
-        } else {
-          logInteraction(cardId, 'skip');
-        }
-
-        delete pendingSwipeByCardId.current[cardId];
-      }
-
-      setDismissedCardIds((prev) => (prev.includes(cardId) ? prev : [...prev, cardId]));
-    },
-    [addItem, logInteraction]
-  );
+  const handleDrag = useCallback((offsetX: number) => {
+    const absX = Math.abs(offsetX);
+    if (absX > 10) {
+      const t = Math.min(absX / 600, 1);
+      const intensity = t * (2 - t);
+      setReveal(null);
+      setSwipeDir(offsetX > 0 ? 'right' : 'left');
+      setSwipeIntensity(intensity);
+    } else {
+      setSwipeDir(null);
+      setSwipeIntensity(0);
+    }
+  }, []);
 
   const currentCard = visibleCards[0];
+
+  const handleSwipe = useCallback(
+    (dir: 'left' | 'right') => {
+      pendingDir.current = dir;
+      setSwipeDir(dir);
+      setSwipeIntensity(1);
+      if (dir === 'right') playSaveSound();
+      else playSkipSound();
+    },
+    [],
+  );
+
+  const handleCardLeftScreen = useCallback(() => {
+    if (!currentCard) return;
+    const dir = pendingDir.current;
+    const resolvedDir: 'left' | 'right' = dir ?? 'left';
+    const action: 'save' | 'skip' = resolvedDir === 'right' ? 'save' : 'skip';
+
+    if (resolvedDir === 'right') {
+      addItem(currentCard.id);
+      logInteraction(currentCard.id, 'save');
+    } else {
+      logInteraction(currentCard.id, 'skip');
+    }
+
+    setReveal({ dir: resolvedDir, fading: false });
+    setSwipeDir(null);
+    setSwipeIntensity(0);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setReveal({ dir: resolvedDir, fading: true });
+      });
+    });
+
+    clearTimeout(revealTimer.current);
+    revealTimer.current = setTimeout(() => setReveal(null), 800);
+
+    setConfirmAction(action);
+    clearTimeout(confirmTimer.current);
+    confirmTimer.current = setTimeout(() => setConfirmAction(null), 2000);
+
+    pendingDir.current = null;
+    setDismissedCardIds((prev) =>
+      prev.includes(currentCard.id) ? prev : [...prev, currentCard.id],
+    );
+  }, [currentCard, addItem, logInteraction]);
+
   const nextCard = visibleCards[1];
 
   const cardFrameStyle = {
@@ -111,30 +147,112 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       onTouchStart={handleFirstTouch}
       onMouseDown={handleFirstTouch}
     >
-      {/* Swipe background color feedback */}
-      <SwipeBackground direction={swipeDir} intensity={swipeIntensity} />
-
-      {/* Next card rendered underneath with the same layout as active card */}
+      {/* Next card sits at the bottom of the stack */}
       {nextCard && (
-        <div className="absolute inset-0 z-[2] w-full h-full" style={{ pointerEvents: 'none' }}>
+        <div
+          className="absolute inset-0 z-[1] w-full h-full"
+          style={{
+            pointerEvents: 'none',
+            transform: reveal
+              ? reveal.fading ? 'scale(1)' : 'scale(0.975)'
+              : 'scale(1)',
+            transition: reveal?.fading
+              ? 'transform 0.7s cubic-bezier(0.4,0,0.2,1)'
+              : 'none',
+            transformOrigin: '50% 50%',
+          }}
+        >
           <div style={cardFrameStyle}>
             <CardItem card={nextCard} />
           </div>
         </div>
       )}
 
-      {/* Active swipeable card */}
-      <TinderCard
+      {/* Color wash — z-5, between next card and active card */}
+      <SwipeBackground direction={swipeDir} intensity={swipeIntensity} reveal={reveal} />
+
+      {/* Active card — z-10, on top */}
+      <GravityCard
         key={currentCard.id}
-        onSwipe={(dir) => handleSwipe(dir, currentCard.id)}
-        onCardLeftScreen={() => handleCardLeftScreen(currentCard.id)}
-        preventSwipe={['up', 'down']}
+        onSwipe={handleSwipe}
+        onCardLeftScreen={handleCardLeftScreen}
+        onDrag={handleDrag}
         className="absolute inset-0 z-10 w-full h-full"
       >
         <div style={cardFrameStyle}>
-          <CardItem card={currentCard} />
+          <div style={{ position: 'relative', height: '100%' }}>
+            <CardItem card={currentCard} />
+            <SwipeIndicator direction={swipeDir} intensity={swipeIntensity} />
+          </div>
         </div>
-      </TinderCard>
+      </GravityCard>
+
+      <ConfirmStamp action={confirmAction} />
+    </div>
+  );
+}
+
+function ConfirmStamp({ action }: { action: 'save' | 'skip' | null }) {
+  const [fading, setFading] = useState(false);
+  const [current, setCurrent] = useState<'save' | 'skip' | null>(null);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    if (action) {
+      timers.current.forEach(clearTimeout);
+      timers.current = [];
+      setCurrent(action);
+      setFading(false);
+      timers.current.push(setTimeout(() => setFading(true), 1100));
+      timers.current.push(setTimeout(() => setCurrent(null), 1800));
+    }
+    return () => timers.current.forEach(clearTimeout);
+  }, [action]);
+
+  if (!current) return null;
+
+  const isSave = current === 'save';
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        inset: '10px 10px 16px',
+        zIndex: 8,
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: fading ? 0 : 1,
+        transform: fading ? 'scale(1.15)' : 'scale(1)',
+        transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+      }}
+    >
+      <div
+        style={{
+          width: 56,
+          height: 56,
+          borderRadius: '50%',
+          background: isSave ? 'rgba(74,222,128,0.88)' : 'rgba(248,113,113,0.88)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: isSave
+            ? '0 0 40px rgba(74,222,128,0.3)'
+            : '0 0 40px rgba(248,113,113,0.3)',
+        }}
+      >
+        {isSave ? (
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        ) : (
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        )}
+      </div>
     </div>
   );
 }
