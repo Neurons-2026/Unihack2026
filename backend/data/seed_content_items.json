@@ -1,0 +1,729 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-001",
+    "source": "github",
+    "source_url": "https://github.com/microsoft/BitNet",
+    "title": "microsoft/BitNet",
+    "raw_summary": "Official inference framework for 1-bit LLMs.",
+    "raw_content": "BitNet provides an inference framework focused on efficient 1-bit large language model inference on CPU and GPU.",
+    "metadata": {
+      "repo": "microsoft/BitNet",
+      "signal_type": "github_trending",
+      "freshness_basis": "trending_rank_freshness"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "BitNet focuses on efficient 1-bit LLM inference with optimized kernels for practical deployment.",
+      "quality_score": 0.93,
+      "quality_notes": ["official_repo", "clear_readme"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "BitNet pushes efficient 1-bit LLM inference",
+      "card_summary": "Microsoft's BitNet framework targets faster, lower-cost LLM inference on common hardware.",
+      "keywords": ["llm", "inference", "efficiency"],
+      "thumbnail_keyword": "chips"
+    },
+    "ranking": {
+      "trending_score": 0.98
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "github:microsoft/BitNet"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-002",
+    "source": "github",
+    "source_url": "https://github.com/langflow-ai/openrag",
+    "title": "langflow-ai/openrag",
+    "raw_summary": "Comprehensive RAG platform built on Langflow, Docling, and OpenSearch.",
+    "raw_content": "OpenRAG bundles ingestion, retrieval, and orchestration components into a single package for RAG workflows.",
+    "metadata": {
+      "repo": "langflow-ai/openrag",
+      "signal_type": "github_trending",
+      "freshness_basis": "trending_rank_freshness"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "OpenRAG provides an integrated RAG stack for teams that want faster setup and experimentation.",
+      "quality_score": 0.91,
+      "quality_notes": ["clear_value_prop"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "OpenRAG packages the RAG stack in one place",
+      "card_summary": "A unified toolkit for building retrieval-augmented apps without stitching many tools manually.",
+      "keywords": ["rag", "retrieval", "tooling"],
+      "thumbnail_keyword": "search"
+    },
+    "ranking": {
+      "trending_score": 0.93
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "github:langflow-ai/openrag"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-003",
+    "source": "github",
+    "source_url": "https://github.com/lightpanda-io/browser",
+    "title": "lightpanda-io/browser",
+    "raw_summary": "Headless browser designed for AI and automation.",
+    "raw_content": "Lightpanda Browser targets automation workloads with a headless browser focused on performance and AI use cases.",
+    "metadata": {
+      "repo": "lightpanda-io/browser",
+      "signal_type": "github_trending",
+      "freshness_basis": "trending_rank_freshness"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "Lightpanda aims to make browser-based automation faster and lighter for agent workflows.",
+      "quality_score": 0.89,
+      "quality_notes": ["automation_relevance"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "Lightpanda targets faster browser automation",
+      "card_summary": "A headless browser project tuned for AI agents and scripted web tasks.",
+      "keywords": ["browser", "automation", "agents"],
+      "thumbnail_keyword": "robot"
+    },
+    "ranking": {
+      "trending_score": 0.9
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "github:lightpanda-io/browser"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-004",
+    "source": "github",
+    "source_url": "https://github.com/obra/superpowers",
+    "title": "obra/superpowers",
+    "raw_summary": "An agentic skills framework and software development methodology.",
+    "raw_content": "Superpowers proposes reusable skills and workflows for building with coding agents.",
+    "metadata": {
+      "repo": "obra/superpowers",
+      "signal_type": "github_trending",
+      "freshness_basis": "trending_rank_freshness"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "Superpowers focuses on process and reusable skills for agent-driven software work.",
+      "quality_score": 0.87,
+      "quality_notes": ["agentic_framework"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "Superpowers offers an agentic skill framework",
+      "card_summary": "A framework aiming to make AI-assisted software workflows more repeatable.",
+      "keywords": ["agentic", "workflow", "developer-tools"],
+      "thumbnail_keyword": "playbook"
+    },
+    "ranking": {
+      "trending_score": 0.86
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "github:obra/superpowers"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-005",
+    "source": "github",
+    "source_url": "https://github.com/public-apis/public-apis",
+    "title": "public-apis/public-apis",
+    "raw_summary": "A community-curated list of free APIs.",
+    "raw_content": "This repository aggregates publicly available APIs across many categories for rapid prototyping.",
+    "metadata": {
+      "repo": "public-apis/public-apis",
+      "signal_type": "github_trending",
+      "freshness_basis": "trending_rank_freshness",
+      "note": "Input URL was corrected from a concatenated duplicate link"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "Public APIs remains a practical starter index when building demos quickly.",
+      "quality_score": 0.84,
+      "quality_notes": ["high_utility_reference"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "Public APIs repo stays a practical launchpad",
+      "card_summary": "A large community list of free APIs useful for hackathon and prototype builds.",
+      "keywords": ["apis", "resources", "prototyping"],
+      "thumbnail_keyword": "catalog"
+    },
+    "ranking": {
+      "trending_score": 0.82
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "github:public-apis/public-apis"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-006",
+    "source": "github",
+    "source_url": "https://github.com/promptfoo/promptfoo",
+    "title": "promptfoo/promptfoo",
+    "raw_summary": "Prompt and agent testing, red teaming, and eval toolkit.",
+    "raw_content": "Promptfoo provides testing and security evaluation workflows for prompts, agents, and RAG systems.",
+    "metadata": {
+      "repo": "promptfoo/promptfoo",
+      "signal_type": "github_trending",
+      "freshness_basis": "trending_rank_freshness"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "Promptfoo helps teams evaluate quality and safety before deploying LLM features.",
+      "quality_score": 0.92,
+      "quality_notes": ["security_relevant", "production_relevant"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "Promptfoo emphasizes testing and red teaming",
+      "card_summary": "A toolkit for evaluating prompt, agent, and RAG behavior before production use.",
+      "keywords": ["evaluation", "safety", "rag"],
+      "thumbnail_keyword": "shield"
+    },
+    "ranking": {
+      "trending_score": 0.94
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "github:promptfoo/promptfoo"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-007",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12255",
+    "title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training",
+    "raw_summary": "Streaming spatial intelligence with test-time training over long video context.",
+    "raw_content": "The paper proposes Spatial-TTT to maintain and update spatial evidence over long video sequences.",
+    "metadata": {
+      "paper_id": "2603.12255",
+      "published_on": "2026-03-12",
+      "hf_signal": "paper_of_the_day"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-12T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "Spatial-TTT introduces test-time adaptation to improve long-horizon spatial understanding in videos.",
+      "quality_score": 0.93,
+      "quality_notes": ["clear_abstract", "fresh_signal"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "Spatial-TTT improves long video scene understanding",
+      "card_summary": "A new method adapts at test time to better track spatial context in long videos.",
+      "keywords": ["vision", "video", "spatial-reasoning"],
+      "thumbnail_keyword": "map"
+    },
+    "ranking": {
+      "trending_score": 0.95
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.12255"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-008",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12201",
+    "title": "IndexCache: Accelerating Sparse Attention via Cross-Layer Index Reuse",
+    "raw_summary": "Sparse attention acceleration by reusing token indices across layers.",
+    "raw_content": "IndexCache reduces repeated sparse-index computation and improves long-context inference speed.",
+    "metadata": {
+      "paper_id": "2603.12201",
+      "published_on": "2026-03-12",
+      "hf_signal": "paper_of_the_day"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-12T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "IndexCache reuses sparse attention indices across layers for faster long-context model serving.",
+      "quality_score": 0.92,
+      "quality_notes": ["clear_speedup_claim", "fresh_signal"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "IndexCache cuts sparse attention overhead",
+      "card_summary": "A method that reuses index selections across layers to speed up long-context LLM runs.",
+      "keywords": ["attention", "inference", "optimization"],
+      "thumbnail_keyword": "speed"
+    },
+    "ranking": {
+      "trending_score": 0.93
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.12201"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-009",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.10178",
+    "title": "Video-Based Reward Modeling for Computer-Use Agents",
+    "raw_summary": "Reward modeling from execution videos for evaluating computer-use agents.",
+    "raw_content": "The work proposes video-based reward modeling to evaluate if computer agents complete user goals.",
+    "metadata": {
+      "paper_id": "2603.10178",
+      "published_on": "2026-03-10",
+      "hf_signal": "paper_of_the_day"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-10T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "A video-only reward model helps score agent trajectories across multiple operating systems.",
+      "quality_score": 0.91,
+      "quality_notes": ["agent_eval_relevance"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "Video reward models improve agent evaluation",
+      "card_summary": "This paper scores computer-use agents from screen video, enabling scalable evaluation.",
+      "keywords": ["agents", "evaluation", "reward-models"],
+      "thumbnail_keyword": "desktop"
+    },
+    "ranking": {
+      "trending_score": 0.9
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.10178"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-010",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12247",
+    "title": "Trust Your Critic: Robust Reward Modeling and Reinforcement Learning for Faithful Image Editing and Generation",
+    "raw_summary": "Reward modeling framework for more faithful image editing and generation.",
+    "raw_content": "FIRM introduces reward models and benchmarks to improve instruction adherence in image workflows.",
+    "metadata": {
+      "paper_id": "2603.12247",
+      "published_on": "2026-03-12"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-12T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "FIRM proposes stronger reward critics for image editing and text-to-image generation.",
+      "quality_score": 0.89,
+      "quality_notes": ["benchmark_included"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "FIRM improves reliability in image generation",
+      "card_summary": "A reward-modeling framework aims to reduce hallucinated edits and improve instruction following.",
+      "keywords": ["image-generation", "rl", "reward-models"],
+      "thumbnail_keyword": "camera"
+    },
+    "ranking": {
+      "trending_score": 0.88
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.12247"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-011",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12180",
+    "title": "Strategic Navigation or Stochastic Search? How Agents and Humans Reason Over Document Collections",
+    "raw_summary": "Benchmarking whether document agents reason strategically or rely on brute-force search.",
+    "raw_content": "MADQA benchmark evaluates multimodal document agents on reasoning quality and effort trade-offs.",
+    "metadata": {
+      "paper_id": "2603.12180",
+      "published_on": "2026-03-12"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-12T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "MADQA shows many agents still depend on expensive search instead of strategic planning.",
+      "quality_score": 0.9,
+      "quality_notes": ["benchmark", "agent_research"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "MADQA tests real document reasoning in agents",
+      "card_summary": "The benchmark measures whether agents reason strategically, not just search repeatedly.",
+      "keywords": ["agents", "benchmark", "reasoning"],
+      "thumbnail_keyword": "documents"
+    },
+    "ranking": {
+      "trending_score": 0.87
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.12180"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-012",
+    "source": "huggingface",
+    "source_url": "https://huggingface.co/papers/2603.12257",
+    "title": "DreamVideo-Omni: Omni-Motion Controlled Multi-Subject Video Customization with Latent Identity Reinforcement Learning",
+    "raw_summary": "Unified framework for multi-subject video customization with motion control.",
+    "raw_content": "DreamVideo-Omni introduces staged training for stronger motion control and identity preservation in video generation.",
+    "metadata": {
+      "paper_id": "2603.12257",
+      "published_on": "2026-03-12"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-12T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "DreamVideo-Omni combines motion control and identity consistency for customized video outputs.",
+      "quality_score": 0.88,
+      "quality_notes": ["video_generation"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "DreamVideo-Omni improves controlled video generation",
+      "card_summary": "A new framework aims for better multi-subject identity and motion control in videos.",
+      "keywords": ["video-generation", "diffusion", "control"],
+      "thumbnail_keyword": "film"
+    },
+    "ranking": {
+      "trending_score": 0.86
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "huggingface:2603.12257"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-013",
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/designing-agents-to-resist-prompt-injection/",
+    "title": "Designing AI agents to resist prompt injection",
+    "raw_summary": "OpenAI explains defenses against prompt injection and social engineering attacks.",
+    "raw_content": "The post outlines system-level mitigations, confirmation flows, and safety design for agent actions.",
+    "metadata": {
+      "published_on": "2026-03-11",
+      "content_type": "security_blog"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-11T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "OpenAI frames prompt injection as social engineering and recommends layered safeguards.",
+      "quality_score": 0.95,
+      "quality_notes": ["official_source", "fresh_within_30_days"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "OpenAI shares practical defenses for prompt injection",
+      "card_summary": "Guidance on limiting risky agent actions even when malicious prompts slip through.",
+      "keywords": ["security", "agents", "prompt-injection"],
+      "thumbnail_keyword": "lock"
+    },
+    "ranking": {
+      "trending_score": 0.94
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "openai:designing-agents-to-resist-prompt-injection"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-014",
+    "source": "openai_blog",
+    "source_url": "https://openai.com/index/equip-responses-api-computer-environment/",
+    "title": "From model to agent: Equipping the Responses API with a computer environment",
+    "raw_summary": "OpenAI introduces agent-building primitives around a computer environment for Responses API.",
+    "raw_content": "The post describes shell tools, orchestration loops, context management, and agent skills.",
+    "metadata": {
+      "published_on": "2026-03-11",
+      "content_type": "engineering_blog"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-11T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "OpenAI explains building blocks for developer agents, including tools and orchestration patterns.",
+      "quality_score": 0.94,
+      "quality_notes": ["official_source", "fresh_within_30_days"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "OpenAI details computer-use primitives for agents",
+      "card_summary": "A new engineering post breaks down tools and patterns for task-oriented API agents.",
+      "keywords": ["api", "agents", "developer-tools"],
+      "thumbnail_keyword": "terminal"
+    },
+    "ranking": {
+      "trending_score": 0.93
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "openai:equip-responses-api-computer-environment"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-015",
+    "source": "anthropic_blog",
+    "source_url": "https://www.anthropic.com/news/claude-partner-network",
+    "title": "Anthropic invests $100 million into the Claude Partner Network",
+    "raw_summary": "Anthropic launches a partner program with funding, training, and certification.",
+    "raw_content": "The announcement describes enterprise partner support and go-to-market investment.",
+    "metadata": {
+      "published_on": "2026-03-12",
+      "content_type": "announcement"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-12T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "Anthropic announced a partner ecosystem push to expand enterprise Claude adoption.",
+      "quality_score": 0.93,
+      "quality_notes": ["official_source", "fresh_within_30_days"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "Anthropic expands enterprise partner ecosystem",
+      "card_summary": "A new partner network adds funding and certification to scale Claude deployment.",
+      "keywords": ["enterprise", "partnerships", "claude"],
+      "thumbnail_keyword": "network"
+    },
+    "ranking": {
+      "trending_score": 0.9
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "anthropic:claude-partner-network"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-016",
+    "source": "anthropic_blog",
+    "source_url": "https://www.anthropic.com/news/the-anthropic-institute",
+    "title": "Introducing The Anthropic Institute",
+    "raw_summary": "Anthropic launches an institute focused on societal challenges from advanced AI.",
+    "raw_content": "The post introduces a research effort to inform public understanding of powerful AI impacts.",
+    "metadata": {
+      "published_on": "2026-03-11",
+      "content_type": "announcement"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-11T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "The Anthropic Institute is framed as a public-interest effort around AI transition risks.",
+      "quality_score": 0.91,
+      "quality_notes": ["official_source", "fresh_within_30_days"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "Anthropic launches institute on AI societal impact",
+      "card_summary": "A new institute will publish analysis on major social challenges from advanced AI.",
+      "keywords": ["ai-policy", "safety", "research"],
+      "thumbnail_keyword": "institution"
+    },
+    "ranking": {
+      "trending_score": 0.88
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "anthropic:the-anthropic-institute"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-017",
+    "source": "arxiv_cs_ai",
+    "source_url": "https://arxiv.org/abs/2603.12246",
+    "title": "Examining Reasoning LLMs-as-Judges in Non-Verifiable LLM Post-Training",
+    "raw_summary": "Study on using reasoning LLM judges in non-verifiable post-training settings.",
+    "raw_content": "The paper analyzes behavior and limitations of reasoning-based LLM judges when supervision is hard to verify.",
+    "metadata": {
+      "arxiv_id": "2603.12246",
+      "subjects": ["cs.AI", "cs.CL", "cs.LG"],
+      "listed_date": "2026-03-13"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-13T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "This work studies where LLM-as-judge methods are reliable and where they may mislead training.",
+      "quality_score": 0.89,
+      "quality_notes": ["fresh_arxiv_listing"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "New analysis probes LLM-as-judge reliability",
+      "card_summary": "Researchers examine judge-model behavior when post-training outcomes are hard to verify.",
+      "keywords": ["llm-evals", "post-training", "research"],
+      "thumbnail_keyword": "gavel"
+    },
+    "ranking": {
+      "trending_score": 0.86
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "arxiv:2603.12246"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-018",
+    "source": "arxiv_cs_ai",
+    "source_url": "https://arxiv.org/abs/2603.12224",
+    "title": "Portfolio of Solving Strategies in CEGAR-based Object Packing and Scheduling for Sequential 3D Printing",
+    "raw_summary": "CEGAR-based strategy portfolio for object packing and scheduling in sequential 3D printing.",
+    "raw_content": "The paper presents algorithmic strategies for planning packing and scheduling steps in sequential 3D printing.",
+    "metadata": {
+      "arxiv_id": "2603.12224",
+      "subjects": ["cs.AI"],
+      "listed_date": "2026-03-13"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-13T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "A planning-focused AI paper explores strategy portfolios for constrained 3D printing workflows.",
+      "quality_score": 0.81,
+      "quality_notes": ["fresh_arxiv_listing", "specialized_topic"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "AI planning methods target sequential 3D printing",
+      "card_summary": "A strategy portfolio approach aims to improve packing and scheduling decisions.",
+      "keywords": ["planning", "optimization", "3d-printing"],
+      "thumbnail_keyword": "printer"
+    },
+    "ranking": {
+      "trending_score": 0.74
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "arxiv:2603.12224"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-019",
+    "source": "deepmind_blog",
+    "source_url": "https://deepmind.google/blog/10-years-of-alphago/",
+    "title": "From games to biology and beyond: 10 years of AlphaGo's impact",
+    "raw_summary": "DeepMind reflects on AlphaGo's decade-long impact across AI research domains.",
+    "raw_content": "The post reviews AlphaGo-era ideas and their influence on broader machine learning progress.",
+    "metadata": {
+      "published_on": "2026-03-10",
+      "content_type": "research_blog"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-10T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "DeepMind links AlphaGo advances to later progress in research and scientific applications.",
+      "quality_score": 0.9,
+      "quality_notes": ["official_source", "fresh_within_30_days"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "DeepMind marks 10 years since AlphaGo",
+      "card_summary": "A retrospective connects AlphaGo breakthroughs to wider AI and science progress.",
+      "keywords": ["deepmind", "history", "research"],
+      "thumbnail_keyword": "go-board"
+    },
+    "ranking": {
+      "trending_score": 0.85
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "deepmind:10-years-of-alphago"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "id": "seed-ci-020",
+    "source": "deepmind_blog",
+    "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-lite/",
+    "title": "Gemini 3.1 Flash-Lite: Built for intelligence at scale",
+    "raw_summary": "Google introduces Gemini 3.1 Flash-Lite focused on speed and cost efficiency.",
+    "raw_content": "The announcement positions Gemini 3.1 Flash-Lite as a fast, cost-efficient model for high-volume workloads.",
+    "metadata": {
+      "published_on": "2026-03-03",
+      "content_type": "model_announcement",
+      "publisher": "Google"
+    },
+    "fetched_at": "2026-03-14T01:00:00Z",
+    "published_at": "2026-03-03T00:00:00Z",
+    "preprocessing": {
+      "cleaned_text": "Gemini 3.1 Flash-Lite emphasizes lower latency and pricing for scaled developer use cases.",
+      "quality_score": 0.9,
+      "quality_notes": ["fresh_within_30_days"],
+      "enrichment_used": false
+    },
+    "card": {
+      "card_title": "Gemini 3.1 Flash-Lite targets low-cost high-volume use",
+      "card_summary": "Google's new model focuses on speed and lower cost for frequent application workloads.",
+      "keywords": ["gemini", "model-release", "cost-efficiency"],
+      "thumbnail_keyword": "flash"
+    },
+    "ranking": {
+      "trending_score": 0.89
+    },
+    "provenance": {
+      "collector": "seed_manual_curation",
+      "collector_version": "0.1.0",
+      "normalizer_version": "0.1.0",
+      "dedupe_key": "deepmind:gemini-3-1-flash-lite"
+    }
+  }
+]
