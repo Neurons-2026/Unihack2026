@@ -1,7 +1,9 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import { useBasketStore } from '@/stores/useBasketStore';
 
 export default function EmptyState() {
+  const router = useRouter();
   const count = useBasketStore((s) => s.items.length);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 4 }}>
@@ -12,7 +14,7 @@ export default function EmptyState() {
       <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.3)' }}>You've reviewed all today's signals</p>
       {count >= 1 ? (
         <button
-          onClick={() => console.log('navigate to briefing')}
+          onClick={() => router.push('/briefing')}
           style={{
             marginTop: 24,
             padding: '12px 24px',
