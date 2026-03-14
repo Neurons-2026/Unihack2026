@@ -32,7 +32,7 @@
       "collector_version": "0.2.0",
       "dedupe_key": "anthropic:where-stand-department-war"
     },
-    "fetched_at": "2026-03-14T03:52:26.716971+00:00"
+    "fetched_at": "2026-03-14T04:03:40.406824+00:00"
   },
   {
     "schema_version": "1.0.0",
@@ -67,7 +67,7 @@
       "collector_version": "0.2.0",
       "dedupe_key": "anthropic:statement-comments-secretary-war"
     },
-    "fetched_at": "2026-03-14T03:52:26.719240+00:00"
+    "fetched_at": "2026-03-14T04:03:40.409136+00:00"
   },
   {
     "schema_version": "1.0.0",
@@ -102,7 +102,7 @@
       "collector_version": "0.2.0",
       "dedupe_key": "anthropic:statement-department-of-war"
     },
-    "fetched_at": "2026-03-14T03:52:26.719659+00:00"
+    "fetched_at": "2026-03-14T04:03:40.409661+00:00"
   },
   {
     "schema_version": "1.0.0",
@@ -137,7 +137,7 @@
       "collector_version": "0.2.0",
       "dedupe_key": "anthropic:claude-sonnet-4-6"
     },
-    "fetched_at": "2026-03-14T03:52:26.720184+00:00"
+    "fetched_at": "2026-03-14T04:03:40.410100+00:00"
   },
   {
     "schema_version": "1.0.0",
@@ -172,6 +172,6 @@
       "collector_version": "0.2.0",
       "dedupe_key": "anthropic:claude-is-a-space-to-think"
     },
-    "fetched_at": "2026-03-14T03:52:26.721258+00:00"
+    "fetched_at": "2026-03-14T04:03:40.411201+00:00"
   }
 ]

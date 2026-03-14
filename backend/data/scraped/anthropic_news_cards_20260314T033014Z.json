@@ -25,23 +25,5 @@
     "source": "anthropic_blog",
     "source_url": "https://www.anthropic.com/news/statement-department-of-war",
     "thumbnail_keyword": "anthropic_blog"
-  },
-  {
-    "id": "anthropic_blog:claude-sonnet-4-6",
-    "card_title": "Claude Sonnet 4.6 is our most capable Sonnet model yet",
-    "card_summary": "Claude Sonnet 4.6 is our most capable Sonnet model yet .",
-    "keywords": [],
-    "source": "anthropic_blog",
-    "source_url": "https://www.anthropic.com/news/claude-sonnet-4-6",
-    "thumbnail_keyword": "anthropic_blog"
-  },
-  {
-    "id": "anthropic_blog:claude-is-a-space-to-think",
-    "card_title": "There are many good places for advertising",
-    "card_summary": "There are many good places for advertising.",
-    "keywords": [],
-    "source": "anthropic_blog",
-    "source_url": "https://www.anthropic.com/news/claude-is-a-space-to-think",
-    "thumbnail_keyword": "anthropic_blog"
   }
 ]

@@ -5,6 +5,8 @@ from pathlib import Path
 
 from services.scrapers.huggingface_papers import scrape_huggingface_papers
 
+SOURCE_SLUG = "huggingface_papers"
+
 
 def to_card_view(items: list[dict]) -> list[dict]:
     cards: list[dict] = []
@@ -44,27 +46,33 @@ def main() -> None:
     )
     parser.add_argument(
         "--pdf-dir",
-        default="data/scraped/pdfs/huggingface",
-        help="PDF directory relative to backend/.",
+        default="",
+        help="Optional PDF directory relative to backend/. If omitted, a date-scoped folder is used.",
     )
     args = parser.parse_args()
+
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    date_key = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    root_dir = Path(args.output_dir)
+    run_dir = root_dir / SOURCE_SLUG / date_key
+    latest_dir = root_dir / SOURCE_SLUG / "latest"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    latest_dir.mkdir(parents=True, exist_ok=True)
+
+    pdf_dir = Path(args.pdf_dir) if args.pdf_dir else (run_dir / "pdfs")
 
     items = scrape_huggingface_papers(
         limit=args.limit,
         download_pdfs=not args.no_pdf,
         max_pdf_downloads=args.pdf_limit,
-        pdf_dir=args.pdf_dir,
+        pdf_dir=pdf_dir,
     )
     cards = to_card_view(items)
-
-    out_dir = Path(args.output_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    content_items_path = out_dir / f"huggingface_papers_content_items_{stamp}.json"
-    cards_path = out_dir / f"huggingface_papers_cards_{stamp}.json"
-    latest_content_items_path = out_dir / "huggingface_papers_content_items_latest.json"
-    latest_cards_path = out_dir / "huggingface_papers_cards_latest.json"
+    content_items_path = run_dir / f"content_items_{stamp}.json"
+    cards_path = run_dir / f"cards_{stamp}.json"
+    latest_content_items_path = latest_dir / "content_items_latest.json"
+    latest_cards_path = latest_dir / "cards_latest.json"
 
     content_items_json = json.dumps(items, indent=2, ensure_ascii=True)
     cards_json = json.dumps(cards, indent=2, ensure_ascii=True)
