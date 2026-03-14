@@ -1,0 +1,55 @@
+{
+  "source_file": "github:msitarzewski/agency-agents",
+  "source_title": "The Agency: AI Specialists Ready to Transform Your Workflow",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "specialized ai agent personas",
+      "description": "Instead of one generic AI assistant, this system creates dozens of distinct AI 'characters', each with a unique job title, personality, communication style, and area of expertise — like having a team of specialists rather than one generalist.",
+      "why_innovative": "This moves AI assistants beyond generic chat toward role-specific, personality-driven experts that consistently behave and deliver outputs matching a defined professional domain, dramatically improving task relevance and output quality.",
+      "impact_on_applications": "Tools like coding assistants, marketing platforms, or customer support bots could behave like a seasoned specialist rather than a generic helper — for example, a security-focused AI that always thinks like a hacker when reviewing code, or a marketing AI that always writes in a brand's exact voice.",
+      "category": "architecture",
+      "relevance_score": 0.97
+    },
+    {
+      "label": "multi-agent orchestration",
+      "description": "A coordination layer that lets multiple specialized AI agents work together on a single complex project, with one 'conductor' agent delegating tasks to the right specialist agents at the right time.",
+      "why_innovative": "This enables AI systems to tackle multi-step, cross-disciplinary projects (e.g., building and marketing a product simultaneously) that no single AI agent could handle well alone, mirroring how real human teams operate.",
+      "impact_on_applications": "Businesses could automate entire workflows — from writing code to testing it to drafting documentation to posting about it on social media — all coordinated automatically, saving days of manual handoff work between departments.",
+      "category": "architecture",
+      "relevance_score": 0.93
+    },
+    {
+      "label": "deliverable-focused agent design",
+      "description": "Each AI agent is defined not just by what it knows, but by the specific, concrete outputs it is expected to produce — like actual working code, filled-out templates, or measurable campaign metrics — rather than just conversational responses.",
+      "why_innovative": "Anchoring AI agents to real, measurable deliverables bridges the gap between AI-generated text and production-ready work, making AI outputs directly usable in professional workflows without heavy human editing.",
+      "impact_on_applications": "A developer using one of these agents gets a working React component, not just advice about how to build one; a marketer gets a fully drafted ad campaign, not just suggestions — directly speeding up real-world work.",
+      "category": "technique",
+      "relevance_score": 0.91
+    },
+    {
+      "label": "cross-tool agent portability",
+      "description": "A scripting system that automatically reformats the same AI agent definitions so they can be installed and used inside different popular developer tools (Cursor, GitHub Copilot, Aider, Windsurf, etc.) without rewriting anything.",
+      "why_innovative": "This solves the fragmentation problem where AI workflows built for one tool are locked to that tool, allowing teams to adopt specialized agents regardless of which AI-powered coding or productivity environment they prefer.",
+      "impact_on_applications": "Developer teams that use different coding tools can share the same set of expert AI agents across their whole organization, meaning everyone benefits from the same specialized behavior no matter their personal tool preference.",
+      "category": "tool",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "domain-specific agent taxonomy",
+      "description": "A structured catalog that organizes AI agents into logical professional divisions — engineering, design, marketing, sales, etc. — mirroring how a real company is organized, so users can quickly find and deploy the right expert for any task.",
+      "why_innovative": "Providing a pre-built, role-mapped library of agents dramatically lowers the barrier to adopting AI workflows, replacing the time-consuming trial-and-error of crafting effective prompts from scratch.",
+      "impact_on_applications": "Small businesses or solo founders could instantly access the equivalent of a full professional team — running ad campaigns, reviewing code for security flaws, and managing customer support — all through purpose-built AI agents without hiring specialists.",
+      "category": "application",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "agentic identity and trust",
+      "description": "A dedicated agent type that manages authentication (proving who an AI agent is), authorization (what it's allowed to do), and audit trails (a log of everything it did) when multiple AI agents interact with each other or with real systems.",
+      "why_innovative": "As AI agents begin taking real-world actions — processing payments, modifying code, sending communications — having a trust and identity layer prevents unauthorized or accidental actions, making autonomous AI safe enough to use in production.",
+      "impact_on_applications": "This could make it safe for businesses to deploy AI agents that autonomously pay invoices or access sensitive data, because every action is verified and logged — similar to how banks verify transactions before processing them.",
+      "category": "technique",
+      "relevance_score": 0.83
+    }
+  ]
+}

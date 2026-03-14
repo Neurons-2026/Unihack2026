@@ -1,7 +1,8 @@
 """
-Full ingestion pipeline: Scrape → Preprocess → Generate Cards → Extract Concepts → Store to DB.
+Full ingestion pipeline: Scrape → Preprocess → Extract Concepts → Generate Cards → Store to DB.
 
 Orchestrates existing services into a single end-to-end flow.
+Concepts are extracted first so that card generation can use concept labels as keywords.
 """
 
 import json
@@ -23,6 +24,7 @@ from services.enrichment import enrich_if_needed
 from services.card_generation import generate_card_fields
 from services.concept_extraction import (
     process_pdf,
+    extract_concepts_from_content_item,
     result_to_dict,
     save_result,
     CONCEPTS_DIR,
@@ -178,62 +180,115 @@ def preprocess_all(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 # ---------------------------------------------------------------------------
-# Step 3: Generate card fields via Claude
+# Step 3: Extract concepts from all items (PDFs use full text, others use cleaned text)
 # ---------------------------------------------------------------------------
 
-def generate_cards(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Generate card_title, card_summary, keywords, thumbnail_keyword for each item."""
-    for i, item in enumerate(items):
-        logger.info(f"Generating card {i + 1}/{len(items)}: {item.get('title', '')[:60]}")
-        try:
-            generate_card_fields(item)
-            item["pipeline_state"] = "card_ready"
-        except Exception:
-            logger.exception(f"Card generation failed for {item.get('id')}")
-    ready = sum(1 for i in items if i.get("pipeline_state") == "card_ready")
-    logger.info(f"Card generation complete: {ready}/{len(items)} ready")
-    return items
-
-
-# ---------------------------------------------------------------------------
-# Step 4: Extract concepts from PDFs
-# ---------------------------------------------------------------------------
-
-def extract_concepts_from_pdfs(
+def extract_all_concepts(
     items: list[dict[str, Any]],
     model: str = "claude-sonnet-4-6",
     skip_existing: bool = True,
-) -> list[dict[str, Any]]:
-    """Extract concepts from any items that have downloaded PDFs."""
-    concept_results = []
-    for item in items:
+) -> tuple[list[dict[str, Any]], dict[str, list[str]]]:
+    """
+    Extract concepts from all content items.
+
+    - Items with PDFs: extract from the full PDF text (richer content).
+    - Items without PDFs: extract from preprocessed cleaned_text.
+
+    Returns:
+        concept_results: List of concept extraction result dicts.
+        concepts_by_item: Mapping of item_id -> list of concept labels.
+    """
+    concept_results: list[dict[str, Any]] = []
+    concepts_by_item: dict[str, list[str]] = {}
+
+    for i, item in enumerate(items):
+        item_id = item.get("id", "")
+        logger.info(
+            f"Concept extraction {i + 1}/{len(items)}: {item.get('title', '')[:60]}"
+        )
+
+        # Check if this item has a PDF
         pdf_path = (item.get("metadata") or {}).get("pdf_path", "")
-        if not pdf_path:
-            continue
+        pdf_file = Path(pdf_path) if pdf_path else None
 
-        pdf_file = Path(pdf_path)
-        if not pdf_file.exists():
-            continue
+        if pdf_file and pdf_file.exists():
+            # PDF available — check if already extracted
+            stem = pdf_file.stem
+            existing = CONCEPTS_DIR / f"{stem}_concepts.json"
+            if skip_existing and existing.exists():
+                logger.info(f"  Using cached concepts for {stem}")
+                with open(existing, "r", encoding="utf-8") as f:
+                    result_dict = json.load(f)
+                concept_results.append(result_dict)
+                concepts_by_item[item_id] = [
+                    c["label"] for c in result_dict.get("concepts", [])
+                ]
+                continue
 
-        # Check if concepts already extracted
-        stem = pdf_file.stem
-        existing = CONCEPTS_DIR / f"{stem}_concepts.json"
-        if skip_existing and existing.exists():
-            logger.info(f"Skipping concept extraction for {stem} (already exists)")
-            with open(existing, "r", encoding="utf-8") as f:
-                concept_results.append(json.load(f))
-            continue
+            # Extract from PDF
+            try:
+                result = process_pdf(pdf_file, model=model)
+                save_result(result, CONCEPTS_DIR)
+                result_dict = result_to_dict(result)
+                concept_results.append(result_dict)
+                concepts_by_item[item_id] = [c.label for c in result.concepts]
+            except Exception:
+                logger.exception(f"  PDF concept extraction failed for {pdf_file.name}")
+        else:
+            # No PDF — extract from preprocessed cleaned_text
+            cleaned_text = (item.get("preprocessing") or {}).get("cleaned_text", "")
+            if not cleaned_text or len(cleaned_text.split()) < 50:
+                logger.info(f"  Skipping {item_id} (text too short for concept extraction)")
+                continue
 
-        logger.info(f"Extracting concepts from {pdf_file.name}...")
+            try:
+                result = extract_concepts_from_content_item(item, model=model)
+                if result.concepts:
+                    result_dict = result_to_dict(result)
+                    concept_results.append(result_dict)
+                    concepts_by_item[item_id] = [c.label for c in result.concepts]
+                    save_result(result, CONCEPTS_DIR)
+                else:
+                    logger.info(f"  No concepts extracted from {item_id}")
+            except Exception:
+                logger.exception(f"  Concept extraction failed for {item_id}")
+
+    total_concepts = sum(len(labels) for labels in concepts_by_item.values())
+    logger.info(
+        f"Concept extraction complete: {len(concept_results)} sources, "
+        f"{total_concepts} total concepts"
+    )
+    return concept_results, concepts_by_item
+
+
+# ---------------------------------------------------------------------------
+# Step 4: Generate card fields via Claude (uses extracted concepts as keywords)
+# ---------------------------------------------------------------------------
+
+def generate_cards(
+    items: list[dict[str, Any]],
+    concepts_by_item: dict[str, list[str]] | None = None,
+) -> list[dict[str, Any]]:
+    """Generate card_title, card_summary, keywords, thumbnail_keyword for each item.
+
+    Uses extracted concept labels as required keywords for each card.
+    """
+    concepts_by_item = concepts_by_item or {}
+    for i, item in enumerate(items):
+        item_id = item.get("id", "")
+        concept_labels = concepts_by_item.get(item_id)
+        logger.info(
+            f"Generating card {i + 1}/{len(items)}: {item.get('title', '')[:60]}"
+            f"{f' (concepts: {concept_labels})' if concept_labels else ''}"
+        )
         try:
-            result = process_pdf(pdf_file, model=model)
-            save_result(result, CONCEPTS_DIR)
-            concept_results.append(result_to_dict(result))
+            generate_card_fields(item, concept_labels=concept_labels)
+            item["pipeline_state"] = "card_ready"
         except Exception:
-            logger.exception(f"Concept extraction failed for {pdf_file.name}")
-
-    logger.info(f"Extracted concepts from {len(concept_results)} PDFs")
-    return concept_results
+            logger.exception(f"Card generation failed for {item_id}")
+    ready = sum(1 for i in items if i.get("pipeline_state") == "card_ready")
+    logger.info(f"Card generation complete: {ready}/{len(items)} ready")
+    return items
 
 
 # ---------------------------------------------------------------------------
@@ -247,6 +302,14 @@ def store_to_database(
     """
     Store processed items to Supabase tables.
 
+    Actual DB schema:
+      content_items: id, schema_version, source, source_url, title, raw_summary,
+                     raw_content, metadata, fetched_at, published_at, provenance
+      cards:         id, card_title, card_summary, keywords, thumbnail_keyword,
+                     cleaned_text, quality_score, trending_score, image_url
+      graph_nodes:   id, label, description, frequency
+      graph_edges:   id(auto), source_node_id, target_node_id, relationship, weight
+
     Returns counts of rows upserted to each table.
     """
     from supabase import create_client
@@ -255,7 +318,7 @@ def store_to_database(
     settings = get_settings()
     if not settings.supabase_url or not settings.supabase_key:
         logger.warning("No Supabase credentials — skipping database storage")
-        return {"content_items": 0, "cards": 0, "concepts": 0, "graph_nodes": 0, "graph_edges": 0}
+        return {"content_items": 0, "cards": 0, "graph_nodes": 0, "graph_edges": 0}
 
     supabase = create_client(settings.supabase_url, settings.supabase_key)
     counts: dict[str, int] = {}
@@ -263,21 +326,17 @@ def store_to_database(
     # --- content_items table ---
     content_rows = []
     for item in items:
-        preprocessing = item.get("preprocessing", {})
         content_rows.append({
             "id": item["id"],
+            "schema_version": item.get("schema_version", "1.0.0"),
             "source": item.get("source", ""),
             "source_url": item.get("source_url", ""),
             "title": item.get("title", ""),
+            "raw_summary": item.get("raw_summary", ""),
             "raw_content": item.get("raw_content", ""),
-            "cleaned_text": preprocessing.get("cleaned_text", ""),
-            "preview_text": preprocessing.get("preview_text", ""),
-            "quality_score": preprocessing.get("quality_score", 0.0),
-            "quality_notes": preprocessing.get("quality_notes", []),
-            "enrichment_used": preprocessing.get("enrichment_used", False),
-            "keywords": (item.get("card") or {}).get("keywords", []),
-            "pipeline_state": item.get("pipeline_state", "raw_scraped"),
+            "metadata": item.get("metadata") or {},
             "fetched_at": item.get("fetched_at"),
+            "provenance": item.get("provenance") or {},
         })
 
     if content_rows:
@@ -295,15 +354,16 @@ def store_to_database(
         card = item.get("card")
         if not card:
             continue
+        preprocessing = item.get("preprocessing", {})
         ranking = item.get("ranking", {})
         card_rows.append({
             "id": item["id"],
             "card_title": card.get("card_title", ""),
             "card_summary": card.get("card_summary", ""),
             "keywords": card.get("keywords", []),
-            "source": item.get("source", ""),
-            "source_url": item.get("source_url", ""),
             "thumbnail_keyword": card.get("thumbnail_keyword", ""),
+            "cleaned_text": preprocessing.get("cleaned_text", ""),
+            "quality_score": preprocessing.get("quality_score", 0.0),
             "trending_score": ranking.get("trending_score", 0.0),
         })
 
@@ -316,42 +376,7 @@ def store_to_database(
             logger.exception("Failed to upsert cards")
             counts["cards"] = 0
 
-    # --- concepts table ---
-    concept_rows = []
-    for result in concept_results:
-        content_item_id = None
-        source_file = result.get("source_file", "")
-        # Try to match to a content_item by arxiv ID
-        for item in items:
-            arxiv_id = (item.get("metadata") or {}).get("arxiv_id", "")
-            if arxiv_id and source_file.startswith(arxiv_id):
-                content_item_id = item["id"]
-                break
-
-        if not content_item_id:
-            continue
-
-        for concept in result.get("concepts", []):
-            concept_rows.append({
-                "content_item_id": content_item_id,
-                "label": concept.get("label", ""),
-                "description": concept.get("description", ""),
-                "why_innovative": concept.get("why_innovative", ""),
-                "impact_on_applications": concept.get("impact_on_applications", ""),
-                "category": concept.get("category", ""),
-                "relevance_score": concept.get("relevance_score", 0.0),
-            })
-
-    if concept_rows:
-        try:
-            resp = supabase.table("concepts").insert(concept_rows).execute()
-            counts["concepts"] = len(resp.data or [])
-            logger.info(f"Inserted {counts['concepts']} concepts")
-        except Exception:
-            logger.exception("Failed to insert concepts")
-            counts["concepts"] = 0
-
-    # --- graph_nodes + graph_edges ---
+    # --- graph_nodes + graph_edges (from extracted concepts) ---
     if concept_results:
         try:
             graph_nodes, graph_edges = build_graph_from_concepts(concept_results)
@@ -476,14 +501,15 @@ def run_pipeline(
     # Step 2: Preprocess + enrich
     items = preprocess_all(items)
 
-    # Step 3: Generate card fields
-    if generate_cards_flag:
-        items = generate_cards(items)
-
-    # Step 4: Extract concepts from PDFs
+    # Step 3: Extract concepts (before card generation so concepts feed into keywords)
     concept_results = []
+    concepts_by_item: dict[str, list[str]] = {}
     if extract_concepts_flag:
-        concept_results = extract_concepts_from_pdfs(items, model=model)
+        concept_results, concepts_by_item = extract_all_concepts(items, model=model)
+
+    # Step 4: Generate card fields (uses extracted concept labels as keywords)
+    if generate_cards_flag:
+        items = generate_cards(items, concepts_by_item=concepts_by_item)
 
     # Step 5: Save locally (always)
     run_dir = save_locally(items, concept_results)

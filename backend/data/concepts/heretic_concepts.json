@@ -1,0 +1,55 @@
+{
+  "source_file": "github:p-e-w/heretic",
+  "source_title": "Heretic: Fully automatic censorship removal for language models",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "directional ablation",
+      "description": "A technique that identifies the specific 'direction' inside an AI model's internal math that represents refusal behavior, then surgically removes it so the model stops refusing requests.",
+      "why_innovative": "It allows removing a model's built-in refusal behavior without retraining the entire model from scratch, which would cost enormous time and computing resources.",
+      "impact_on_applications": "This could allow researchers and developers to build AI assistants that answer sensitive questions — such as in security research, medical education, or journalism — without hitting arbitrary content blocks. It also makes customizing open-source AI models accessible to non-experts.",
+      "category": "technique",
+      "relevance_score": 0.97
+    },
+    {
+      "label": "tpe-based parameter optimizer",
+      "description": "An automatic search system (using a method called Tree-structured Parzen Estimation) that tries many combinations of settings to find the best way to remove censorship while keeping the model as smart as possible.",
+      "why_innovative": "Before this, finding the right ablation settings required manual trial-and-error by human experts; automating this search means anyone can achieve expert-level results without deep technical knowledge.",
+      "impact_on_applications": "This makes high-quality AI model customization accessible to a much wider audience — developers without machine learning expertise can now produce well-tuned uncensored models in under an hour on a consumer GPU.",
+      "category": "technique",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "kl divergence minimization",
+      "description": "A way of measuring how different the modified AI model's behavior is from the original, used here as a quality check to ensure the uncensored model stays as intelligent and capable as the original.",
+      "why_innovative": "By co-minimizing both refusals and this quality measure simultaneously, Heretic achieves a better balance between removing restrictions and preserving intelligence than prior tools that only optimized for one goal.",
+      "impact_on_applications": "Models produced this way are more reliable and useful in practice — they don't just stop refusing, they also keep giving accurate, well-structured answers, making them suitable for real professional applications.",
+      "category": "technique",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "ablation weight kernel",
+      "description": "A flexible shape that controls how strongly censorship is removed at each layer of the AI model, like a tunable filter applied across the model's depth rather than a flat, uniform setting.",
+      "why_innovative": "A flexible, automatically optimized kernel shape allows much finer control over which parts of the model are modified, reducing collateral damage to the model's general reasoning abilities.",
+      "impact_on_applications": "This leads to uncensored models that are noticeably smarter and more coherent in real conversations, as confirmed by user feedback — meaning the tool produces production-ready models, not just technically uncensored but degraded ones.",
+      "category": "technique",
+      "relevance_score": 0.91
+    },
+    {
+      "label": "fractional refusal direction interpolation",
+      "description": "Instead of choosing a whole-number index to pick a refusal direction to remove, Heretic uses decimal numbers to blend (interpolate) between two nearby directions, exploring a much richer space of possibilities.",
+      "why_innovative": "This expands the search space of possible interventions far beyond what was previously explored, often finding a better removal target than any single layer's refusal direction alone.",
+      "impact_on_applications": "The result is more precise censorship removal with less damage to the model, enabling AI tools that are both more open and more capable — a combination previously very hard to achieve.",
+      "category": "technique",
+      "relevance_score": 0.89
+    },
+    {
+      "label": "pacmap residual projection",
+      "description": "A visualization method that compresses the AI model's high-dimensional internal states (hidden numbers at each layer) down to 2D images, so researchers can visually see how 'harmful' and 'harmless' prompts are processed differently across layers.",
+      "why_innovative": "This gives researchers a concrete visual window into how safety-aligned models encode refusal behavior internally, which was previously very hard to inspect and understand.",
+      "impact_on_applications": "Better interpretability tools like this help AI safety researchers understand and verify how models work internally, ultimately leading to safer and more predictable AI systems in products people use daily.",
+      "category": "technique",
+      "relevance_score": 0.83
+    }
+  ]
+}

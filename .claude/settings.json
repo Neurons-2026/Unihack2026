@@ -7,7 +7,9 @@
       "Bash(python -c \"import readability; print\\(''ok''\\)\")",
       "Bash(python -m pip install readability-lxml duckduckgo-search)",
       "Bash(python -m scripts.run_pipeline --sources github --no-cards --no-concepts --no-db)",
-      "Bash(python -c \":*)"
+      "Bash(python -c \":*)",
+      "Bash(python -c \"from services.pipeline import run_pipeline; print\\(''OK''\\)\")",
+      "Bash(python -m scripts.run_pipeline --sources github --no-cards --no-db)"
     ]
   }
 }

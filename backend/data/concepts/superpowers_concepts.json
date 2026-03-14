@@ -1,0 +1,55 @@
+{
+  "source_file": "github:obra/superpowers",
+  "source_title": "Superpowers: A Composable Skills-Based Workflow System for Coding Agents",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "subagent-driven development",
+      "description": "A method where a main AI coordinator spawns separate, fresh AI workers (subagents) to handle individual coding tasks, then reviews their output before moving on.",
+      "why_innovative": "It breaks the common failure mode of a single AI losing track over long sessions by isolating each task to a clean, focused worker — enabling hours of autonomous, on-track coding without human babysitting.",
+      "impact_on_applications": "This could let developers hand off a full feature request to an AI and walk away, returning to find a tested, reviewed, and organized implementation — dramatically reducing the time humans spend supervising AI coding tools like Cursor or GitHub Copilot.",
+      "category": "technique",
+      "relevance_score": 0.97
+    },
+    {
+      "label": "composable agent skills",
+      "description": "A library of reusable, self-contained instruction modules (called 'skills') that an AI agent automatically picks up and applies at the right moment during a coding workflow, without the user needing to ask.",
+      "why_innovative": "Instead of prompting an AI differently every time or relying on its default behavior, skills provide reliable, repeatable processes — making AI behavior predictable and extensible like software plugins.",
+      "impact_on_applications": "This could make AI coding assistants behave consistently and professionally across projects — the way a well-trained team member follows established best practices — rather than improvising unpredictably each session.",
+      "category": "architecture",
+      "relevance_score": 0.96
+    },
+    {
+      "label": "two-stage agent review",
+      "description": "A quality-checking process where AI-written code is reviewed twice in sequence: first to check it matches the original plan, then to check it meets general code quality standards.",
+      "why_innovative": "Separating 'did it do what was asked?' from 'did it do it well?' catches two distinct classes of mistakes that a single review pass often misses, raising the reliability of autonomous AI output.",
+      "impact_on_applications": "This could reduce the number of bugs and design mismatches that slip through when AI tools write code automatically, making AI-generated software safer to deploy in real products without exhaustive human re-checking.",
+      "category": "technique",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "spec-first brainstorming workflow",
+      "description": "A structured conversation process where the AI asks clarifying questions and builds a written specification (a clear description of what to build) before writing a single line of code.",
+      "why_innovative": "Most AI coding tools dive straight into writing code, leading to solutions that solve the wrong problem; anchoring the entire session to an agreed-upon spec dramatically reduces wasted work.",
+      "impact_on_applications": "This could save developers hours of back-and-forth corrections by ensuring an AI coding tool truly understands the goal upfront — similar to how a good contractor confirms blueprints before breaking ground.",
+      "category": "technique",
+      "relevance_score": 0.9
+    },
+    {
+      "label": "enforced red-green-refactor",
+      "description": "A strict rule built into the AI's workflow that forces it to write a failing test first, then write only enough code to make that test pass, before cleaning up — deleting any code written out of order.",
+      "why_innovative": "AI agents tend to skip testing or write tests after the fact as an afterthought; making test-first development a hard constraint rather than a suggestion produces more reliable, verifiable code automatically.",
+      "impact_on_applications": "Software built by AI tools using this approach would come with meaningful, trustworthy tests by default — reducing the hidden technical debt (future maintenance burden) that currently accumulates when AI writes untested code.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "git worktree task isolation",
+      "description": "A technique where each coding task is given its own separate, clean copy of the codebase (a 'worktree') so changes don't interfere with each other or the main project.",
+      "why_innovative": "Running multiple AI agents simultaneously on the same codebase normally causes conflicts; worktree isolation allows true parallel AI development without those collisions.",
+      "impact_on_applications": "This could allow AI coding tools to work on multiple features or bug fixes at the same time in parallel, cutting development time significantly for teams using AI-assisted workflows.",
+      "category": "technique",
+      "relevance_score": 0.85
+    }
+  ]
+}

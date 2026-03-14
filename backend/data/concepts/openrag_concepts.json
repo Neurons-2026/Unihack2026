@@ -1,0 +1,55 @@
+{
+  "source_file": "github:langflow-ai/openrag",
+  "source_title": "OpenRAG: Intelligent Agent-powered Document Search",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "agentic rag workflow",
+      "description": "A system where AI 'agents' (autonomous decision-making programs) coordinate with each other to search, retrieve, and re-rank information from documents before answering a question.",
+      "why_innovative": "Unlike basic question-answering systems that do a single search, multi-agent coordination allows the system to refine its search strategy dynamically, producing more accurate and contextually relevant answers.",
+      "impact_on_applications": "This could dramatically improve enterprise search tools, making it possible for employees to ask complex questions across thousands of internal documents and get reliable, well-sourced answers — similar to having a smart research assistant on demand.",
+      "category": "architecture",
+      "relevance_score": 0.97
+    },
+    {
+      "label": "retrieval-augmented generation",
+      "description": "A technique where an AI first searches a set of documents for relevant information, then uses that retrieved content to generate a more accurate, grounded answer — rather than relying solely on what it memorized during training.",
+      "why_innovative": "It solves the core problem of AI 'hallucination' (making up facts) by anchoring responses to real, user-provided documents, making AI answers trustworthy and up-to-date.",
+      "impact_on_applications": "This could power smarter customer support chatbots that answer questions based on a company's actual product manuals, or legal research tools that cite real case documents instead of fabricating references.",
+      "category": "technique",
+      "relevance_score": 0.99
+    },
+    {
+      "label": "semantic search",
+      "description": "A way of searching documents by meaning rather than just matching exact keywords — so a search for 'car' would also find documents about 'automobile' or 'vehicle'.",
+      "why_innovative": "It allows users to ask questions in natural, conversational language and still find the most relevant documents, removing the need to guess the right keywords.",
+      "impact_on_applications": "This could improve search in tools like corporate intranets, legal databases, or medical record systems, helping people find what they need even when they don't know the exact terminology.",
+      "category": "technique",
+      "relevance_score": 0.9
+    },
+    {
+      "label": "visual workflow builder",
+      "description": "A drag-and-drop graphical interface (powered by Langflow) that lets users visually design and connect the steps of an AI document-processing pipeline without writing code.",
+      "why_innovative": "It dramatically lowers the technical barrier to building complex AI workflows, enabling non-engineers to configure, test, and iterate on RAG pipelines rapidly.",
+      "impact_on_applications": "Business analysts, researchers, or content managers could build their own custom AI-powered document search systems without needing a software development team, accelerating adoption across industries.",
+      "category": "tool",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "model context protocol",
+      "description": "A standardized communication layer (MCP) that allows external AI assistants like Claude or Cursor to connect directly to OpenRAG's knowledge base and use it as a tool.",
+      "why_innovative": "It enables any compatible AI assistant to tap into a private, curated document knowledge base on demand, extending the assistant's knowledge beyond its training data in a controlled way.",
+      "impact_on_applications": "Developers using AI coding tools like Cursor could instantly query their organization's internal documentation or codebase, while users of AI assistants like Claude could get answers grounded in their own private files.",
+      "category": "technique",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "intelligent document parsing",
+      "description": "An automated process (powered by Docling) that reads and structures messy, real-world documents — like PDFs with tables, images, or inconsistent formatting — into clean, searchable data.",
+      "why_innovative": "Most real-world documents are not clean text files; robust parsing means the system can handle the full variety of documents organizations actually use, not just ideally formatted ones.",
+      "impact_on_applications": "Companies could upload years of scanned reports, contracts, or research papers and immediately make them searchable and queryable through AI chat, turning previously inaccessible archives into actionable knowledge.",
+      "category": "technique",
+      "relevance_score": 0.87
+    }
+  ]
+}

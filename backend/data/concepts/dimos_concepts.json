@@ -1,0 +1,55 @@
+{
+  "source_file": "github:dimensionalOS/dimos",
+  "source_title": "DimOS: The Agentive Operating System for Physical Space Hardware",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "agent-native robot os",
+      "description": "A software operating system built from the ground up to let AI agents (programs that reason and act on their own) directly control physical robots using plain natural language commands, without needing traditional robotics middleware.",
+      "why_innovative": "Traditional robot software requires deep expertise in complex frameworks like ROS; this collapses that barrier so anyone who can write basic Python — or even just type in plain English — can program real robots.",
+      "impact_on_applications": "Small companies and independent developers could build robot-powered services (delivery, security, cleaning) without hiring specialized robotics engineers, dramatically cutting the cost and time to deploy real-world automation.",
+      "category": "architecture",
+      "relevance_score": 0.98
+    },
+    {
+      "label": "spatio-temporal rag",
+      "description": "A memory system for robots that remembers not just what objects exist in a space, but where they are and when they were last seen — like a robot that recalls 'the cup was on the kitchen counter 10 minutes ago.'",
+      "why_innovative": "Most robots forget everything when they restart or move away; persistent spatial memory lets robots build up real understanding of their environment over time, making them genuinely useful for long-horizon tasks.",
+      "impact_on_applications": "Home robots or warehouse bots could reliably find and retrieve objects, remember room layouts, and track inventory over days — enabling practical assistants that don't need to re-scan their environment every time they're turned on.",
+      "category": "technique",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "multi-agent hardware module",
+      "description": "A system where multiple independent AI agents each handle a different part of a robot — one for vision, one for movement, one for decision-making — and they all communicate with each other through standardized data channels.",
+      "why_innovative": "Breaking robot control into cooperating specialized agents mirrors how successful large-scale AI systems work, making it easy to upgrade or swap out individual capabilities without rebuilding the whole robot software stack.",
+      "impact_on_applications": "Robot manufacturers could mix and match AI modules from different providers, the same way smartphone apps work today — leading to faster innovation cycles and more capable robots reaching consumers sooner.",
+      "category": "architecture",
+      "relevance_score": 0.93
+    },
+    {
+      "label": "mcp robot skill interface",
+      "description": "A standardized 'menu of actions' (called Model Context Protocol) that lets any AI assistant or chatbot call specific robot movements and skills — like telling a robot to move forward 0.5 meters — using a common, simple command format.",
+      "why_innovative": "It creates a universal language between AI reasoning systems and physical robot actions, meaning any large language model can control any supported robot without custom integration work for each combination.",
+      "impact_on_applications": "Users could eventually command robots through familiar AI assistants like Claude or ChatGPT using plain conversation, making physical robots as easy to interact with as asking a voice assistant to set a timer.",
+      "category": "technique",
+      "relevance_score": 0.91
+    },
+    {
+      "label": "blueprint module autoconnect",
+      "description": "A system where software pieces (modules) for different robot functions automatically find and link up with compatible partners — like puzzle pieces that snap together on their own based on what data they produce and consume.",
+      "why_innovative": "Manual wiring of robot software components is error-prone and time-consuming; automatic connection by matching data types removes a major source of integration bugs and dramatically speeds up development.",
+      "impact_on_applications": "Developers building robotics applications could assemble complex behaviors from reusable building blocks in hours instead of weeks, accelerating the creation of specialized robots for industries like healthcare, logistics, and agriculture.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "ros-free robot sdk",
+      "description": "A development toolkit that lets programmers build fully functional robot software using only standard Python, completely bypassing ROS (Robot Operating System) — the historically dominant but notoriously complex robotics framework.",
+      "why_innovative": "ROS has a steep learning curve and significant setup overhead that locks out most software developers; removing this dependency opens robot programming to the vast mainstream software community.",
+      "impact_on_applications": "Web developers, data scientists, and AI engineers could contribute directly to robotics products without years of specialized training, potentially multiplying the talent pool available to the robotics industry.",
+      "category": "tool",
+      "relevance_score": 0.89
+    }
+  ]
+}

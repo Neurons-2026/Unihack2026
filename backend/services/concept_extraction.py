@@ -210,10 +210,14 @@ def _parse_concepts(
 def extract_concepts_from_text(
     text: str,
     source_file: str,
+    source_type: str = "pdf",
     model: str = "claude-sonnet-4-6",
     api_key: str | None = None,
 ) -> ExtractionResult:
-    """Extract key innovative concepts from text using Claude."""
+    """Extract key innovative concepts from text using Claude.
+
+    Works with any preprocessed text — PDF content, blog articles, README text, etc.
+    """
     key = _get_api_key(api_key)
     client = anthropic.Anthropic(api_key=key)
     truncated_text = _truncate_text(text)
@@ -226,7 +230,7 @@ def extract_concepts_from_text(
     prompt = (
         f"{EXTRACTION_PROMPT}\n\n"
         f"--- SOURCE DOCUMENT ---\n\n"
-        f"SOURCE_TYPE: pdf\n"
+        f"SOURCE_TYPE: {source_type}\n"
         f"SOURCE_FILE: {source_file}\n"
         f"---\n\n"
         f"{truncated_text}"
@@ -241,7 +245,7 @@ def extract_concepts_from_text(
     result = ExtractionResult(
         source_file=source_file,
         source_title=parsed.get("source_title", source_file),
-        source_type=parsed.get("source_type", "pdf"),
+        source_type=parsed.get("source_type", source_type),
         concepts=concepts,
     )
 
@@ -250,6 +254,40 @@ def extract_concepts_from_text(
         f"{[c.label for c in concepts]}"
     )
     return result
+
+
+def extract_concepts_from_content_item(
+    item: dict,
+    model: str = "claude-sonnet-4-6",
+    api_key: str | None = None,
+) -> ExtractionResult:
+    """
+    Extract concepts from a preprocessed content_item dict.
+
+    Uses the item's cleaned_text (from preprocessing) rather than reading a PDF.
+    This allows concept extraction from any source (GitHub, blogs, papers, etc.).
+    """
+    cleaned_text = (item.get("preprocessing") or {}).get("cleaned_text", "")
+    if not cleaned_text:
+        cleaned_text = item.get("raw_content", "") or item.get("raw_summary", "")
+
+    if not cleaned_text.strip():
+        logger.warning(f"No text available for concept extraction: {item.get('id')}")
+        return ExtractionResult(
+            source_file=item.get("id", "unknown"),
+            source_title=item.get("title", "unknown"),
+            source_type=item.get("source", "text"),
+            concepts=[],
+        )
+
+    source_type = "pdf" if item.get("source") == "huggingface" else "article"
+    return extract_concepts_from_text(
+        text=cleaned_text,
+        source_file=item.get("id", "unknown"),
+        source_type=source_type,
+        model=model,
+        api_key=api_key,
+    )
 
 
 def result_to_dict(result: ExtractionResult) -> dict:
