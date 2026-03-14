@@ -8,6 +8,7 @@ from services.scrapers.openai_news import scrape_openai_news
 
 
 SOURCE = "openai_blog"
+SOURCE_SLUG = "openai_news"
 
 
 def _load_keywords_map(path: str) -> dict:
@@ -95,14 +96,18 @@ def main() -> None:
     content_items = to_content_items(items, keywords_map)
     cards = to_card_view(items, keywords_map)
 
-    out_dir = Path(args.output_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    date_key = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    root_dir = Path(args.output_dir)
+    run_dir = root_dir / SOURCE_SLUG / date_key
+    latest_dir = root_dir / SOURCE_SLUG / "latest"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    latest_dir.mkdir(parents=True, exist_ok=True)
 
-    content_items_path = out_dir / f"openai_news_content_items_{stamp}.json"
-    cards_path = out_dir / f"openai_news_cards_{stamp}.json"
-    latest_content_items_path = out_dir / "openai_news_content_items_latest.json"
-    latest_cards_path = out_dir / "openai_news_cards_latest.json"
+    content_items_path = run_dir / f"content_items_{stamp}.json"
+    cards_path = run_dir / f"cards_{stamp}.json"
+    latest_content_items_path = latest_dir / "content_items_latest.json"
+    latest_cards_path = latest_dir / "cards_latest.json"
 
     content_items_json = json.dumps(content_items, indent=2, ensure_ascii=True)
     cards_json = json.dumps(cards, indent=2, ensure_ascii=True)

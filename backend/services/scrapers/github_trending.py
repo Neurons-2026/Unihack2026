@@ -10,7 +10,6 @@ from bs4 import BeautifulSoup
 GITHUB_TRENDING_URL = "https://github.com/trending"
 GITHUB_REPO_URL = "https://github.com/{repo}"
 REQUEST_TIMEOUT_SECONDS = 12
-README_MAX_CHARS = 4000
 MAX_CLEANED_TEXT_CHARS = 1400
 
 USER_AGENT = (
@@ -87,11 +86,7 @@ def _fetch_repo_readme_text(repo_name: str) -> str:
     readme = soup.select_one("article.markdown-body")
     if not readme:
         return ""
-
-    text = _clean_whitespace(readme.get_text(" ", strip=True))
-    if len(text) > README_MAX_CHARS:
-        return text[:README_MAX_CHARS]
-    return text
+    return _clean_whitespace(readme.get_text(" ", strip=True))
 
 
 def _split_sentences(text: str) -> list[str]:
