@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { GraphNode, GraphEdge, GraphData } from '@/types/graph';
 import { buildAdjMap } from '@/data/sampleGraph';
-import { getGraph, generateGraphFromCards } from '@/lib/api';
+import { getGraph, generateGraphFromCards, mergeGraph } from '@/lib/api';
 import { getSessionId } from '@/lib/session';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { GraphNode as ApiGraphNode, GraphEdge as ApiGraphEdge } from '@/lib/types';
@@ -88,6 +88,7 @@ export default function KnowledgeGraph() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [merging, setMerging] = useState(false);
   const apiDataRef = useRef<{ nodes: ApiGraphNode[]; edges: ApiGraphEdge[] } | null>(null);
   const basketItems = useBasketStore((s) => s.items);
   const cvRef = useRef<HTMLCanvasElement>(null);
@@ -461,6 +462,21 @@ export default function KnowledgeGraph() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataLoaded]);
 
+  async function handleMerge() {
+    if (merging) return;
+    setMerging(true);
+    try {
+      const sessionId = getSessionId();
+      const data = await mergeGraph(sessionId);
+      apiDataRef.current = data;
+      dataReady.current = false;
+      setDataLoaded(false);
+      setTimeout(() => setDataLoaded(true), 50);
+    } finally {
+      setMerging(false);
+    }
+  }
+
   // Toggle handler
   function handleToggle() {
     const s = stateRef.current;
@@ -553,6 +569,35 @@ export default function KnowledgeGraph() {
             </span>
           </div>
         )}
+
+        {/* MERGE BUTTON */}
+        <div style={{ position: 'absolute', bottom: 24, right: 20, zIndex: 5 }}>
+          <button
+            onClick={handleMerge}
+            disabled={merging}
+            style={{
+              backgroundColor: merging ? 'rgba(100,180,255,0.15)' : 'rgba(100,180,255,0.12)',
+              color: 'rgba(100,180,255,0.9)',
+              fontSize: 12,
+              fontWeight: 500,
+              padding: '10px 16px',
+              borderRadius: 30,
+              cursor: merging ? 'default' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              border: '1px solid rgba(100,180,255,0.2)',
+              outline: 'none',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+              <path d="M6 9v6M18 15a6 6 0 00-6-6H9"/>
+            </svg>
+            {merging ? 'Merging…' : 'Merge Graph'}
+          </button>
+        </div>
 
         {/* TOGGLE BUTTON — white bg, grey on hover */}
         <div style={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 5 }}>
