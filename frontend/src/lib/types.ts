@@ -2,10 +2,20 @@ export interface Card {
   id: string;
   card_title: string;
   card_summary: string;
+  why_it_matters?: string;
   keywords: string[];
   source: string;
   source_url: string;
   thumbnail_keyword?: string;
+  published_at?: string;
+  metadata?: {
+    stars?: number;
+    forks?: number;
+    language?: string;
+    likes?: number;
+    citations?: number;
+    reading_time?: number;
+  };
 }
 
 export interface Interaction {
