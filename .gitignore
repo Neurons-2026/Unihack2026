@@ -1,0 +1,29 @@
+# OS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Node/Next.js
+node_modules/
+.next/
+out/
+*.log
+frontend/.env.local
+
+# Build/cache
+.dist/
+dist/
+coverage/
+.coverage
+.pytest_cache/
+
+# Docker
+pgdata
