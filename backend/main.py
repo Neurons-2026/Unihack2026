@@ -15,7 +15,7 @@ settings = get_settings()
 
 app = FastAPI(title="10min AI Daily API", version="0.2.0")
 
-cors_origins = []
+cors_origins = ["*"]
 if settings.cors_origins:
     try:
         cors_origins = json.loads(settings.cors_origins)

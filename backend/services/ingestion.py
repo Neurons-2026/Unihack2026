@@ -35,18 +35,28 @@ def _to_provisional_card(item: dict) -> Card:
 
 def _load_cards_from_supabase(limit: int = 50) -> List[Card]:
     db = get_supabase()
-    result = (
+    # cards table doesn't have source/source_url — join from content_items
+    cards_result = (
         db.table("cards")
-        .select("id,card_title,card_summary,keywords,source,source_url,thumbnail_keyword,image_url,trending_score")
+        .select("id,card_title,card_summary,keywords,thumbnail_keyword,image_url,trending_score")
         .order("trending_score", desc=True)
         .limit(limit)
         .execute()
     )
+    items_result = (
+        db.table("content_items")
+        .select("id,source,source_url")
+        .execute()
+    )
+    items_by_id = {i["id"]: i for i in (items_result.data or [])}
 
-    rows = result.data or []
+    rows = cards_result.data or []
     cards: List[Card] = []
     for row in rows:
         try:
+            item = items_by_id.get(row.get("id"), {})
+            row.setdefault("source", item.get("source", "unknown"))
+            row.setdefault("source_url", item.get("source_url"))
             cards.append(Card(**row))
         except Exception:
             continue
