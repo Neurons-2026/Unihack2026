@@ -3,7 +3,7 @@ import { CardData } from '@/types/card';
 import { sourceThemes } from '@/lib/sourceThemes';
 import SourceOverlay from './SourceOverlay';
 import MetadataBadges from './MetadataBadges';
-import KeywordTags from './KeywordTags';
+
 
 export default function CardItem({ card }: { card: CardData }) {
   const theme = sourceThemes[card.source];
@@ -109,9 +109,6 @@ export default function CardItem({ card }: { card: CardData }) {
         >
           {card.description}
         </div>
-
-        {/* Tags */}
-        <KeywordTags keywords={card.keywords} />
 
         {/* DO NOT add anything else here. No "why it matters" box. No extra text. */}
       </div>

@@ -286,47 +286,6 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
 
       <ActionIcon swipeDir={swipeDir} swipeIntensity={swipeIntensity} hold={iconHold} />
 
-      {/* Tag priority toast */}
-      {tagToast && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 24,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 20,
-            pointerEvents: 'none',
-            display: 'flex',
-            gap: 6,
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            maxWidth: '90%',
-            opacity: tagToast.fading ? 0 : 1,
-            transition: 'opacity 0.5s ease-out',
-          }}
-        >
-          {tagToast.keywords.map((kw) => {
-            const isSave = tagToast.action === 'save';
-            return (
-              <span
-                key={kw}
-                style={{
-                  fontSize: 11,
-                  fontWeight: 500,
-                  padding: '4px 10px',
-                  borderRadius: 20,
-                  background: isSave ? 'rgba(74,222,128,0.15)' : 'rgba(248,113,113,0.15)',
-                  color: isSave ? 'rgba(74,222,128,0.9)' : 'rgba(248,113,113,0.9)',
-                  border: `1px solid ${isSave ? 'rgba(74,222,128,0.25)' : 'rgba(248,113,113,0.25)'}`,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {isSave ? '↑' : '↓'} {kw}
-              </span>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }
