@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { GraphNode, GraphEdge, GraphData } from '@/types/graph';
 import { buildAdjMap } from '@/data/sampleGraph';
-import { getGraph, generateGraphFromCards, mergeGraph } from '@/lib/api';
+import { getGraph, generateGraphFromCards } from '@/lib/api';
 import { getSessionId } from '@/lib/session';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { GraphNode as ApiGraphNode, GraphEdge as ApiGraphEdge } from '@/lib/types';
@@ -77,6 +77,34 @@ function buildGraphFromAPI(
   return { nodes, todayEdges, fullEdges: allEdges };
 }
 
+// Hardcoded "previous session" nodes that appear on "See full picture"
+const DUMMY_NODES = [
+  { id: 'chain_of_thought', label: 'Chain Of Thought', description: 'Prompting technique for step-by-step reasoning', frequency: 3 },
+  { id: 'in_context_learning', label: 'In-Context Learning', description: 'Learning from examples in the prompt without weight updates', frequency: 2 },
+  { id: 'constitutional_ai', label: 'Constitutional AI', description: 'Framework for training AI systems with explicit behavioural principles', frequency: 2 },
+  { id: 'instruction_tuning', label: 'Instruction Tuning', description: 'Fine-tuning models to follow natural language instructions', frequency: 2 },
+  { id: 'knowledge_distillation', label: 'Knowledge Distillation', description: 'Training smaller models to mimic the outputs of larger ones', frequency: 2 },
+  { id: 'peft', label: 'PEFT', description: 'Parameter-efficient fine-tuning with minimal trainable parameters', frequency: 2 },
+  { id: 'lora', label: 'LoRA', description: 'Low-rank adaptation, a popular PEFT method', frequency: 2 },
+  { id: 'foundation_models', label: 'Foundation Models', description: 'Large pre-trained models adaptable to many downstream tasks', frequency: 3 },
+];
+const DUMMY_INTERNAL_EDGES: [string, string][] = [
+  ['chain_of_thought', 'in_context_learning'],
+  ['foundation_models', 'instruction_tuning'],
+  ['foundation_models', 'peft'],
+  ['foundation_models', 'knowledge_distillation'],
+  ['peft', 'lora'],
+  ['constitutional_ai', 'instruction_tuning'],
+];
+// Bridge edges from dummy nodes to potential today-node ids
+const DUMMY_BRIDGES: [string, string][] = [
+  ['chain_of_thought', 'reasoning'], ['constitutional_ai', 'safety'],
+  ['instruction_tuning', 'reward_models'], ['chain_of_thought', 'llm_evals'],
+  ['knowledge_distillation', 'efficiency'], ['foundation_models', 'llm'],
+  ['foundation_models', 'ai'], ['chain_of_thought', 'ai'],
+  ['lora', 'fine_tuning'], ['in_context_learning', 'llm'],
+];
+
 function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
@@ -88,7 +116,6 @@ export default function KnowledgeGraph() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [merging, setMerging] = useState(false);
   const apiDataRef = useRef<{ nodes: ApiGraphNode[]; edges: ApiGraphEdge[] } | null>(null);
   const basketItems = useBasketStore((s) => s.items);
   const cvRef = useRef<HTMLCanvasElement>(null);
@@ -101,6 +128,7 @@ export default function KnowledgeGraph() {
   const fullAdjRef = useRef<Record<string, string[]>>({});
   const activeAdjRef = useRef<Record<string, string[]>>({});
   const alwaysShowRef = useRef<Set<string>>(new Set());
+  const dummyInjected = useRef(false);
   const trailsRef = useRef<{ x: number; y: number; life: number; maxLife: number; sz: number; today: boolean }[]>([]);
 
   const stateRef = useRef({
@@ -302,7 +330,6 @@ export default function KnowledgeGraph() {
         if (a.animating || b.animating) al *= 0.25;
         const dx = b.x - a.x, dy = b.y - a.y;
         const emx = (a.x + b.x) / 2 + dy * 0.04, emy = (a.y + b.y) / 2 - dx * 0.04;
-        const bt = a.isToday && b.isToday; const bp = !a.isToday && !b.isToday;
         let connSelected = false;
         // Check if either endpoint is selected or connected to any selected node
         if (stateRef.current.selectedNodeIds.has(a.id) || stateRef.current.selectedNodeIds.has(b.id)) {
@@ -316,29 +343,53 @@ export default function KnowledgeGraph() {
             if ((nb && nb.includes(a.id)) || (nb && nb.includes(b.id))) { connSelected = true; break; }
           }
         }
+        // Edge color: blend based on how "today" each endpoint is
+        const eToday = ((a.isToday ? 1 : 0) + (b.isToday ? 1 : 0)) / 2;
+        const eR = 100;
+        const eG = Math.round(210 + eToday * 10);
+        const eB = Math.round(130 + eToday * 90);
+        const eCol = eR + ',' + eG + ',' + eB;
         ctx!.globalAlpha = al;
         ctx!.beginPath(); ctx!.moveTo(a.x, a.y); ctx!.quadraticCurveTo(emx, emy, b.x, b.y);
-        if (bt) { ctx!.strokeStyle = 'rgba(100,220,220,' + (connSelected ? 0.2 : 0.09) + ')'; ctx!.lineWidth = (connSelected ? 1.6 : 1) / s.camScale; }
-        else if (bp) { ctx!.strokeStyle = 'rgba(100,210,130,' + (connSelected ? 0.18 : 0.07) + ')'; ctx!.lineWidth = (connSelected ? 1.4 : 0.7) / s.camScale; }
-        else { ctx!.strokeStyle = 'rgba(100,218,175,' + (connSelected ? 0.17 : 0.06) + ')'; ctx!.lineWidth = (connSelected ? 1.3 : 0.8) / s.camScale; }
+        ctx!.strokeStyle = 'rgba(' + eCol + ',' + (connSelected ? 0.2 : 0.08) + ')';
+        ctx!.lineWidth = (connSelected ? 1.5 : 0.9) / s.camScale;
         ctx!.stroke();
         if (a.settled && b.settled) {
-          const spd = bt ? 0.008 : 0.005;
+          const spd = eToday > 0.5 ? 0.008 : 0.005;
           const t = ((s.frame * spd + a.id.charCodeAt(1) * 0.3) % 1);
           const px = a.x * (1 - t) * (1 - t) + emx * 2 * (1 - t) * t + b.x * t * t;
           const py = a.y * (1 - t) * (1 - t) + emy * 2 * (1 - t) * t + b.y * t * t;
-          ctx!.beginPath(); ctx!.arc(px, py, (bt ? 1.5 : 1.1) / s.camScale, 0, Math.PI * 2);
-          ctx!.fillStyle = bt ? 'rgba(100,220,220,0.25)' : bp ? 'rgba(100,210,130,0.15)' : 'rgba(100,218,175,0.18)'; ctx!.fill();
+          ctx!.beginPath(); ctx!.arc(px, py, 1.3 / s.camScale, 0, Math.PI * 2);
+          ctx!.fillStyle = 'rgba(' + eCol + ',0.2)'; ctx!.fill();
         }
         ctx!.globalAlpha = 1;
       }
-      // Nodes
+      // Nodes — color is a gradient blend based on today/previous neighbor ratio
+      // today = rgb(100,220,220) cyan, previous = rgb(100,210,130) green
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
         if (!n.entered || n.opacity < 0.01) continue;
+        // Compute todayRatio: blend of self + neighbors
+        const adj = activeAdjRef.current;
+        const neighbors = adj[n.id] || [];
+        let todayCount = n.isToday ? 1 : 0;
+        let totalCount = 1;
+        for (let ni = 0; ni < neighbors.length; ni++) {
+          const nb = findNode(neighbors[ni]);
+          if (nb && nb.opacity > 0.1) { totalCount++; if (nb.isToday) todayCount++; }
+        }
+        const t_ratio = totalCount > 0 ? todayCount / totalCount : (n.isToday ? 1 : 0);
+        // Lerp colors: cyan(100,220,220) <-> green(100,210,130)
+        const cr = 100;
+        const cg = Math.round(210 + t_ratio * 10); // 210 -> 220
+        const cb = Math.round(130 + t_ratio * 90); // 130 -> 220
+        const col = cr + ',' + cg + ',' + cb;
+        const br = Math.round(180 + t_ratio * 20); // 180 -> 200
+        const bg2 = Math.round(240 + t_ratio * 15); // 240 -> 255
+        const bb = Math.round(190 + t_ratio * 65); // 190 -> 255
+        const bright = br + ',' + bg2 + ',' + bb;
         const breath = n.settled ? 1 + Math.sin(n.breathPhase) * 0.06 : 1;
         const r = n.r * breath * n.scale;
-        const col = n.isToday ? '100,220,220' : '100,210,130';
         ctx!.globalAlpha = n.opacity;
         const gb = 1 + n.labelAlpha * 0.3;
         const g = ctx!.createRadialGradient(n.x, n.y, r * 0.3, n.x, n.y, r * 2.8 * gb);
@@ -347,7 +398,6 @@ export default function KnowledgeGraph() {
         ctx!.beginPath(); ctx!.arc(n.x, n.y, r * 2.8 * gb, 0, Math.PI * 2); ctx!.fillStyle = g; ctx!.fill();
         ctx!.beginPath(); ctx!.arc(n.x, n.y, r, 0, Math.PI * 2);
         ctx!.fillStyle = 'rgba(' + col + ',' + (0.55 + n.labelAlpha * 0.15) + ')'; ctx!.fill();
-        const bright = n.isToday ? '200,255,255' : '180,240,190';
         ctx!.beginPath(); ctx!.arc(n.x, n.y, r * 0.3, 0, Math.PI * 2);
         ctx!.fillStyle = 'rgba(' + bright + ',' + (0.25 + n.labelAlpha * 0.15) + ')'; ctx!.fill();
         // Label pill
@@ -462,34 +512,69 @@ export default function KnowledgeGraph() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataLoaded]);
 
-  async function handleMerge() {
-    if (merging) return;
-    setMerging(true);
-    try {
-      const sessionId = getSessionId();
-      const data = await mergeGraph(sessionId);
-      apiDataRef.current = data;
-      dataReady.current = false;
-      setDataLoaded(false);
-      setTimeout(() => setDataLoaded(true), 50);
-    } finally {
-      setMerging(false);
-    }
-  }
-
   // Toggle handler
   function handleToggle() {
     const s = stateRef.current;
     if (s.transitioning) return;
     s.transitioning = true;
-    s.selectedNodeIds.clear(); // Clear all selections on mode toggle
+    s.selectedNodeIds.clear();
     setDetailNode(null);
     const nodes = nodesRef.current;
 
     if (s.viewMode === 'today') {
       s.viewMode = 'full'; setViewMode('full');
       s.camTargetScale = 1.0; s.camTargetCx = s.W / 2; s.camTargetCy = s.H / 2;
+
+      // Inject dummy nodes on first expand
+      if (!dummyInjected.current) {
+        dummyInjected.current = true;
+        const existingIds = new Set(nodes.map((n) => n.id));
+        let dummyDelay = 0;
+        for (const dn of DUMMY_NODES) {
+          if (existingIds.has(dn.id)) continue;
+          const fullTx = s.W * 0.1 + Math.random() * s.W * 0.8;
+          const fullTy = s.H * 0.08 + Math.random() * s.H * 0.84;
+          const baseR = 8 + Math.min(dn.frequency, 5) * 2.5;
+          // Pick a random today node to fly in from
+          const todayNodes = nodes.filter((n) => n.isToday && n.settled);
+          const origin = todayNodes.length > 0 ? todayNodes[Math.floor(Math.random() * todayNodes.length)] : null;
+          const startX = origin ? origin.x : s.W / 2;
+          const startY = origin ? origin.y : -20;
+          const newNode: GraphNode = {
+            id: dn.id, label: dn.label, description: dn.description,
+            frequency: dn.frequency, isToday: false,
+            r: baseR, x: startX, y: startY, vx: 0, vy: 0,
+            todayTx: fullTx, todayTy: fullTy, fullTx, fullTy,
+            tx: fullTx, ty: fullTy,
+            startX, startY,
+            cpx: (startX + fullTx) / 2 + (Math.random() - 0.5) * 80,
+            cpy: (startY + fullTy) / 2 + (Math.random() - 0.5) * 60,
+            animT: 0, animating: true, entered: true, settled: false,
+            opacity: 0, scale: 0.3,
+            delay: s.frame + 30 + dummyDelay,
+            breathPhase: Math.random() * Math.PI * 2,
+            breathSpeed: 0.015 + Math.random() * 0.01,
+            labelAlpha: 0, targetLabelAlpha: 0, orbiters: [],
+          };
+          nodes.push(newNode);
+          dummyDelay += 12;
+        }
+        // Build edges for dummy nodes
+        const allIds = new Set(nodes.map((n) => n.id));
+        const newEdges: GraphEdge[] = [];
+        for (const [a, b] of DUMMY_INTERNAL_EDGES) {
+          if (allIds.has(a) && allIds.has(b)) newEdges.push({ source: a, target: b });
+        }
+        for (const [a, b] of DUMMY_BRIDGES) {
+          if (allIds.has(a) && allIds.has(b)) newEdges.push({ source: a, target: b });
+        }
+        fullEdgesRef.current = [...todayEdgesRef.current, ...newEdges];
+        fullAdjRef.current = buildAdjMap(fullEdgesRef.current);
+      }
+
+      // Fade in non-today nodes
       nodes.forEach((n) => { if (!n.isToday) { n.fadeIn = true; n.fadeOut = false; } });
+      // Animate today nodes to their full positions
       let delay = 0;
       nodes.forEach((n) => {
         if (!n.isToday) return;
@@ -569,35 +654,6 @@ export default function KnowledgeGraph() {
             </span>
           </div>
         )}
-
-        {/* MERGE BUTTON */}
-        <div style={{ position: 'absolute', bottom: 24, right: 20, zIndex: 5 }}>
-          <button
-            onClick={handleMerge}
-            disabled={merging}
-            style={{
-              backgroundColor: merging ? 'rgba(100,180,255,0.15)' : 'rgba(100,180,255,0.12)',
-              color: 'rgba(100,180,255,0.9)',
-              fontSize: 12,
-              fontWeight: 500,
-              padding: '10px 16px',
-              borderRadius: 30,
-              cursor: merging ? 'default' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              border: '1px solid rgba(100,180,255,0.2)',
-              outline: 'none',
-              boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
-            }}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-              <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
-              <path d="M6 9v6M18 15a6 6 0 00-6-6H9"/>
-            </svg>
-            {merging ? 'Merging…' : 'Merge Graph'}
-          </button>
-        </div>
 
         {/* TOGGLE BUTTON — white bg, grey on hover */}
         <div style={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 5 }}>

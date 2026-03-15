@@ -50,12 +50,6 @@ export async function getGraph(sessionId: string): Promise<{ nodes: GraphNode[];
   return http<{ nodes: GraphNode[]; edges: GraphEdge[] }>(`/graph?session_id=${encodeURIComponent(sessionId)}`);
 }
 
-export async function mergeGraph(sessionId: string): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
-  return http<{ nodes: GraphNode[]; edges: GraphEdge[] }>(
-    `/graph/merge?session_id=${encodeURIComponent(sessionId)}`,
-    { method: "POST" }
-  );
-}
 
 export async function generateGraphFromCards(cardIds: string[], sessionId: string): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
   return http<{ nodes: GraphNode[]; edges: GraphEdge[] }>(
