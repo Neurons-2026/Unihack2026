@@ -10,6 +10,7 @@ __pycache__/
 *.pyc
 .venv/
 .env
+backend/venv
 
 # Node/Next.js
 node_modules/
