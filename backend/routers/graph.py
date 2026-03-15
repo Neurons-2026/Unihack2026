@@ -22,6 +22,12 @@ def _build_keyword_graph(cards):
     if not freq:
         return [], []
 
+    # Keep only keywords that appear in 2+ cards; fall back to top-8 if too few
+    min_freq = 2
+    filtered = {kw: c for kw, c in freq.items() if c >= min_freq}
+    if len(filtered) < 5:
+        filtered = dict(sorted(freq.items(), key=lambda x: x[1], reverse=True)[:8])
+
     def node_id(kw: str) -> str:
         return kw.replace(" ", "_").replace("-", "_")
 
@@ -32,13 +38,16 @@ def _build_keyword_graph(cards):
             description=f"Appears in {count} article{'s' if count > 1 else ''}",
             frequency=count,
         )
-        for kw, count in freq.items()
+        for kw, count in filtered.items()
     ]
+
+    kept_ids = {node_id(kw) for kw in filtered}
 
     edge_set: set[tuple[str, str]] = set()
     edges = []
     for card in cards:
-        kws = list({kw.strip().lower() for kw in (card.keywords or []) if kw.strip()})
+        kws = [kw.strip().lower() for kw in (card.keywords or []) if kw.strip() and node_id(kw.strip().lower()) in kept_ids]
+        kws = list(dict.fromkeys(kws))  # deduplicate preserving order
         for i in range(len(kws)):
             for j in range(i + 1, len(kws)):
                 a, b = node_id(kws[i]), node_id(kws[j])
@@ -192,39 +201,6 @@ async def generate_graph(
 
 @router.get("/graph", response_model=GraphResponse)
 async def get_graph(session_id: str = Query(...)):
-    # Try Supabase stored graph first
-    try:
-        from models.database import get_supabase
-
-        supabase = get_supabase()
-        nodes_res = supabase.table("graph_nodes").select("*").execute()
-        edges_res = supabase.table("graph_edges").select("*").execute()
-
-        if nodes_res.data and edges_res.data:
-            nodes = [
-                GraphNode(
-                    id=n["id"],
-                    label=n["label"],
-                    description=n.get("description"),
-                    frequency=n.get("frequency", 1),
-                )
-                for n in nodes_res.data
-            ]
-            edges = [
-                GraphEdge(
-                    id=str(e["id"]),
-                    source_node_id=e["source_node_id"],
-                    target_node_id=e["target_node_id"],
-                    relationship=e.get("relationship", "related_to"),
-                    weight=e.get("weight", 1.0),
-                )
-                for e in edges_res.data
-            ]
-            return GraphResponse(nodes=nodes, edges=edges)
-    except Exception:
-        pass
-
-    # Fallback: build keyword graph from all trending cards
     all_cards = await fetch_trending_cards(session_id)
     nodes, edges = _build_keyword_graph(all_cards)
     return GraphResponse(nodes=nodes, edges=edges)

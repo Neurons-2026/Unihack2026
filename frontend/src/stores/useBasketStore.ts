@@ -18,7 +18,7 @@ export const useBasketStore = create<BasketState>((set, get) => ({
   interactions: [],
   topicTaps: {},
   addItem: (card) => {
-    if (get().items.length >= 5) return;
+    if (get().items.length >= 3) return;
     if (get().items.includes(card.id)) return;
     set((s) => ({ items: [...s.items, card.id], cards: [...s.cards, card] }));
   },

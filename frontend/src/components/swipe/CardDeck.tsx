@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { unlockAudio, playSaveSound, playSkipSound } from '@/lib/sounds';
 import { getCards, postInteraction, addToBasket } from '@/lib/api';
@@ -36,6 +37,7 @@ function mapCard(c: Card): CardData {
 type RevealState = { dir: 'left' | 'right'; fading: boolean } | null;
 
 export default function CardDeck({ activeTopic }: { activeTopic: string }) {
+  const router = useRouter();
   const [allCards, setAllCards] = useState<CardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [dismissedCardIds, setDismissedCardIds] = useState<string[]>([]);
@@ -47,6 +49,13 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const iconTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const addItem = useBasketStore((s) => s.addItem);
   const logInteraction = useBasketStore((s) => s.logInteraction);
+  const basketItems = useBasketStore((s) => s.items);
+
+  useEffect(() => {
+    if (basketItems.length >= 3) {
+      router.push('/briefing');
+    }
+  }, [basketItems.length, router]);
   const pendingDir = useRef<'left' | 'right' | null>(null);
 
   useEffect(() => {

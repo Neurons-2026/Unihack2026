@@ -22,8 +22,8 @@ function buildGraphFromAPI(
     const freq = raw.frequency ?? 1;
     const baseR = 8 + Math.min(freq, 5) * 2.5;
     const isToday = raw.is_today ?? true;
-    const todayTx = W * 0.3 + Math.random() * W * 0.4;
-    const todayTy = H * 0.3 + Math.random() * H * 0.4;
+    const todayTx = W * 0.15 + Math.random() * W * 0.7;
+    const todayTy = H * 0.15 + Math.random() * H * 0.7;
     const fullTx = W * 0.1 + Math.random() * W * 0.8;
     const fullTy = H * 0.08 + Math.random() * H * 0.84;
     const delay = isToday ? 20 + todayIdx * 12 : 0;
@@ -111,7 +111,7 @@ export default function KnowledgeGraph() {
     moved: false,
     lastTapTime: 0, lastTapNodeId: '',
     selectedNodeIds: new Set<string>(), // Multiple selected nodes
-    camScale: 1.7, camTargetScale: 1.7,
+    camScale: 1.1, camTargetScale: 1.1,
     camCx: 0, camCy: 0, camTargetCx: 0, camTargetCy: 0,
     transitioning: false,
     viewMode: 'today' as 'today' | 'full',
@@ -219,7 +219,7 @@ export default function KnowledgeGraph() {
         if (!a || !b || !a.settled || !b.settled) continue;
         const dx = b.x - a.x, dy = b.y - a.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const target = (a.r + b.r) * 3;
+        const target = (a.r + b.r) * 5;
         const f = (dist - target) * 0.002;
         if (a !== s.dragging) { a.vx += (dx / dist) * f; a.vy += (dy / dist) * f; }
         if (b !== s.dragging) { b.vx -= (dx / dist) * f; b.vy -= (dy / dist) * f; }
@@ -235,9 +235,9 @@ export default function KnowledgeGraph() {
           if (!m.settled || m.opacity < 0.1) continue;
           const dx = n.x - m.x, dy = n.y - m.y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const minDist = n.r + m.r + 22;
-          if (dist < minDist) { const rep = ((minDist - dist) / minDist) * 0.8; n.vx += (dx / dist) * rep; n.vy += (dy / dist) * rep; }
-          if (dist < 140) { n.vx += (dx * 0.018) / dist; n.vy += (dy * 0.018) / dist; }
+          const minDist = n.r + m.r + 50;
+          if (dist < minDist) { const rep = ((minDist - dist) / minDist) * 1.2; n.vx += (dx / dist) * rep; n.vy += (dy / dist) * rep; }
+          if (dist < 220) { n.vx += (dx * 0.025) / dist; n.vy += (dy * 0.025) / dist; }
         }
         // Center gravity toward VISIBLE center
         n.vx += ((vb.left + vb.right) / 2 - n.x) * 0.0003;
@@ -505,7 +505,7 @@ export default function KnowledgeGraph() {
       setTimeout(() => { s.transitioning = false; }, 3500);
     } else {
       s.viewMode = 'today'; setViewMode('today');
-      s.camTargetScale = 1.7; s.camTargetCx = s.W / 2; s.camTargetCy = s.H / 2;
+      s.camTargetScale = 1.1; s.camTargetCx = s.W / 2; s.camTargetCy = s.H / 2;
       nodes.forEach((n) => { if (!n.isToday) { n.fadeOut = true; n.fadeIn = false; } });
       let delay = 0;
       nodes.forEach((n) => {
