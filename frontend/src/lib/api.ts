@@ -1,6 +1,6 @@
 import { BasketItem, Briefing, Card, GraphEdge, GraphNode, Interaction } from "./types";
 
-const API_BASE = (globalThis as any).process?.env?.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
 async function http<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
