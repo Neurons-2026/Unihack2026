@@ -1,0 +1,63 @@
+{
+  "source_file": "github:fishaudio/fish-speech",
+  "source_title": "Fish Audio S2: Advanced Multilingual Text-to-Speech Synthesis",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "dual-autoregressive architecture",
+      "description": "A two-stage speech generation system where one part handles the overall flow of speech over time, and a second faster part fills in the fine acoustic details at each moment — like a conductor and an orchestra working together.",
+      "why_innovative": "By splitting the heavy work across two specialized components (4B and 400M parameters), it keeps voice generation fast and cheap without sacrificing sound quality — something previous single-stage systems struggled to balance.",
+      "impact_on_applications": "This could make real-time voice assistants, audiobook narrators, and dubbing tools far more responsive and natural-sounding on standard hardware, reducing the cost of deploying high-quality speech AI in consumer products.",
+      "category": "architecture",
+      "relevance_score": 0.97
+    },
+    {
+      "label": "grpo reinforcement learning alignment",
+      "description": "A training technique where the same AI models used to check and label the original training data are then reused as 'judges' during a second round of training — teaching the speech model to score well on quality, accuracy, and voice similarity.",
+      "why_innovative": "Reusing the same models as reward judges eliminates the mismatch between what the model learned during initial training and what it's being graded on later, leading to more consistent and reliable speech quality improvements.",
+      "impact_on_applications": "Products like navigation apps, e-learning platforms, and customer service bots could generate speech that more reliably matches the right tone, emotion, and accuracy, reducing frustrating or robotic-sounding outputs.",
+      "category": "technique",
+      "relevance_score": 0.93
+    },
+    {
+      "label": "inline natural language prosody control",
+      "description": "A way to insert plain English instructions like [whisper] or [super happy] directly inside the text being spoken, so the AI adjusts its voice style at exactly that word or phrase — like stage directions embedded in a script.",
+      "why_innovative": "Unlike older systems that required rigid, predefined commands or separate audio style settings, this lets anyone describe any vocal nuance in their own words, making expressive speech generation accessible without technical expertise.",
+      "impact_on_applications": "Audiobook creators, game developers, and video producers could generate emotionally rich narration or character voices simply by writing natural descriptions, dramatically cutting production time and cost.",
+      "category": "technique",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "rvq-based audio codec",
+      "description": "A compression system that encodes audio into multiple layers of compact digital codes (like 10 nested zip files for sound), allowing the AI to reconstruct high-fidelity audio from these compact representations.",
+      "why_innovative": "Using 10 residual codebooks at ~21 Hz enables the model to capture both the broad shape of speech and its fine acoustic texture, achieving near-human audio quality while keeping data sizes manageable.",
+      "impact_on_applications": "Streaming services, video conferencing tools, and podcast platforms could deliver studio-quality synthesized voices over low-bandwidth connections, improving accessibility in regions with limited internet speed.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "rapid voice cloning",
+      "description": "A feature that lets the AI copy someone's voice — including their tone, speaking style, and emotional tendencies — from just a 10–30 second audio sample, with no additional retraining required.",
+      "why_innovative": "Achieving accurate voice cloning from such a short sample without fine-tuning removes a major barrier (cost and time of data collection) that previously limited personalized voice AI to well-funded applications.",
+      "impact_on_applications": "Accessibility tools could restore speech for people who have lost their voice due to illness, and personalized virtual assistants could speak in a user's own voice, making technology feel far more personal and human.",
+      "category": "application",
+      "relevance_score": 0.9
+    },
+    {
+      "label": "sglang streaming inference",
+      "description": "A production serving system that treats the speech model exactly like a standard text AI (large language model), inheriting all the speed tricks developed for text generation — like smart memory reuse and batching multiple requests together.",
+      "why_innovative": "Achieving a real-time factor of 0.195 (meaning the audio is generated nearly 5x faster than it plays) with under 100ms startup time on a single GPU makes real-time interactive voice applications genuinely practical at scale.",
+      "impact_on_applications": "Live customer service phone bots, real-time language translation with voice output, and interactive voice games could all respond instantly and handle thousands of simultaneous users without expensive infrastructure.",
+      "category": "tool",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "multi-speaker token generation",
+      "description": "A mechanism that assigns each speaker in a conversation a unique tag (like a name badge) so the AI can juggle multiple distinct voices within a single generation pass, rather than making separate requests for each speaker.",
+      "why_innovative": "Handling multiple speakers natively in one pass eliminates the awkward stitching-together of separately generated voice clips, producing more natural-sounding multi-person dialogues with consistent identity across speakers.",
+      "impact_on_applications": "Podcast automation tools, interactive story apps, and video game dialogue engines could generate entire multi-character scenes in one step, making high-quality multi-voice content creation fast and affordable for independent creators.",
+      "category": "technique",
+      "relevance_score": 0.83
+    }
+  ]
+}

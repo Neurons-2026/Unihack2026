@@ -1,16 +1,12 @@
 'use client';
 import Link from 'next/link';
 import { useBasketStore } from '@/stores/useBasketStore';
-import { sampleCards } from '@/data/sampleCards';
-import { sourceThemes } from '@/lib/sourceThemes';
+import { sourceThemes, SourceType } from '@/lib/sourceThemes';
 
 export default function BasketPage() {
   const items = useBasketStore((s) => s.items);
+  const savedCards = useBasketStore((s) => s.cards);
   const removeItem = useBasketStore((s) => s.removeItem);
-
-  const savedCards = items
-    .map((id) => sampleCards.find((c) => c.id === id))
-    .filter(Boolean);
 
   return (
     <div
@@ -95,7 +91,7 @@ export default function BasketPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {savedCards.map((card) => {
               if (!card) return null;
-              const theme = sourceThemes[card.source];
+              const theme = sourceThemes[card.source as SourceType];
               return (
                 <div
                   key={card.id}
@@ -194,9 +190,9 @@ export default function BasketPage() {
         )}
       </div>
 
-      {/* Generate briefing button */}
+      {/* Actions */}
       {savedCards.length > 0 && (
-        <div style={{ padding: '12px 20px 32px', flexShrink: 0 }}>
+        <div style={{ padding: '12px 20px 32px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
           <Link
             href="/briefing"
             style={{
@@ -220,6 +216,32 @@ export default function BasketPage() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6" />
             </svg>
+          </Link>
+          <Link
+            href="/graph"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              width: '100%',
+              padding: '13px 0',
+              borderRadius: 12,
+              background: 'rgba(100,180,255,0.08)',
+              border: '1px solid rgba(100,180,255,0.15)',
+              color: 'rgba(100,180,255,0.9)',
+              fontSize: 14,
+              fontWeight: 500,
+              textDecoration: 'none',
+              letterSpacing: 0.2,
+            }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" />
+              <line x1="4.93" y1="4.93" x2="9.17" y2="9.17" /><line x1="14.83" y1="14.83" x2="19.07" y2="19.07" />
+              <line x1="14.83" y1="9.17" x2="19.07" y2="4.93" /><line x1="4.93" y1="19.07" x2="9.17" y2="14.83" />
+            </svg>
+            Explore Knowledge Graph
           </Link>
         </div>
       )}

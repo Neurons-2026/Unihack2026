@@ -1,8 +1,11 @@
 'use client';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { sampleCards } from '@/data/sampleCards';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { unlockAudio, playSaveSound, playSkipSound } from '@/lib/sounds';
+import { getCards, postInteraction, addToBasket } from '@/lib/api';
+import { getSessionId } from '@/lib/session';
+import { Card } from '@/lib/types';
+import { CardData } from '@/types/card';
 import CardItem from './CardItem';
 import EmptyState from './EmptyState';
 import SwipeBackground from './SwipeBackground';
@@ -11,7 +14,28 @@ import GravityCard from './GravityCard';
 
 type RevealState = { dir: 'left' | 'right'; fading: boolean } | null;
 
+const KNOWN_SOURCES: CardData['source'][] = ['github', 'huggingface', 'openai_blog', 'anthropic_blog'];
+
+function mapCard(c: Card): CardData {
+  const source: CardData['source'] = KNOWN_SOURCES.includes(c.source as CardData['source'])
+    ? (c.source as CardData['source'])
+    : 'github';
+  return {
+    id: c.id,
+    source,
+    title: c.card_title,
+    description: c.card_summary,
+    keywords: c.keywords,
+    sourceUrl: c.source_url ?? '',
+    publishedDate: c.published_at ?? '',
+    imageUrl: c.image_url ?? `https://picsum.photos/seed/${c.id}/800/600`,
+    metadata: c.metadata ?? {},
+  };
+}
+
 export default function CardDeck({ activeTopic }: { activeTopic: string }) {
+  const [allCards, setAllCards] = useState<CardData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [dismissedCardIds, setDismissedCardIds] = useState<string[]>([]);
   const [swipeDir, setSwipeDir] = useState<'left' | 'right' | null>(null);
   const [swipeIntensity, setSwipeIntensity] = useState(0);
@@ -23,14 +47,22 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const logInteraction = useBasketStore((s) => s.logInteraction);
   const pendingDir = useRef<'left' | 'right' | null>(null);
 
+  useEffect(() => {
+    const sessionId = getSessionId();
+    getCards(sessionId)
+      .then((cards) => setAllCards(cards.map(mapCard)))
+      .catch(() => setAllCards([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   const filteredCards = useMemo(
     () =>
       activeTopic === 'All'
-        ? sampleCards
-        : sampleCards.filter((c) =>
+        ? allCards
+        : allCards.filter((c) =>
             c.keywords.some((k) => k.toLowerCase().includes(activeTopic.toLowerCase())),
           ),
-    [activeTopic],
+    [activeTopic, allCards],
   );
 
   const dismissedLookup = useMemo(() => new Set(dismissedCardIds), [dismissedCardIds]);
@@ -90,13 +122,17 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     const dir = pendingDir.current;
     const resolvedDir: 'left' | 'right' = dir ?? 'left';
     const action: 'save' | 'skip' = resolvedDir === 'right' ? 'save' : 'skip';
+    const sessionId = getSessionId();
 
     if (resolvedDir === 'right') {
-      addItem(currentCard.id);
-      logInteraction(currentCard.id, 'save');
+      addItem(currentCard);
+      addToBasket(sessionId, currentCard.id).catch(() => {});
+      postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_right' }).catch(() => {});
     } else {
-      logInteraction(currentCard.id, 'skip');
+      postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_left' }).catch(() => {});
     }
+
+    logInteraction(currentCard.id, action);
 
     setReveal({ dir: resolvedDir, fading: false });
     setSwipeDir(null);
@@ -131,6 +167,14 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     padding: '10px 10px 16px',
     boxSizing: 'border-box' as const,
   };
+
+  if (loading) {
+    return (
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 14 }}>Loading cards…</div>
+      </div>
+    );
+  }
 
   if (!currentCard) {
     return (

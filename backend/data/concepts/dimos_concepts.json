@@ -1,0 +1,55 @@
+{
+  "source_file": "github:dimensionalOS/dimos",
+  "source_title": "DimOS: The Agentive Operating System for Physical Space Hardware",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "agentive robotics os",
+      "description": "A software operating system specifically designed so that AI agents (programs that reason and make decisions) can directly control physical robots like quadrupeds, humanoids, and drones using plain English instructions.",
+      "why_innovative": "It removes the need for complex traditional robotics middleware (like ROS) and lets developers control real robots with natural language and Python alone, dramatically lowering the barrier to building physical AI systems.",
+      "impact_on_applications": "This could accelerate the deployment of robots in warehouses, hospitals, and homes by allowing small teams or even individuals to build robot-powered applications without needing deep robotics expertise. It could make robot automation accessible to the same broad developer audience that builds web or mobile apps today.",
+      "category": "architecture",
+      "relevance_score": 0.97
+    },
+    {
+      "label": "spatio-temporal rag",
+      "description": "A memory system for robots that remembers where objects were located in physical space and when they were seen, so the robot can recall that 'the cup was on the kitchen table 10 minutes ago' even if the cup has moved.",
+      "why_innovative": "It gives robots persistent, time-aware spatial memory — something traditional robotic systems lack — enabling them to reason about objects that are no longer in view, which is essential for truly autonomous operation in real environments.",
+      "impact_on_applications": "Robots equipped with this could help elderly people find misplaced items at home, or enable warehouse robots to track inventory movements without constant re-scanning. It brings robots meaningfully closer to human-like situational awareness.",
+      "category": "technique",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "mcp robot skill interface",
+      "description": "A standardized communication protocol (set of rules for how programs talk to each other) that lets AI agents call specific robot actions — like 'move forward 0.5 meters' — as if they were simple function calls in a menu of available skills.",
+      "why_innovative": "It creates a universal bridge between large language model (LLM) agents and physical robot hardware, meaning any compatible AI assistant can control any compatible robot without custom integration code for each pair.",
+      "impact_on_applications": "This could allow popular AI assistants like Claude or ChatGPT to directly operate robots in your home or workplace through simple conversational commands, making robot control as easy as asking a smart speaker to play music.",
+      "category": "technique",
+      "relevance_score": 0.93
+    },
+    {
+      "label": "stream-based module architecture",
+      "description": "A design where every robot subsystem (camera, motor, AI brain) is a self-contained block that sends and receives continuous streams of data to other blocks using standardized message types, like pipes connecting different stations on an assembly line.",
+      "why_innovative": "It allows developers to mix and match robot components and AI models like building blocks, making it trivially easy to swap out a camera module for a lidar module or replace one AI model with another without rewriting the whole system.",
+      "impact_on_applications": "Robot application developers could build and iterate on complex multi-sensor robot behaviors in hours instead of weeks, similar to how web developers compose UI components today, enabling faster and cheaper development of commercial robot products.",
+      "category": "architecture",
+      "relevance_score": 0.91
+    },
+    {
+      "label": "hardware-agnostic robot blueprint",
+      "description": "A configuration recipe that describes how to wire together robot modules — such as sensors, controllers, and AI agents — in a way that works across different robot hardware brands (quadrupeds, humanoids, drones) without rewriting code.",
+      "why_innovative": "It decouples application logic from specific hardware, meaning the same AI-powered robot behavior written once can run on a Unitree dog, a humanoid, or a drone with minimal changes.",
+      "impact_on_applications": "Companies building robot-powered services could deploy their software across an entire fleet of mixed robot types, reducing development costs and making it practical to maintain one unified codebase for multi-robot environments like smart factories or delivery systems.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "natural language robot control",
+      "description": "The ability to give a robot instructions in plain spoken or written English — like 'go find the kitchen' — instead of writing low-level movement commands, using a large language model (an AI trained on text) to translate the request into robot actions.",
+      "why_innovative": "It makes robots accessible to non-programmers and enables dynamic, open-ended task assignment rather than pre-scripted behaviors, which is a key step toward truly general-purpose robots.",
+      "impact_on_applications": "Facility managers, caregivers, or retail workers could direct robots on the fly using everyday language on a phone or tablet, without needing any technical training, dramatically expanding who can use and benefit from robotic automation.",
+      "category": "application",
+      "relevance_score": 0.89
+    }
+  ]
+}

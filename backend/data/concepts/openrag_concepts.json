@@ -1,0 +1,55 @@
+{
+  "source_file": "github:langflow-ai/openrag",
+  "source_title": "OpenRAG: Intelligent Agent-powered document search",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "agentic rag workflow",
+      "description": "A system where AI agents (autonomous programs that make decisions) coordinate multiple steps — like finding, ranking, and summarizing documents — automatically, rather than following a single fixed process.",
+      "why_innovative": "Traditional document search returns simple keyword matches, but agentic RAG can reason about which documents are most relevant, re-rank results, and coordinate multiple AI tools together — producing far more accurate and context-aware answers.",
+      "impact_on_applications": "This could power smarter enterprise search tools where employees ask complex questions across thousands of company documents and get precise, well-sourced answers — like having a knowledgeable research assistant available 24/7. It could also improve customer support chatbots that need to pull accurate answers from large product manuals or policy documents.",
+      "category": "architecture",
+      "relevance_score": 0.97
+    },
+    {
+      "label": "retrieval-augmented generation",
+      "description": "A technique where an AI, before answering a question, first searches through a collection of documents to find relevant information, then uses that information to craft a more accurate and grounded response.",
+      "why_innovative": "It prevents AI from 'hallucinating' (making up facts) by anchoring answers in real documents, making AI systems far more trustworthy for professional and enterprise use cases.",
+      "impact_on_applications": "This could transform how legal, medical, or financial professionals interact with large document libraries — asking plain-language questions and getting accurate answers cited from actual source material, rather than sifting through hundreds of files manually.",
+      "category": "technique",
+      "relevance_score": 0.99
+    },
+    {
+      "label": "semantic search",
+      "description": "A search method that understands the meaning and intent behind a query (not just the exact words), so searching for 'car problems' also finds documents about 'vehicle malfunctions' or 'engine failures'.",
+      "why_innovative": "Unlike traditional keyword search that misses relevant content phrased differently, semantic search dramatically improves recall and relevance, making document retrieval far more useful in real-world scenarios.",
+      "impact_on_applications": "This could make internal company knowledge bases (like HR policies, technical documentation, or research archives) far easier to navigate, saving employees hours of manual searching each week.",
+      "category": "technique",
+      "relevance_score": 0.9
+    },
+    {
+      "label": "model context protocol",
+      "description": "A standardized communication bridge that lets popular AI assistants (like Claude or Cursor) plug directly into external tools and knowledge bases, so they can search your own documents as part of their normal conversation flow.",
+      "why_innovative": "It removes the need for custom integrations every time you want an AI assistant to access your private data, creating a universal plug-and-play standard that makes AI tools far more extensible and interoperable.",
+      "impact_on_applications": "Developers and knowledge workers using AI coding assistants or chat tools could instantly give those tools access to their company's internal documents, wikis, or databases — without any complex setup — making AI assistants far more relevant and personalized to their specific work context.",
+      "category": "tool",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "visual workflow builder",
+      "description": "A drag-and-drop graphical interface (powered by Langflow) that lets users visually design and connect the steps of an AI document-processing pipeline — like building a flowchart — without writing code.",
+      "why_innovative": "It democratizes the creation of complex AI pipelines by making them accessible to non-engineers, dramatically reducing the time and expertise needed to prototype and iterate on RAG systems.",
+      "impact_on_applications": "Business analysts, researchers, or product managers could build and customize their own AI-powered document search workflows without relying on engineering teams, speeding up innovation cycles in organizations of all sizes.",
+      "category": "tool",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "intelligent document parsing",
+      "description": "An automated process (powered by Docling) that can handle messy, real-world documents — including PDFs, scanned files, and mixed formats — and extract clean, structured text that AI systems can actually work with.",
+      "why_innovative": "Most real-world business documents are imperfect and inconsistently formatted; robust parsing is the critical first step that determines whether the entire RAG pipeline succeeds or fails.",
+      "impact_on_applications": "Organizations could automatically process years of legacy documents — old scanned contracts, mixed-format reports, handwritten notes — and make all of that knowledge instantly searchable and queryable through a chat interface.",
+      "category": "technique",
+      "relevance_score": 0.83
+    }
+  ]
+}

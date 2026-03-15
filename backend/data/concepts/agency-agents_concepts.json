@@ -1,0 +1,55 @@
+{
+  "source_file": "github:msitarzewski/agency-agents",
+  "source_title": "The Agency: AI Specialists Ready to Transform Your Workflow",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "specialized ai agent personas",
+      "description": "Instead of using one generic AI assistant, this system gives each AI a distinct role, personality, and area of expertise — like hiring a team where one person is a frontend developer, another is a security engineer, and another is a marketing specialist.",
+      "why_innovative": "Generic AI prompts produce generic results; persona-driven agents with domain-specific workflows and success metrics consistently deliver higher-quality, production-ready outputs without requiring users to craft detailed instructions from scratch.",
+      "impact_on_applications": "Small teams and solo founders could deploy a full virtual agency — engineers, designers, marketers, and analysts — without hiring staff, dramatically lowering the cost of building and launching software products. Freelancers could offer services in dozens of specialties by activating the right agent for each client.",
+      "category": "architecture",
+      "relevance_score": 0.97
+    },
+    {
+      "label": "multi-agent orchestration",
+      "description": "A coordination layer (the 'Agents Orchestrator') that manages multiple specialized AI agents working together on complex projects, routing tasks to the right expert agent and combining their outputs.",
+      "why_innovative": "Single AI models hit a ceiling on complex, multi-domain projects; orchestrating specialized agents in sequence or in parallel allows tasks that would overwhelm one AI — like building, testing, securing, and documenting a full application — to be completed end-to-end autonomously.",
+      "impact_on_applications": "Software development workflows that normally require a team of 5–10 people with different skills could be automated from a single prompt, making it realistic for one person to ship production-quality software at team speed. This could also power autonomous business operations where marketing, sales, and engineering agents collaborate without human intervention.",
+      "category": "architecture",
+      "relevance_score": 0.93
+    },
+    {
+      "label": "cross-tool agent portability",
+      "description": "A conversion and installation script system that packages the same agent definitions so they work identically across multiple AI coding tools — Claude Code, Cursor, Aider, Windsurf, GitHub Copilot, and Gemini CLI — without rewriting anything.",
+      "why_innovative": "Agent definitions are typically locked to one platform; tool-agnostic portability means users are not dependent on any single AI vendor and can carry their curated team of agents as they switch or combine tools.",
+      "impact_on_applications": "Developers can invest time curating and refining their ideal AI team once and use it everywhere, much like how a music playlist syncs across streaming apps. Enterprises can standardize AI workflows across mixed tooling environments without rebuilding configurations for each platform.",
+      "category": "tool",
+      "relevance_score": 0.89
+    },
+    {
+      "label": "deliverable-focused agent prompting",
+      "description": "Each agent is designed not just to chat, but to produce specific, tangible outputs — actual code, written documents, audit reports, campaign assets, or test results — with predefined success metrics baked into its instructions.",
+      "why_innovative": "Most AI prompt templates optimize for conversation quality; tying agent behavior to measurable deliverables and real workflows transforms AI from an advice-giver into an autonomous executor, closing the gap between 'AI suggested it' and 'AI did it.'",
+      "impact_on_applications": "Business tools built on this pattern could automatically generate investor-ready pitch decks, complete security audit reports, or finished ad campaigns at the click of a button, replacing tasks that currently take consultants days to complete. This could make professional-grade outputs accessible to anyone regardless of their background.",
+      "category": "technique",
+      "relevance_score": 0.91
+    },
+    {
+      "label": "agentic identity and trust",
+      "description": "A dedicated agent that manages how AI agents prove who they are, get authorized to take actions, and leave an auditable trail of everything they did — similar to how employees have ID badges and access logs.",
+      "why_innovative": "As AI agents begin taking real actions (sending emails, processing payments, deploying code), knowing which agent did what and whether it was authorized becomes a critical safety and compliance requirement that most current systems ignore.",
+      "impact_on_applications": "Financial services and healthcare platforms could safely deploy autonomous AI agents to handle sensitive tasks, knowing every action is logged and verified — meeting regulatory requirements without slowing down automation. This could also prevent rogue or compromised AI agents from taking unauthorized actions in production systems.",
+      "category": "technique",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "llm routing cost optimization",
+      "description": "An agent specifically designed to automatically decide which AI model (cheap vs. expensive, fast vs. powerful) should handle each task, and to test new models in the background before fully switching to them.",
+      "why_innovative": "Organizations using AI at scale waste significant money by routing all requests to the most powerful (and expensive) model when simpler tasks could be handled by cheaper ones; intelligent routing can cut costs by 60–80% without reducing output quality.",
+      "impact_on_applications": "Startups building AI-powered apps could dramatically extend their budget, making it financially viable to offer AI features in consumer products at low or no cost to users. Large enterprises running thousands of daily AI tasks could save millions annually while maintaining quality.",
+      "category": "technique",
+      "relevance_score": 0.83
+    }
+  ]
+}

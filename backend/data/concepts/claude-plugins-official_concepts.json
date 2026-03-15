@@ -1,0 +1,47 @@
+{
+  "source_file": "github:anthropics/claude-plugins-official",
+  "source_title": "Claude Code Plugins Directory",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "claude code plugin system",
+      "description": "A structured marketplace where developers can build and share add-ons that extend the capabilities of Claude Code, Anthropic's AI coding assistant.",
+      "why_innovative": "It creates an open ecosystem around an AI coding tool, allowing third-party developers to customize and extend AI behavior in a standardized, discoverable way — similar to how browser extensions transformed web browsers.",
+      "impact_on_applications": "Developers could install specialized plugins to make their AI coding assistant work with specific tools, languages, or workflows, dramatically reducing setup time and enabling highly tailored AI-assisted coding environments.",
+      "category": "tool",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "mcp server integration",
+      "description": "A configuration layer (using a format called MCP — Model Context Protocol) that lets plugins connect Claude to external tools, databases, or services so the AI can take real actions beyond just generating text.",
+      "why_innovative": "This bridges the gap between an AI assistant and real-world systems, allowing the AI to actually read files, call APIs, or interact with developer tools rather than just describing how to do so.",
+      "impact_on_applications": "This could allow AI coding assistants to directly push code to GitHub, query databases, or run tests automatically — turning the AI from an advisor into an active participant in software development workflows.",
+      "category": "architecture",
+      "relevance_score": 0.92
+    },
+    {
+      "label": "slash command plugins",
+      "description": "Custom shortcut commands (like '/deploy' or '/review') that users can trigger inside Claude Code to execute predefined, plugin-specific actions instantly.",
+      "why_innovative": "It gives non-technical users and power users alike a simple, consistent way to invoke complex AI-powered workflows with a single word, lowering the barrier to using advanced AI capabilities.",
+      "impact_on_applications": "Teams could create company-specific commands (e.g., '/submit-pr' or '/run-tests') that automate repetitive coding tasks, saving hours of manual work and reducing human error in software development pipelines.",
+      "category": "technique",
+      "relevance_score": 0.85
+    },
+    {
+      "label": "agent definitions",
+      "description": "Pre-configured AI 'personas' or specialized sub-agents bundled inside a plugin, each designed to handle a specific type of task (e.g., a security review agent or a documentation agent).",
+      "why_innovative": "It enables modular, role-specific AI behavior that can be packaged, shared, and reused — moving AI assistants from one-size-fits-all tools to specialized expert systems that can be swapped in as needed.",
+      "impact_on_applications": "A software company could deploy a 'security audit agent' plugin so every developer automatically gets AI-powered security checks built into their coding workflow, making apps safer without requiring security expertise from every developer.",
+      "category": "architecture",
+      "relevance_score": 0.87
+    },
+    {
+      "label": "plugin marketplace curation",
+      "description": "A quality and security review process where third-party plugins are checked before being listed in the official directory, similar to how app stores vet apps before publishing them.",
+      "why_innovative": "It addresses one of the biggest risks in AI tool ecosystems — malicious or poorly built extensions — by establishing a trust layer that makes it safer for organizations to adopt community-built AI tools.",
+      "impact_on_applications": "Businesses can confidently allow employees to use community-built AI plugins without fear of data leaks or security breaches, accelerating enterprise adoption of AI coding assistants.",
+      "category": "application",
+      "relevance_score": 0.83
+    }
+  ]
+}

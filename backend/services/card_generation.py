@@ -6,7 +6,7 @@ import anthropic
 
 from config import get_settings
 
-SYSTEM_PROMPT = """You generate structured metadata for AI news cards. You will receive the title, source, and cleaned article text for one news item. Return a JSON object with exactly these four fields:
+SYSTEM_PROMPT = """You generate structured metadata for AI news cards. You will receive the title, source, cleaned article text, and a list of extracted technical concepts for one news item. Return a JSON object with exactly these four fields:
 
 {
   "card_title": "A concise, jargon-free headline (max 80 characters, present tense, active voice)",
@@ -18,12 +18,12 @@ SYSTEM_PROMPT = """You generate structured metadata for AI news cards. You will 
 Rules:
 - card_title: MUST be under 80 characters. No clickbait, plain English, present tense
 - card_summary: MUST be a COMPLETE sentence that ends naturally with a period. HARD LIMIT: 110 characters. Count your characters carefully before responding. If over 110 characters, rewrite shorter. No jargon — if a technical term is unavoidable, explain it in plain English inline
-- keywords: 3 to 5 items, lowercase, single words or short hyphenated phrases, most specific first
+- keywords: 3 to 5 items, lowercase, single words or short hyphenated phrases, most specific first. IMPORTANT: The keywords list MUST include the extracted concept labels provided below. Place concept labels first, then add 1-2 additional contextual keywords if needed to reach 3-5 total. Do NOT drop or rephrase the concept labels — use them exactly as given.
 - thumbnail_keyword: one word, concrete and visual
 - Output valid JSON only — no prose, no markdown fences, no explanation"""
 
 
-def _build_user_prompt(item: Dict[str, Any]) -> str:
+def _build_user_prompt(item: Dict[str, Any], concept_labels: List[str] | None = None) -> str:
     title = item.get("title", "")
     source = item.get("source", "")
     cleaned_text = item.get("preprocessing", {}).get("cleaned_text", "") or item.get("raw_summary", "")
@@ -31,7 +31,16 @@ def _build_user_prompt(item: Dict[str, Any]) -> str:
     words = cleaned_text.split()
     if len(words) > 1500:
         cleaned_text = " ".join(words[:1500]) + " [truncated]"
-    return f"Title: {title}\nSource: {source}\n\nContent:\n{cleaned_text}"
+
+    prompt = f"Title: {title}\nSource: {source}\n\nContent:\n{cleaned_text}"
+
+    if concept_labels:
+        labels_str = ", ".join(concept_labels)
+        prompt += (
+            f"\n\nExtracted Concepts (MUST appear as keywords):\n{labels_str}"
+        )
+
+    return prompt
 
 
 def _truncate_clean(text: str, max_len: int) -> str:
@@ -42,7 +51,7 @@ def _truncate_clean(text: str, max_len: int) -> str:
     return shortened + "."
 
 
-def _parse_card_fields(raw: str) -> Dict[str, Any]:
+def _parse_card_fields(raw: str, concept_labels: List[str] | None = None) -> Dict[str, Any]:
     """Extract the JSON object from Claude's response."""
     # Strip markdown fences if present
     raw = re.sub(r"```(?:json)?", "", raw).strip()
@@ -52,6 +61,14 @@ def _parse_card_fields(raw: str) -> Dict[str, Any]:
     card_summary = _truncate_clean(str(data.get("card_summary", "")).strip(), 120)
 
     keywords: List[str] = [str(k).lower().strip() for k in data.get("keywords", [])]
+
+    # Ensure concept labels are always present in keywords
+    if concept_labels:
+        existing_set = set(keywords)
+        # Prepend any missing concept labels
+        missing = [label.lower().strip() for label in concept_labels if label.lower().strip() not in existing_set]
+        keywords = missing + keywords
+
     keywords = keywords[:5]  # cap at 5
 
     thumbnail_keyword = str(data.get("thumbnail_keyword", "")).strip().split()[0] if data.get("thumbnail_keyword") else ""
@@ -64,18 +81,30 @@ def _parse_card_fields(raw: str) -> Dict[str, Any]:
     }
 
 
-def generate_card_fields(item: Dict[str, Any]) -> Dict[str, Any]:
+def generate_card_fields(
+    item: Dict[str, Any],
+    concept_labels: List[str] | None = None,
+) -> Dict[str, Any]:
     """
     Call Claude to produce card_title, card_summary, keywords, and thumbnail_keyword
     for a preprocessed content_item dict (S2 schema).
 
-    Populates item['card'] and returns the updated dict.
-    Requires item['preprocessing']['cleaned_text'] to be set (SU3 output).
-    """
-    settings = get_settings()
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    Args:
+        item: Content item dict with preprocessing.cleaned_text set.
+        concept_labels: List of extracted concept labels to include as keywords.
 
-    user_prompt = _build_user_prompt(item)
+    Populates item['card'] and returns the updated dict.
+    """
+    import os
+    settings = get_settings()
+    api_key = (
+        settings.anthropic_api_key
+        or os.environ.get("ANTHROPIC_API_KEY")
+        or os.environ.get("ANTHTROPIC_API")
+    )
+    client = anthropic.Anthropic(api_key=api_key)
+
+    user_prompt = _build_user_prompt(item, concept_labels)
 
     message = client.messages.create(
         model="claude-opus-4-6",
@@ -85,17 +114,31 @@ def generate_card_fields(item: Dict[str, Any]) -> Dict[str, Any]:
     )
 
     raw_response = message.content[0].text
-    card_fields = _parse_card_fields(raw_response)
+    card_fields = _parse_card_fields(raw_response, concept_labels)
 
-    # If Harry's keywords exist in metadata, use those instead of LLM-generated ones
+    # If Harry's keywords exist in metadata, merge with concept labels
     harry_keywords = item.get("metadata", {}).get("keywords", [])
-    if harry_keywords:
+    if harry_keywords and not concept_labels:
         card_fields["keywords"] = [str(k).lower().strip() for k in harry_keywords[:5]]
 
     item["card"] = card_fields
     return item
 
 
-def generate_card_fields_batch(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Process a list of content_items sequentially. Returns all items with card fields populated."""
-    return [generate_card_fields(item) for item in items]
+def generate_card_fields_batch(
+    items: List[Dict[str, Any]],
+    concepts_by_item: Dict[str, List[str]] | None = None,
+) -> List[Dict[str, Any]]:
+    """Process a list of content_items sequentially.
+
+    Args:
+        items: List of content item dicts.
+        concepts_by_item: Optional mapping of item_id -> list of concept labels.
+
+    Returns all items with card fields populated.
+    """
+    result = []
+    for item in items:
+        labels = (concepts_by_item or {}).get(item.get("id", ""))
+        result.append(generate_card_fields(item, concept_labels=labels))
+    return result

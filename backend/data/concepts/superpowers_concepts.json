@@ -1,0 +1,55 @@
+{
+  "source_file": "github:obra/superpowers",
+  "source_title": "Superpowers: A Composable Skills Workflow System for Coding Agents",
+  "source_type": "pdf",
+  "concepts": [
+    {
+      "label": "subagent-driven development",
+      "description": "A workflow where a main AI coordinator automatically spawns separate, fresh AI workers (subagents) to handle each individual coding task, then reviews their output before moving on.",
+      "why_innovative": "This breaks complex software projects into independently verified chunks handled by parallel AI workers, enabling hours of autonomous coding without human intervention or loss of direction.",
+      "impact_on_applications": "Developer tools like Cursor or Claude Code could autonomously build entire features overnight while a developer sleeps, dramatically cutting the time from idea to working software. This could make software development accessible to people with limited coding experience.",
+      "category": "technique",
+      "relevance_score": 0.95
+    },
+    {
+      "label": "composable agent skills",
+      "description": "A library of modular, reusable instruction sets (called 'skills') that an AI coding assistant automatically detects and applies at the right moment during a software project, without the user needing to ask.",
+      "why_innovative": "Rather than giving a single AI a massive set of rules, it packages behaviors as plug-and-play modules that trigger contextually, making AI agents more reliable and easier to extend or customize.",
+      "impact_on_applications": "This could power app-store-style marketplaces for AI agent behaviors, letting developers share and install specialized workflows the same way people install phone apps — making powerful AI coding practices accessible to everyone.",
+      "category": "architecture",
+      "relevance_score": 0.93
+    },
+    {
+      "label": "two-stage agent review",
+      "description": "After each coding task is completed by an AI subagent, the work is checked twice: once to confirm it matches the original plan (spec compliance), and again to check the actual quality of the code written.",
+      "why_innovative": "Separating 'did it do what was asked?' from 'did it do it well?' catches more mistakes than a single review pass, reducing the compounding errors that plague long autonomous AI coding sessions.",
+      "impact_on_applications": "AI coding assistants integrated into tools like GitHub or VS Code could produce significantly fewer bugs and regressions in automatically generated code, making AI-assisted development safer for professional and production use.",
+      "category": "technique",
+      "relevance_score": 0.9
+    },
+    {
+      "label": "socratic spec refinement",
+      "description": "Before writing any code, the AI engages the user in a structured back-and-forth conversation to extract a clear, complete design specification, rather than immediately guessing what to build.",
+      "why_innovative": "Most AI coding failures stem from misunderstood requirements; forcing a clarification phase before execution dramatically reduces wasted work and misaligned outputs.",
+      "impact_on_applications": "This could transform how non-technical users interact with AI builders — instead of getting something completely wrong, tools like no-code app builders or AI assistants would first make sure they truly understand what you want before building it.",
+      "category": "technique",
+      "relevance_score": 0.88
+    },
+    {
+      "label": "mandatory tdd enforcement",
+      "description": "The system strictly enforces a 'test first' coding rule: the AI must write a failing test, watch it fail, then write the minimum code to make it pass — and will actually delete code that was written without a test first.",
+      "why_innovative": "AI coding agents typically skip testing because it's not immediately rewarded; hard-wiring test-driven development (TDD) as a non-optional workflow step produces reliably higher-quality, more maintainable code from AI agents.",
+      "impact_on_applications": "Software built with AI assistance would have far fewer hidden bugs and be much easier to update later, which matters enormously for apps handling sensitive tasks like banking, healthcare scheduling, or e-commerce.",
+      "category": "technique",
+      "relevance_score": 0.87
+    },
+    {
+      "label": "git worktree parallelism",
+      "description": "Each new feature or task gets its own isolated copy of the codebase (a 'worktree') on a separate branch, so multiple AI agents can work simultaneously without interfering with each other.",
+      "why_innovative": "This enables true parallel AI development without merge conflicts or cross-contamination between tasks, unlocking genuine multi-agent concurrency on the same codebase.",
+      "impact_on_applications": "Development platforms could let teams run dozens of AI agents simultaneously on different features of the same product, compressing weeks of development work into hours for startups and enterprise teams alike.",
+      "category": "technique",
+      "relevance_score": 0.85
+    }
+  ]
+}
