@@ -46,6 +46,7 @@ class GraphNode(BaseModel):
     label: str
     description: Optional[str] = None
     frequency: Optional[int] = None
+    is_today: Optional[bool] = None
 
 
 class GraphEdge(BaseModel):

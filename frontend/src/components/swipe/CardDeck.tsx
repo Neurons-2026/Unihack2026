@@ -45,11 +45,14 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const [swipeIntensity, setSwipeIntensity] = useState(0);
   const [reveal, setReveal] = useState<RevealState>(null);
   const [iconHold, setIconHold] = useState<{ action: 'save' | 'skip'; fading: boolean } | null>(null);
+  const [tagToast, setTagToast] = useState<{ keywords: string[]; action: 'save' | 'skip'; fading: boolean } | null>(null);
+  const tagToastTimer = useRef<ReturnType<typeof setTimeout>[]>([]);
   const revealTimer = useRef<ReturnType<typeof setTimeout>>();
   const iconTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const addItem = useBasketStore((s) => s.addItem);
   const logInteraction = useBasketStore((s) => s.logInteraction);
   const basketItems = useBasketStore((s) => s.items);
+  const keywordScores = useBasketStore((s) => s.keywordScores);
 
   useEffect(() => {
     if (basketItems.length >= 3) {
@@ -66,15 +69,18 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       .finally(() => setLoading(false));
   }, []);
 
-  const filteredCards = useMemo(
-    () =>
-      activeTopic === 'All'
-        ? allCards
-        : allCards.filter((c) =>
-            c.keywords.some((k) => k.toLowerCase().includes(activeTopic.toLowerCase())),
-          ),
-    [activeTopic, allCards],
-  );
+  const filteredCards = useMemo(() => {
+    const base = activeTopic === 'All'
+      ? allCards
+      : allCards.filter((c) =>
+          c.keywords.some((k) => k.toLowerCase().includes(activeTopic.toLowerCase())),
+        );
+    return [...base].sort((a, b) => {
+      const score = (card: CardData) =>
+        card.keywords.reduce((sum, kw) => sum + (keywordScores[kw.toLowerCase()] ?? 0), 0);
+      return score(b) - score(a);
+    });
+  }, [activeTopic, allCards, keywordScores]);
 
   const dismissedLookup = useMemo(() => new Set(dismissedCardIds), [dismissedCardIds]);
 
@@ -143,7 +149,16 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_left' }).catch(() => {});
     }
 
-    logInteraction(currentCard.id, action);
+    logInteraction(currentCard.id, action, currentCard.keywords);
+
+    // Show tag priority toast
+    if (currentCard.keywords.length > 0) {
+      tagToastTimer.current.forEach(clearTimeout);
+      tagToastTimer.current = [];
+      setTagToast({ keywords: currentCard.keywords, action, fading: false });
+      tagToastTimer.current.push(setTimeout(() => setTagToast((t) => t ? { ...t, fading: true } : null), 1200));
+      tagToastTimer.current.push(setTimeout(() => setTagToast(null), 1800));
+    }
 
     setReveal({ dir: resolvedDir, fading: false });
     setSwipeDir(null);
@@ -170,7 +185,28 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     );
   }, [currentCard, addItem, logInteraction]);
 
-  const nextCard = visibleCards[1];
+  const { nextIfSave, nextIfSkip } = useMemo(() => {
+    if (!currentCard) return { nextIfSave: null, nextIfSkip: null };
+    const remaining = visibleCards.filter((c) => c.id !== currentCard.id);
+    const simulate = (delta: number) => {
+      const sim = { ...keywordScores };
+      for (const kw of currentCard.keywords) {
+        const key = kw.toLowerCase();
+        sim[key] = (sim[key] ?? 0) + delta;
+      }
+      const sorted = [...remaining].sort((a, b) => {
+        const sc = (card: CardData) =>
+          card.keywords.reduce((s, kw) => s + (sim[kw.toLowerCase()] ?? 0), 0);
+        return sc(b) - sc(a);
+      });
+      return sorted[0] ?? null;
+    };
+    return { nextIfSave: simulate(1), nextIfSkip: simulate(-1) };
+  }, [currentCard, visibleCards, keywordScores]);
+
+  const nextCard = swipeDir === 'right' ? nextIfSave
+    : swipeDir === 'left' ? nextIfSkip
+    : (nextIfSave ?? visibleCards[1]);
 
   const cardFrameStyle = {
     width: '100%',
@@ -210,6 +246,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       {/* Next card sits at the bottom of the stack */}
       {nextCard && (
         <div
+          key={nextCard.id}
           className="absolute inset-0 z-[1] w-full h-full"
           style={{
             pointerEvents: 'none',
@@ -248,6 +285,48 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       </GravityCard>
 
       <ActionIcon swipeDir={swipeDir} swipeIntensity={swipeIntensity} hold={iconHold} />
+
+      {/* Tag priority toast */}
+      {tagToast && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 24,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 20,
+            pointerEvents: 'none',
+            display: 'flex',
+            gap: 6,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            maxWidth: '90%',
+            opacity: tagToast.fading ? 0 : 1,
+            transition: 'opacity 0.5s ease-out',
+          }}
+        >
+          {tagToast.keywords.map((kw) => {
+            const isSave = tagToast.action === 'save';
+            return (
+              <span
+                key={kw}
+                style={{
+                  fontSize: 11,
+                  fontWeight: 500,
+                  padding: '4px 10px',
+                  borderRadius: 20,
+                  background: isSave ? 'rgba(74,222,128,0.15)' : 'rgba(248,113,113,0.15)',
+                  color: isSave ? 'rgba(74,222,128,0.9)' : 'rgba(248,113,113,0.9)',
+                  border: `1px solid ${isSave ? 'rgba(74,222,128,0.25)' : 'rgba(248,113,113,0.25)'}`,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {isSave ? '↑' : '↓'} {kw}
+              </span>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
