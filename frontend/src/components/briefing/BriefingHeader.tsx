@@ -5,7 +5,7 @@ export default function BriefingHeader({
   readingTimeMin,
   scrollProgress,
 }: {
-  readingTimeMin: number;
+  readingTimeMin?: number;
   scrollProgress: number;
 }) {
   const router = useRouter();
@@ -45,9 +45,11 @@ export default function BriefingHeader({
           </svg>
           <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>Back</span>
         </div>
-        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
-          {readingTimeMin} min read
-        </span>
+        {readingTimeMin !== undefined && (
+          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+            {readingTimeMin} min read
+          </span>
+        )}
       </div>
 
       {/* Scroll progress bar */}
