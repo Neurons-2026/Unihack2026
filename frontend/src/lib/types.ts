@@ -37,6 +37,7 @@ export interface Briefing {
   id: string;
   content: string;
   reading_time_min?: number;
+  card_images?: Record<string, string>;
 }
 
 export interface GraphNode {

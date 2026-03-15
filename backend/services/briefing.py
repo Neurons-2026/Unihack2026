@@ -144,6 +144,37 @@ def _check_fallback(card_ids: List[str]) -> Optional[BriefingResponse]:
     return None
 
 
+def _collect_card_images(card_ids: List[str]) -> dict:
+    """Build a mapping of card_id -> full image URL for briefing landscape images."""
+    import json
+    briefing_images_path = Path(__file__).resolve().parent.parent / "data" / "briefing_images.json"
+    briefing_map = {}
+    if briefing_images_path.exists():
+        briefing_map = json.loads(briefing_images_path.read_text())
+
+    # Also get portrait images from cards table as fallback
+    try:
+        from models.database import get_supabase
+        db = get_supabase()
+        result = db.table("cards").select("id,image_url").in_("id", card_ids).execute()
+        cards_by_id = {c["id"]: c.get("image_url", "") for c in result.data}
+    except Exception:
+        cards_by_id = {}
+
+    images = {}
+    for cid in card_ids:
+        # Prefer landscape from briefing_images.json
+        url = briefing_map.get(cid, "")
+        # Fallback to portrait card image
+        if not url:
+            url = cards_by_id.get(cid, "")
+        if url and url.startswith("/static/"):
+            url = f"http://localhost:8000{url}"
+        if url:
+            images[cid] = url
+    return images
+
+
 def _reading_time(text: str) -> float:
     word_count = len(text.split())
     return round(word_count / 200, 1)  # 200 wpm

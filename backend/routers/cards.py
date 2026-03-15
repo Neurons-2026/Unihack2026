@@ -95,6 +95,24 @@ async def get_card_feed(request: Request):
     return feed
 
 
+@router.post("/cards/images")
+async def get_card_images(card_ids: List[str], request: Request):
+    """Return a mapping of card_id -> landscape image URL for briefing use."""
+    from models.database import get_supabase
+    db = get_supabase()
+    briefing_images = _load_briefing_images()
+    # Fallback to portrait images from cards table
+    result = db.table("cards").select("id,image_url").in_("id", card_ids).execute()
+    cards_by_id = {c["id"]: c.get("image_url", "") for c in result.data}
+
+    images = {}
+    for cid in card_ids:
+        url = briefing_images.get(cid, "") or cards_by_id.get(cid, "")
+        if url:
+            images[cid] = _full_image_url(url, request)
+    return images
+
+
 @router.get("/cards/{card_id}", response_model=Card)
 async def get_card(card_id: str, session_id: str = Query(...)):
     cards = await fetch_trending_cards(session_id)

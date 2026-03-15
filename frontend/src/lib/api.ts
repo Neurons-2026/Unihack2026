@@ -39,6 +39,13 @@ export async function addToBasket(sessionId: string, cardId: string): Promise<Ba
   });
 }
 
+export async function getCardImages(cardIds: string[]): Promise<Record<string, string>> {
+  return http<Record<string, string>>(`/cards/images`, {
+    method: "POST",
+    body: JSON.stringify(cardIds),
+  });
+}
+
 export async function generateBriefing(sessionId: string, cardIds: string[]): Promise<Briefing> {
   return http<Briefing>(`/briefing/generate`, {
     method: "POST",

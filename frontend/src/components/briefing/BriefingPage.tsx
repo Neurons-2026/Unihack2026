@@ -1,17 +1,33 @@
 'use client';
 import { useState, useEffect, useRef, ReactNode } from 'react';
 import { useBasketStore } from '@/stores/useBasketStore';
-import { generateBriefing } from '@/lib/api';
+import { generateBriefing, getCardImages } from '@/lib/api';
 import { getSessionId } from '@/lib/session';
 import { Briefing } from '@/lib/types';
 import BriefingHeader from './BriefingHeader';
 import GraphButton from './GraphButton';
 
+function preloadImages(urls: string[]): Promise<void> {
+  if (urls.length === 0) return Promise.resolve();
+  return Promise.all(
+    urls.map(
+      (url) =>
+        new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve(); // don't block on failure
+          img.src = url;
+        }),
+    ),
+  ).then(() => {});
+}
+
 // Minimal markdown renderer — handles the backend's output format
-function renderMarkdown(md: string): ReactNode[] {
+function renderMarkdown(md: string, imageUrls: string[] = []): ReactNode[] {
   const lines = md.split('\n');
   const nodes: ReactNode[] = [];
   let key = 0;
+  let h3Index = 0;
 
   function renderInline(text: string): ReactNode {
     const parts: ReactNode[] = [];
@@ -54,6 +70,20 @@ function renderMarkdown(md: string): ReactNode[] {
         </h2>
       );
     } else if (line.startsWith('### ')) {
+      // Insert landscape image before each card section
+      const imgUrl = imageUrls[h3Index];
+      if (imgUrl) {
+        nodes.push(
+          <div key={key++} style={{ borderRadius: 14, overflow: 'hidden', margin: '16px 0 12px' }}>
+            <img
+              src={imgUrl}
+              alt=""
+              style={{ width: '100%', height: 180, objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+        );
+      }
+      h3Index++;
       nodes.push(
         <h3 key={key++} style={{ fontSize: 17, fontWeight: 600, color: '#fff',
           margin: '20px 0 4px', letterSpacing: -0.3 }}>
@@ -90,6 +120,7 @@ function renderMarkdown(md: string): ReactNode[] {
 
 export default function BriefingPage() {
   const [briefing, setBriefing] = useState<Briefing | null>(null);
+  const [cardImages, setCardImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -98,10 +129,27 @@ export default function BriefingPage() {
 
   useEffect(() => {
     const sessionId = getSessionId();
-    generateBriefing(sessionId, items)
-      .then(setBriefing)
-      .catch(() => setError('Failed to generate briefing. Please try again.'))
-      .finally(() => setLoading(false));
+
+    // Fire all three in parallel: briefing generation, image URL fetch, then preload
+    const briefingPromise = generateBriefing(sessionId, items).catch(() => {
+      setError('Failed to generate briefing. Please try again.');
+      return null;
+    });
+
+    const imagesPromise = getCardImages(items)
+      .then((imageMap) => {
+        const ordered = items.map((id) => imageMap[id] ?? '').filter(Boolean);
+        // Download all image bytes into browser cache
+        return preloadImages(ordered).then(() => ordered);
+      })
+      .catch(() => [] as string[]);
+
+    // Wait for BOTH text and images before showing anything
+    Promise.all([briefingPromise, imagesPromise]).then(([b, imgs]) => {
+      if (b) setBriefing(b);
+      setCardImages(imgs);
+      setLoading(false);
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -160,7 +208,7 @@ export default function BriefingPage() {
         {briefing && (
           <>
             <div style={{ paddingTop: 8 }}>
-              {renderMarkdown(briefing.content)}
+              {renderMarkdown(briefing.content, cardImages)}
             </div>
             <div style={{ marginTop: 32 }}>
               <GraphButton />

@@ -33,9 +33,22 @@ def _to_provisional_card(item: dict) -> Card:
     )
 
 
+_SOURCE_MAP = {
+    "github": "github",
+    "openai": "openai_blog",
+    "anthropic": "anthropic_blog",
+    "huggingface": "huggingface",
+}
+
+
+def _source_from_id(card_id: str) -> str:
+    """Extract source from card ID like 'github:microsoft/BitNet' -> 'github'."""
+    prefix = card_id.split(":")[0] if ":" in card_id else ""
+    return _SOURCE_MAP.get(prefix, prefix or "unknown")
+
+
 def _load_cards_from_supabase(limit: int = 50) -> List[Card]:
     db = get_supabase()
-    # cards table doesn't have source/source_url — join from content_items
     cards_result = (
         db.table("cards")
         .select("id,card_title,card_summary,keywords,thumbnail_keyword,image_url,trending_score")
@@ -43,20 +56,12 @@ def _load_cards_from_supabase(limit: int = 50) -> List[Card]:
         .limit(limit)
         .execute()
     )
-    items_result = (
-        db.table("content_items")
-        .select("id,source,source_url")
-        .execute()
-    )
-    items_by_id = {i["id"]: i for i in (items_result.data or [])}
 
     rows = cards_result.data or []
     cards: List[Card] = []
     for row in rows:
         try:
-            item = items_by_id.get(row.get("id"), {})
-            row.setdefault("source", item.get("source", "unknown"))
-            row.setdefault("source_url", item.get("source_url"))
+            row.setdefault("source", _source_from_id(row.get("id", "")))
             cards.append(Card(**row))
         except Exception:
             continue

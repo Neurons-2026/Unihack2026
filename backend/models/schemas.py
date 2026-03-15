@@ -38,6 +38,7 @@ class BriefingResponse(BaseModel):
     id: str
     content: str
     reading_time_min: Optional[float] = None
+    card_images: Optional[dict] = None  # card_id -> landscape image URL
 
 
 class GraphNode(BaseModel):
