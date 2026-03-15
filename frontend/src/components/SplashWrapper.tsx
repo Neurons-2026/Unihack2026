@@ -1,10 +1,17 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import SplashScreen from './SplashScreen';
+import { resetSessionId } from '@/lib/session';
 
 export default function SplashWrapper({ children }: { children: React.ReactNode }) {
   const [splashDone, setSplashDone] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleLeave = () => resetSessionId();
+    window.addEventListener('pagehide', handleLeave);
+    return () => window.removeEventListener('pagehide', handleLeave);
+  }, []);
 
   const handleComplete = useCallback(() => {
     setSplashDone(true);
