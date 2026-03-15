@@ -115,9 +115,26 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       iconTimers.current = [];
       setSwipeDir(offsetX > 0 ? 'right' : 'left');
       setSwipeIntensity(intensity);
+
+      // Direct DOM: color keyword tags green/red based on swipe direction
+      const tags = document.querySelectorAll('.keyword-tag');
+      const isRight = offsetX > 0;
+      tags.forEach((tag) => {
+        const el = tag as HTMLElement;
+        el.style.backgroundColor = isRight ? 'rgba(74,222,128,0.2)' : 'rgba(248,113,113,0.2)';
+        el.style.color = isRight ? 'rgba(74,222,128,0.95)' : 'rgba(248,113,113,0.95)';
+      });
     } else {
       setSwipeDir(null);
       setSwipeIntensity(0);
+
+      // Direct DOM: reset keyword tags to original colors
+      const tags = document.querySelectorAll('.keyword-tag');
+      tags.forEach((tag) => {
+        const el = tag as HTMLElement;
+        el.style.backgroundColor = el.dataset.bg ?? '';
+        el.style.color = el.dataset.text ?? '';
+      });
     }
   }, []);
 
@@ -278,7 +295,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       >
         <div style={cardFrameStyle}>
           <div style={{ position: 'relative', height: '100%' }}>
-            <CardItem card={currentCard} />
+            <CardItem card={currentCard} swipeDir={swipeDir} swipeIntensity={swipeIntensity} />
             <SwipeIndicator direction={swipeDir} intensity={swipeIntensity} />
           </div>
         </div>
