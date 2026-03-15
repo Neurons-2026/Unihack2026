@@ -293,7 +293,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
         <div
           style={{
             position: 'absolute',
-            bottom: 100,
+            bottom: 250,
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 20,
