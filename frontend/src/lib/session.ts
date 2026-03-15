@@ -9,3 +9,8 @@ export function getSessionId(): string {
   }
   return id;
 }
+
+export function resetSessionId(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(SESSION_KEY, crypto.randomUUID());
+}

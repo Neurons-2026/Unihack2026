@@ -28,7 +28,9 @@ function mapCard(c: Card): CardData {
     sourceUrl: c.source_url ?? '',
     publishedDate: c.published_at ?? '',
     imageUrl: c.image_url
-      ? (c.image_url.startsWith('/static/') ? `http://localhost:8000${c.image_url}` : c.image_url)
+      ? (c.image_url.startsWith('/static/')
+          ? `${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') ?? 'http://localhost:8000'}${c.image_url}`
+          : c.image_url)
       : `https://picsum.photos/seed/${c.id}/800/600`,
     metadata: c.metadata ?? {},
   };

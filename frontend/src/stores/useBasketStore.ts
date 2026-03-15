@@ -11,6 +11,7 @@ interface BasketState {
   removeItem: (id: string) => void;
   logInteraction: (id: string, action: 'save' | 'skip', keywords?: string[]) => void;
   logTopicTap: (topic: string) => void;
+  reset: () => void;
 }
 
 export const useBasketStore = create<BasketState>((set, get) => ({
@@ -43,4 +44,5 @@ export const useBasketStore = create<BasketState>((set, get) => ({
     }),
   logTopicTap: (topic) =>
     set((s) => ({ topicTaps: { ...s.topicTaps, [topic]: (s.topicTaps[topic] || 0) + 1 } })),
+  reset: () => set({ items: [], cards: [], interactions: [], topicTaps: {}, keywordScores: {} }),
 }));

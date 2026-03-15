@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { GraphNode, GraphEdge, GraphData } from '@/types/graph';
 import { buildAdjMap } from '@/data/sampleGraph';
 import { getGraph, generateGraphFromCards } from '@/lib/api';
-import { getSessionId } from '@/lib/session';
+import { getSessionId, resetSessionId } from '@/lib/session';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { GraphNode as ApiGraphNode, GraphEdge as ApiGraphEdge } from '@/lib/types';
 
@@ -118,6 +118,7 @@ export default function KnowledgeGraph() {
   const [dataLoaded, setDataLoaded] = useState(false);
   const apiDataRef = useRef<{ nodes: ApiGraphNode[]; edges: ApiGraphEdge[] } | null>(null);
   const basketItems = useBasketStore((s) => s.items);
+  const resetBasket = useBasketStore((s) => s.reset);
   const cvRef = useRef<HTMLCanvasElement>(null);
   const dataReady = useRef(false);
   const nodesRef = useRef<GraphNode[]>([]);
@@ -153,7 +154,11 @@ export default function KnowledgeGraph() {
     fetch
       .then((data) => { apiDataRef.current = data; setDataLoaded(true); })
       .catch(() => setError('Failed to load graph'))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        resetBasket();
+        resetSessionId();
+      });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
