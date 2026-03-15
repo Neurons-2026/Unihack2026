@@ -566,12 +566,26 @@ export default function KnowledgeGraph() {
         }
         // Build edges for dummy nodes
         const allIds = new Set(nodes.map((n) => n.id));
+        const todayNodeIds = nodes.filter((n) => n.isToday).map((n) => n.id);
         const newEdges: GraphEdge[] = [];
         for (const [a, b] of DUMMY_INTERNAL_EDGES) {
           if (allIds.has(a) && allIds.has(b)) newEdges.push({ source: a, target: b });
         }
         for (const [a, b] of DUMMY_BRIDGES) {
           if (allIds.has(a) && allIds.has(b)) newEdges.push({ source: a, target: b });
+        }
+        // Ensure every dummy node connects to at least one today node
+        const dummyIds = DUMMY_NODES.map((n) => n.id).filter((id) => allIds.has(id));
+        const connectedToToday = new Set<string>();
+        for (const e of newEdges) {
+          if (todayNodeIds.includes(e.target) && dummyIds.includes(e.source)) connectedToToday.add(e.source);
+          if (todayNodeIds.includes(e.source) && dummyIds.includes(e.target)) connectedToToday.add(e.target);
+        }
+        for (const dummyId of dummyIds) {
+          if (connectedToToday.has(dummyId) || todayNodeIds.length === 0) continue;
+          // Pick a random today node to bridge to
+          const target = todayNodeIds[Math.floor(Math.random() * todayNodeIds.length)];
+          newEdges.push({ source: dummyId, target });
         }
         fullEdgesRef.current = [...todayEdgesRef.current, ...newEdges];
         fullAdjRef.current = buildAdjMap(fullEdgesRef.current);
