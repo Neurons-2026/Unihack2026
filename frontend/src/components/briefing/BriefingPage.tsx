@@ -165,7 +165,7 @@ export default function BriefingPage() {
     return () => el.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const readingTimeMin = briefing?.reading_time_min ?? 10;
+  const readingTimeMin = briefing?.reading_time_min ?? null;
 
   return (
     <div

@@ -29,7 +29,7 @@ Your reader is intelligent and interested in AI, but does not have a technical b
 ## Output Format
 Produce the digest in Markdown. Follow this exact structure — do not add, remove, or reorder sections:
 
-1. Header: "# Your AI Briefing — {DATE}" followed by "*Based on {N} signals you saved today · ~10 min read*"
+1. Header: "# Your AI Briefing — {DATE}" followed by "*Based on {N} signals you saved today*"
 2. Horizontal rule
 3. "## Today at a Glance" — bullet list, one sentence per card (15–20 words each), present tense, no jargon
 4. Horizontal rule
