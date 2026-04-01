@@ -1,9 +1,8 @@
 'use client';
 import { useState, useEffect, useRef, ReactNode } from 'react';
 import { useBasketStore } from '@/stores/useBasketStore';
-import { generateBriefing, getCardImages } from '@/lib/api';
+import { generateBriefingStream, getCardImages } from '@/lib/api';
 import { getSessionId } from '@/lib/session';
-import { Briefing } from '@/lib/types';
 import BriefingHeader from './BriefingHeader';
 import GraphButton from './GraphButton';
 
@@ -119,7 +118,8 @@ function renderMarkdown(md: string, imageUrls: string[] = []): ReactNode[] {
 }
 
 export default function BriefingPage() {
-  const [briefing, setBriefing] = useState<Briefing | null>(null);
+  const [streamedContent, setStreamedContent] = useState('');
+  const [done, setDone] = useState(false);
   const [cardImages, setCardImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -129,27 +129,32 @@ export default function BriefingPage() {
 
   useEffect(() => {
     const sessionId = getSessionId();
+    let cancelled = false;
 
-    // Fire all three in parallel: briefing generation, image URL fetch, then preload
-    const briefingPromise = generateBriefing(sessionId, items).catch(() => {
-      setError('Failed to generate briefing. Please try again.');
-      return null;
-    });
-
-    const imagesPromise = getCardImages(items)
+    // Fetch images in parallel
+    getCardImages(items)
       .then((imageMap) => {
         const ordered = items.map((id) => imageMap[id] ?? '').filter(Boolean);
-        // Download all image bytes into browser cache
         return preloadImages(ordered).then(() => ordered);
       })
-      .catch(() => [] as string[]);
+      .then((imgs) => { if (!cancelled) setCardImages(imgs); })
+      .catch(() => {});
 
-    // Wait for BOTH text and images before showing anything
-    Promise.all([briefingPromise, imagesPromise]).then(([b, imgs]) => {
-      if (b) setBriefing(b);
-      setCardImages(imgs);
+    // Stream briefing content
+    generateBriefingStream(sessionId, items, (chunk) => {
+      if (cancelled) return;
       setLoading(false);
-    });
+      setStreamedContent((prev) => prev + chunk);
+    })
+      .then(() => { if (!cancelled) { setDone(true); setLoading(false); } })
+      .catch(() => {
+        if (!cancelled) {
+          setError('Failed to generate briefing. Please try again.');
+          setLoading(false);
+        }
+      });
+
+    return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -165,7 +170,7 @@ export default function BriefingPage() {
     return () => el.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const readingTimeMin = briefing?.reading_time_min;
+  const readingTimeMin = done ? Math.round(streamedContent.split(/\s+/).length / 200) : undefined;
 
   return (
     <div
@@ -205,14 +210,16 @@ export default function BriefingPage() {
           </div>
         )}
 
-        {briefing && (
+        {streamedContent && (
           <>
             <div style={{ paddingTop: 8 }}>
-              {renderMarkdown(briefing.content, cardImages)}
+              {renderMarkdown(streamedContent, cardImages)}
             </div>
-            <div style={{ marginTop: 32 }}>
-              <GraphButton />
-            </div>
+            {done && (
+              <div style={{ marginTop: 32 }}>
+                <GraphButton />
+              </div>
+            )}
           </>
         )}
       </div>

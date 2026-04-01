@@ -1,16 +1,18 @@
 'use client';
 
+type Dir = 'left' | 'right' | 'up' | 'down';
+
 interface Props {
-  direction: 'left' | 'right' | null;
+  direction: Dir | null;
   intensity: number;
-  reveal: { dir: 'left' | 'right'; fading: boolean } | null;
+  reveal: { dir: Dir; fading: boolean } | null;
 }
 
 const SAVE = 'radial-gradient(ellipse at 55% 45%, rgb(30,90,58) 0%, rgb(15,52,35) 60%, rgb(8,30,18) 100%)';
 const SKIP = 'radial-gradient(ellipse at 45% 45%, rgb(90,30,38) 0%, rgb(52,15,22) 60%, rgb(30,8,12) 100%)';
 
-function bg(dir: 'left' | 'right') {
-  return dir === 'right' ? SAVE : SKIP;
+function bg(dir: Dir) {
+  return (dir === 'right' || dir === 'up') ? SAVE : SKIP;
 }
 
 const CLIP: React.CSSProperties = {

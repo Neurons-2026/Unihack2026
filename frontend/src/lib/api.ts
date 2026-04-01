@@ -53,6 +53,28 @@ export async function generateBriefing(sessionId: string, cardIds: string[]): Pr
   });
 }
 
+export async function generateBriefingStream(
+  sessionId: string,
+  cardIds: string[],
+  onChunk: (text: string) => void,
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/briefing/generate/stream`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ session_id: sessionId, card_ids: cardIds }),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error("No response body");
+  const decoder = new TextDecoder();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    onChunk(decoder.decode(value, { stream: true }));
+  }
+}
+
 export async function getGraph(sessionId: string): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
   return http<{ nodes: GraphNode[]; edges: GraphEdge[] }>(`/graph?session_id=${encodeURIComponent(sessionId)}`);
 }

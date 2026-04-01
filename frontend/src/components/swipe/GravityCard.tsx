@@ -1,10 +1,12 @@
 'use client';
 import { useRef, useCallback, useEffect } from 'react';
 
+export type SwipeDir = 'left' | 'right' | 'up' | 'down';
+
 interface GravityCardProps {
-  onSwipe: (dir: 'left' | 'right') => void;
+  onSwipe: (dir: SwipeDir) => void;
   onCardLeftScreen: () => void;
-  onDrag?: (offsetX: number) => void;
+  onDrag?: (offsetX: number, offsetY: number) => void;
   className?: string;
   children: React.ReactNode;
 }
@@ -56,11 +58,22 @@ export default function GravityCard({
   }, [setTransform]);
 
   const startGravity = useCallback(
-    (dir: 'left' | 'right', vx: number, vy: number, x0: number, y0: number) => {
+    (dir: SwipeDir, vx: number, vy: number, x0: number, y0: number) => {
       gone.current = true;
-      const sign = dir === 'right' ? 1 : -1;
-      let hVel = Math.abs(vx) < MIN_FLING_SPEED ? MIN_FLING_SPEED * sign : vx;
-      let vVel = vy;
+      const isVertical = dir === 'up' || dir === 'down';
+      let hVel: number;
+      let vVel: number;
+
+      if (isVertical) {
+        const sign = dir === 'up' ? -1 : 1;
+        hVel = vx;
+        vVel = Math.abs(vy) < MIN_FLING_SPEED ? MIN_FLING_SPEED * sign : vy;
+      } else {
+        const sign = dir === 'right' ? 1 : -1;
+        hVel = Math.abs(vx) < MIN_FLING_SPEED ? MIN_FLING_SPEED * sign : vx;
+        vVel = vy;
+      }
+
       let x = x0;
       let y = y0;
       let rot = (x0 / 300) * DRAG_ROTATION_FACTOR;
@@ -70,7 +83,7 @@ export default function GravityCard({
         const dt = Math.min((now - last) / 1000, 0.04);
         last = now;
 
-        vVel += GRAVITY * dt;
+        vVel += (dir === 'up' ? -GRAVITY : GRAVITY) * dt;
         hVel *= 0.997;
         x += hVel * dt;
         y += vVel * dt;
@@ -80,7 +93,7 @@ export default function GravityCard({
 
         const w = window.innerWidth;
         const h = window.innerHeight;
-        if (Math.abs(x) > w * 1.5 || y > h * 1.5) {
+        if (Math.abs(x) > w * 1.5 || Math.abs(y) > h * 1.5) {
           onCardLeftScreen();
           return;
         }
@@ -130,7 +143,7 @@ export default function GravityCard({
 
       const rot = (ox.current / 300) * DRAG_ROTATION_FACTOR;
       setTransform(ox.current, oy.current, rot);
-      onDrag?.(ox.current);
+      onDrag?.(ox.current, oy.current);
     },
     [setTransform, onDrag],
   );
@@ -139,13 +152,21 @@ export default function GravityCard({
     if (!dragging.current || gone.current) return;
     dragging.current = false;
 
-    if (Math.abs(ox.current) > SWIPE_THRESHOLD) {
-      const dir: 'left' | 'right' = ox.current > 0 ? 'right' : 'left';
+    const absX = Math.abs(ox.current);
+    const absY = Math.abs(oy.current);
+    const isVertical = absY > absX;
+
+    if (isVertical && absY > SWIPE_THRESHOLD) {
+      const dir: SwipeDir = oy.current < 0 ? 'up' : 'down';
+      onSwipe(dir);
+      startGravity(dir, velX.current, velY.current, ox.current, oy.current);
+    } else if (!isVertical && absX > SWIPE_THRESHOLD) {
+      const dir: SwipeDir = ox.current > 0 ? 'right' : 'left';
       onSwipe(dir);
       startGravity(dir, velX.current, velY.current, ox.current, oy.current);
     } else {
       springBack();
-      onDrag?.(0);
+      onDrag?.(0, 0);
     }
   }, [onSwipe, startGravity, springBack, onDrag]);
 

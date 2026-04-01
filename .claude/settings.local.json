@@ -12,7 +12,8 @@
       "Bash(python -m test_graph_building.run_graph_llm)",
       "Bash(lsof -ti:8000)",
       "Bash(xargs kill:*)",
-      "Bash(lsof -ti:3000)"
+      "Bash(lsof -ti:3000)",
+      "Bash(lsof -i:3000 -i:8000 -sTCP:LISTEN)"
     ]
   }
 }

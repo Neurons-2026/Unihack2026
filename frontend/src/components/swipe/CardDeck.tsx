@@ -11,7 +11,7 @@ import CardItem from './CardItem';
 import EmptyState from './EmptyState';
 import SwipeBackground from './SwipeBackground';
 import SwipeIndicator from './SwipeIndicator';
-import GravityCard from './GravityCard';
+import GravityCard, { type SwipeDir } from './GravityCard';
 
 const KNOWN_SOURCES: CardData['source'][] = ['github', 'huggingface', 'openai_blog', 'anthropic_blog'];
 
@@ -36,14 +36,18 @@ function mapCard(c: Card): CardData {
   };
 }
 
-type RevealState = { dir: 'left' | 'right'; fading: boolean } | null;
+type RevealState = { dir: SwipeDir; fading: boolean } | null;
+
+function isSaveDir(dir: SwipeDir) {
+  return dir === 'right' || dir === 'up';
+}
 
 export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const router = useRouter();
   const [allCards, setAllCards] = useState<CardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [dismissedCardIds, setDismissedCardIds] = useState<string[]>([]);
-  const [swipeDir, setSwipeDir] = useState<'left' | 'right' | null>(null);
+  const [swipeDir, setSwipeDir] = useState<SwipeDir | null>(null);
   const [swipeIntensity, setSwipeIntensity] = useState(0);
   const [reveal, setReveal] = useState<RevealState>(null);
   const [iconHold, setIconHold] = useState<{ action: 'save' | 'skip'; fading: boolean } | null>(null);
@@ -61,7 +65,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       router.push('/briefing');
     }
   }, [basketItems.length, router]);
-  const pendingDir = useRef<'left' | 'right' | null>(null);
+  const pendingDir = useRef<SwipeDir | null>(null);
 
   useEffect(() => {
     const sessionId = getSessionId();
@@ -106,16 +110,21 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     }
   }, []);
 
-  const handleDrag = useCallback((offsetX: number) => {
+  const handleDrag = useCallback((offsetX: number, offsetY: number) => {
     const absX = Math.abs(offsetX);
-    if (absX > 10) {
-      const t = Math.min(absX / 600, 1);
+    const absY = Math.abs(offsetY);
+    const dominant = Math.max(absX, absY);
+    if (dominant > 10) {
+      const t = Math.min(dominant / 600, 1);
       const intensity = t * (2 - t);
       setReveal(null);
       setIconHold(null);
       iconTimers.current.forEach(clearTimeout);
       iconTimers.current = [];
-      setSwipeDir(offsetX > 0 ? 'right' : 'left');
+      const dir: SwipeDir = absY > absX
+        ? (offsetY < 0 ? 'up' : 'down')
+        : (offsetX > 0 ? 'right' : 'left');
+      setSwipeDir(dir);
       setSwipeIntensity(intensity);
     } else {
       setSwipeDir(null);
@@ -126,11 +135,11 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const currentCard = visibleCards[0];
 
   const handleSwipe = useCallback(
-    (dir: 'left' | 'right') => {
+    (dir: SwipeDir) => {
       pendingDir.current = dir;
       setSwipeDir(dir);
       setSwipeIntensity(1);
-      if (dir === 'right') playSaveSound();
+      if (isSaveDir(dir)) playSaveSound();
       else playSkipSound();
     },
     [],
@@ -139,11 +148,12 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const handleCardLeftScreen = useCallback(() => {
     if (!currentCard) return;
     const dir = pendingDir.current;
-    const resolvedDir: 'left' | 'right' = dir ?? 'left';
-    const action: 'save' | 'skip' = resolvedDir === 'right' ? 'save' : 'skip';
+    const resolvedDir: SwipeDir = dir ?? 'left';
+    const save = isSaveDir(resolvedDir);
+    const action: 'save' | 'skip' = save ? 'save' : 'skip';
     const sessionId = getSessionId();
 
-    if (resolvedDir === 'right') {
+    if (save) {
       addItem(currentCard);
       addToBasket(sessionId, currentCard.id).catch(() => {});
       postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_right' }).catch(() => {});
@@ -206,8 +216,8 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     return { nextIfSave: simulate(1), nextIfSkip: simulate(-1) };
   }, [currentCard, visibleCards, keywordScores]);
 
-  const nextCard = swipeDir === 'right' ? nextIfSave
-    : swipeDir === 'left' ? nextIfSkip
+  const nextCard = (swipeDir && isSaveDir(swipeDir)) ? nextIfSave
+    : (swipeDir && !isSaveDir(swipeDir)) ? nextIfSkip
     : (nextIfSave ?? visibleCards[1]);
 
   const cardFrameStyle = {
@@ -338,7 +348,7 @@ function ActionIcon({
   swipeIntensity,
   hold,
 }: {
-  swipeDir: 'left' | 'right' | null;
+  swipeDir: SwipeDir | null;
   swipeIntensity: number;
   hold: { action: 'save' | 'skip'; fading: boolean } | null;
 }) {
@@ -348,7 +358,7 @@ function ActionIcon({
   const visible = dragActive || holdActive;
 
   const action: 'save' | 'skip' | null = dragActive
-    ? (swipeDir === 'right' ? 'save' : 'skip')
+    ? (swipeDir && isSaveDir(swipeDir) ? 'save' : 'skip')
     : hold?.action ?? null;
 
   if (!visible && !fading) return null;

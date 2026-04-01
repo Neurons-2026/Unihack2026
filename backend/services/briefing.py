@@ -236,6 +236,19 @@ async def generate_briefing(session_id: str, card_ids: List[str]) -> BriefingRes
 
 async def generate_briefing_stream(session_id: str, card_ids: List[str]) -> AsyncGenerator[str, None]:
     """Generate a briefing with streaming — yields text chunks."""
+    import asyncio
+
+    # Check for pre-generated fallback first
+    fallback = _check_fallback(card_ids)
+    if fallback:
+        # Simulate streaming by yielding the fallback in small chunks
+        content = fallback.content
+        chunk_size = 12
+        for i in range(0, len(content), chunk_size):
+            yield content[i:i + chunk_size]
+            await asyncio.sleep(0.015)
+        return
+
     settings = get_settings()
 
     cards = _fetch_cards_from_supabase(card_ids)
