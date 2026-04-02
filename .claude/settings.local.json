@@ -13,7 +13,9 @@
       "Bash(lsof -ti:8000)",
       "Bash(xargs kill:*)",
       "Bash(lsof -ti:3000)",
-      "Bash(lsof -i:3000 -i:8000 -sTCP:LISTEN)"
+      "Bash(lsof -i:3000 -i:8000 -sTCP:LISTEN)",
+      "Bash(source .venv/bin/activate)",
+      "Bash(uvicorn main:app --host 0.0.0.0 --port 8000 --reload)"
     ]
   }
 }

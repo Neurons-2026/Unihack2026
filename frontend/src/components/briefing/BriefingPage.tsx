@@ -6,6 +6,7 @@ import { getSessionId } from '@/lib/session';
 import BriefingHeader from './BriefingHeader';
 import GraphButton from './GraphButton';
 
+
 function preloadImages(urls: string[]): Promise<void> {
   if (urls.length === 0) return Promise.resolve();
   return Promise.all(
@@ -125,11 +126,42 @@ export default function BriefingPage() {
   const [error, setError] = useState<string | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const chunkQueueRef = useRef('');
+  const streamFinishedRef = useRef(false);
+  const flushTimerRef = useRef<number | null>(null);
   const items = useBasketStore((s) => s.items);
 
   useEffect(() => {
     const sessionId = getSessionId();
     let cancelled = false;
+
+    const startFlushLoop = () => {
+      if (flushTimerRef.current !== null) return;
+      flushTimerRef.current = window.setInterval(() => {
+        if (cancelled) return;
+
+        const queued = chunkQueueRef.current;
+        if (queued.length > 0) {
+          const take = Math.min(queued.length, 2);
+          const next = queued.slice(0, take);
+          chunkQueueRef.current = queued.slice(take);
+          setLoading(false);
+          setStreamedContent((prev) => prev + next);
+          return;
+        }
+
+        if (streamFinishedRef.current) {
+          setDone(true);
+          setLoading(false);
+          if (flushTimerRef.current !== null) {
+            window.clearInterval(flushTimerRef.current);
+            flushTimerRef.current = null;
+          }
+        }
+      }, 45);
+    };
+
+    startFlushLoop();
 
     // Fetch images in parallel
     getCardImages(items)
@@ -143,18 +175,31 @@ export default function BriefingPage() {
     // Stream briefing content
     generateBriefingStream(sessionId, items, (chunk) => {
       if (cancelled) return;
-      setLoading(false);
-      setStreamedContent((prev) => prev + chunk);
+      chunkQueueRef.current += chunk;
     })
-      .then(() => { if (!cancelled) { setDone(true); setLoading(false); } })
+      .then(() => {
+        if (!cancelled) {
+          streamFinishedRef.current = true;
+        }
+      })
       .catch(() => {
         if (!cancelled) {
           setError('Failed to generate briefing. Please try again.');
           setLoading(false);
+          if (flushTimerRef.current !== null) {
+            window.clearInterval(flushTimerRef.current);
+            flushTimerRef.current = null;
+          }
         }
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      if (flushTimerRef.current !== null) {
+        window.clearInterval(flushTimerRef.current);
+        flushTimerRef.current = null;
+      }
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -170,6 +215,19 @@ export default function BriefingPage() {
     return () => el.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Auto-scroll to bottom while streaming
+  useEffect(() => {
+    if (done) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    const { scrollTop, scrollHeight, clientHeight } = el;
+    const distFromBottom = scrollHeight - clientHeight - scrollTop;
+    // Only auto-scroll if user is near the bottom (within 120px)
+    if (distFromBottom < 120) {
+      el.scrollTop = scrollHeight;
+    }
+  }, [streamedContent, done]);
+
   const readingTimeMin = done ? Math.round(streamedContent.split(/\s+/).length / 200) : undefined;
 
   return (
@@ -184,6 +242,14 @@ export default function BriefingPage() {
         flexDirection: 'column',
       }}
     >
+      <style>{`
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .stream-cursor {
+          display: inline-block; width: 2px; height: 0.85em;
+          background: rgba(130,210,160,0.85); margin-left: 2px;
+          vertical-align: text-bottom; animation: blink 0.6s step-start infinite;
+        }
+      `}</style>
       <BriefingHeader readingTimeMin={readingTimeMin} scrollProgress={scrollProgress} />
 
       <div
@@ -214,6 +280,7 @@ export default function BriefingPage() {
           <>
             <div style={{ paddingTop: 8 }}>
               {renderMarkdown(streamedContent, cardImages)}
+              {!done && <span className="stream-cursor" />}
             </div>
             {done && (
               <div style={{ marginTop: 32 }}>

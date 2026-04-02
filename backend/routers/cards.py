@@ -50,9 +50,6 @@ async def get_card_feed(request: Request):
 
     Returns cards in the format the frontend expects (CardData shape).
     """
-    from dotenv import load_dotenv
-    from pathlib import Path
-    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
     from models.database import get_supabase
 
     db = get_supabase()

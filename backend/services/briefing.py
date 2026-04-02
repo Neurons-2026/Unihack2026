@@ -4,14 +4,19 @@ SU6: Fetches cards + cleaned_text from Supabase, calls Claude with streaming.
 SU7: Source attribution — every section links back to original source URL.
 """
 
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import AsyncGenerator, List, Optional
 
 import anthropic
+import json
 
 from config import get_settings
 from models.schemas import BriefingResponse
+
+logger = logging.getLogger(__name__)
+MODEL_NAME = "claude-sonnet-4-20250514"
 
 SYSTEM_PROMPT = """You are the writer for "10min AI Daily" — a daily AI news briefing for smart, curious people who are not AI experts. Your job is to turn a set of saved news signals into a single, well-written digest that takes exactly 10 minutes to read.
 
@@ -56,37 +61,88 @@ Produce the digest in Markdown. Follow this exact structure — do not add, remo
 
 
 def _fetch_cards_from_supabase(card_ids: List[str]) -> list[dict]:
-    """Fetch cards + content_items from Supabase by IDs."""
-    from dotenv import load_dotenv
-    from pathlib import Path
-    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
-    from models.database import get_supabase
+    """Fetch cards + content_items from Supabase by IDs, with seed fallback."""
+    try:
+        from models.database import get_supabase
 
-    db = get_supabase()
+        db = get_supabase()
 
-    # Fetch cards (has cleaned_text, card_title, card_summary, keywords, thumbnail_keyword)
-    result = db.table("cards").select("*").in_("id", card_ids).execute()
-    cards_by_id = {c["id"]: c for c in result.data}
+        # Fetch cards first
+        result = db.table("cards").select("*").in_("id", card_ids).execute()
+        cards_by_id = {c["id"]: c for c in (result.data or [])}
 
-    # Fetch content_items (has source, source_url, title, raw_content)
-    result2 = db.table("content_items").select("*").in_("id", card_ids).execute()
-    items_by_id = {i["id"]: i for i in result2.data}
+        # Prefer content_item_id relation, fallback to card id for legacy seed shape.
+        content_item_ids = []
+        for cid in card_ids:
+            card = cards_by_id.get(cid)
+            if not card:
+                continue
+            item_id = card.get("content_item_id") or cid
+            if item_id:
+                content_item_ids.append(item_id)
 
-    # Merge: combine card data with content_item data
+        items_by_id: dict[str, dict] = {}
+        if content_item_ids:
+            result2 = db.table("content_items").select("*").in_("id", content_item_ids).execute()
+            items_by_id = {i["id"]: i for i in (result2.data or [])}
+
+        merged = []
+        for cid in card_ids:
+            card = cards_by_id.get(cid, {})
+            item = items_by_id.get(card.get("content_item_id") or cid, {})
+            if not card and not item:
+                continue
+            merged.append({
+                "id": cid,
+                "card_title": card.get("card_title", item.get("title", "")),
+                "card_summary": card.get("card_summary", ""),
+                "cleaned_text": card.get("cleaned_text", item.get("raw_content", "")),
+                "keywords": card.get("keywords", []),
+                "source": item.get("source", card.get("source", "")),
+                "source_url": item.get("source_url", card.get("source_url", "")),
+            })
+
+        if merged:
+            return merged
+    except Exception as exc:
+        logger.warning("Supabase card fetch failed in briefing service, using seed fallback: %s", exc)
+
+    return _fetch_cards_from_seed(card_ids)
+
+
+def _fetch_cards_from_seed(card_ids: List[str]) -> list[dict]:
+    """Fallback path for offline/demo mode using local seed data files."""
+    data_dir = Path(__file__).resolve().parent.parent / "data"
+    seed_cards_path = data_dir / "seed_cards.json"
+    seed_content_path = data_dir / "seed_content_items.json"
+
+    if not seed_cards_path.exists():
+        return []
+
+    seed_cards = json.loads(seed_cards_path.read_text(encoding="utf-8"))
+    seed_cards_by_id = {row["id"]: row for row in seed_cards}
+
+    seed_content_by_id: dict[str, dict] = {}
+    if seed_content_path.exists():
+        seed_content = json.loads(seed_content_path.read_text(encoding="utf-8"))
+        seed_content_by_id = {row["id"]: row for row in seed_content}
+
     merged = []
     for cid in card_ids:
-        card = cards_by_id.get(cid, {})
-        item = items_by_id.get(cid, {})
+        card = seed_cards_by_id.get(cid, {})
+        item = seed_content_by_id.get(cid, {})
         if not card and not item:
             continue
+
+        preprocessing = item.get("preprocessing", {}) if item else {}
         merged.append({
             "id": cid,
             "card_title": card.get("card_title", item.get("title", "")),
-            "card_summary": card.get("card_summary", ""),
-            "cleaned_text": card.get("cleaned_text", ""),
-            "keywords": card.get("keywords", []),
-            "source": item.get("source", ""),
-            "source_url": item.get("source_url", ""),
+            "card_summary": card.get("card_summary", item.get("raw_summary", "")),
+            "cleaned_text": preprocessing.get("cleaned_text") or item.get("raw_content", "") or card.get("card_summary", ""),
+            "keywords": card.get("keywords") or (item.get("card", {}) if item else {}).get("keywords", []),
+            "source": card.get("source", item.get("source", "")),
+            "source_url": card.get("source_url", item.get("source_url", "")),
         })
 
     return merged
@@ -133,7 +189,9 @@ def _check_fallback(card_ids: List[str]) -> Optional[BriefingResponse]:
     if not fallback_path.exists():
         return None
     import json
-    fallbacks = json.load(open(fallback_path, encoding="utf-8"))
+
+    with fallback_path.open(encoding="utf-8") as handle:
+        fallbacks = json.load(handle)
     for fb in fallbacks:
         if set(fb["card_ids"]) == set(card_ids):
             return BriefingResponse(
@@ -142,6 +200,70 @@ def _check_fallback(card_ids: List[str]) -> Optional[BriefingResponse]:
                 reading_time_min=fb.get("reading_time_min"),
             )
     return None
+
+
+def _build_local_fallback_briefing(cards: list[dict], date_str: str, timestamp_str: str) -> str:
+    """Generate a deterministic Markdown briefing when the LLM is unavailable."""
+    lines = [
+        f"# Your AI Briefing — {date_str}",
+        f"*Based on {len(cards)} signals you saved today · ~10 min read*",
+        "",
+        "---",
+        "",
+        "## Today at a Glance",
+    ]
+
+    for card in cards:
+        summary = card.get("card_summary") or card.get("cleaned_text") or "A saved AI signal worth a closer look."
+        lines.append(f"- {summary[:160].rstrip()}")
+
+    lines.extend(["", "---", ""])
+
+    for card in cards:
+        title = card.get("card_title", "Untitled item")
+        source_name = (card.get("source", "source") or "source").replace("_", " ").title()
+        source_url = card.get("source_url", "")
+        summary = card.get("card_summary") or card.get("cleaned_text") or "A saved AI signal worth a closer look."
+        keywords = card.get("keywords", [])
+        keyword_text = ", ".join(keywords[:4]) if keywords else "the main topic"
+
+        lines.extend([
+            f"### {title}",
+            f"*Source: [{source_name}]({source_url})*" if source_url else f"*Source: {source_name}*",
+            "",
+            "**What Happened**",
+            f"{summary}",
+            "",
+            "**Why It Matters**",
+            f"This story matters because it connects to {keyword_text} and shows how AI is changing real workflows.",
+            "",
+            "**What to Know**",
+            f"Keep in mind that this fallback briefing is generated locally from saved card data for {source_name}.",
+        ])
+        if source_url:
+            lines.append(f"[Read the full article →]({source_url})")
+        lines.extend(["", "---", ""])
+
+    lines.extend([
+        "## Big Picture",
+        "",
+        "Across today’s saved signals, the common theme is practical AI moving from demos into everyday workflows. The most useful systems are the ones that save time, reduce repetitive work, and stay understandable to the people using them.",
+        "",
+        "For you, the important takeaway is not just that AI is getting more capable. It is that the surrounding products, habits, and guardrails are maturing too, which makes the technology easier to trust and easier to use.",
+        "",
+        "---",
+        f"*Generated by 10min AI Daily · {timestamp_str}*",
+        "*Sources linked above. Content summarized by AI — always verify before citing.*",
+    ])
+    return "\n".join(lines)
+
+
+async def _yield_text_chunks(text: str, chunk_size: int = 24, delay: float = 0.015) -> AsyncGenerator[str, None]:
+    import asyncio
+
+    for index in range(0, len(text), chunk_size):
+        yield text[index:index + chunk_size]
+        await asyncio.sleep(delay)
 
 
 def _collect_card_images(card_ids: List[str]) -> dict:
@@ -157,7 +279,7 @@ def _collect_card_images(card_ids: List[str]) -> dict:
         from models.database import get_supabase
         db = get_supabase()
         result = db.table("cards").select("id,image_url").in_("id", card_ids).execute()
-        cards_by_id = {c["id"]: c.get("image_url", "") for c in result.data}
+        cards_by_id: dict[str, str] = {c["id"]: c.get("image_url", "") for c in result.data}
     except Exception:
         cards_by_id = {}
 
@@ -203,17 +325,30 @@ async def generate_briefing(session_id: str, card_ids: List[str]) -> BriefingRes
     date_str = now.strftime("%A, %d %B %Y")
     timestamp_str = now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    if not settings.anthropic_api_key:
+        content = _build_local_fallback_briefing(cards, date_str, timestamp_str)
+        return BriefingResponse(
+            id=f"briefing-{session_id}",
+            content=content,
+            reading_time_min=_reading_time(content),
+        )
+
     user_prompt = _build_user_prompt(cards, date_str, timestamp_str)
 
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-    message = client.messages.create(
-        model="claude-opus-4-6",
-        max_tokens=4096,
-        messages=[{"role": "user", "content": user_prompt}],
-        system=SYSTEM_PROMPT,
-    )
+    content = ""
+    try:
+        client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+        message = client.messages.create(
+            model=MODEL_NAME,
+            max_tokens=4096,
+            messages=[{"role": "user", "content": user_prompt}],
+            system=SYSTEM_PROMPT,
+        )
 
-    content = message.content[0].text
+        content = message.content[0].text
+    except Exception as exc:
+        logger.warning("Briefing generation failed, using local fallback: %s", exc)
+        content = _build_local_fallback_briefing(cards, date_str, timestamp_str)
 
     # Save to Supabase
     try:
@@ -236,17 +371,12 @@ async def generate_briefing(session_id: str, card_ids: List[str]) -> BriefingRes
 
 async def generate_briefing_stream(session_id: str, card_ids: List[str]) -> AsyncGenerator[str, None]:
     """Generate a briefing with streaming — yields text chunks."""
-    import asyncio
-
     # Check for pre-generated fallback first
     fallback = _check_fallback(card_ids)
     if fallback:
         # Simulate streaming by yielding the fallback in small chunks
-        content = fallback.content
-        chunk_size = 12
-        for i in range(0, len(content), chunk_size):
-            yield content[i:i + chunk_size]
-            await asyncio.sleep(0.015)
+        async for chunk in _yield_text_chunks(fallback.content, chunk_size=12):
+            yield chunk
         return
 
     settings = get_settings()
@@ -261,20 +391,32 @@ async def generate_briefing_stream(session_id: str, card_ids: List[str]) -> Asyn
     date_str = now.strftime("%A, %d %B %Y")
     timestamp_str = now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    if not settings.anthropic_api_key:
+        content = _build_local_fallback_briefing(cards, date_str, timestamp_str)
+        async for chunk in _yield_text_chunks(content):
+            yield chunk
+        return
+
     user_prompt = _build_user_prompt(cards, date_str, timestamp_str)
 
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-
     full_content = ""
-    with client.messages.stream(
-        model="claude-opus-4-6",
-        max_tokens=4096,
-        messages=[{"role": "user", "content": user_prompt}],
-        system=SYSTEM_PROMPT,
-    ) as stream:
-        for text in stream.text_stream:
-            full_content += text
-            yield text
+    try:
+        client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+
+        with client.messages.stream(
+            model=MODEL_NAME,
+            max_tokens=4096,
+            messages=[{"role": "user", "content": user_prompt}],
+            system=SYSTEM_PROMPT,
+        ) as stream:
+            for text in stream.text_stream:
+                full_content += text
+                yield text
+    except Exception as exc:
+        logger.warning("Streaming briefing generation failed, using local fallback: %s", exc)
+        full_content = _build_local_fallback_briefing(cards, date_str, timestamp_str)
+        async for chunk in _yield_text_chunks(full_content):
+            yield chunk
 
     # Save completed briefing to Supabase
     try:
