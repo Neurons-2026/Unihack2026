@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import SplashScreen from './SplashScreen';
-import { resetSessionId } from '@/lib/session';
+import { resetSessionId, getStoredUser } from '@/lib/session';
 
 export default function SplashWrapper({ children }: { children: React.ReactNode }) {
   const [splashDone, setSplashDone] = useState<boolean>(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const handleLeave = () => resetSessionId();
@@ -15,7 +18,10 @@ export default function SplashWrapper({ children }: { children: React.ReactNode 
 
   const handleComplete = useCallback(() => {
     setSplashDone(true);
-  }, []);
+    if (pathname !== '/login' && !getStoredUser()) {
+      router.replace('/login');
+    }
+  }, [pathname, router]);
 
   return (
     <>

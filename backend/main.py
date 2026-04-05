@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from config import get_settings
-from routers import basket, briefing, cards, graph, interactions
+from routers import auth, basket, briefing, cards, graph, interactions
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -87,6 +87,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 # ---------------------------------------------------------------------------
 # Routers
 # ---------------------------------------------------------------------------
+app.include_router(auth.router, prefix="/api/v1", tags=["auth"])
 app.include_router(cards.router, prefix="/api/v1", tags=["cards"])
 app.include_router(interactions.router, prefix="/api/v1", tags=["interactions"])
 app.include_router(basket.router, prefix="/api/v1", tags=["basket"])

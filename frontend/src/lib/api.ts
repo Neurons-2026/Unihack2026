@@ -1,4 +1,5 @@
 import { BasketItem, Briefing, Card, GraphEdge, GraphNode, Interaction } from "./types";
+import { StoredUser } from "./session";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
@@ -85,4 +86,20 @@ export async function generateGraphFromCards(cardIds: string[], sessionId: strin
     `/graph/generate?session_id=${encodeURIComponent(sessionId)}`,
     { method: "POST", body: JSON.stringify(cardIds) }
   );
+}
+
+export async function registerUser(username: string, password: string, email?: string): Promise<StoredUser> {
+  const data = await http<{ user_id: string; username: string }>(`/auth/register`, {
+    method: "POST",
+    body: JSON.stringify({ username, password, email }),
+  });
+  return { userId: data.user_id, username: data.username };
+}
+
+export async function loginUser(username: string, password: string): Promise<StoredUser> {
+  const data = await http<{ user_id: string; username: string }>(`/auth/login`, {
+    method: "POST",
+    body: JSON.stringify({ username, password }),
+  });
+  return { userId: data.user_id, username: data.username };
 }
