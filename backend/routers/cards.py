@@ -40,7 +40,7 @@ def _full_image_url(url: str, request: Request) -> str:
 @router.get("/cards", response_model=list[Card])
 async def list_cards(session_id: str = Query(...)):
     cards = await fetch_trending_cards(session_id)
-    ranked = await rank_cards(cards)
+    ranked = await rank_cards(cards, session_id=session_id)
     return ranked
 
 

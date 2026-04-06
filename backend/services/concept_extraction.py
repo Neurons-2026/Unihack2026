@@ -165,7 +165,7 @@ def _call_claude(
         try:
             message = client.messages.create(
                 model=model,
-                max_tokens=4096,
+                max_tokens=1024,
                 messages=[{"role": "user", "content": prompt}],
             )
             return _strip_code_fences(message.content[0].text)

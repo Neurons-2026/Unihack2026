@@ -107,7 +107,7 @@ def generate_card_fields(
     user_prompt = _build_user_prompt(item, concept_labels)
 
     message = client.messages.create(
-        model="claude-opus-4-6",
+        model="claude-haiku-4-5-20251001",
         max_tokens=256,
         messages=[{"role": "user", "content": user_prompt}],
         system=SYSTEM_PROMPT,

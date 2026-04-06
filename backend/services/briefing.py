@@ -2,8 +2,13 @@
 
 SU6: Fetches cards + cleaned_text from Supabase, calls Claude with streaming.
 SU7: Source attribution — every section links back to original source URL.
+
+Caching: briefings are stored in Supabase keyed by (session_id, sorted card_ids).
+On a cache hit the stored content is returned/streamed immediately.
+Stale entries (> 24 h) are purged by the scheduled job in main.py.
 """
 
+import hashlib
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
@@ -302,16 +307,111 @@ def _reading_time(text: str) -> float:
     return round(word_count / 200, 1)  # 200 wpm
 
 
+# ---------------------------------------------------------------------------
+# Briefing cache helpers
+# ---------------------------------------------------------------------------
+
+def _make_cache_key(session_id: str, card_ids: List[str]) -> str:
+    """Deterministic key: sha1 of sorted card_ids only.
+
+    session_id is intentionally excluded so any user who picks the same
+    set of cards hits the same cached briefing, cutting LLM calls significantly.
+    """
+    payload = ",".join(sorted(card_ids))
+    return hashlib.sha1(payload.encode()).hexdigest()
+
+
+def _load_cached_briefing(session_id: str, card_ids: List[str]) -> Optional[BriefingResponse]:
+    """Return a cached briefing if one exists for this session + card set within 24 h."""
+    from datetime import timedelta
+    from models.database import get_supabase
+
+    cache_key = _make_cache_key(session_id, card_ids)
+    cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+
+    try:
+        db = get_supabase()
+        result = (
+            db.table("briefings")
+            .select("id, content, reading_time_min")
+            .eq("cache_key", cache_key)
+            .gte("created_at", cutoff)
+            .limit(1)
+            .execute()
+        )
+        if result.data:
+            row = result.data[0]
+            logger.info("Cache hit for briefing cache_key=%s", cache_key)
+            return BriefingResponse(
+                id=row["id"],
+                content=row["content"],
+                reading_time_min=row.get("reading_time_min"),
+            )
+    except Exception as exc:
+        logger.warning("Briefing cache lookup failed: %s", exc)
+    return None
+
+
+def _save_briefing(session_id: str, card_ids: List[str], content: str) -> str:
+    """Persist a generated briefing and return its DB id."""
+    from models.database import get_supabase
+
+    cache_key = _make_cache_key(session_id, card_ids)
+    row = {
+        "session_id": session_id,
+        "cache_key": cache_key,
+        "card_ids": sorted(card_ids),
+        "content": content,
+        "reading_time_min": _reading_time(content),
+    }
+    try:
+        db = get_supabase()
+        result = (
+            db.table("briefings")
+            .upsert(row, on_conflict="cache_key")
+            .execute()
+        )
+        if result.data:
+            return result.data[0]["id"]
+    except Exception as exc:
+        logger.warning("Failed to save briefing to cache: %s", exc)
+    return f"briefing-{session_id}"
+
+
+def purge_stale_briefings() -> int:
+    """Delete briefings older than 24 h. Called by the scheduler in main.py."""
+    from datetime import timedelta
+    from models.database import get_supabase
+
+    cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+    try:
+        db = get_supabase()
+        result = db.table("briefings").delete().lt("created_at", cutoff).execute()
+        deleted = len(result.data or [])
+        if deleted:
+            logger.info("Purged %d stale briefing(s) older than 24 h", deleted)
+        return deleted
+    except Exception as exc:
+        logger.warning("Briefing purge failed: %s", exc)
+        return 0
+
+
 async def generate_briefing(session_id: str, card_ids: List[str]) -> BriefingResponse:
-    """Generate a full briefing from card IDs (non-streaming)."""
-    # Check for pre-generated fallback first
+    """Generate a full briefing from card IDs (non-streaming).
+
+    Returns a cached briefing if one exists for this session + card set within 24 h.
+    """
+    # 1. DB cache hit
+    cached = _load_cached_briefing(session_id, card_ids)
+    if cached:
+        return cached
+
+    # 2. Static file fallback (demo / test fixtures)
     fallback = _check_fallback(card_ids)
     if fallback:
         return fallback
 
     settings = get_settings()
-
-    # Fetch cards from Supabase
     cards = _fetch_cards_from_supabase(card_ids)
 
     if not cards:
@@ -327,14 +427,10 @@ async def generate_briefing(session_id: str, card_ids: List[str]) -> BriefingRes
 
     if not settings.anthropic_api_key:
         content = _build_local_fallback_briefing(cards, date_str, timestamp_str)
-        return BriefingResponse(
-            id=f"briefing-{session_id}",
-            content=content,
-            reading_time_min=_reading_time(content),
-        )
+        briefing_id = _save_briefing(session_id, card_ids, content)
+        return BriefingResponse(id=briefing_id, content=content, reading_time_min=_reading_time(content))
 
     user_prompt = _build_user_prompt(cards, date_str, timestamp_str)
-
     content = ""
     try:
         client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
@@ -344,43 +440,35 @@ async def generate_briefing(session_id: str, card_ids: List[str]) -> BriefingRes
             messages=[{"role": "user", "content": user_prompt}],
             system=SYSTEM_PROMPT,
         )
-
         content = message.content[0].text
     except Exception as exc:
         logger.warning("Briefing generation failed, using local fallback: %s", exc)
         content = _build_local_fallback_briefing(cards, date_str, timestamp_str)
 
-    # Save to Supabase
-    try:
-        from models.database import get_supabase
-        db = get_supabase()
-        db.table("briefings").insert({
-            "session_id": session_id,
-            "content": content,
-            "reading_time_min": _reading_time(content),
-        }).execute()
-    except Exception:
-        pass  # Non-critical
-
-    return BriefingResponse(
-        id=f"briefing-{session_id}",
-        content=content,
-        reading_time_min=_reading_time(content),
-    )
+    briefing_id = _save_briefing(session_id, card_ids, content)
+    return BriefingResponse(id=briefing_id, content=content, reading_time_min=_reading_time(content))
 
 
 async def generate_briefing_stream(session_id: str, card_ids: List[str]) -> AsyncGenerator[str, None]:
-    """Generate a briefing with streaming — yields text chunks."""
-    # Check for pre-generated fallback first
+    """Generate a briefing with streaming — yields text chunks.
+
+    Streams cached content immediately if a fresh briefing already exists.
+    """
+    # 1. DB cache hit — stream stored content without calling the LLM
+    cached = _load_cached_briefing(session_id, card_ids)
+    if cached:
+        async for chunk in _yield_text_chunks(cached.content, chunk_size=24):
+            yield chunk
+        return
+
+    # 2. Static file fallback
     fallback = _check_fallback(card_ids)
     if fallback:
-        # Simulate streaming by yielding the fallback in small chunks
         async for chunk in _yield_text_chunks(fallback.content, chunk_size=12):
             yield chunk
         return
 
     settings = get_settings()
-
     cards = _fetch_cards_from_supabase(card_ids)
 
     if not cards:
@@ -393,16 +481,15 @@ async def generate_briefing_stream(session_id: str, card_ids: List[str]) -> Asyn
 
     if not settings.anthropic_api_key:
         content = _build_local_fallback_briefing(cards, date_str, timestamp_str)
+        _save_briefing(session_id, card_ids, content)
         async for chunk in _yield_text_chunks(content):
             yield chunk
         return
 
     user_prompt = _build_user_prompt(cards, date_str, timestamp_str)
-
     full_content = ""
     try:
         client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-
         with client.messages.stream(
             model=MODEL_NAME,
             max_tokens=4096,
@@ -418,14 +505,5 @@ async def generate_briefing_stream(session_id: str, card_ids: List[str]) -> Asyn
         async for chunk in _yield_text_chunks(full_content):
             yield chunk
 
-    # Save completed briefing to Supabase
-    try:
-        from models.database import get_supabase
-        db = get_supabase()
-        db.table("briefings").insert({
-            "session_id": session_id,
-            "content": full_content,
-            "reading_time_min": _reading_time(full_content),
-        }).execute()
-    except Exception:
-        pass
+    # Persist after streaming completes
+    _save_briefing(session_id, card_ids, full_content)

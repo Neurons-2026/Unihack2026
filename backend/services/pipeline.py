@@ -201,10 +201,17 @@ def extract_all_concepts(
     concept_results: list[dict[str, Any]] = []
     concepts_by_item: dict[str, list[str]] = {}
 
-    for i, item in enumerate(items):
+    # Only extract concepts from HuggingFace papers — other sources are too short
+    # and low-signal to justify the Sonnet API cost.
+    hf_items = [item for item in items if item.get("source") == "huggingface"]
+    skipped = len(items) - len(hf_items)
+    if skipped:
+        logger.info(f"Skipping concept extraction for {skipped} non-HuggingFace items")
+
+    for i, item in enumerate(hf_items):
         item_id = item.get("id", "")
         logger.info(
-            f"Concept extraction {i + 1}/{len(items)}: {item.get('title', '')[:60]}"
+            f"Concept extraction {i + 1}/{len(hf_items)}: {item.get('title', '')[:60]}"
         )
 
         # Check if this item has a PDF
@@ -255,10 +262,36 @@ def extract_all_concepts(
 
     total_concepts = sum(len(labels) for labels in concepts_by_item.values())
     logger.info(
-        f"Concept extraction complete: {len(concept_results)} sources, "
+        f"Concept extraction complete: {len(concept_results)}/{len(hf_items)} HF sources, "
         f"{total_concepts} total concepts"
     )
     return concept_results, concepts_by_item
+
+
+# ---------------------------------------------------------------------------
+# Step 3b: Filter out items already stored in DB (skip Claude calls for dupes)
+# ---------------------------------------------------------------------------
+
+def _filter_new_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return only items whose id is not already in the cards table."""
+    try:
+        from supabase import create_client
+        from config import get_settings
+        settings = get_settings()
+        if not settings.supabase_url or not settings.supabase_key:
+            return items
+        supabase = create_client(settings.supabase_url, settings.supabase_key)
+        ids = [item["id"] for item in items]
+        result = supabase.table("cards").select("id").in_("id", ids).execute()
+        existing_ids = {row["id"] for row in (result.data or [])}
+        new_items = [item for item in items if item["id"] not in existing_ids]
+        skipped = len(items) - len(new_items)
+        if skipped:
+            logger.info(f"Skipping {skipped} items already in DB — no Claude calls needed")
+        return new_items
+    except Exception as exc:
+        logger.warning("Could not check existing cards, processing all: %s", exc)
+        return items
 
 
 # ---------------------------------------------------------------------------
@@ -271,14 +304,17 @@ def generate_cards(
 ) -> list[dict[str, Any]]:
     """Generate card_title, card_summary, keywords, thumbnail_keyword for each item.
 
+    Only processes items that don't already have a card in the DB.
     Uses extracted concept labels as required keywords for each card.
     """
     concepts_by_item = concepts_by_item or {}
-    for i, item in enumerate(items):
+    new_items = _filter_new_items(items)
+
+    for i, item in enumerate(new_items):
         item_id = item.get("id", "")
         concept_labels = concepts_by_item.get(item_id)
         logger.info(
-            f"Generating card {i + 1}/{len(items)}: {item.get('title', '')[:60]}"
+            f"Generating card {i + 1}/{len(new_items)}: {item.get('title', '')[:60]}"
             f"{f' (concepts: {concept_labels})' if concept_labels else ''}"
         )
         try:
@@ -286,8 +322,15 @@ def generate_cards(
             item["pipeline_state"] = "card_ready"
         except Exception:
             logger.exception(f"Card generation failed for {item_id}")
+
+    # Mark already-existing items as card_ready so they still get stored/returned
+    new_ids = {item["id"] for item in new_items}
+    for item in items:
+        if item["id"] not in new_ids:
+            item["pipeline_state"] = "card_ready"
+
     ready = sum(1 for i in items if i.get("pipeline_state") == "card_ready")
-    logger.info(f"Card generation complete: {ready}/{len(items)} ready")
+    logger.info(f"Card generation complete: {ready}/{len(items)} ready ({len(new_items)} newly generated)")
     return items
 
 
@@ -326,17 +369,21 @@ def store_to_database(
     # --- content_items table ---
     content_rows = []
     for item in items:
+        preprocessing = item.get("preprocessing") or {}
         content_rows.append({
             "id": item["id"],
-            "schema_version": item.get("schema_version", "1.0.0"),
             "source": item.get("source", ""),
             "source_url": item.get("source_url", ""),
             "title": item.get("title", ""),
-            "raw_summary": item.get("raw_summary", ""),
             "raw_content": item.get("raw_content", ""),
-            "metadata": item.get("metadata") or {},
+            "cleaned_text": preprocessing.get("cleaned_text", ""),
+            "preview_text": preprocessing.get("preview_text", ""),
+            "quality_score": preprocessing.get("quality_score"),
+            "quality_notes": preprocessing.get("quality_notes") or [],
+            "enrichment_used": bool(preprocessing.get("enrichment_used", False)),
+            "keywords": item.get("metadata", {}).get("keywords") or [],
+            "pipeline_state": item.get("pipeline_state", "raw_scraped"),
             "fetched_at": item.get("fetched_at"),
-            "provenance": item.get("provenance") or {},
         })
 
     if content_rows:
@@ -354,17 +401,17 @@ def store_to_database(
         card = item.get("card")
         if not card:
             continue
-        preprocessing = item.get("preprocessing", {})
         ranking = item.get("ranking", {})
         card_rows.append({
             "id": item["id"],
             "card_title": card.get("card_title", ""),
             "card_summary": card.get("card_summary", ""),
             "keywords": card.get("keywords", []),
+            "source": item.get("source", ""),
+            "source_url": item.get("source_url", ""),
             "thumbnail_keyword": card.get("thumbnail_keyword", ""),
-            "cleaned_text": preprocessing.get("cleaned_text", ""),
-            "quality_score": preprocessing.get("quality_score", 0.0),
             "trending_score": ranking.get("trending_score", 0.0),
+            "image_url": card.get("image_url", ""),
         })
 
     if card_rows:
@@ -397,6 +444,7 @@ def store_to_database(
 
             edge_rows = [
                 {
+                    "id": f"{e.source_node_id}__{e.target_node_id}__{e.relationship or 'related_to'}",
                     "source_node_id": e.source_node_id,
                     "target_node_id": e.target_node_id,
                     "relationship": e.relationship or "related_to",
@@ -405,9 +453,9 @@ def store_to_database(
                 for e in graph_edges
             ]
             if edge_rows:
-                resp = supabase.table("graph_edges").insert(edge_rows).execute()
+                resp = supabase.table("graph_edges").upsert(edge_rows, on_conflict="id").execute()
                 counts["graph_edges"] = len(resp.data or [])
-                logger.info(f"Inserted {counts['graph_edges']} graph_edges")
+                logger.info(f"Upserted {counts['graph_edges']} graph_edges")
         except Exception:
             logger.exception("Failed to build/store knowledge graph")
             counts.setdefault("graph_nodes", 0)

@@ -66,6 +66,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     }
   }, [basketItems.length, router]);
   const pendingDir = useRef<SwipeDir | null>(null);
+  const cardStartTime = useRef<number>(Date.now());
 
   useEffect(() => {
     const sessionId = getSessionId();
@@ -152,16 +153,18 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
     const save = isSaveDir(resolvedDir);
     const action: 'save' | 'skip' = save ? 'save' : 'skip';
     const sessionId = getSessionId();
+    const dwellMs = Date.now() - cardStartTime.current;
+    cardStartTime.current = Date.now();
 
     if (save) {
       addItem(currentCard);
       addToBasket(sessionId, currentCard.id).catch(() => {});
-      postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_right' }).catch(() => {});
+      postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_right', dwell_time_ms: dwellMs }).catch(() => {});
     } else {
-      postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_left' }).catch(() => {});
+      postInteraction({ session_id: sessionId, card_id: currentCard.id, action: 'swipe_left', dwell_time_ms: dwellMs }).catch(() => {});
     }
 
-    logInteraction(currentCard.id, action, currentCard.keywords);
+    logInteraction(currentCard.id, action, currentCard.keywords, dwellMs);
 
     // Show tag priority toast
     if (currentCard.keywords.length > 0) {
