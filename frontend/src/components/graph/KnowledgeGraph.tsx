@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { shareContent } from '@/lib/share';
 import { GraphNode, GraphEdge, GraphData } from '@/types/graph';
 import { buildAdjMap } from '@/data/sampleGraph';
 import { getGraph, generateGraphFromCards } from '@/lib/api';
@@ -630,15 +631,57 @@ export default function KnowledgeGraph() {
   const adj = activeAdjRef.current;
   const graphNodes = nodesRef.current;
 
+  const [graphShareCopied, setGraphShareCopied] = useState(false);
+  const handleGraphShare = useCallback(async () => {
+    const todayNodes = (apiDataRef.current?.nodes ?? []).filter((n) => n.is_today !== false);
+    const labels = todayNodes.map((n) => n.label).join(', ');
+    const text = labels
+      ? `My AI knowledge graph today: ${labels}`
+      : 'Check out my AI knowledge graph!';
+    const result = await shareContent({ title: '10min AI Daily — Knowledge Graph', text });
+    if (result === 'copied') {
+      setGraphShareCopied(true);
+      setTimeout(() => setGraphShareCopied(false), 2000);
+    }
+  }, []);
+
   return (
     <div style={{ maxWidth: 390, margin: '0 auto', height: '100dvh', background: '#111111', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       {/* HEADER */}
       <div style={{ padding: '48px 20px 0', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <div onClick={() => router.push('/briefing')} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
             <span style={{ fontSize: 15, fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>Your knowledge</span>
           </div>
+          <button
+            onClick={handleGraphShare}
+            style={{
+              background: graphShareCopied ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.08)',
+              border: 'none',
+              borderRadius: '50%',
+              width: 30,
+              height: 30,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'background 0.2s',
+            }}
+            aria-label="Share knowledge graph"
+          >
+            {graphShareCopied ? (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            ) : (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+                <polyline points="16 6 12 2 8 6" />
+                <line x1="12" y1="2" x2="12" y2="15" />
+              </svg>
+            )}
+          </button>
         </div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.5, marginBottom: 6 }}>
           {loading ? 'Loading your knowledge graph…' : error ? error : (() => {

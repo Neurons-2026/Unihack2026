@@ -10,7 +10,10 @@ export default function AuthCallback() {
   const login = useAppStore((s) => s.login);
 
   useEffect(() => {
-    getSupabase().auth.getSession().then(({ data: { session } }) => {
+    const supabase = getSupabase();
+    const code = new URLSearchParams(window.location.search).get('code');
+
+    const finish = (session: import('@supabase/supabase-js').Session | null) => {
       if (session?.user) {
         login({
           userId: session.user.id,
@@ -22,7 +25,13 @@ export default function AuthCallback() {
       } else {
         router.replace('/login');
       }
-    });
+    };
+
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ data }) => finish(data.session));
+    } else {
+      supabase.auth.getSession().then(({ data: { session } }) => finish(session));
+    }
   }, [login, router]);
 
   return (

@@ -78,7 +78,8 @@ def _load_cards_from_supabase(
         cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
         query = query.gte("created_at", cutoff)
 
-    rows = query.order("trending_score", desc=True).limit(limit).execute().data or []
+    order_col = "trending_score" if fresh_only else "created_at"
+    rows = query.order(order_col, desc=True).limit(limit).execute().data or []
 
     cards: List[Card] = []
     for row in rows:
@@ -86,6 +87,8 @@ def _load_cards_from_supabase(
             continue
         try:
             row.setdefault("source", _source_from_id(row.get("id", "")))
+            if not row.get("source_url"):
+                row["source_url"] = None
             cards.append(Card(**row))
         except Exception:
             continue

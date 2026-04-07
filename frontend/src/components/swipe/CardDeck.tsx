@@ -5,6 +5,7 @@ import { useBasketStore } from '@/stores/useBasketStore';
 import { unlockAudio, playSaveSound, playSkipSound } from '@/lib/sounds';
 import { getCards, postInteraction, addToBasket } from '@/lib/api';
 import { getSessionId } from '@/lib/session';
+import { shareContent } from '@/lib/share';
 import { Card } from '@/lib/types';
 import { CardData } from '@/types/card';
 import CardItem from './CardItem';
@@ -52,6 +53,7 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   const [reveal, setReveal] = useState<RevealState>(null);
   const [iconHold, setIconHold] = useState<{ action: 'save' | 'skip'; fading: boolean } | null>(null);
   const [tagToast, setTagToast] = useState<{ keywords: string[]; action: 'save' | 'skip'; fading: boolean } | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
   const tagToastTimer = useRef<ReturnType<typeof setTimeout>[]>([]);
   const revealTimer = useRef<ReturnType<typeof setTimeout>>();
   const iconTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -134,6 +136,18 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
   }, []);
 
   const currentCard = visibleCards[0];
+
+  async function handleCardShare() {
+    if (!currentCard) return;
+    const result = await shareContent({
+      title: currentCard.title,
+      text: `${currentCard.title}\n\n${currentCard.description}`,
+    });
+    if (result === 'copied') {
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 1800);
+    }
+  }
 
   const handleSwipe = useCallback(
     (dir: SwipeDir) => {
@@ -300,6 +314,42 @@ export default function CardDeck({ activeTopic }: { activeTopic: string }) {
       </GravityCard>
 
       <ActionIcon swipeDir={swipeDir} swipeIntensity={swipeIntensity} hold={iconHold} />
+
+      {/* Share button — sibling of GravityCard so it's outside pointer capture scope */}
+      <button
+        onClick={handleCardShare}
+        style={{
+          position: 'absolute',
+          top: 24,
+          right: 24,
+          zIndex: 15,
+          background: shareCopied ? 'rgba(74,222,128,0.2)' : 'rgba(0,0,0,0.35)',
+          border: 'none',
+          borderRadius: '50%',
+          width: 32,
+          height: 32,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+          transition: 'background 0.2s',
+        }}
+        aria-label="Share"
+      >
+        {shareCopied ? (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        ) : (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+            <polyline points="16 6 12 2 8 6" />
+            <line x1="12" y1="2" x2="12" y2="15" />
+          </svg>
+        )}
+      </button>
 
       {/* Tag priority toast */}
       {tagToast && (

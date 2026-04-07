@@ -1,12 +1,15 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { useAppStore } from '@/lib/store';
 
 export default function Header() {
   const count = useBasketStore((s) => s.items.length);
   const user = useAppStore((s) => s.user);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const logout = useAppStore((s) => s.logout);
   const router = useRouter();
 
@@ -16,7 +19,7 @@ export default function Header() {
         10min AI Daily
       </span>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        {user ? (
+        {mounted && user ? (
           <button
             onClick={() => logout()}
             style={{

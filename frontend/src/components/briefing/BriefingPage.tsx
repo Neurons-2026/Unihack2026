@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, ReactNode } from 'react';
 import { useBasketStore } from '@/stores/useBasketStore';
 import { generateBriefingStream, getCardImages } from '@/lib/api';
 import { getSessionId } from '@/lib/session';
+import { shareContent } from '@/lib/share';
 import BriefingHeader from './BriefingHeader';
 import GraphButton from './GraphButton';
 
@@ -230,6 +231,18 @@ export default function BriefingPage() {
 
   const readingTimeMin = done ? Math.round(streamedContent.split(/\s+/).length / 200) : undefined;
 
+  const [shareCopied, setShareCopied] = useState(false);
+  async function handleShare() {
+    const result = await shareContent({
+      title: '10min AI Daily — My Briefing',
+      text: streamedContent,
+    });
+    if (result === 'copied') {
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    }
+  }
+
   return (
     <div
       style={{
@@ -250,7 +263,12 @@ export default function BriefingPage() {
           vertical-align: text-bottom; animation: blink 0.6s step-start infinite;
         }
       `}</style>
-      <BriefingHeader readingTimeMin={readingTimeMin} scrollProgress={scrollProgress} />
+      <BriefingHeader
+        readingTimeMin={readingTimeMin}
+        scrollProgress={scrollProgress}
+        onShare={done ? handleShare : undefined}
+        shareCopied={shareCopied}
+      />
 
       <div
         ref={scrollRef}
