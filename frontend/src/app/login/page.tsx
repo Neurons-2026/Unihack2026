@@ -41,13 +41,17 @@ export default function LoginPage() {
 
   async function handleGoogleLogin() {
     setError('');
-    const { error } = await getSupabase().auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    if (error) setError(error.message);
+    try {
+      const { error } = await getSupabase().auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) setError(error.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
   }
 
   return (
